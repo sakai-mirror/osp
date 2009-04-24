@@ -1,15 +1,15 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/svn/oncourse/branches/osp_enhancements_2-5-x/osp/matrix/tool/src/java/org/theospi/portfolio/matrix/taggable/tool/DecoratedTaggingProvider.java $
+ * $Id: DecoratedTaggingProvider.java 47270 2008-06-06 20:15:50Z chmaurer@iupui.edu $
  ***********************************************************************************
  *
- * Copyright (c) 2007, 2008 The Sakai Foundation
+ * Copyright (c) 2007 The Sakai Foundation.
  *
- * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.osedu.org/licenses/ECL-2.0
+ *      http://www.opensource.org/licenses/ecl1.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.theospi.portfolio.matrix.taggable.tool;
+package org.theospi.portfolio.tagging.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,9 @@ import org.sakaiproject.taggable.api.TagColumn;
 import org.sakaiproject.taggable.api.TagList;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.theospi.portfolio.tagging.api.DTaggingPager;
+import org.theospi.portfolio.tagging.api.DTaggingSort;
+import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 
 /**
  * Wrapper around {@link TaggingProvider} for displaying a pageable/sortable
@@ -38,7 +41,7 @@ import org.sakaiproject.taggable.api.TaggingProvider;
  * 
  * @author The Sakai Foundation.
  */
-public class DecoratedTaggingProvider {
+public class DecoratedTaggingProviderImpl implements DecoratedTaggingProvider{
 
 	private Sort sort;
 
@@ -52,7 +55,7 @@ public class DecoratedTaggingProvider {
 
 	protected final static int[] PAGESIZES = { 5, 10, 20, 50, 100, 200 };
 
-	public DecoratedTaggingProvider(TaggableActivity activity,
+	public DecoratedTaggingProviderImpl(TaggableActivity activity,
 			TaggingProvider provider) {
 		this.activity = activity;
 		this.provider = provider;
@@ -61,11 +64,11 @@ public class DecoratedTaggingProvider {
 		pager = new Pager(tagList.size(), 0, 20);
 	}
 
-	public Sort getSort() {
+	public DTaggingSort getSort() {
 		return sort;
 	}
 
-	public Pager getPager() {
+	public DTaggingPager getPager() {
 		return pager;
 	}
 
@@ -91,7 +94,7 @@ public class DecoratedTaggingProvider {
 		return provider.getTags(activity).getColumns();
 	}
 
-	public class Sort {
+	public class Sort implements DTaggingSort{
 
 		protected String sortString = "";
 
@@ -119,7 +122,7 @@ public class DecoratedTaggingProvider {
 		}
 	}
 
-	public class Pager {
+	public class Pager implements DTaggingPager{
 
 		protected int totalItems;
 
@@ -127,8 +130,7 @@ public class DecoratedTaggingProvider {
 
 		protected int pageSize;
 
-		public static final String FIRST = "|<", PREVIOUS = "<", NEXT = ">",
-				LAST = ">|";
+		
 
 		public Pager(int totalItems, int firstItem, int pageSize) {
 			this.totalItems = totalItems;

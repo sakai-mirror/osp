@@ -24,11 +24,9 @@ package org.theospi.portfolio.matrix.control;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,12 +38,10 @@ import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
-import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -54,10 +50,6 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.taggable.api.Link;
-import org.sakaiproject.taggable.api.LinkManager;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggableActivityProducer;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
@@ -73,6 +65,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.matrix.HibernateMatrixManagerImpl;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
@@ -80,9 +73,6 @@ import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
-import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
-import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
-import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -92,6 +82,9 @@ import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.tagging.api.DTaggingPager;
+import org.theospi.portfolio.tagging.api.DTaggingSort;
+import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
@@ -115,9 +108,7 @@ public class CellController implements FormController, LoadObjectController {
 
 	private AuthorizationFacade authzManager = null;
 
-	private TaggingManager taggingManager;
-	
-	private LinkManager linkManager = null;
+	private TaggingManager taggingManager;	
 
 	private WizardActivityProducer wizardActivityProducer;
 	
@@ -139,7 +130,7 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected static final int METADATA_DESC_INDEX = 2;
 
-	protected static final String PROVIDERS_PARAM = "providers";
+	
 	
 	protected boolean enableReviewEdit = true;
 
@@ -309,30 +300,35 @@ public class CellController implements FormController, LoadObjectController {
       model.put("styles",
     		  getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
-      if (taggingManager.isTaggable()) {
+      if (getTaggingManager().isTaggable()) {
 			TaggableItem item = wizardActivityProducer.getItem(cell.getCell()
 					.getWizardPage());
 			model.put("taggable", "true");
+
+			//getMatrixManager().getTaggableItems will put the providers into the session
+			model.put("taggableItems", getMatrixManager().getDecoratedTaggableItems(item, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
+
+			
 			ToolSession toolSession = getSessionManager()
 					.getCurrentToolSession();
 			List<DecoratedTaggingProvider> providers = (List) toolSession
-					.getAttribute(PROVIDERS_PARAM);
+					.getAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
+			//but just double check to make sure that providers doesn't exist
 			if (providers == null) {
-				providers = getDecoratedProviders(item.getActivity());
-				toolSession.setAttribute(PROVIDERS_PARAM, providers);
+				providers = getMatrixManager().getDecoratedProviders(item.getActivity());
+				toolSession.setAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM, providers);
 			}
 			model.put("helperInfoList", getHelperInfo(item));
 			model.put("providers", providers);
 			
-			model.put("taggableItems", getTaggableItems(providers, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
-			
+						
 			model.put("decoWrapper", "ospMatrix_" + siteId + "_" + pageId);
 		}
 
 		clearSession(session);
 		return model;
 	}
-	
+
 	/**
 	 ** Return true if general feedback is allowed based on feedback options
 	 **/
@@ -359,73 +355,6 @@ public class CellController implements FormController, LoadObjectController {
 		return new Boolean(allowGeneralFeedback);
 	}
 	
-	protected Set<TaggableItem> getTaggableItems(List<DecoratedTaggingProvider> providers, String criteriaRef, String cellOwner) {
-		Set<TaggableActivity> activities = new HashSet<TaggableActivity>();
-		Set<TaggableItem> taggableItems = new HashSet<TaggableItem>();
-		List<Link> links;
-		try
-		{
-			links = getLinkManager().getLinks(criteriaRef, true);
-			//TODO: Make sure it's always okay to ignore the provider
-			for (DecoratedTaggingProvider provider : providers) {
-				for (Link link : links) {
-					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider());
-					if (activity != null) {
-						TaggableActivityProducer producer = getTaggingManager().findProducerByRef(activity.getReference());
-						if (producer.getItemPermissionOverride() != null) {
-							getSecurityService().pushAdvisor(new SimpleSecurityAdvisor(
-									getSessionManager().getCurrentSessionUserId(), 
-									producer.getItemPermissionOverride()));
-						}
-						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider());
-						taggableItems.addAll(items);
-						activities.add(activity);
-						
-						if (producer.getItemPermissionOverride() != null) {
-							getSecurityService().popAdvisor();
-						}
-					}
-					else {
-						logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
-						getLinkManager().removeLink(link);
-						links.remove(link);
-					}
-				}
-			}
-		}
-		catch (PermissionException pe)
-		{
-			logger.warn("unable to get links for criteriaRef " + criteriaRef, pe);
-		}
-		return taggableItems;
-		
-	}
-	
-	/**
-	 * A simple SecurityAdviser that can be used to override permissions for one user for one function.
-	 */
-	protected class SimpleSecurityAdvisor implements SecurityAdvisor
-	{
-		protected String m_userId;
-		protected String m_function;
-
-		public SimpleSecurityAdvisor(String userId, String function)
-		{
-			m_userId = userId;
-			m_function = function;
-		}
-
-		public SecurityAdvice isAllowed(String userId, String function, String reference)
-		{
-			SecurityAdvice rv = SecurityAdvice.PASS;
-			if (m_userId.equals(userId) && m_function.equals(function))
-			{
-				rv = SecurityAdvice.ALLOWED;
-			}
-			return rv;
-		}
-	}
-
 	/**
 	 ** Return boolean array if item feedback is allowed based on feedback options
 	 **/
@@ -633,7 +562,7 @@ public class CellController implements FormController, LoadObjectController {
 			String scaffId = "";
 			String viewUser = "";
 			if (getTaggingManager().isTaggable()) {
-				session.remove(PROVIDERS_PARAM);
+				session.remove(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
 			}
 
 			if (cell.getMatrix() != null) {
@@ -684,10 +613,10 @@ public class CellController implements FormController, LoadObjectController {
 		String criteria = (String) request.get("criteria");
 
 		List<DecoratedTaggingProvider> providers = (List) getSessionManager()
-				.getCurrentToolSession().getAttribute(PROVIDERS_PARAM);
+				.getCurrentToolSession().getAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
 		for (DecoratedTaggingProvider dtp : providers) {
 			if (dtp.getProvider().getId().equals(providerId)) {
-				Sort sort = dtp.getSort();
+				DTaggingSort sort = dtp.getSort();
 				if (sort.getSort().equals(criteria)) {
 					sort.setAscending(sort.isAscending() ? false : true);
 				} else {
@@ -707,20 +636,20 @@ public class CellController implements FormController, LoadObjectController {
 		String providerId = (String) request.get("providerId");
 
 		List<DecoratedTaggingProvider> providers = (List) getSessionManager()
-				.getCurrentToolSession().getAttribute(PROVIDERS_PARAM);
+				.getCurrentToolSession().getAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
 		for (DecoratedTaggingProvider dtp : providers) {
 			if (dtp.getProvider().getId().equals(providerId)) {
-				Pager pager = dtp.getPager();
+				DTaggingPager pager = dtp.getPager();
 				pager.setPageSize(Integer.valueOf(pageSize));
-				if (Pager.FIRST.equals(page)) {
+				if (DTaggingPager.FIRST.equals(page)) {
 					pager.setFirstItem(0);
-				} else if (Pager.PREVIOUS.equals(page)) {
+				} else if (DTaggingPager.PREVIOUS.equals(page)) {
 					pager.setFirstItem(pager.getFirstItem()
 							- pager.getPageSize());
-				} else if (Pager.NEXT.equals(page)) {
+				} else if (DTaggingPager.NEXT.equals(page)) {
 					pager.setFirstItem(pager.getFirstItem()
 							+ pager.getPageSize());
-				} else if (Pager.LAST.equals(page)) {
+				} else if (DTaggingPager.LAST.equals(page)) {
 					pager.setFirstItem((pager.getTotalItems() / pager
 							.getPageSize())
 							* pager.getPageSize());
@@ -769,8 +698,8 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected List<TaggingHelperInfo> getHelperInfo(TaggableItem item) {
 		List<TaggingHelperInfo> infoList = new ArrayList<TaggingHelperInfo>();
-		if (taggingManager.isTaggable()) {
-			for (TaggingProvider provider : taggingManager.getProviders()) {
+		if (getTaggingManager().isTaggable()) {
+			for (TaggingProvider provider : getTaggingManager().getProviders()) {
 				// Only get helpers for accepted rating providers
 				if (ratingProviderIds.contains(provider.getId())) {
 					TaggingHelperInfo info = provider.getItemHelperInfo(item
@@ -784,14 +713,6 @@ public class CellController implements FormController, LoadObjectController {
 		return infoList;
 	}
 
-	protected List<DecoratedTaggingProvider> getDecoratedProviders(
-			TaggableActivity activity) {
-		List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
-		for (TaggingProvider provider : getTaggingManager().getProviders()) {
-			providers.add(new DecoratedTaggingProvider(activity, provider));
-		}
-		return providers;
-	}
 
 	
 	/**
@@ -896,17 +817,7 @@ public class CellController implements FormController, LoadObjectController {
 	public void setTaggingManager(TaggingManager taggingManager) {
 		this.taggingManager = taggingManager;
 	}
-
-	public LinkManager getLinkManager()
-	{
-		return linkManager;
-	}
-
-	public void setLinkManager(LinkManager linkManager)
-	{
-		this.linkManager = linkManager;
-	}
-
+	
 	public WizardActivityProducer getWizardActivityProducer() {
 		return wizardActivityProducer;
 	}

@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -50,12 +48,12 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -73,6 +71,7 @@ import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
@@ -87,7 +86,9 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
    private ToolManager toolManager;
    private StyleManager styleManager;
-
+   
+   private WizardActivityProducer wizardActivityProducer;
+   
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
 
       MatrixGridBean grid = (MatrixGridBean)incomingModel;
@@ -203,6 +204,13 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
             cellBean.setAssignments(getAssignments(cell.getWizardPage(), matrix.getOwner()));
+            
+            if (getMatrixManager().getTaggingManager().isTaggable()) {
+    			TaggableItem item = wizardActivityProducer.getItem(cell.getWizardPage());
+    			
+    			Set<TaggableItem> taggableItems = getMatrixManager().getTaggableItems(item, cell.getWizardPage().getPageDefinition().getReference(), cell.getWizardPage().getOwner().getId().getValue());
+    			cellBean.setTaggableItems(taggableItems);    			
+    		}            
             row.add(cellBean);
          }
          matrixContents.add(row);
@@ -461,31 +469,37 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 
 		return false;
 	}
-
    
 
-   public ToolManager getToolManager() {
-      return toolManager;
-   }
+	public ToolManager getToolManager() {
+		return toolManager;
+	}
 
-   public void setToolManager(ToolManager toolManager) {
-      this.toolManager = toolManager;
-   }
+	public void setToolManager(ToolManager toolManager) {
+		this.toolManager = toolManager;
+	}
 
-public StyleManager getStyleManager() {
-	return styleManager;
-}
+	public StyleManager getStyleManager() {
+		return styleManager;
+	}
 
-public SecurityService getSecurityService() {
-	return securityService;
-}
+	public void setStyleManager(StyleManager styleManager) {
+		this.styleManager = styleManager;
+	}
 
-public void setStyleManager(StyleManager styleManager) {
-	this.styleManager = styleManager;
-}
+	public SecurityService getSecurityService() {
+		return securityService;
+	}
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
 
-public void setSecurityService(SecurityService securityService) {
-	this.securityService = securityService;
-}
+	public WizardActivityProducer getWizardActivityProducer() {
+		return wizardActivityProducer;
+	}
 
+	public void setWizardActivityProducer(
+			WizardActivityProducer wizardActivityProducer) {
+		this.wizardActivityProducer = wizardActivityProducer;
+	}
 }

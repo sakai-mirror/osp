@@ -382,8 +382,10 @@ function mySetMainFrameHeight(id)
 				<c:if test="${myworkspace}">
 					<td>
 						<div class="itemAction">
-							<a href="<c:out value="${dScaffold.scaffoldingToolUrl}" />" title="<fmt:message key="scaffolding_goToTool"/>" target="_top" >
-							       	<fmt:message key="scaffolding_goToTool"/>
+							<a href="<c:out value="${dScaffold.scaffoldingToolUrl}" />" title="<fmt:message key="scaffolding_goToTool"><fmt:param><c:out value="${dScaffold.scaffolding.worksiteName}"/></fmt:param></fmt:message>" target="_top" >
+							       	<fmt:message key="scaffolding_goToTool">
+							       		<fmt:param><c:out value="${dScaffold.scaffolding.worksiteName}"/></fmt:param>
+							       	</fmt:message>
 						    </a>
 						</div>
 					</td>

@@ -1,0 +1,33 @@
+
+	<!-- *************** Showing linked artifacts START **************** -->
+	
+	<c:forEach var="taggableItemType" items="${taggableItems}" varStatus="taggableItemLoopStatus">
+		<c:set var="canReflect" value="true" />
+		<c:if test="${not empty taggableItemType.taggableItems}">
+			<tr class="cellItemAddLine">
+				<td colspan="6">
+					<h4><c:out value="${taggableItemType.typeName}" /></h4>
+				</td>
+			</tr>
+		</c:if>
+		<c:forEach var="taggableItem" items="${taggableItemType.taggableItems}">
+		<tr>
+			<td colspan="2">
+				<span class="indnt2">
+				<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
+				<a class="thickbox"
+					href="<c:out value="${taggableItem.itemDetailUrl}"/><c:if test="${taggableItem.useDecoration}"><c:out value="/${decoWrapper}" /></c:if><c:out value="${taggableItem.itemDetailUrlParams}"/>">
+				<c:out value="${taggableItem.activity.title}" /> </a>
+				</span>
+			</td>
+			<td></td>
+			<td><c:out value="${taggableItem.siteTitle}" /></td>
+			<td><c:out value="${taggableItem.owner}" /></td>
+			<td><fmt:formatDate
+						value="${taggableItem.lastModifiedDate}"
+						pattern="${date_format}" /></td>
+		</tr>
+		</c:forEach>
+	</c:forEach>
+	
+	<!-- *************** Showing linked artifacts END **************** -->

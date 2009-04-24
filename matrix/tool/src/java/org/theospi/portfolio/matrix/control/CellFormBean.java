@@ -21,6 +21,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.List;
+import java.util.Set;
 
 import org.theospi.portfolio.matrix.model.Cell;
 
@@ -33,8 +34,11 @@ public class CellFormBean {
    private List nodes;
    private List assignments;
    private String[] selectedArtifacts;
+   private Set taggableItems;
 
-   /**
+   
+
+/**
     * @return
     */
    public List getNodes() {
@@ -90,4 +94,11 @@ public class CellFormBean {
       return assignments;
    }
     
+   public Set getTaggableItems() {
+	   return taggableItems;
+   }
+
+   public void setTaggableItems(Set taggableItems) {
+	   this.taggableItems = taggableItems;
+   }
 }

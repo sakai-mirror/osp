@@ -22,6 +22,7 @@ package org.theospi.portfolio.matrix;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,9 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableItem;
+import org.sakaiproject.taggable.api.TaggingManager;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -44,6 +48,8 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.tagging.api.DecoratedTaggableItem;
+import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 
 /**
  * @author apple
@@ -332,4 +338,14 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, List sentEmailAddrs, String parentTitle, String function);
 
 	public Cell createCellWrapper(WizardPage page);
+	
+	
+	public Set<TaggableItem> getTaggableItems(TaggableItem item, String criteriaRef, String cellOwner);
+	
+	public Set<DecoratedTaggableItem> getDecoratedTaggableItems(TaggableItem item, String criteriaRef, String cellOwner);
+	
+
+	public TaggingManager getTaggingManager();
+	
+	public List<DecoratedTaggingProvider> getDecoratedProviders(TaggableActivity activity);
 }

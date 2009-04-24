@@ -21,7 +21,6 @@
 
 package org.theospi.portfolio.matrix.control;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,16 +61,16 @@ import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
-import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
-import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.tagging.api.DTaggingPager;
+import org.theospi.portfolio.tagging.api.DTaggingSort;
+import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
+import org.theospi.portfolio.tagging.impl.DecoratedTaggingProviderImpl.Pager;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -137,7 +136,7 @@ public class EditScaffoldingCellController extends
 				List<DecoratedTaggingProvider> providers = (List) session
 						.getAttribute(PROVIDERS_PARAM);
 				if (providers == null) {
-					providers = getDecoratedProviders(activity);
+					providers = getMatrixManager().getDecoratedProviders(activity);
 					session.setAttribute(PROVIDERS_PARAM, providers);
 				}
 				model.put("helperInfoList", getHelperInfo(activity));
@@ -420,7 +419,7 @@ public class EditScaffoldingCellController extends
 				.getCurrentToolSession().getAttribute(PROVIDERS_PARAM);
 		for (DecoratedTaggingProvider dtp : providers) {
 			if (dtp.getProvider().getId().equals(providerId)) {
-				Sort sort = dtp.getSort();
+				DTaggingSort sort = dtp.getSort();
 				if (sort.getSort().equals(criteria)) {
 					sort.setAscending(sort.isAscending() ? false : true);
 				} else {
@@ -449,7 +448,7 @@ public class EditScaffoldingCellController extends
 				.getCurrentToolSession().getAttribute(PROVIDERS_PARAM);
 		for (DecoratedTaggingProvider dtp : providers) {
 			if (dtp.getProvider().getId().equals(providerId)) {
-				Pager pager = dtp.getPager();
+				DTaggingPager pager = dtp.getPager();
 				pager.setPageSize(Integer.valueOf(pageSize));
 				if (Pager.FIRST.equals(page)) {
 					pager.setFirstItem(0);
@@ -959,15 +958,6 @@ public class EditScaffoldingCellController extends
 			}
 		}
 		return infoList;
-	}
-
-	protected List<DecoratedTaggingProvider> getDecoratedProviders(
-			TaggableActivity activity) {
-		List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
-		for (TaggingProvider provider : getTaggingManager().getProviders()) {
-			providers.add(new DecoratedTaggingProvider(activity, provider));
-		}
-		return providers;
 	}
 
 	

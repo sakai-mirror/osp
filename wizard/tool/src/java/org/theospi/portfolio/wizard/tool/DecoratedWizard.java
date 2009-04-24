@@ -204,7 +204,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	}
 
 	private List getUserList(String worksiteId) {
-		Set members = new HashSet();
+		Set<String> userIds = new HashSet<String>();
 		List users = new ArrayList();
 
       boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
@@ -215,35 +215,34 @@ public class DecoratedWizard implements DecoratedListInterface {
 			if ( site.hasGroups() ) {
 				String filterGroupId = parent.getCurrentGroupId();
 				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
-					members.addAll(site.getMembers());
+					userIds.addAll(site.getUsers());
 				}
 				else if ( filterGroupId != null && !filterGroupId.equals("") ) {
 					Group group = site.getGroup(filterGroupId);
-					members.addAll(group.getMembers());
+					userIds.addAll(group.getUsers());
 				}
 				else {
 					String currentUser = SessionManager.getCurrentSessionUserId();
 					Collection groups = site.getGroupsWithMember(currentUser);
 					for (Iterator iter = groups.iterator(); iter.hasNext();) {
 						Group group = (Group) iter.next();
-						members.addAll(group.getMembers());
+						userIds.addAll(group.getUsers());
 					}
 				}
 			}
 			else {
-				members.addAll(site.getMembers());
+				userIds.addAll(site.getUsers());
 			}
 
-			for (Iterator memb = members.iterator(); memb.hasNext();) {
+			for (String userId : userIds) {
+				User user;
 				try {
-					Member member = (Member) memb.next();
-					User user = UserDirectoryService.getUser(member.getUserId());
-
+					user = UserDirectoryService.getUser(userId);
 					users.add(getParent().createSelect(user.getId(), user.getSortName()));
 				}
 				catch (UserNotDefinedException e) {
 					getParent().logger.warn(myResources.getString("err_user_not_found") + e.getId());
-				}
+				}				
 			}
 			Collections.sort(users, new UserSelectListComparator());
 		}

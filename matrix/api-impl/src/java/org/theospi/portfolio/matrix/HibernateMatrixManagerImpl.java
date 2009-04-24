@@ -114,6 +114,14 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.taggable.api.Link;
+import org.sakaiproject.taggable.api.LinkManager;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableActivityProducer;
+import org.sakaiproject.taggable.api.TaggableItem;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
@@ -151,6 +159,10 @@ import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.tagging.api.DecoratedTaggableItem;
+import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
+import org.theospi.portfolio.tagging.impl.DecoratedTaggableItemImpl;
+import org.theospi.portfolio.tagging.impl.DecoratedTaggingProviderImpl;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
@@ -165,6 +177,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    PresentableObjectHome, DuplicatableToolService, StyleConsumer, FormConsumer {
    
    static final private String   IMPORT_BASE_FOLDER_ID = "importedMatrices";
+   public static final String PROVIDERS_PARAM = "providers";
 
    private IdManager idManager;
    private AuthenticationManager authnManager = null;
@@ -183,8 +196,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private GuidanceManager guidanceManager;
    private ReviewManager reviewManager;
    private StyleManager styleManager;
+   private LinkManager linkManager = null;
+   private TaggingManager taggingManager;
+	
+   
 
-   private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
+private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
    private String importFolderName;
    private boolean useExperimentalMatrix = false;
@@ -677,9 +694,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       WizardPage page = (WizardPage) this.getHibernateTemplate().get(WizardPage.class, pageId);
       
       // check for invalid page (in case wizard/matrix is deleted)
+      // might also be looking up a scaffolding, so removing the logging of the warning
       if ( page == null )
       {
-         logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
+         //logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
          return null;
       }
       
@@ -3599,6 +3617,115 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		cell.setScaffoldingCell(cellDef);
 		return cell;
 	}
+	
+	public Set<TaggableItem> getTaggableItems(TaggableItem item, String criteriaRef, String cellOwner) {
+		Set<DecoratedTaggableItem> taggableItems = getTaggableItems(item, criteriaRef, cellOwner, false);
+		Set<TaggableItem> tmpSet = new HashSet<TaggableItem>();
+		for (DecoratedTaggableItem decoItem : taggableItems) {
+			tmpSet.addAll(decoItem.getTaggableItems());
+		}
+		return tmpSet;
+	}
+	
+	public Set<DecoratedTaggableItem> getDecoratedTaggableItems(TaggableItem item, String criteriaRef, String cellOwner) {
+		return getTaggableItems(item, criteriaRef, cellOwner, true);
+	}
+	
+	private Set<DecoratedTaggableItem> getTaggableItems(TaggableItem item, String criteriaRef, String cellOwner, boolean decorate) {
+		Set<TaggableActivity> activities = new HashSet<TaggableActivity>();
+		Map<String, DecoratedTaggableItem> decoTaggableItems = new HashMap<String, DecoratedTaggableItem>();
+		Set<DecoratedTaggableItem> allDecoratedTaggableItems = new HashSet<DecoratedTaggableItem>();
+		List<Link> links;
+		try
+		{
+			ToolSession toolSession = SessionManager.getCurrentToolSession();
+			List<DecoratedTaggingProvider> providers = (List) toolSession
+			.getAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
+			if (providers == null) {
+				providers = getDecoratedProviders(item.getActivity());
+				toolSession.setAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM, providers);
+			}
+			
+			links = getLinkManager().getLinks(criteriaRef, true);
+			//TODO: Make sure it's always okay to ignore the provider
+			for (DecoratedTaggingProvider provider : providers) {
+				for (Link link : links) {
+					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider());
+					if (activity != null) {
+						TaggableActivityProducer producer = getTaggingManager().findProducerByRef(activity.getReference());
+						if (producer.getItemPermissionOverride() != null) {
+							getSecurityService().pushAdvisor(new SimpleSecurityAdvisor(
+									SessionManager.getCurrentSessionUserId(), 
+									producer.getItemPermissionOverride()));
+						}
+						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider());
+						
+						for (TaggableItem tagItem : items) {
+							DecoratedTaggableItem curItem = decoTaggableItems.get(tagItem.getTypeName());
+							if (curItem == null) {
+								curItem = new DecoratedTaggableItemImpl(tagItem.getTypeName());
+								allDecoratedTaggableItems.add(curItem);
+							}
+							curItem.addTaggableItem(tagItem);
+							decoTaggableItems.put(tagItem.getTypeName(), curItem);							
+						}						
+						
+						activities.add(activity);
+						
+						if (producer.getItemPermissionOverride() != null) {
+							getSecurityService().popAdvisor();
+						}
+					}
+					else {
+						logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
+						getLinkManager().removeLink(link);
+						links.remove(link);
+					}
+				}
+			}
+		}
+		catch (PermissionException pe)
+		{
+			logger.warn("unable to get links for criteriaRef " + criteriaRef, pe);
+		}
+		return allDecoratedTaggableItems;
+		
+	}
+	
+	public List<DecoratedTaggingProvider> getDecoratedProviders(
+			TaggableActivity activity) {
+		List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
+		for (TaggingProvider provider : getTaggingManager().getProviders()) {
+			providers.add(new DecoratedTaggingProviderImpl(activity, provider));
+		}
+		return providers;
+	}
+
+	/**
+	 * A simple SecurityAdviser that can be used to override permissions for one user for one function.
+	 */
+	protected class SimpleSecurityAdvisor implements SecurityAdvisor
+	{
+		protected String m_userId;
+		protected String m_function;
+
+		public SimpleSecurityAdvisor(String userId, String function)
+		{
+			m_userId = userId;
+			m_function = function;
+		}
+
+		public SecurityAdvice isAllowed(String userId, String function, String reference)
+		{
+			SecurityAdvice rv = SecurityAdvice.PASS;
+			if (m_userId.equals(userId) && m_function.equals(function))
+			{
+				rv = SecurityAdvice.ALLOWED;
+			}
+			return rv;
+		}
+	}
+
 
 	public boolean isEnableDafaultMatrixOptions() {
 		return enableDafaultMatrixOptions;
@@ -3608,4 +3735,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		this.enableDafaultMatrixOptions = enableDafaultMatrixOptions;
 	}
 
+	public TaggingManager getTaggingManager() {
+		return taggingManager;
+	}
+
+	public void setTaggingManager(TaggingManager taggingManager) {
+		this.taggingManager = taggingManager;
+	}
+
+	public LinkManager getLinkManager() {
+		return linkManager;
+	}
+
+	public void setLinkManager(LinkManager linkManager) {
+		this.linkManager = linkManager;
+	}
 }

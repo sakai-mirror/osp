@@ -192,6 +192,12 @@
       <property name="eventService">
       	<ref bean="org.theospi.event.EventService"/>
       </property>
+      <property name="taggingManager">
+        <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
+      </property>
+      <property name="linkManager">
+      	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
+      </property>
    </bean>
 
    <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">
