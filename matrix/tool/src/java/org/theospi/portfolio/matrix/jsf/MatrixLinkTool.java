@@ -171,7 +171,7 @@ public class MatrixLinkTool extends HelperToolBase
 		
 		//Map<Id, Integer> submissionCounts = getMatrixManager().getSubmissionCountByScaffolding(scaffoldingList);
 		TaggableActivityProducer producer = activity.getProducer();
-		boolean hasSubmissions = producer.hasSubmissions(activity, getMatrixTaggingProvider());
+		boolean hasSubmissions = producer.hasSubmissions(activity, getMatrixTaggingProvider(), true);
 		
 		for (Scaffolding scaffolding : scaffoldingList) {
 			MatrixGridBean grid = new MatrixGridBean();
