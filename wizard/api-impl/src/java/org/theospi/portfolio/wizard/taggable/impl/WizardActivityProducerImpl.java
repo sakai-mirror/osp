@@ -73,9 +73,9 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	List<String> ratingProviderIds;
 
 	public boolean allowGetItems(TaggableActivity activity,
-			TaggingProvider provider) {
+			TaggingProvider provider, boolean getMyItemsOnly) {
 		// FIXME http://bugs.sakaiproject.org/jira/browse/GM-84
-		return !getItems(activity, provider).isEmpty();
+		return !getItems(activity, provider, getMyItemsOnly).isEmpty();
 	}
 
 	public boolean allowRemoveTags(TaggableActivity activity) {
@@ -202,7 +202,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return WizardActivityProducer.PRODUCER_ID;
 	}
 
-	public TaggableItem getItem(String itemRef, TaggingProvider provider) {
+	public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemOnly) {
 		TaggableItem item = null;
 		if (checkReference(itemRef)) {
 			// Only return item to a specified rating (evalutation) provider
@@ -219,7 +219,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 									.equals(
 											MatrixFunctionConstants.COMPLETE_STATUS))
 							&& (page.getOwner().getId().getValue().equals(
-									sessionManager.getCurrentSessionUserId()) || canEvaluate(page))) {
+									sessionManager.getCurrentSessionUserId()) || (!getMyItemOnly && canEvaluate(page)))) {
 						item = getItem(page);
 					}
 				}
@@ -239,7 +239,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
-			String userId, TaggingProvider provider) {
+			String userId, TaggingProvider provider, boolean getMyItemsOnly) {
 		List<TaggableItem> items = new ArrayList<TaggableItem>();
 		// Return custom list of items to rating providers. This
 		// list should match that seen in the evaluation item list (?)
@@ -256,7 +256,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 								MatrixFunctionConstants.PENDING_STATUS) || page
 								.getStatus()
 								.equals(MatrixFunctionConstants.COMPLETE_STATUS))
-						&& (page.getOwner().getId().getValue().equals(userId) || canEvaluate(page))) {
+						&& (page.getOwner().getId().getValue().equals(userId) || (!getMyItemsOnly && canEvaluate(page)))) {
 					items.add(getItem(page));
 					// There is only one submitted page per definition, so break
 					// here
@@ -272,7 +272,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
-			TaggingProvider provider) {
+			TaggingProvider provider, boolean getMyItemsOnly) {
 		List<TaggableItem> items = new ArrayList<TaggableItem>();
 		// Only return items to a specified rating provider
 		if (ratingProviderIds.contains(provider.getId())) {
@@ -288,7 +288,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 								MatrixFunctionConstants.PENDING_STATUS) || page
 								.getStatus()
 								.equals(MatrixFunctionConstants.COMPLETE_STATUS))
-						&& canEvaluate(page)) {
+						&& (!getMyItemsOnly && canEvaluate(page))) {
 					items.add(getItem(page));
 				}
 			}
@@ -301,14 +301,14 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 	
 	public boolean hasSubmissions(TaggableActivity activity,
-			TaggingProvider provider) {
-		List<TaggableItem> items = getItems(activity, provider);
+			TaggingProvider provider, boolean getMyItemsOnly) {
+		List<TaggableItem> items = getItems(activity, provider, getMyItemsOnly);
 		return items.size() > 0;
 	}
 	
 	public boolean hasSubmissions(TaggableActivity activity, String userId,
-			TaggingProvider provider) {
-		List<TaggableItem> items = getItems(activity, userId, provider);
+			TaggingProvider provider, boolean getMyItemsOnly) {
+		List<TaggableItem> items = getItems(activity, userId, provider, getMyItemsOnly);
 		return items.size() > 0;
 	}
 	

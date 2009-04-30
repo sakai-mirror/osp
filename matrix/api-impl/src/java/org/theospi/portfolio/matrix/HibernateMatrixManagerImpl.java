@@ -3658,7 +3658,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 									SessionManager.getCurrentSessionUserId(), 
 									producer.getItemPermissionOverride()));
 						}
-						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider());
+						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true);
 						
 						for (TaggableItem tagItem : items) {
 							DecoratedTaggableItem curItem = decoTaggableItems.get(tagItem.getTypeName());
