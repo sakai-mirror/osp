@@ -364,6 +364,10 @@ INPUT.colorBox {
     padding: .2em .3em 1px 0;
     white-space: nowrap;
 }
+
+.matrixCellList th div.itemActionHeader {
+	margin-left:0.5em !important;
+}
 /*new new new new*/
 .tabNav {
     padding: 3px 0;
@@ -536,10 +540,6 @@ ul.oversize{
 	overflow: auto
 }
 
-.matrixCellList .itemAction  a, .matrixCellList .itemAction  a:link{
-	padding: .2em .3em 1px 0;
-	white-space: nowrap;
-}
 
 .messageError,.messageValidation,.messageConfirmation,.messageSuccess,.messageInformation,.messageInstruction{/*common to all messages types*/ margin:.5em 0;padding:3px .3em 3px 2em;background-position:3px 4px;background-repeat:no-repeat;height:100%;overflow:hidden;clear:both}
 .messageError{background-image:url(../img/exclamation.png);background-color:#fbb;border:1px solid #c00}

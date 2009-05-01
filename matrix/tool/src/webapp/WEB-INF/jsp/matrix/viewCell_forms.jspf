@@ -11,7 +11,7 @@
 					</fmt:message>
 				</h4>
 			</td>
-			<td>
+			<td nowrap="nowrap">
 			<h4><c:choose>
 				<c:when
 					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
@@ -138,7 +138,7 @@
 								</c:if>
 							</c:if> </span></h6>
 							</td>
-							<td>
+							<td nowrap="nowrap">
 								<div class="itemAction"
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
@@ -180,7 +180,7 @@
 								value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 							</td>
 							<td><fmt:formatDate
-								value="${object.reviewContentNode.technicalMetadata.creation}"
+								value="${object.reviewContentNode.technicalMetadata.lastModified}"
 								pattern="${date_format}" /></td>
 						</tr>
 					</c:if>
