@@ -14,7 +14,7 @@
 		<th><osp:message key="table_header_createdBy" /></th>
 		<th><osp:message key="table_header_modified" /></th>
 	</tr>
-	<tr>
+	<tr class="cellItemAddLine">
 		<td colspan="2"><osp:message key="reflection_section_header" /></td>
 		<td>
 			<c:if test="${empty reflections && (cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">

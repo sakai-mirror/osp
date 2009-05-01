@@ -21,7 +21,7 @@
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_modified" /></th>
 		</tr>
-		<tr>
+		<tr class="cellItemAddLine">
 			<td colspan="2"><osp:message key="eval_items_section_header" /></td>
 			<td>
 				<span class="itemAction">
