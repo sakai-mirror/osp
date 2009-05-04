@@ -232,8 +232,8 @@ public class ListPresentationController extends AbstractPresentationController {
          }
          
          // find number of comments
-         if ( presentation.isAllowComments() ) {
-            List comments = getPresentationManager().getPresentationComments( presentation.getId(), getAuthManager().getAgent() );
+         List comments = getPresentationManager().getPresentationComments( presentation.getId(), getAuthManager().getAgent() );
+         if ( comments.size() > 0 || presentation.isAllowComments() ) {
             m_commentNum = comments.size();
          }
          else {
