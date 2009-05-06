@@ -769,6 +769,50 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
+   public Collection findAllPresentationsUnrestricted(Agent owner, String toolId, String showHidden) {
+      // TBD: user must have appropriate permission and unrestricted viewing must be enabled
+      
+      // TBD: support for list of toolIds (all site/tools user is a member) 
+      if ( toolId == null )
+         return new Vector();
+      
+      // Build list of hidden presentation authzs
+      Collection hiddenAuthzs = getAuthzManager().getAuthorizations(owner, 
+            PresentationFunctionConstants.HIDE_PRESENTATION, null);
+      List<Id> hiddenIds = new ArrayList<Id>();
+      hiddenIds.add(getIdManager().getId("last")); // ensure list not empty
+      
+      if ( !showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+         hiddenIds = buildPresList(hiddenAuthzs);
+
+      Collection presList;
+      String[] paramNames = new String[] {"toolId", "hiddenId"};
+      Object[] params = new Object[]{toolId, hiddenIds};
+      
+      if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+         presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                         "findPortfolioUnrestrictedlInclusive", 
+                                                                         paramNames, params);
+      else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+         presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                         "findPortfolioUnrestrictedExclusive", 
+                                                       paramNames, params);
+      else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+         presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                         "findPortfolioUnrestrictedExclusive", 
+                                                                         paramNames, params);
+      
+      for (Iterator i=presList.iterator();i.hasNext();) {
+         Presentation pres = (Presentation)i.next();
+         pres.setAuthz(new PresentationAuthzMap(owner, pres));
+      }
+      
+      return presList;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
    public Collection findAllPresentations(Agent viewer, String toolId, String showHidden) {
       Collection ownerList = findOwnerPresentations( viewer, toolId, showHidden );
       Collection sharedList = findSharedPresentations( viewer, toolId, showHidden );

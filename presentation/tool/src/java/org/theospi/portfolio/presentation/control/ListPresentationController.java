@@ -91,7 +91,8 @@ public class ListPresentationController extends AbstractPresentationController {
       else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
          presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
       else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
-         presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
+         //         presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
+         presentations = getPresentationManager().findAllPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
 
       List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
