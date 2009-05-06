@@ -102,18 +102,9 @@ public class SharePresentationController extends AbstractPresentationController 
          return new ModelAndView("freeFormPresentationRedirect");
       }
       
-      // Check if Undo request 
-      if (request.get("undo") != null)
-      {
-         cleanSessionAttributes(presentation);
-         model.put("actionUndo", true );
-      }
-      
       // determine share status
-      if ( getIsPublic(request, presentation) )
-         model.put(SHARE_PUBLIC, "true");
-      else
-         model.put(SHARE_PUBLIC, "false");
+      String isPublic = getIsPublic(request, presentation);
+      model.put(SHARE_PUBLIC, isPublic );
          
       List revisedShareList = getRevisedShareList( request, presentation );
       if ( revisedShareList.size() > 0 || request.get(SHARE_SELECT)!=null )
@@ -125,27 +116,24 @@ public class SharePresentationController extends AbstractPresentationController 
       model.put("publicUrl", getPublicUrl(presentation));
       model.put("shareList", revisedShareList );
       
-      // If save not requested, then display share page
-      if ( request.get("save") == null && request.get("notify") == null )
-         return new ModelAndView("share", model);
-         
-      // Otherwise, save presentation share status
-      if ( request.get(SHARE_PUBLIC) != null )
-         presentation.setIsPublic(true);
-      else
-         presentation.setIsPublic(false);
-         
-      getPresentationManager().storePresentation(presentation);
+      // save presentation share status (if changed)
+      if ( ! isPublic.equals( String.valueOf(presentation.getIsPublic()) ) )
+      {
+         presentation.setIsPublic( Boolean.valueOf(isPublic).booleanValue() );
+         getPresentationManager().storePresentation(presentation);
+      }
       
-      // Save updated share list
+      // Save updated share list (if changed)
       saveRevisedShareList( revisedShareList, presentation );
 
       // Notify users if requested
       if ( request.get("notify") != null )
+      {
          notifyViewers(presentation, revisedShareList);
-      
-      model.put("actionSave", true );
-      return new ModelAndView("save", model);
+         model.put("actionNotify", true);
+      }
+         
+      return new ModelAndView("share", model);
    }
    
    public void notifyViewers( Presentation presentation, List revisedShareList ) { 
@@ -210,26 +198,25 @@ public class SharePresentationController extends AbstractPresentationController 
     }
 
    /** 
-    ** Get session-based state of isPublic flag for this presentation
+    ** Get (String) true/false value of presentation's public share status
     **/
-   private boolean getIsPublic( Map request, Presentation presentation ) {
+   private String getIsPublic( Map request, Presentation presentation ) {
       Session session = SessionManager.getCurrentSession();
-      boolean isPublic = false;
+      String isPublic = null;
       
-      // if no session attribute, then pull status from presentation
-      if ( session.getAttribute(SHARE_PUBLIC_ATTRIBUTE+presentation.getId().getValue()) == null ) {
-         isPublic = presentation.getIsPublic();
-      }
+      // first, check for form change
+      if ( request.get(SHARE_PUBLIC) != null && ! request.get(SHARE_PUBLIC).equals("") )
+         isPublic = (String)request.get(SHARE_PUBLIC);
+         
+      // Next, check session attribute status
+      else if ( session.getAttribute(SHARE_PUBLIC_ATTRIBUTE+presentation.getId().getValue()) != null ) 
+         isPublic = (String)session.getAttribute(SHARE_PUBLIC_ATTRIBUTE+presentation.getId().getValue());
       
-      // otherwise, get revised status from form
-      else {
-         if ( request.get(SHARE_PUBLIC) == null )
-            isPublic = false;
-         else
-            isPublic = true;
-      }
+      // Finally, use presentation's persistant value
+      else
+         isPublic = String.valueOf( presentation.getIsPublic() );
       
-      session.setAttribute(SHARE_PUBLIC_ATTRIBUTE+presentation.getId().getValue(), String.valueOf(isPublic));
+      session.setAttribute(SHARE_PUBLIC_ATTRIBUTE+presentation.getId().getValue(), isPublic);
       return isPublic;
    }
    
@@ -283,10 +270,21 @@ public class SharePresentationController extends AbstractPresentationController 
          shareList = getShareList( presentation );
    
       List revisedShareList = new ArrayList();
-      for (Iterator it=shareList.iterator(); it.hasNext(); ) {
-         Agent member = (Agent)it.next();
-         if ( request.get(member.getId().getValue()) == null )
-              revisedShareList.add( member );
+      
+      // Don't remove users if notify request
+      if ( request.get("notify") != null )
+      {
+         revisedShareList = shareList;
+      }
+      
+      // Create revised share list by removing selected-for-removal members
+      else
+      {
+         for (Iterator it=shareList.iterator(); it.hasNext(); ) {
+            Agent member = (Agent)it.next();
+            if ( request.get(member.getId().getValue()) == null )
+               revisedShareList.add( member );
+         }
       }
       
       Collections.sort(revisedShareList, userAgentComparator);
@@ -339,12 +337,6 @@ public class SharePresentationController extends AbstractPresentationController 
       return url;
    }
    
-   private void cleanSessionAttributes( Presentation presentation ) {
-      Session session = SessionManager.getCurrentSession();
-      session.removeAttribute(SHARE_LIST_ATTRIBUTE+presentation.getId().getValue());
-      session.removeAttribute(SHARE_PUBLIC_ATTRIBUTE+presentation.getId().getValue());
-   }
-   
    public ServerConfigurationService getServerConfigurationService() {
       return serverConfigurationService;
    }
@@ -369,5 +361,4 @@ public class SharePresentationController extends AbstractPresentationController 
    public void setUserDirectoryService( UserDirectoryService userDirectoryService) {
       this.userDirectoryService = userDirectoryService;
    }
-   
 }
