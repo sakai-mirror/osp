@@ -2,7 +2,7 @@ access  https://source.sakaiproject.org/svn/access/branches/sakai_2-6-x
 alias  https://source.sakaiproject.org/svn/alias/branches/sakai_2-6-x
 announcement  https://source.sakaiproject.org/svn/announcement/branches/sakai_2-6-x
 archive  https://source.sakaiproject.org/svn/archive/branches/sakai_2-6-x
-assignment  https://source.sakaiproject.org/svn/assignment/branches/sakai_2-6-x
+assignment  https://source.sakaiproject.org/svn/assignment/branches/post-2-6
 authz  https://source.sakaiproject.org/svn/authz/branches/sakai_2-6-x
 blog  https://source.sakaiproject.org/svn/blog/branches/sakai_2-6-x
 calendar  https://source.sakaiproject.org/svn/calendar/branches/sakai_2-6-x
@@ -29,7 +29,7 @@ memory  https://source.sakaiproject.org/svn/memory/branches/sakai_2-6-x
 message  https://source.sakaiproject.org/svn/message/branches/sakai_2-6-x
 metaobj  https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-6-x
 msgcntr  https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-6-x
-osp  https://source.sakaiproject.org/svn/osp/branches/sakai_2-6-x
+osp  https://source.sakaiproject.org/svn/osp/branches/post-2-6
 podcasts  https://source.sakaiproject.org/svn/podcasts/branches/sakai_2-6-x
 polls  https://source.sakaiproject.org/svn/polls/branches/sakai_2-6-x
 portal  https://source.sakaiproject.org/svn/portal/branches/sakai_2-6-x
@@ -51,9 +51,10 @@ samples  https://source.sakaiproject.org/svn/samples/branches/sakai_2-6-x
 search  https://source.sakaiproject.org/svn/search/branches/sakai_2-6-x
 sections  https://source.sakaiproject.org/svn/sections/branches/sakai_2-6-x
 site  https://source.sakaiproject.org/svn/site/branches/sakai_2-6-x
+site-association https://source.sakaiproject.org/svn/site-association/branches/post-2-6
 site-manage  https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-6-x
 syllabus  https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-6-x
-taggable  https://source.sakaiproject.org/svn/taggable/branches/sakai_2-6-x
+taggable  https://source.sakaiproject.org/svn/taggable/branches/post-2-6
 test-harness  https://source.sakaiproject.org/svn/test-harness/branches/sakai_2-6-x
 textarea  https://source.sakaiproject.org/svn/textarea/branches/sakai_2-6-x
 tool  https://source.sakaiproject.org/svn/tool/branches/sakai_2-6-x
