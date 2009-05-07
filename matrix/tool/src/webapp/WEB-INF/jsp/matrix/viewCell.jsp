@@ -261,8 +261,8 @@ function mySetMainFrameHeightViewCell(id)
 
 <table class="matrixCellList" cellpadding="0" cellspacing="0" border="0">
 	<tr>
-		<th colspan="2"><osp:message key="evidence_head" /></th>
-		<th><osp:message key="table_header_actions" /></th>
+		<th colspan="2" width="40%"><osp:message key="evidence_head" /></th>
+		<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
 		<th><osp:message key="table_header_originating_site" /></th>
 		<th><osp:message key="table_header_createdBy" /></th>
 		<th><osp:message key="table_header_modified" /></th>

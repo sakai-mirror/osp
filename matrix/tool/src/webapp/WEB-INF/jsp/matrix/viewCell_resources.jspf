@@ -138,7 +138,7 @@
 							</span>
 						</h6>
 					</td>
-					<td>
+					<td nowrap="nowrap">
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
 							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
@@ -177,7 +177,7 @@
 						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 					</td>
 					<td><fmt:formatDate
-						value="${object.reviewContentNode.technicalMetadata.creation}"
+						value="${object.reviewContentNode.technicalMetadata.lastModified}"
 						pattern="${date_format}" /></td>
 				</tr>
 			</c:if>

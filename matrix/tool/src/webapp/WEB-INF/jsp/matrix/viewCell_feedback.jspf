@@ -12,12 +12,12 @@
 			<th colspan="2">
 				<osp:message key="reviews_section_general" />
 			</th>
-			<th><osp:message key="table_header_actions" /></th>
+			<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
 			<th</th>
 			<th><osp:message key="table_header_createdBy" /></th>
-			<th><fmt:message key="table_header_creationDate" /></th>
+			<th><fmt:message key="table_header_modified" /></th>
 		</tr>
-		<tr>
+		<tr class="cellItemAddLine">
 			<td colspan="2"><osp:message key="reviews_section_general" /></td>
 			<td>
 				<c:if test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
@@ -65,7 +65,7 @@
 						 </span>
 						 </h5>
 					</td>
-					<td>
+					<td nowrap="nowrap">
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
 							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
@@ -116,7 +116,7 @@
 </c:choose>
 					</td>
 					<td><fmt:formatDate
-						value="${object.reviewContentNode.technicalMetadata.creation}"
+						value="${object.reviewContentNode.technicalMetadata.lastModified}"
 						pattern="${date_format}" /></td>
 				</tr>
 			</c:if>

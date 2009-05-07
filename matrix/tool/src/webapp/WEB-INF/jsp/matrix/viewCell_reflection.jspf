@@ -9,12 +9,12 @@
 		<th colspan="2">
 			<osp:message key="reflection_section_header" />
 		</th>
-		<th><osp:message key="table_header_actions" /></th>
+		<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
 		<th></th>
 		<th><osp:message key="table_header_createdBy" /></th>
 		<th><osp:message key="table_header_modified" /></th>
 	</tr>
-	<tr>
+	<tr class="cellItemAddLine">
 		<td colspan="2"><osp:message key="reflection_section_header" /></td>
 		<td>
 			<c:if test="${empty reflections && (cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
@@ -61,7 +61,7 @@
 							value="${reflections[0].reviewContentNode.displayName}" /> </a>
 							</span>
 							</td>
-							<td>
+							<td nowrap="nowrap">
 						<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' && enableReviewEdit}">
 							<span class="itemAction"> 
 								<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
