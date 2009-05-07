@@ -185,6 +185,7 @@
         <module>search</module>
         <module>sections</module>
         <module>site</module>
+	<module>site-association</module>
         <module>site-manage</module>
         <module>syllabus</module>
         <module>test-harness</module>
