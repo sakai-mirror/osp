@@ -22,7 +22,7 @@
 			<td>
 				<c:if test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
 						((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
-							|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+							|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm)) && allowGeneralFeedback}">
 					<span class="itemAction">				
 						
 						<a class="TB_hideControl"
