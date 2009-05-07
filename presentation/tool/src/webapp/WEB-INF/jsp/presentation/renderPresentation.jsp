@@ -3,9 +3,9 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 <osp-p:renderPresentation 
- template="<%= request.getAttribute("renderer") %>" 
- doc="<%= request.getAttribute("document") %>"
- uriResolver="<%= request.getAttribute("uriResolver") %>" />
+ template="<%= request.getAttribute(\"renderer\") %>" 
+ doc="<%= request.getAttribute(\"document\") %>"
+ uriResolver="<%= request.getAttribute(\"uriResolver\") %>" />
 <osp-c:authZMap prefix="osp.presentation." qualifier="${presentation.id}" var="isAuthorizedTo" />
 
 
