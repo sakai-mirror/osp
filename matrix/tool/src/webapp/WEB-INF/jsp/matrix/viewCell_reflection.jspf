@@ -18,7 +18,7 @@
 		<td colspan="2"><osp:message key="reflection_section_header" /></td>
 		<td>
 			<c:if test="${empty reflections && (cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
-				<span class="itemAction indnt1" style="font-weight:normal"> 
+				<span class="itemAction" style="font-weight:normal"> 
 						<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 							   <osp:param name="page_id" value="${cell.wizardPage.id}" />
 							   <osp:param name="org_theospi_portfolio_review_type" value="0" />
