@@ -101,7 +101,7 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
    }
    
    public Set createEvalWorkflows(ObjectWithWorkflow obj) {
-      if (obj instanceof WizardPageDefinition || obj instanceof Scaffolding)
+      if (obj instanceof WizardPageDefinition)
          return createEvalWorkflowsHelper(obj);
       else
          return createEvalWorkflows((Wizard)obj);

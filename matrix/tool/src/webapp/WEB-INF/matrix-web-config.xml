@@ -1283,6 +1283,12 @@
             <property name="reviewManager">
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
+            <property name="agentManager">
+               <ref bean="agentManager"/>
+            </property>
+            <property name="wizardManager">
+               <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
