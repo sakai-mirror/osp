@@ -166,9 +166,6 @@ public class BaseScaffoldingController {
     		  }
     	  }
     	  
-    	  scaffolding.setEvalWorkflows(
-  				new HashSet(createEvalWorkflows(scaffolding)));
-    	  
     	  //call save instead of store (which uses hibernate merge()) when you need the
     	  //newId to be used as the new saved Id.  (only in case where the scaffolding is new)
     	  //*problem was that merge did not switch newId to id when saved
