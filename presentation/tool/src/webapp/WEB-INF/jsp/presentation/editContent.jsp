@@ -45,6 +45,9 @@ $(document).ready(function() {
 			 <c:if test="${itemDefinition.allowMultiple == true}">
 				 arrBox[i] = ospGetElementById('items_<c:out value="${loopCounter.index}"/>');
 				 i++;
+             var length = document.wizardform.elements['items_<c:out value="${loopCounter.index}"/>'].options.length;
+             if ( length == 0 )
+                document.wizardform.elements['items_<c:out value="${loopCounter.index}"/>'].options[0] = new Option("", "", false, false);
 			 </c:if>
 		 </c:forEach>
 		 for (i = 0; i < arrBox.length; i++) {
