@@ -466,7 +466,7 @@
 		</tr>
 	</c:if>
 
-	<c:forEach var="node" items="${cellBean.nodes}">
+	<c:forEach var="node" items="${cellBean.nodes}" varStatus="loopStatus">
 		<c:set var="canReflect" value="true" />
 
 		<tr>
@@ -507,8 +507,9 @@
 					onclick="javascript:stopEvents(event)"
 					title="<fmt:message key="remove"/>"> 
 					<fmt:message key="remove"/></a>
-			</c:if> <c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
+			</c:if> 
+			<c:set var="aggIndex" value="${loopStatus.index+numCellForms}"/>
+			<c:if	test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowItemFeedback[aggIndex]}">
 				<a
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
