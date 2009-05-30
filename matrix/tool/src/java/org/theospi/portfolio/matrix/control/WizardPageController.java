@@ -85,7 +85,7 @@ public class WizardPageController extends CellController {
 		List cellForms = (List)model.get("cellForms");
 		
 		model.put("allowItemFeedback", 
-					 getAllowItemFeedback( wizard.getItemFeedbackOption(), reviews, cellForms) );
+					 getAllowItemFeedback( wizard.getItemFeedbackOption(), reviews, cellForms, cell.getNodes()) );
 		model.put("allowGeneralFeedback", 
 					 getAllowGeneralFeedback( wizard.getGeneralFeedbackOption(), reviews) );
 		model.put("generalFeedbackNone", wizard.isGeneralFeedbackNone());
