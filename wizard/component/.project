@@ -1,0 +1,26 @@
+<projectDescription>
+  <name>osp-wizard-components</name>
+  <comment/>
+  <projects>
+    <project>osp-common-impl</project>
+    <project>osp-common-tool-lib</project>
+    <project>osp-glossary-impl</project>
+    <project>osp-wizard-impl</project>
+    <project>sakai-content-util</project>
+    <project>sakai-depend-jsf-widgets-sun</project>
+    <project>sakai-jsf-tool</project>
+    <project>sakai-jsf-widgets</project>
+    <project>sakai-jsf-widgets-sun</project>
+    <project>sakai-metaobj-impl</project>
+    <project>sakai-metaobj-tool-lib</project>
+    <project>sakai-util</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

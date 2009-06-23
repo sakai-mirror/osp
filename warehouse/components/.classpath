@@ -1,0 +1,13 @@
+<classpath>
+  <classpathentry kind="src" path="src/webapp" output="m2-target/test-classes" including="**/*.xml|**/*.xsd|**/*.properties" excluding="**/*.java"/>
+  <classpathentry kind="output" path="m2-target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.2/commons-codec-1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="src" path="/osp-common-impl"/>
+  <classpathentry kind="src" path="/osp-warehouse-impl"/>
+  <classpathentry kind="src" path="/sakai-content-util"/>
+  <classpathentry kind="src" path="/sakai-metaobj-impl"/>
+  <classpathentry kind="src" path="/sakai-util"/>
+  <classpathentry kind="src" path="/sakai-warehouse-impl"/>
+</classpath>

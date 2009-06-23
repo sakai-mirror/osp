@@ -1,0 +1,26 @@
+<projectDescription>
+  <name>xsl-portal</name>
+  <comment/>
+  <projects>
+    <project>sakai-entity-api</project>
+    <project>sakai-metaobj-tool-lib</project>
+    <project>sakai-portal-api</project>
+    <project>sakai-portal-impl</project>
+    <project>sakai-portal-render-api</project>
+    <project>sakai-portal-util</project>
+    <project>sakai-site-api</project>
+    <project>sakai-tool-api</project>
+    <project>sakai-tool-util</project>
+    <project>sakai-user-api</project>
+    <project>sakai-user-util</project>
+    <project>sakai-util</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
