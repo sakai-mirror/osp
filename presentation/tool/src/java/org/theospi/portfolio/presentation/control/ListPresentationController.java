@@ -214,22 +214,20 @@ public class ListPresentationController extends AbstractPresentationController {
    public class PresentationDataBean {
       Presentation m_presentation;
       int m_commentNum;
-      boolean m_shared;
+      boolean m_shared = false;
+      boolean m_public = false;
       
       public PresentationDataBean( Presentation presentation ) {
          m_presentation = presentation;
          
          // determine shared attributes (public is considered shared)
          if ( presentation.getIsPublic() ) {
+            m_public = true;
+         }
+         
+         List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
+         if (authzs.size() > 0)
             m_shared = true;
-         }
-         else {
-            List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
-            if (authzs.size() > 0)
-               m_shared = true;
-            else
-               m_shared = false;
-         }
          
          // find number of comments
          List comments = getPresentationManager().getPresentationComments( presentation.getId(), getAuthManager().getAgent() );
@@ -261,6 +259,10 @@ public class ListPresentationController extends AbstractPresentationController {
       
       public boolean getShared() {
          return m_shared;
+      }
+      
+      public boolean getPublic() {
+         return m_public;
       }
    }
 	

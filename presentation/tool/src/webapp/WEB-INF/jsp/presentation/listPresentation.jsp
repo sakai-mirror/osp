@@ -317,9 +317,15 @@ $(document).ready(function() {
 		  </td>
         
 		  <td align="center">
-			 <c:if test="${presentationBean.shared}">
-				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
-			 </c:if>
+			 <c:choose>
+				 <c:when test="${presentationBean.public}">
+					<fmt:message key="comments_public"/>
+				 </c:when>
+				 <c:when test="${presentationBean.shared}">
+					<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+				 </c:when>
+				 <c:otherwise/>
+			 </c:choose>
 		  </td>
 		  
 		  <td align="center">
