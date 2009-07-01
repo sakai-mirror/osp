@@ -20,18 +20,27 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 public class ContentResourceUriResolver implements URIResolver {
    
@@ -45,7 +54,25 @@ public class ContentResourceUriResolver implements URIResolver {
          String accessUrl = getServerConfigurationService().getAccessUrl();
          String url = href.replaceAll(accessUrl, "");
          Reference ref = getEntityManager().newReference(url);
-         return new StreamSource(((ContentResource)ref.getEntity()).streamContent());
+         
+         StreamSource strs = new StreamSource(((ContentResource)ref.getEntity()).streamContent());
+         SAXSource ss = new SAXSource(new InputSource(strs.getInputStream()));
+         CatalogResolver resolver = new CatalogResolver();
+         String appUrl = getServerConfigurationService().getServerUrl();
+         try {
+        	 resolver.getCatalog().parseCatalog(appUrl + "/osp-common-tool/dtd/catalog.xml");
+        	 XMLReader xread = XMLReaderFactory.createXMLReader();
+        	 xread.setEntityResolver(resolver);
+        	 ss.setXMLReader(xread);
+         } catch (MalformedURLException e) {
+        	 logger.error(e);
+         } catch (IOException e) {
+        	 logger.error(e);
+         } catch (SAXException e) {
+        	 logger.error(e);
+         }
+         
+         return ss;
       } catch (ServerOverloadException e) {
          logger.error("", e);
       }

@@ -26,10 +26,13 @@ import java.util.Stack;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import org.apache.xml.resolver.tools.CatalogResolver;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.theospi.jsf.intf.ComponentWrapper;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.jsf.intf.XmlTagHandler;
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -132,6 +135,14 @@ public class XmlDocumentHandler extends DefaultHandler {
 
    public void setContext(FacesContext context) {
       this.context = context;
+   }
+   
+   public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+	   CatalogResolver resolver = new CatalogResolver();
+
+	   String url = ServerConfigurationService.getServerUrl();
+	   resolver.getCatalog().parseCatalog(url + "/osp-common-tool/dtd/catalog.xml");
+	   return resolver.resolveEntity(publicId, systemId);
    }
 
 }
