@@ -118,6 +118,7 @@
                <prop key="/sharePresentation.osp">sharePresentationController</prop>
                <prop key="/sharePresentationMore.osp">sharePresentationMoreController</prop>
                <prop key="/hidePresentation.osp">hidePresentationController</prop>
+               <prop key="/reviewPresentation.osp">reviewPresentationController</prop>
                <prop key="/addComment.osp">addCommentController</prop>
                <prop key="/js/htmlarea/popups/insertImage.osp">insertImageController</prop>
 

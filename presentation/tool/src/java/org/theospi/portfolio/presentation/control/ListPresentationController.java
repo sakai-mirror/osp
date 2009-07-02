@@ -49,6 +49,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 
@@ -82,21 +83,27 @@ public class ListPresentationController extends AbstractPresentationController {
       Collection presentations = null;
       String filterToolId = null;
       
+      String baseUrl  = getServerConfigurationService().getServerUrl();
+      boolean viewAll = getServerConfigurationService().getBoolean("osp.presentation.viewall", false) &&
+
+         getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
+                                        getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+      
       // If not on MyWorkspace, grab presentations for this tool only
-		if ( ! isOnWorkspaceTab() )
+      if ( ! isOnWorkspaceTab() )
          filterToolId = currentToolId;
         
       if ( filterList.equals(PREF_FILTER_VALUE_MINE) )
          presentations = getPresentationManager().findOwnerPresentations(currentAgent, filterToolId, showHidden);
       else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
          presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
+      else if ( viewAll && !isOnWorkspaceTab() )
+         presentations = getPresentationManager().findAllPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
       else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
          presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
 
       List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
-
-      String baseUrl = getServerConfigurationService().getServerUrl();
 
       String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?" 
          + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
