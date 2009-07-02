@@ -2,6 +2,6 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     
     <public publicId="-//W3C//DTD XHTML 1.0 Strict//EN"
-        uri="/osp-jsf-resource/dtd/xhtml1-strict.dtd"/>
+        uri="/osp-common-tool/dtd/xhtml1-strict.dtd"/>
     
 </catalog>
