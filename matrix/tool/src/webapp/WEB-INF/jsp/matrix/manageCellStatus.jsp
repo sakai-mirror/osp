@@ -25,7 +25,7 @@
 			</select>
 		</legend>
       <div class="checkbox indnt1">
-         <input type="radio" id="changeUserOnly" name="changeOption" value="changeUserOnly" />
+         <input type="radio" id="changeUserOnly" name="changeOption" value="changeUserOnly" checked="checked" />
          <label for="changeUserOnly"><fmt:message key="label_forThisUserOnly"/></label>
       </div>
       <div class="checkbox indnt1">
