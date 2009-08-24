@@ -80,12 +80,6 @@ $(document).ready(function() {
    <fmt:message key="title_share_add"/>
 </h3>
 
-<c:if test="${isUpdated}">
-	<div class="messageInformation" id="messageHolder" style="width:20em">
-    	<fmt:message key="confirm_save"/>
-	</div>
-</c:if>
-
 <c:if test="${not empty errMsg}">
 	<div class="messageValidation">
      <c:out value="${errMsg}" />

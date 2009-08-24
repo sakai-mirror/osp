@@ -76,15 +76,10 @@ $(document).ready(function() {
  
 <div class="tabNavPanel">
 
-<c:if test="${actionSave}">
-	<div class="messageInformation" id="messageHolder" style="width:20em">
-    	<fmt:message key="confirm_save"/>
-	</div>
-</c:if>
-<c:if test="${actionUndo}">
-	<div class="messageInformation" id="messageHolder" style="width:20em">
-    	<fmt:message key="confirm_undo"/>
-	</div>
+<c:if test="${actionNotify}">
+       <div class="messageInformation" id="messageHolder" style="width:20em">
+       <fmt:message key="confirm_notify"/>
+       </div>
 </c:if>
 
 <form method="post" name="mainForm">
@@ -143,13 +138,23 @@ $(document).ready(function() {
      </c:otherwise>
    </c:choose>
 	
+   <input type="hidden" name="notify" />
+   <p>
+      <fmt:message key="notify_msg"/>
+      &nbsp;&nbsp;&nbsp;
+      <a href="javascript:document.mainForm.notify.value='true'; document.mainForm.submit();"><fmt:message key="send_email"/></a>
+   </p>
+   
    <h3>
       <fmt:message key="pres_share_this"/>
    </h3>
 
    <div class="checkbox">
-      <input type="checkbox" name="pres_share_public" id="pres_share_public"
+      <input type="hidden" name="pres_share_public" value="${pres_share_public}" />
+      
+      <input type="checkbox" name="public_checkbox" id="public_checkbox"
          <c:if test="${pres_share_public=='true'}"> checked="checked"</c:if>
+         onclick="document.mainForm.pres_share_public.value=(document.mainForm.public_checkbox.checked) ? 'true' :'false'; document.mainForm.submit();"
       />
       <label for="pres_share_public">
          <fmt:message key="pres_share_public"/>
@@ -159,10 +164,10 @@ $(document).ready(function() {
        <input id="urlText" type="text" readonly="true" name="publicUrl" value="${publicUrl}" size="120"/>
    </div>	
 	
+   <!--
    <div class="act">
-      <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
-      <input name="notify" type="submit" value="<fmt:message key="button_saveAndNotify" />" class="active" accesskey="n" />
-      <input name="undo" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x" />
+      <input name="notify" type="submit" value="<fmt:message key="button_notify" />" class="active" accesskey="n" />
    </div>
+   -->
    </div> <%--end of #tabNavPanel --%>
 </form>
