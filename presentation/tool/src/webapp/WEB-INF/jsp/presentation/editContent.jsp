@@ -132,7 +132,7 @@ $(document).ready(function() {
 													</td>
 													<c:if test="${itemDefinition.isFormType}">
 													<td style="text-align:right">
-														<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;box=<c:out value="${list1}"/>"
+														<a href="#<c:out value="${list2}"/>"
 													  class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
 													</td>
 													</c:if>
@@ -194,6 +194,7 @@ $(document).ready(function() {
 										</td>
 										<td style="width:40%">
 											<select
+												class="artifactPicker"
 												multiple="multiple"
 												style="width:100%"
 												size="10"
