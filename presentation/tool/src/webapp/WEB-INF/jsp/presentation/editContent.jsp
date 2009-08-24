@@ -233,7 +233,7 @@ $(document).ready(function() {
 									<div class="listNav">
 										<label  for="<c:out value="${selectBox}"/>" class="itemAction" style="margin-left:0;padding-left:0;display:block"><span><fmt:message key="label_availableItems"/></span></label>
 										<select
-											onchange="document.wizardform.submit()"
+											onchange="updateItems()"
 											class="artifactPicker"
 											id="<c:out value="${selectBox}"/>"
 											name="<c:out value="${status.expression}"/>">
@@ -262,7 +262,7 @@ $(document).ready(function() {
 											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
 											<a href="#<c:out value="${selectBox}" />"
 											   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>|
-											<a href="#" onclick="document.wizardform.<c:out value='${selectBox}'/>.selectedIndex=0;document.wizardform.submit()">
+											<a href="#" onclick="document.wizardform.<c:out value='${selectBox}'/>.selectedIndex=0;updateItems()">
 											   <fmt:message key="remove_selected"/></a>
 										</span>
 									</c:if>
