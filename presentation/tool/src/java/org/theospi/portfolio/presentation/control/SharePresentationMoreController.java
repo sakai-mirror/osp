@@ -166,6 +166,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       // Check if request to return to previous page
       if ( request.get("back") != null && errMsg == null )
          return new ModelAndView("back", model);
+      else if ( request.get("back_add") != null && errMsg == null )
+         return new ModelAndView("back", model);
       else   
          return new ModelAndView("share", model);
    }
