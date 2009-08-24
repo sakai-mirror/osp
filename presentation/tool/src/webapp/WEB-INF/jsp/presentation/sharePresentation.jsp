@@ -3,8 +3,7 @@
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
-<script type="text/javascript" src="/library/js/jquery.js">
-</script>
+
 <script type="text/javascript">
     $(document).ready(function(){
 		$("#hideUrl").hide();

@@ -3,8 +3,23 @@
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
-<script type="text/javascript" src="/library/js/jquery.js">
-</script>
+
+<!--[if gt IE 5.0]><![if lt IE 7]>
+<style type="text/css">
+/* for  IE 6 */ 
+</style>
+<![endif]><![endif]-->
+<!--[if gt IE 6.0]>
+<style type="text/css">
+/* for  IE 7 an 8*/ 
+.makeMenuChild{
+	margin-left:1em !important;
+	}
+</style>
+<![endif]-->
+
+<c:set var="pres_active_page" value="share" />
+<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
 
 <script  type ="text/javascript">
 $(document).ready(function() {
@@ -47,10 +62,6 @@ $(document).ready(function() {
 	});
 
 </script>
-
-<c:set var="pres_active_page" value="share" />
-<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
-
 <div class="tabNavPanel">
  <!-- temp separation; end of tabs -->
 
