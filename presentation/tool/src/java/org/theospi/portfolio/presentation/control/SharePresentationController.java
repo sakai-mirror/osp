@@ -70,7 +70,6 @@ public class SharePresentationController extends AbstractPresentationController 
    private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    
    private final String SHARE_PUBLIC  = "pres_share_public";
-   private final String SHARE_SELECT  = "pres_share_select";
    
    public final static String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
    public final static String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
@@ -107,10 +106,6 @@ public class SharePresentationController extends AbstractPresentationController 
       model.put(SHARE_PUBLIC, isPublic );
          
       List revisedShareList = getRevisedShareList( request, presentation );
-      if ( revisedShareList.size() > 0 || request.get(SHARE_SELECT)!=null )
-         model.put(SHARE_SELECT, "true");
-      else
-         model.put(SHARE_SELECT, "false");
       
       model.put("presentation", presentation);
       model.put("publicUrl", getPublicUrl(presentation));
@@ -127,7 +122,7 @@ public class SharePresentationController extends AbstractPresentationController 
       saveRevisedShareList( revisedShareList, presentation );
 
       // Notify users if requested
-      if ( request.get("notify") != null )
+      if ( request.get("notify") != null && request.get("notify").equals("true") )
       {
          notifyViewers(presentation, revisedShareList);
          model.put("actionNotify", true);
@@ -160,6 +155,8 @@ public class SharePresentationController extends AbstractPresentationController 
 		  
         String emailFrom = getServerConfigurationService().getString("setup.request", 
 																							"postmaster@".concat(getServerConfigurationService().getServerName()));
+        if ( ! SharePresentationMoreController.emailPattern.matcher(replyTo).matches() )
+           replyTo = null;
         
         for (Iterator it=revisedShareList.iterator(); it.hasNext(); ) 
         {
@@ -271,7 +268,7 @@ public class SharePresentationController extends AbstractPresentationController 
       List revisedShareList = new ArrayList();
       
       // Don't remove users if notify request
-      if ( request.get("notify") != null )
+      if ( request.get("notify") != null && request.get("notify").equals("true") )
       {
          revisedShareList = shareList;
       }
