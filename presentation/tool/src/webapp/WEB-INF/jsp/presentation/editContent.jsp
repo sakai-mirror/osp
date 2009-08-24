@@ -261,7 +261,9 @@ $(document).ready(function() {
 											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
 											<a href="#<c:out value="${selectBox}" />"
-											   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
+											   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>|
+											<a href="#" onclick="document.wizardform.<c:out value='${selectBox}'/>.selectedIndex=0;document.wizardform.submit()">
+											   <fmt:message key="remove_selected"/></a>
 										</span>
 									</c:if>
 								</div>
