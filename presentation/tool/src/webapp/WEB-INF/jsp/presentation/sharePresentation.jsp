@@ -3,7 +3,9 @@
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
-
+<c:set var="pres_active_page" value="share" />
+<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
+ 
 <script type="text/javascript">
     $(document).ready(function(){
 		$("#hideUrl").hide();
@@ -71,9 +73,6 @@ $(document).ready(function() {
 
 </script>
 
-<c:set var="pres_active_page" value="share" />
-<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
- 
 <div class="tabNavPanel">
 
 <c:if test="${actionNotify}">
