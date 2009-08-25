@@ -748,7 +748,7 @@
 <!-- ************* General Review (Feedback) Area Start ************* -->
 
 <c:if
-	test="${( ((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && not generalFeedbackNone) || (not empty reviews && not generalFeedbackNone)}">
+	test="${( ((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && (not generalFeedbackNone || not empty reviews) )}">
 	<table class="matrixCellList" cellpadding="0" cellspacing="0"
 		border="0" summary="">
 		<tr>

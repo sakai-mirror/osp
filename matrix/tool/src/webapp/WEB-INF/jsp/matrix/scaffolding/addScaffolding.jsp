@@ -431,7 +431,6 @@
 					<input type="radio" id="<c:out value="feedback_option_gen_${token}" />" 
 						name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
 						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-						<c:out value="${disabledText}"/>
 					/>
 					<label for="<c:out value="feedback_option_gen_${token}" />">
 						<osp:message key="feedback_option_gen_${token}" />
@@ -446,7 +445,6 @@
 					<input type="radio" id="<c:out value="feedback_option_item_${token}" />" 
 						name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
 						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-						<c:out value="${disabledText}"/>
 					/>
 					<label for="<c:out value="feedback_option_item_${token}" />">
 						<osp:message key="feedback_option_item_${token}" />
