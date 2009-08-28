@@ -289,13 +289,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
       model.put("showFooter", getShowFooter(grid));
       
-      model.put("canReviewOrEvaluateIds", getCellsICanReviewOrEvaluate(getMatrixManager().getMatrix(
+      model.put("cellsICanAccess", getCellsICanAccess(getMatrixManager().getMatrix(
 				grid.getMatrixId())));
-		model.put("isMyMatrix", getAuthManager().getAgent().getId().getValue()
-				.equals(
-						getMatrixManager().getMatrix(grid.getMatrixId())
-								.getOwner().getId().getValue()));
-      
       
       return model;
    }
@@ -385,108 +380,27 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return new ModelAndView("success", model);
    }
    
-   private List<String> getCellsICanReviewOrEvaluate(Matrix matrix){
+   private List<String> getCellsICanAccess(Matrix matrix){
 	   List<String> accessIds = new ArrayList<String>();
 	   
+	   boolean canViewAllCells = getMatrixManager().canAccessAllMatrixCells(matrix.getScaffolding().getId());
 	   
 	   for (Iterator iterator = matrix.getCells().iterator(); iterator
 	   .hasNext();) {
+		  
 		   Cell cell = (Cell) iterator.next();
-		   boolean canEval = false;
-		   boolean canFeedback = false;
-
-		   //depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
-		   canEval = hasPermission(cell.getScaffoldingCell()
-				   .isDefaultEvaluators() ? cell.getScaffoldingCell()
-						   .getScaffolding().getId() : cell.getScaffoldingCell()
-						   .getWizardPageDefinition().getId(), cell
-						   .getScaffoldingCell().getScaffolding().getWorksiteId(),
-						   MatrixFunctionConstants.EVALUATE_MATRIX);
-		   if(!canEval){
-			   // depending on isDefaultFeedbackEval, either send the scaffolding
-			   // id or the scaffolding cell's id
-			   // also, compare first result with the user's cell review list by
-			   // sending the user's cell id
-				boolean allowParticipantFeedback = cell.getScaffoldingCell()
-						.isDefaultReviewers() ? cell.getScaffoldingCell()
-						.getScaffolding().isAllowRequestFeedback() : cell
-						.getScaffoldingCell().getWizardPageDefinition()
-						.isAllowRequestFeedback();
-				
-			   canFeedback = hasPermission(cell.getScaffoldingCell()
-					   .isDefaultReviewers() ? cell.getScaffoldingCell()
-							   .getScaffolding().getId() : cell.getScaffoldingCell()
-							   .getWizardPageDefinition().getId(), cell
-							   .getScaffoldingCell().getScaffolding().getWorksiteId(),
-							   MatrixFunctionConstants.REVIEW_MATRIX)
-							   || (allowParticipantFeedback && hasPermission(cell.getWizardPage().getId(), cell
-									   .getScaffoldingCell().getScaffolding()
-									   .getWorksiteId(),
-									   MatrixFunctionConstants.FEEDBACK_MATRIX));
+		   if(!canViewAllCells){
+			   if(getMatrixManager().canAccessMatrixCell(cell)){
+				   accessIds.add(cell.getId().getValue());
+			   }
+		   }else{
+			   accessIds.add(cell.getId().getValue());
 		   }
+	   }
 
-
-			if(canEval || canFeedback){
-				accessIds.add(cell.getId().getValue());
-			}
-		}
-	   
 	   return accessIds;
    }
-   
-   /**
-	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
-	 * returns true if user or role matches, otherwise false
-	 * 
-	 * @param id
-	 * @param worksiteId
-	 * @param function
-	 * @return
-	 */
-	protected boolean hasPermission(Id id, Id worksiteId, String function){
-		if(getSecurityService().isSuperUser(getAuthManager().getAgent().getId().getValue()))
-			return true;
-		
-		if(id == null)
-			return false;
-		
-		Site site = null;
-		try {
-			site = SiteService.getSite(worksiteId.getValue());
-		} catch (IdUnusedException e) {
-			e.printStackTrace();
-		}
-
-		if(site == null)
-			return false;
-		
-		Role userRole = site.getUserRole(getAuthManager().getAgent().getId().getValue());
-		
-		List evaluators = getAuthzManager().getAuthorizations(null,
-				function, id);
-
-		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
-			Authorization az = (Authorization) iter.next();
-			Agent agent = az.getAgent();
-			if (agent.isRole()) {
-				if(userRole != null){
-					// see if the user's role matches with the evaluation role: 
-					//(fyi, display name returns the role if the agent is a role)
-					if (userRole.getId().compareTo(
-							agent.getDisplayName()) == 0)
-						return true;
-				}
-			} else {
-				// see if the user matches with the evaluator user
-				if (getAuthManager().getAgent().getId().getValue().compareTo(
-						agent.getId().toString()) == 0)
-					return true;
-			}
-		}
-
-		return false;
-	}
-   
+ 
 
 	public ToolManager getToolManager() {
 		return toolManager;

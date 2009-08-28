@@ -472,7 +472,7 @@ function mySetMainFrameHeight(id)
 						<fmt:message key="scaffolding_published_true"/>
 					 </c:if>
 					 <c:if test="${dScaffold.scaffolding.preview}">
-						<fmt:message key="scaffolding_published_false"/>
+						<fmt:message key="scaffolding_published_preview"/>
 					 </c:if>
 					 <c:if test="${!dScaffold.scaffolding.published && !dScaffold.scaffolding.preview}">
 						<fmt:message key="scaffolding_published_false"/>

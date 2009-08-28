@@ -101,16 +101,19 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
    }
    
    public Set createEvalWorkflows(ObjectWithWorkflow obj) {
-      if (obj instanceof WizardPageDefinition)
-         return createEvalWorkflowsHelper(obj);
-      else
-         return createEvalWorkflows((Wizard)obj);
+	   return createEvalWorkflows(obj, obj.getEvaluationDevice());
    }
    
-   protected Set createEvalWorkflowsHelper(ObjectWithWorkflow wpd) {
+   public Set createEvalWorkflows(ObjectWithWorkflow obj, Id evalId) {
+      if (obj instanceof WizardPageDefinition)
+         return createEvalWorkflowsHelper(obj, evalId);
+      else
+         return createEvalWorkflowsWizard((Wizard)obj);
+   }
+   
+   protected Set createEvalWorkflowsHelper(ObjectWithWorkflow wpd, Id eval) {
       Set workflows = wpd.getEvalWorkflows();
-      if (wpd.getEvaluationDevice() != null && 
-            wpd.getEvalWorkflows().size() == 0) {
+      if (validEval(eval) && workflows.size() == 0) {
          Workflow w_none = new Workflow("No Workflow", wpd);
          Workflow w_complete = new Workflow("Complete Workflow", wpd);
          Workflow w_return = new Workflow("Return Workflow", wpd);
@@ -135,13 +138,21 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
          workflows.add(w_returned);
          
       }
-      else if (wpd.getEvaluationDevice() == null) {
+      else if (validEval(eval)) {
          workflows = new HashSet();
       }
       return workflows;
    }
    
-   protected Set createEvalWorkflows(Wizard wizard) {
+   protected boolean validEval(Id eval) {
+	   boolean retVal = false;
+	   if (eval != null && eval.getValue() != null && !eval.getValue().equals("")) {
+		   retVal = true;
+	   }
+	   return retVal;
+   }
+   
+   protected Set createEvalWorkflowsWizard(Wizard wizard) {
       Set workflows = wizard.getEvalWorkflows();
       Id eval = wizard.getEvaluationDevice();
       /*
@@ -154,7 +165,7 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
          }
       }      
       */
-      if (eval != null && wizard.getEvalWorkflows().size() == 0) {
+      if (validEval(eval) && workflows.size() == 0) {
          Workflow w_none = new Workflow("No Workflow", wizard);
          Workflow w_complete = new Workflow("Complete Workflow", wizard);
          Workflow w_return = new Workflow("Return Workflow", wizard);
@@ -178,7 +189,7 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
          workflows.add(w_return);
          workflows.add(w_returned);
       }
-      else if (eval == null) {
+      else if (!validEval(eval)) {
          workflows = new HashSet();
       }
       return workflows;

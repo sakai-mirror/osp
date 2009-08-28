@@ -28,6 +28,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.taggable.api.TagList;
 import org.sakaiproject.util.BaseResourcePropertiesEdit;
 import org.theospi.portfolio.matrix.WizardPageDefinitionEntity;
@@ -97,7 +98,7 @@ public class WizardPageDefinitionEntityImpl implements WizardPageDefinitionEntit
 			if(toolConfig != null){
 				String placement = toolConfig.getId();
 				url = ServerConfigurationService.getToolUrl() + "/" + placement +
-					"/osp.matrix.cell.info.helper/viewCellInformation.osp?sCell_id=" + page_def_id;
+					"/osp.matrix.cell.info.helper/viewCellInformation.osp?sCell_id=" + page_def_id + "&override." + SpringTool.LAST_VIEW_VISITED + "=/viewCell.osp";
 			}
 		} catch (IdUnusedException e) {
 			// TODO Auto-generated catch block

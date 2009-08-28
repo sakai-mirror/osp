@@ -259,9 +259,7 @@
                      </c:choose>
                     </h4>  
                   </td>
-						
-                  <c:if test="${can.viewOwner || isUserSite || allEvalsKey == evalType}"> 
-                  <td>
+				  <td>  
                      <c:choose>
                        <c:when test="${item.owner != null && !item.hideOwnerDisplay}">
                            <c:out value="${item.owner.sortName}" />
@@ -272,13 +270,11 @@
                            </span>
                        </c:otherwise>
                      </c:choose>
-                  </td>
-                  </c:if>
-						
-                    <td>
+                  </td>	
+                  <td>
                         <c:if test="${item.submittedDate==null}"> &nbsp; </c:if>
                         <c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${item.submittedDate}" pattern="${dateFormat}"/>
-                    </td>
+                  </td>
                <c:if test="${allEvalsKey == evalType}">
                   <td>
                      <c:out value="${item.siteTitle}" />

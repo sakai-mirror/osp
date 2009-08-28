@@ -113,9 +113,16 @@
 			</td>
 			<td></td>
 			<td>
-				<c:if test="${scaffoldingCan.accessUserList}">
-					<c:out value="${node.technicalMetadata.owner.displayName}" />
-				</c:if>
+				<c:choose>
+					<c:when test="${((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || (scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser)}">
+						<c:out value="${node.technicalMetadata.owner.displayName}" />
+					</c:when>
+					<c:otherwise>
+						<span title="<fmt:message key="blind_evaluation_tooltip"/>">
+							<fmt:message key="blind_evaluation_username"></fmt:message>
+						</span>
+					</c:otherwise>
+				</c:choose>	
 			</td>
 			<td><fmt:formatDate
 				value="${node.technicalMetadata.lastModified}"
@@ -128,7 +135,7 @@
 			<c:if test="${object.itemId == node.id}">
 
 				<tr>
-					<td>
+					<td colspan="2">
 						<h6><span class="indnt3"> <img
 							src='/library/image/silk/comment.gif' border='0' hspace='0' alt="" />
 							<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
@@ -177,6 +184,7 @@
 								 </a>
 							 </c:if>
 					</td>
+					<td></td>
 					<td><c:out
 						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 					</td>

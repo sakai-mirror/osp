@@ -11,7 +11,7 @@
 	<osp-c:authZMap	prefix="osp.wizard." var="canOperate" qualifier="${wizardId}" />
 	<c:set var="canOperateWizard" value="${canOperate.operate}" /> 	
 </c:if>
-<c:if test="${(isMatrix == 'true' && matrixCanViewCell) || (isWizard == 'true' && (isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
+<c:if test="${matrixCanViewCell || (isWizard == 'true' && (isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
 
 
 
@@ -160,7 +160,7 @@ function mySetMainFrameHeightViewCell(id)
 	<div class="validation"><fmt:message key="title_cellPreview" /></div>
 </c:if>
 
-<c:if test="${scaffoldingCan.accessUserList}">
+<c:if test="${(isWizard != 'true' && (scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser)) || (isWizard == 'true')}">
 <h2 class="owner">
    <c:out value="${wizardOwner}" />
 </h2>
@@ -200,7 +200,7 @@ function mySetMainFrameHeightViewCell(id)
 		<c:when test="${isMatrix == 'true'}">
 			<br>
 			<h3 style="display: inline"><c:if
-				test="${scaffoldingCan.accessUserList}">
+				test="${scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser}">
 				<c:out value="${cell.wizardPage.owner.displayName}: "/>
 			</c:if> <c:out
 				value="${cell.scaffoldingCell.scaffolding.title}: ${cell.scaffoldingCell.wizardPageDefinition.title}" />
@@ -407,13 +407,14 @@ function mySetMainFrameHeightViewCell(id)
 
 </form>
 </c:if>
-<c:if test="${isMatrix == 'true' && !matrixCanViewCell}">
-<br>
-<fmt:message key="no_permission"/>
 
-</c:if>
-<c:if test="${(isWizard == 'true' && !(isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
-<br>
-<fmt:message key="no_permission"/>
-
+<c:if test="${!matrixCanViewCell}">
+	<c:if test="${isMatrix == 'true'}">
+		<br>
+		<fmt:message key="no_permission"/>	
+	</c:if>
+	<c:if test="${(isWizard == 'true' && !(isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
+		<br>
+		<fmt:message key="no_permission"/>
+	</c:if>
 </c:if>

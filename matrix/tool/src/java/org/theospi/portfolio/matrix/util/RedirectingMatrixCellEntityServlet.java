@@ -22,7 +22,9 @@
 package org.theospi.portfolio.matrix.util;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -85,10 +87,23 @@ public class RedirectingMatrixCellEntityServlet extends HttpServlet
 	  String user = props.get("security.user");
 	  String site_function = props.get("security.site.function");
 	  String site_secref = props.get("security.site.ref");
+	  //decPageId is used to determine if a user has access to this cell.  It is a suggestion to make sure 
+	  //the user has access to that page and that that page is linked to the current cell.
+	  String decPageId = props.get("decPageId");
 
 	  try {
+		  
+		  Object sessionAdvisors = session.getAttribute("sitevisit.security.advisor");
+		  Set<SecurityAdvisor> siteAdvisors = new HashSet<SecurityAdvisor>();
+		  if (sessionAdvisors != null) {
+			  siteAdvisors = (Set<SecurityAdvisor>)sessionAdvisors;  
+		  }
+		  
+		  siteAdvisors.add(new MySecurityAdvisor(user, site_function, site_secref));
+		   		  
 		  //dump a couple of advisors into session so we can get at them outside of this threadlocal
-		  session.setAttribute("sitevisit.security.advisor", new MySecurityAdvisor(user, site_function, site_secref));
+		  session.setAttribute("sitevisit.security.advisor", siteAdvisors);
+		  session.setAttribute("decPageId", decPageId);
 		  res.sendRedirect(target);		  
 	  }
 	  catch (IOException e) {
@@ -144,5 +159,31 @@ public class RedirectingMatrixCellEntityServlet extends HttpServlet
 		  }
 		  return rv;
 	  }
+	  
+	  public boolean equals(Object obj) {
+		  MySecurityAdvisor mine = (MySecurityAdvisor)obj;
+		  if (mine == null) return false;
+		  if (mine.m_userId == null && m_userId != null) return false;
+		  if (mine.m_function == null && m_function != null) return false;
+		  if (mine.m_reference == null && m_reference != null) return false;
+		  if (mine.m_userId != null && m_userId == null) return false;
+		  if (mine.m_function != null && m_function == null) return false;
+		  if (mine.m_reference != null && m_reference == null) return false;
+		  
+		  if (m_userId.equals(mine.m_userId) && m_function.equals(mine.m_function) && m_reference.equals(mine.m_reference))
+			  return true;
+		  
+		  return false;
+	  }
+
+	  public int hashCode() {
+		  int result;
+	      result = m_userId.hashCode();
+	      result = 29 * result + (m_function != null ? m_function.hashCode() : 0);
+	      result = 29 * result + (m_reference != null ? m_reference.hashCode() : 0);
+	      return result;
+	  }
+
+
   }
 }

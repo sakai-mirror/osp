@@ -42,6 +42,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 /**
@@ -167,8 +168,15 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
 
    protected void saveScaffoldingCell(Map request, ScaffoldingCell scaffoldingCell) {
       // do nothing... let caller deal with it...
-      scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
-            new HashSet(super.createEvalWorkflows(scaffoldingCell.getWizardPageDefinition())));
+      Set<Workflow> evalWorkflows = new HashSet<Workflow>();
+	   if (scaffoldingCell.isDefaultEvaluationForm()) {
+    	  evalWorkflows = getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition(), 
+    			  scaffoldingCell.getScaffolding().getEvaluationDevice());
+      }
+	   else {
+		   evalWorkflows = getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition());
+	   }
+	   scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
    }
 
    protected void prepareModelWithScaffoldingId(Map model, ScaffoldingCell scaffoldingCell) {

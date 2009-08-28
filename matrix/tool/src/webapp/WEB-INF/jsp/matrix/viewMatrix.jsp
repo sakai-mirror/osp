@@ -194,14 +194,12 @@
                      <c:set var="cell" value="${cellBean.cell}"/>
 
                     <!-- Find out if user has access to this cell -->
-                     <c:set var="hasAccess" value="${scaffoldingCan.accessAll || isMyMatrix}"/>
-                     <c:if test="${!hasAccess}">
-                     <c:forEach var="cellId" items="${canReviewOrEvaluateIds}">
+                     <c:set var="hasAccess" value="false"/>
+                     <c:forEach var="cellId" items="${cellsICanAccess}">
                      	<c:if test="${cellId == cell.id.value}">
                      		<c:set var="hasAccess" value="true"/>
                      	</c:if>                     	
                      </c:forEach>
-                     </c:if>
 					
 		                     
                      <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" 

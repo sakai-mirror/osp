@@ -24,6 +24,7 @@ package org.theospi.portfolio.wizard.taggable.impl;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableActivityProducer;
 import org.sakaiproject.util.ResourceLoader;
@@ -83,11 +84,11 @@ public class WizardActivityImpl implements TaggableActivity {
 			String view = "viewCell.osp";
 			if (def.getType().equals(WizardPageDefinition.WPD_MATRIX_TYPE)) {
 				placement = SiteService.getSite(def.getSiteId()).getToolForCommonId("osp.matrix").getId();
-				view = "/osp.matrix.cell.info.helper/viewCellInformation.osp";
+				view = "/osp.matrix.cell.info.helper/viewCellInformation.osp?override." + SpringTool.LAST_VIEW_VISITED + "=/viewCell.osp";
 			}				
 			else {
 				placement = SiteService.getSite(def.getSiteId()).getToolForCommonId("osp.wizard").getId();
-				view = "/osp.matrix.cell.info.helper/viewCellInformation.osp";
+				view = "/osp.matrix.cell.info.helper/viewCellInformation.osp?override." + SpringTool.LAST_VIEW_VISITED + "=/viewCell.osp";
 			}
 
 			url = ServerConfigurationService.getServerUrl() + "/portal/tool/" + 

@@ -569,6 +569,9 @@
             <property name="securityService">
             	<ref bean="org.sakaiproject.authz.api.SecurityService" />
             </property>
+            <property name="workflowManager">
+               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -745,9 +748,6 @@
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
-            </property>
-            <property name="workflowManager">
-               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
             </property>
             <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
             <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
@@ -943,9 +943,6 @@
             </property>
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
-            </property>
-            <property name="workflowManager">
-               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
             </property>
              <property name="reviewManager">
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>

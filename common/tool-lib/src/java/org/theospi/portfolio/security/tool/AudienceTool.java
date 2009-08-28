@@ -21,8 +21,11 @@
 package org.theospi.portfolio.security.tool;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -43,9 +46,9 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -144,7 +147,8 @@ public class AudienceTool extends HelperToolBase {
     private MemberSort memberSort = new MemberSort();
     private WorksiteManager worksiteManager;
     
-
+    public static final String UNASSIGNED_GROUP = "UNASSIGNED_GROUP";
+    
     /*************************************************************************/
     
     public void sortItemList(List<SelectItem> list) {
@@ -231,7 +235,20 @@ public class AudienceTool extends HelperToolBase {
     public String processActionNotify(){
     	ToolSession session = SessionManager.getCurrentToolSession();
         session.setAttribute("target", getSaveTarget());
+        
+        if (getSelectedArray().length == 0) {
+        	FacesContext.getCurrentInstance().addMessage(null,
+                    getFacesMessageFromBundle("please_select", (new Object[]{})));
+        	return "";
+        }
+        
         notifyAudience();
+        if(isInviteFeedbackAudience()){
+        	if(getMessage() != null){
+				String emailMessage = getMessage();
+				session.setAttribute("emailMessage", emailMessage);
+        	}
+        }
     	clearAudienceSelectionVariables();
         //processActionClearFilter();
         selectedArray = null;
@@ -490,117 +507,123 @@ public class AudienceTool extends HelperToolBase {
         addMembers(added);
         removeMembers(originalMembers);
     }
-    
-    protected String[] getSelectedUsersEmails(){
-    	List selectedUserEmails = new ArrayList();
-        for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
-            DecoratedMember decoratedMember = (DecoratedMember) i.next();
-            if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null ) 
-            	selectedUserEmails.add(decoratedMember.getEmail());
-        }
-        String[] returnArray = new String[selectedUserEmails.size()];
-        for(int i = 0; i < selectedUserEmails.size(); i++){
-        	returnArray[i] = selectedUserEmails.get(i).toString();
-        }
-    	return returnArray;    	
+
+    protected HashMap<String, String> getSelectedUsersEmails(){
+    	HashMap<String, String> selectedUserEmails = new HashMap<String, String>();
+    	for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
+    		DecoratedMember decoratedMember = (DecoratedMember) i.next();
+    		if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null ){ 
+    			selectedUserEmails.put(decoratedMember.getBase().getId().toString(), decoratedMember.getEmail());
+    		}           
+    	}
+
+    	return selectedUserEmails;    	
     }
-    
-    
+
     protected void notifyAudience(){
-    	String url;
-    	String emailMessage = "";
-    	String subject = "";
-    	User user = UserDirectoryService.getCurrentUser();
-    	
-    	if(isPortfolioAudience()){
+    	if(isInviteFeedbackAudience()){
+    		//the email notifications will be processed by HibernateMatrixManagerImpl
+    		HashMap<String, String> emailList = getSelectedUsersEmails();    
+    		HashMap<String, String> selectedEmailList = new HashMap<String, String>();
+    		Set<User> groupAwareUsers = getUserList(getSite().getId(), null, false, new ArrayList<Group>(getGroupList(getSite(), false)));
+    		String currentUserId = SessionManager.getCurrentSessionUserId();
+    		Set members = getSite().getMembers();
+    		for(String selectedId : getSelectedArray()){
+    			if (selectedId.startsWith("ROLE")) {
+    				//The only way a role could have been selected is when the role was selected by the external user (ie. matrix author).  
+    				//Make sure that we are group aware so use the list of members from the external members function
+    				String role = selectedId.substring(5, selectedId.length());
+    				for (Iterator j = members.iterator(); j.hasNext();) {
+    					Member member = (Member) j.next();
+    					if (!currentUserId.equals(member.getUserId()) && member.getRole().getId().equals(role)  && containsUserId(groupAwareUsers, member.getUserId())) {
+    						String email;
+    						try {
+    							email = UserDirectoryService.getUser(member.getUserId()).getEmail();
+
+    							if(!selectedEmailList.containsKey(member.getUserId())) {
+    								selectedEmailList.put(member.getUserId(), email);
+    							}
+    						} catch (UserNotDefinedException e) {
+    							// TODO Auto-generated catch block
+    							e.printStackTrace();
+    						}
+    					}    				
+					}
+				}else{
+					String email = emailList.get(selectedId);
+					if(email != null && !"".equals(email)){
+						selectedEmailList.put(selectedId, email);
+					}
+				}
+    		}
+    		ToolSession session = SessionManager.getCurrentToolSession();
+    		session.setAttribute("extraEmailAddrs", selectedEmailList);
+    	}else{
+    		String url;
+    		String emailMessage = "";
+    		String subject = "";
+    		User user = UserDirectoryService.getCurrentUser();
+
     		subject = getMessageFromBundle("portfolioSubject", null);
     		url = ServerConfigurationService.getServerUrl() +
     		"/osp-presentation-tool/viewPresentation.osp?id=" + this.getQualifier().getValue();
     		url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
-   		
+
     		emailMessage = getMessage() + getMessageFromBundle("portfolioBody", 
     				new Object[]{user.getDisplayName()}) + " " + getPageContext() +
     				getMessageFromBundle("portfolioLink", new Object[]{url});
 
-    	}else if(isInviteFeedbackAudience()){
-    		subject = getMessageFromBundle("matrixFeedbackSubject", new Object[]{user.getDisplayName()});
 
 
-    		ToolConfiguration toolConfig;
     		try {
-    			toolConfig = getSiteService().getSite(getSite().getId()).getToolForCommonId("osp.matrix");
 
-    			String placement = toolConfig.getId();
-    			url = ServerConfigurationService.getServerUrl() + 
-    				"/direct/matrixcell/" + this.getQualifier().getValue() + "/" + placement + "/" +"/viewCell.osp";
+    			String from = ServerConfigurationService.getString("setup.request", 
+    					"postmaster@".concat(ServerConfigurationService.getServerName()));
 
-    			
-    			emailMessage = getMessageFromBundle(
-    					"matrixFeedbackBody", new Object[] {user.getDisplayName(), (String) getAttribute(AudienceSelectionHelper.CONTEXT2),
-    							(String) getAttribute(AudienceSelectionHelper.CONTEXT), getSiteService().getSite(getToolManager().getCurrentPlacement().getContext()).getTitle(), url});
 
-    			if(getMessage() != null)
-    				emailMessage += getMessageFromBundle("matrixFeedbackBodyPersonalMessage", new Object[]{user.getDisplayName(), getMessage()});
-    			
-    		} catch (IdUnusedException e) {
-    			e.printStackTrace();
-    		}
-//  		emailMessage = getMessage() + getMessageFromBundle("matrixFeedbackBody", 
-//  		new Object[]{user.getDisplayName()}) + " " + getPageContext() + " - " + getPageContext2();
-    	}
+    			String[] emailList = null;
 
-    	try {
-
-    		String from = ServerConfigurationService.getString("setup.request", 
-    				"postmaster@".concat(ServerConfigurationService.getServerName()));
-
-    		
-    		String[] emailList = null;
-    		if(isInviteFeedbackAudience()){
-    			emailList = getSelectedUsersEmails();    			
-    		}else{
     			emailList = getSelectedArray();
-    		}
-    		
-    		
-    		List sentEmailAddrs = new ArrayList();
-    		
-    		for (int i = 0; i < emailList.length; i++) {
-    			String toUser = emailList[i];
-    			if (toUser.startsWith("ROLE")) {
-    				String role = toUser.substring(5, toUser.length());
-    				Set members = getSite().getMembers();
-    				for (Iterator j = members.iterator(); j.hasNext();) {
-    					Member member = (Member) j.next();
-    					if (member.getRole().getId().equals(role)) {
-    						String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
-    						if (validateEmail(email) && !sentEmailAddrs.contains(email)) {
-    							sentEmailAddrs.add(email);
-    							EmailService.send(from, email,
-    									subject, emailMessage, null, null, null);
 
+
+
+    			List sentEmailAddrs = new ArrayList();
+    			HashMap<String, String> selectedUserEmails = getSelectedUsersEmails();
+    			for (int i = 0; i < emailList.length; i++) {
+    				String toUser = emailList[i];
+    				if (toUser.startsWith("ROLE")) {
+    					String role = toUser.substring(5, toUser.length());
+    					Set members = getSite().getMembers();
+    					for (Iterator j = members.iterator(); j.hasNext();) {
+    						Member member = (Member) j.next();
+    						if (member.getRole().getId().equals(role)) {
+    							String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
+    							if (validateEmail(email) && !sentEmailAddrs.contains(email)) {
+    								sentEmailAddrs.add(email);
+    								EmailService.send(from, email,
+    										subject, emailMessage, null, null, null);
+
+    							}
     						}
     					}
-    				}
 
-    			} else {
-    				if (validateEmail(toUser) && !sentEmailAddrs.contains(toUser)) {
-    					sentEmailAddrs.add(toUser);
-    					EmailService.send(from, toUser,
-    							subject, emailMessage, null, null, null);
+    				} else {
+    					String userEmail = selectedUserEmails.get(toUser);
+    					if (validateEmail(userEmail) && !sentEmailAddrs.contains(userEmail)) {
+    						sentEmailAddrs.add(userEmail);
+    						EmailService.send(from, userEmail,
+    								subject, emailMessage, null, null, null);
+    					}
     				}
     			}
-    		}
-    		
-    		if(isInviteFeedbackAudience()){
-    			ToolSession session = SessionManager.getCurrentToolSession();
-    			session.setAttribute("sentEmailAddrs", sentEmailAddrs);
-    		}
 
-    	} catch (Exception e) {
-    		e.printStackTrace();
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
     	}
     }
+
+
     
     private void notifyNewUserEmail(Agent guest) {
         String from = ServerConfigurationService.getString("setup.request", null);
@@ -909,37 +932,86 @@ public class AudienceTool extends HelperToolBase {
        return selectedRoleList;
     }
     
+    public List<DecoratedMember> getExternallySelectedGroupAwareMembers(Site site, String function, String objectId){
+    	List<DecoratedMember> returnList = new ArrayList<DecoratedMember>();
+    	//Make sure that the matrix level selected Users list are only the users who have 
+    	//group access to the current user
+    	Set<User> usersInGroup = getUserList(site.getId(), null, false, new ArrayList<Group>(getGroupList(site,	false)));
+    	
+    	 List authzs = getAuthzManager().getAuthorizations(null, function, idManager.getId(objectId));
+    	 List<DecoratedMember> matrixSelectedReviewers = new ArrayList();
+    	 for (Iterator i = authzs.iterator(); i.hasNext();) {
+    		 Authorization authz = (Authorization) i.next();
+    		 DecoratedMember dMember = new DecoratedMember(this, authz.getAgent());
+    		 if(!returnList.contains(dMember)){
+    			 if(dMember.getBase().isRole()){
+    				 returnList.add(dMember);
+    			 }else if(containsUserId(usersInGroup, dMember.getBase().getId().getValue())){
+    				 returnList.add(dMember);
+    			 }
+    		 }        		 
+    	 }
+    	 
+    	 return returnList;
+    }
+    
+    public List<String> getExternalReviewersForMatrix(){
+    	List<DecoratedMember> externalMembers = getExternallySelectedGroupAwareMembers(getSite(), getMatrixReviewFunction(), getMatrixReviewerObjectId());
+    	List<String> returnList = new ArrayList<String>();
+    	for (DecoratedMember decoratedMember : externalMembers) {
+			returnList.add(decoratedMember.getDisplayName());
+		}
+    	
+    	Collections.sort(returnList);
+    	return returnList;
+    }
+    
     public List getSelectedList() {
 
-        List selectedList = new ArrayList();
-        for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
-            DecoratedMember decoratedMember = (DecoratedMember) i.next();
-            if (decoratedMember.getBase().isRole()) {
-               String roleName = null;
-               
-               if ( isWorksiteLimited() ) {
-                  roleName = decoratedMember.getBase().getDisplayName();
-               }
-               else {
-                  Site site = getSiteFromRoleMember( decoratedMember.getBase().getId().getValue() );
-                  roleName = formatRole( site, decoratedMember.getBase().getDisplayName() ); 
-               }
-                              
-               selectedList.add(new SelectItem(decoratedMember.getEmail(), 
-                                                   roleName,
-                                                   "role"));
-            }else if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null )
-				try {
-					selectedList.add(new SelectItem(decoratedMember.getEmail(), UserDirectoryService
-							.getUser(
-									decoratedMember.getBase().getId()
-									.getValue()).getSortName(), "member"));
-				} catch (UserNotDefinedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+        List selectedList = new ArrayList();        
+        List allSelectedMembers = getSelectedMembers();       
+        
+        if(isInviteFeedbackAudience()){
+        	//add matrix selected feedback audience for user to select and send an email to
+        	List<DecoratedMember> externalMembers = getExternallySelectedGroupAwareMembers(getSite(), getMatrixReviewFunction(), getMatrixReviewerObjectId());
+        	for (DecoratedMember decoratedMember : externalMembers) {
+				if(!allSelectedMembers.contains(decoratedMember)){
+					allSelectedMembers.add(decoratedMember);
 				}
+			}
         }
 
+        for (Iterator i = allSelectedMembers.iterator(); i.hasNext();) {
+        	DecoratedMember decoratedMember = (DecoratedMember) i.next();
+        	if (decoratedMember.getBase().isRole()) {
+        		String roleName = null;
+
+        		if ( isWorksiteLimited() ) {
+        			roleName = decoratedMember.getBase().getDisplayName();
+        		}
+        		else {
+        			Site site = getSiteFromRoleMember( decoratedMember.getBase().getId().getValue() );
+        			roleName = formatRole( site, decoratedMember.getBase().getDisplayName() ); 
+        		}
+
+
+        		selectedList.add(new SelectItem(decoratedMember.getEmail(), 
+        				roleName,
+        				"role"));
+        	}else if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null )
+        		try {
+        			selectedList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), UserDirectoryService
+        					.getUser(
+        							decoratedMember.getBase().getId()
+        							.getValue()).getSortName(), "member"));
+        		} catch (UserNotDefinedException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
+        }
+
+        Collections.sort(selectedList, memberSort);
+        
         return selectedList;
      }
 
@@ -1183,12 +1255,6 @@ public class AudienceTool extends HelperToolBase {
       public int compare(SelectItem o1, SelectItem o2) {
          String n1 = o1.getLabel();
          String n2 = o2.getLabel();
-         int i1 = n1.lastIndexOf(" ");
-         int i2 = n2.lastIndexOf(" ");
-         if (i1 > 0)
-            n1 = n1.substring(i1 + 1) + " " + n1.substring(0, i1);
-         if (i2 > 0)
-            n2 = n2.substring(i2 + 1) + " " + n2.substring(0, i2);
          
          return n1.compareToIgnoreCase(n2);
       }
@@ -1219,4 +1285,81 @@ public class AudienceTool extends HelperToolBase {
 		this.worksiteManager = worksiteManager;
 	}
 
+	
+	public Set<User> getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
+		Set members = new HashSet();
+		Set users = new HashSet();
+
+		try {
+			Site site = siteService.getSite(worksiteId);
+			if (site.hasGroups()) {
+				String currentUser = SessionManager.getCurrentSessionUserId();
+
+				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
+					members.addAll(site.getMembers());
+				}
+				else if (filterGroupId != null && UNASSIGNED_GROUP.equals(filterGroupId)) {
+					//get all users not in a group
+					//TODO Is there a more efficient way to do this?
+					Set<Member> siteMembers = site.getMembers();
+					for (Member siteMember : siteMembers) {
+						Collection memberGroups = site.getGroupsWithMember(siteMember.getUserId());
+						if (memberGroups == null || (memberGroups != null && (memberGroups.isEmpty() || memberGroups.size() == 0))) {
+							members.add(siteMember);
+						}
+					}
+				}
+				else {
+					for (Iterator iter = groups.iterator(); iter.hasNext();) {
+						Group group = (Group) iter.next();
+						// TODO: Determine if Java loop invariants are optimized out
+						if (filterGroupId == null || "".equals(filterGroupId)
+								|| filterGroupId.equals(group.getId())) {
+							members.addAll(group.getMembers());
+						}
+					}
+				}
+			} else {
+				members.addAll(site.getMembers());
+			}
+
+			for (Iterator memb = members.iterator(); memb.hasNext();) {
+				try {
+					Member member = (Member) memb.next();
+					users.add(UserDirectoryService.getUser(member.getUserId()));
+				} catch (UserNotDefinedException e) {
+			//		logger.warn("Unable to find user: " + e.getId() + " "
+			//				+ e.toString());
+				}
+			}
+		} catch (IdUnusedException e) {
+		//	logger.error("", e);
+		}
+		return users;
+	}
+
+	public Set getGroupList(Site site, boolean allowAllGroups) {
+		Set groups = new HashSet();
+		if (site.hasGroups()) {
+			String currentUser = SessionManager.getCurrentSessionUserId();
+			if (allowAllGroups) {
+				groups.addAll(site.getGroups());
+			}
+			else {
+				groups.addAll(site.getGroupsWithMember(currentUser));
+			}
+		}
+		return groups;
+	}
+
+	public boolean containsUserId(Set<User> userList, String id){
+		if(id == null || userList == null)
+			return false;
+		
+		for (User user : userList) {
+			if(user.getId().equals(id))
+				return true;
+		}
+		return false;
+	}
 }

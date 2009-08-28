@@ -17,7 +17,7 @@
 				<osp:message key="eval_items_section_header" />
 			</th>
 			<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
-			<th></th>
+			<th>&nbsp;</th>
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_modified" /></th>
 		</tr>

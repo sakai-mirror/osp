@@ -29,6 +29,7 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -168,6 +169,11 @@ public class WizardPageController extends CellController {
 		page = getMatrixManager().getWizardPage(pageId);
 		session.put(WizardPageHelper.WIZARD_PAGE, page);
 		session.remove(WizardPageHelper.CANCELED);
+
+		String overrideLastView = (String)request.get("override." + SpringTool.LAST_VIEW_VISITED);
+        if (overrideLastView != null && !"".equalsIgnoreCase(overrideLastView)) {
+        	session.put(SpringTool.LAST_VIEW_VISITED, overrideLastView);
+        }
 
 		Agent owner = (Agent) session.get(WizardPageHelper.WIZARD_OWNER);
 		request.put(WizardPageHelper.WIZARD_OWNER, owner);

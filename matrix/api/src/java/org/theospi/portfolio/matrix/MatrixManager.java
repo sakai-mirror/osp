@@ -317,25 +317,26 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 */
 	public List getSelectedUsers(ObjectWithWorkflow oWW, String function);
 	
-	/**
-	 * 
-	 * Will notify an audience who has permission to perform the passed function on the passed objectId.  Each will be emailed specifically
-	 * based on the function.  Any email address listed in sentEmailAddrs will not receive an email.  
-	 * 
-	 * If group aware and the site has groups, then the audience is selected by:
-	 * Must be able to perform the function on the objectId and be in the current users group or have the viewAllGroups permission if its a matrix
-	 * 
-	 * If not group aware or the site doesn't have groups then the audience is selected by the function and objectId authorization. 
-	 * 
-	 * 
-	 * @param wizPage
-	 * @param reviewObjectId
-	 * @param groupAware
-	 * @param sentEmailAddrs
-	 * @param parentTitle
-	 * @param function
-	 */
-	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, List sentEmailAddrs, String parentTitle, String function);
+ 	/**
+  	 * 
+  	 * Will notify an audience who has permission to perform the passed function on the passed objectId.  Each will be emailed specifically
+ 	 * based on the function.  Any email address listed in sentEmailAddrs be appended to the email list that goes out.  
+  	 * 
+  	 * If group aware and the site has groups, then the audience is selected by:
+  	 * Must be able to perform the function on the objectId and be in the current users group or have the viewAllGroups permission if its a matrix
+  	 * 
+  	 * If not group aware or the site doesn't have groups then the audience is selected by the function and objectId authorization. 
+  	 * 
+ 	 * If null is passed for function or reviewObjectId, then it will send emails to only the sendExtraEmails list.
+  	 * 
+  	 * @param wizPage
+  	 * @param reviewObjectId
+  	 * @param groupAware
+ 	 * @param sendExtraEmails
+  	 * @param parentTitle
+  	 * @param function
+  	 */
+ 	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, HashMap<String, String> sendExtraEmails, String emailMessage, String parentTitle, String function);	
 
 	public Cell createCellWrapper(WizardPage page);
 	
@@ -348,4 +349,63 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	public TaggingManager getTaggingManager();
 	
 	public List<DecoratedTaggingProvider> getDecoratedProviders(TaggableActivity activity);
+	
+	/**
+	 * Will return true if the current user can access all cells based off the ScaffoldingId
+	 * 
+	 * This looks for top level permissions only
+	 * 
+	 * @param scaffoldingId
+	 * @return
+	 */
+	public boolean canAccessAllMatrixCells(Id scaffoldingId);	
+	
+	/**
+	 * 
+	 * This will return true if the current user can access this scaffolding cell.  
+	 * This is based off canAccessAllMatrixCells and if the user has cell specific
+	 * permissions (ie. eval, review, ect)
+	 * 
+	 * Pass the scaffolding cell Id
+	 * 
+	 * @param scaffoldingCellId
+	 * @return
+	 */
+	public boolean canAccessScaffoldCellByScaffoldingCellId(Id scaffoldingCellId);
+	
+	/**
+	 * 
+	 * This will return true if the current user can access this scaffolding cell.  
+	 * This is based off canAccessAllMatrixCells and if the user has cell specific
+	 * permissions (ie. eval, review, ect)
+	 * 
+	 * Pass the wizard page definition Id
+	 * 
+	 * @param wizPageDefId
+	 * @return
+	 */
+	public boolean canAccessScaffoldCellByWizPageDefId(Id wizPageDefId);
+	
+	/**
+	 * 
+	 * This checks if the current user has permission for a single users
+	 * cell specifically.  This will look at canAccessScaffoldCell and 
+	 * canAccessAllMatrixCells as well as if the user has any cell specific
+	 * permissions (ie. Owner selected current users as reviewer, is cell owner, ect)
+	 * 
+	 * 
+	 * @param cell
+	 * @return
+	 */
+	public boolean canAccessMatrixCell(Cell cell);
+	
+	/**
+	 * returns true if the user can access that page and that wiz page has been linked to that linkedArtifactId
+	 * 
+	 * @param siteId
+	 * @param pageId
+	 * @param linkedArtifactId
+	 * @return
+	 */
+	public boolean canUserAccessWizardPageAndLinkedArtifcact(String siteId, String pageId, String linkedArtifactId);
 }

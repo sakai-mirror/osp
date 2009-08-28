@@ -30,7 +30,9 @@
 <sakai:view>   
 
 
-
+<f:verbatim>
+<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/jquery-1.2.1.js"></script>
+</f:verbatim>
 
 <sakai:messages/>
 
@@ -38,13 +40,21 @@
     
     
     
-    <f:subview rendered="#{!audience.inviteFeedbackAudience}" id="sV3">
+    <f:subview id="sV3">
 		<p class="indnt2">
+			<sakai:view_title value="#{common_msgs.to_label}" />
 			<h:selectManyListbox id="selectedUsers" size="10" value="#{audience.selectedArray}"
 														   style="width:350px;">
 			   <f:selectItems value="#{audience.selectedList}"/>
 			</h:selectManyListbox>
 		</p>
+		<f:verbatim>
+			<script type="text/javascript" language="JavaScript">
+				jQuery(document).ready(function() {
+					jQuery("#mainForm\\:sV3\\:selectedUsers > option[selected!=true]").attr("selected", "selected");
+				});
+			</script>
+		</f:verbatim>
     </f:subview>
     
     

@@ -12,7 +12,7 @@
 				<osp:message key="reviews_section_general" />
 			</th>
 			<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
-			<th</th>
+			<th>&nbsp;</th>
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_modified" /></th>
 		</tr>
@@ -102,17 +102,7 @@
 					</td>
 					<td></td>
 					<td>
-<c:choose>
-<c:when test="${scaffoldingCan.accessUserList}">
-						<c:out
-						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
-</c:when>
-<c:otherwise>
-		<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-		<fmt:message key="blind_evaluation_username"></fmt:message>
-		</span>
-</c:otherwise>
-</c:choose>
+						<c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 					</td>
 					<td><fmt:formatDate
 						value="${object.reviewContentNode.technicalMetadata.lastModified}"

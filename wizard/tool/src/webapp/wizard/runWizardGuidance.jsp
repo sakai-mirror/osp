@@ -13,7 +13,7 @@
 
 <f:view>
 <sakai:view>
-<h:form>
+<h:form id="runWizardGuidance">
 	<style type="text/css">
 		.wizard-COMPLETE { background-color: #a6c7ea;}
 		.wizard-PENDING { background-color: #f7ef84;}
@@ -407,17 +407,17 @@
       
    <sakai:button_bar>
 		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential' && (wizard.current.canOperateOnWizardInstance || not empty wizard.current.userListForSelect)}">	
-       	<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
-	      	 action="#{wizard.processExecPages}" accesskey="s" styleClass="active" />
+       	<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}" onclick="disableThisClass(1);"
+	      	 action="#{wizard.processExecPages}" accesskey="s" styleClass="active disableThis" />
 		</f:subview>
 
-    <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}"
+    <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}" styleClass="disableThis"  onclick="disableThisClass(2);"
        action="#{wizard.processActionCancelRun}" rendered="#{!wizard.fromEvaluation}"  accesskey="l"/>
-    <sakai:button_bar_item id="returnToEvaluations" value="#{msgs.evaluation_list}"
+    <sakai:button_bar_item id="returnToEvaluations" value="#{msgs.evaluation_list}" styleClass="disableThis"  onclick="disableThisClass(3);"
        action="#{wizard.processActionCancelRun}" rendered="#{wizard.fromEvaluation}" />
        
    <f:subview id="evalSubmitSV" rendered="#{wizard.evaluationItem != ''}">
-    <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}" 
+    <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}"  styleClass="disableThis"  onclick="disableThisClass(4);"
        rendered="#{(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"
         />
@@ -428,3 +428,24 @@
 </sakai:view>
 
 </f:view>
+
+<script type="text/javaScript">
+var aryClassElements = new Array();
+
+function disableThisClass(index) {
+	var continueBtn = document.getElementById("runWizardGuidance:seqWizardButtons:submitContinue");
+	var returnListBtn = document.getElementById("runWizardGuidance:returnToList");
+	var returnEvalBtn = document.getElementById("runWizardGuidance:returnToEvaluations");
+	var submitBtn = document.getElementById("runWizardGuidance:evalSubmitSV:submitEvalWizard");
+
+	
+	if(continueBtn && index != 1)
+		continueBtn.disabled = true;
+	if(returnListBtn && index != 2)
+		returnListBtn.disabled = true;
+	if(returnEvalBtn && index != 3)
+		returnEvalBtn.disabled = true;
+	if(submitBtn && index != 4)
+		submitBtn.disabled = true;	
+}
+</script>

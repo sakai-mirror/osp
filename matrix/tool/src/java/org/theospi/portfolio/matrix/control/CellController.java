@@ -164,7 +164,7 @@ public class CellController implements FormController, LoadObjectController {
 	
 
 		
-
+		
 		model.put("matrixCanViewCell", false);
 		if(request.get("comingFromWizard") == null){
 			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
@@ -201,18 +201,7 @@ public class CellController implements FormController, LoadObjectController {
 				
 			// NOTE: matrixCanEval or Review both return true if the user is a
 			// super user:
-			if (matrixCanEvaluate
-					|| matrixCanReview
-					|| cell.getCell().getWizardPage().getOwner().getId()
-							.getValue().equals(
-									getSessionManager()
-											.getCurrentSessionUserId())
-					|| getAuthzManager().isAuthorized(
-							getAuthManager().getAgent(),
-							MatrixFunctionConstants.ACCESS_ALL_CELLS,
-							getIdManager().getId(
-									cell.getCell().getScaffoldingCell()
-											.getScaffolding().getReference()))) {
+			if (getMatrixManager().canAccessMatrixCell(cell.getCell())) {
 				model.put("matrixCanViewCell", true);
 			}
 		}else{
@@ -222,6 +211,18 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("wizardId", wizardId);
 			model.put("isWizardOwner", getSessionManager().getCurrentSessionUserId().equals(currentWizPage.getOwner().getId().getValue()));
 		}
+		
+		if(request.get("decPageId") != null && request.get("decWrapperTag") != null && request.get("decSiteId") != null){
+			//make sure that we are not coming from another wizard page which should grant you access to this page
+			String pageId = (String) request.get("decPageId");
+			String siteId = (String) request.get("decSiteId");
+			
+			if(getMatrixManager().canUserAccessWizardPageAndLinkedArtifcact(siteId, pageId, "/wizard/page/" + cell.getCell().getWizardPage().getId().getValue())){
+				model.put("matrixCanViewCell", true);
+			}
+			
+		}
+		
 		model.put("isMatrix", "true");
 		model.put("isWizard", "false");
 		model.put("enableReviewEdit", getEnableReviewEdit());

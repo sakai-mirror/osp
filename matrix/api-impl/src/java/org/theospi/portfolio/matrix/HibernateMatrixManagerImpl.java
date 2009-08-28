@@ -164,6 +164,7 @@ import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 import org.theospi.portfolio.tagging.impl.DecoratedTaggableItemImpl;
 import org.theospi.portfolio.tagging.impl.DecoratedTaggingProviderImpl;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.taggable.cover.WizardActivityProducer;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
@@ -198,7 +199,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private StyleManager styleManager;
    private LinkManager linkManager = null;
    private TaggingManager taggingManager;
-	
    
 
 private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
@@ -1325,47 +1325,77 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
    
    public List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash) {
-      String[] paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{new Boolean(false), new Boolean(true),
+      String[] paramNames;
+      
+      boolean rolesNotEmpty = (roles != null && roles.size() > 0);
+      boolean sitesNotEmpty = (worksiteIds != null && worksiteIds.size() > 0);
+      Object[] params;
+      if(rolesNotEmpty && sitesNotEmpty){
+    	  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "roles", "siteIds"};
+    	  params =  new Object[]{new Boolean(false), new Boolean(true),
     		  						  MatrixFunctionConstants.EVALUATE_MATRIX,
                                       MatrixFunctionConstants.PENDING_STATUS,
                                       agent, roles, worksiteIds};
-	
-      List matrixCells = this.getHibernateTemplate().findByNamedParam("select distinct new " +
-            "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
-            "wp.id, " +
-            "wp.pageDefinition.title, c.matrix.owner, " +
-            "c.wizardPage.modified, wp.pageDefinition.siteId) " +
-            "from WizardPage wp, Authorization auth, Cell c " +
-            "where ((wp.pageDefinition.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=:false) or " +
-            "(c.scaffoldingCell.scaffolding.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=:true))" +
-            "and wp.id = c.wizardPage.id " +
-            "and auth.function = :evaluate and wp.status = :pendingStatus and " +
-            "(auth.agent=:user or auth.agent in ( :roles )) " +
-            "and wp.pageDefinition.siteId in ( :siteIds )", 
-             paramNames, params );
-      
-      //if the current user doesn't have Access User List permission for the specific matrix, then
-      //this means they must not be able to see the owner for blind evaluation
-      List filteredMatrixCells = new ArrayList();
-      for (Iterator iterator = matrixCells.iterator(); iterator.hasNext();) {
-    	  EvaluationContentWrapper item = (EvaluationContentWrapper) iterator.next();
-    	  String ref = getScaffoldingCellByWizardPageDef(getWizardPage(item.getId()).getPageDefinition().getId()).getScaffolding().getReference();
-    	  if(!getAuthzManager().isAuthorized(MatrixFunctionConstants.ACCESS_USERLIST, getIdManager().getId(ref))) {
-    		  item.setHideOwnerDisplay(true);
+      }else{
+    	  if(!rolesNotEmpty){
+    		  if(!sitesNotEmpty){
+    			  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user"};
+    			  params =  new Object[]{new Boolean(false), new Boolean(true),
+  						  MatrixFunctionConstants.EVALUATE_MATRIX,
+                          MatrixFunctionConstants.PENDING_STATUS,
+                          agent};
+    		  }else{
+    			  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "siteIds"};
+    			  params =  new Object[]{new Boolean(false), new Boolean(true),
+  						  MatrixFunctionConstants.EVALUATE_MATRIX,
+                          MatrixFunctionConstants.PENDING_STATUS,
+                          agent, worksiteIds};
+    		  }
+    	  }else{
+    		  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "roles"};
+    		  params =  new Object[]{new Boolean(false), new Boolean(true),
+						  MatrixFunctionConstants.EVALUATE_MATRIX,
+                      MatrixFunctionConstants.PENDING_STATUS,
+                      agent, roles};
     	  }
-    	  filteredMatrixCells.add( item );
       }
 
+      String evaluatableQuery = "select distinct new " +
+      "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
+      "wp.id, " +
+      "wp.pageDefinition.title, c.matrix.owner, " +
+      "c.wizardPage.modified, wp.pageDefinition.siteId) " +
+      "from WizardPage wp, Authorization auth, Cell c " +
+      "where ((wp.pageDefinition.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=:false) or " +
+      "(c.scaffoldingCell.scaffolding.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=:true))" +
+      "and wp.id = c.wizardPage.id " +
+      "and auth.function = :evaluate and wp.status = :pendingStatus and " +
+      "(auth.agent=:user";      		
+      if(rolesNotEmpty)
+    	  evaluatableQuery += " or auth.agent in ( :roles )";
+      evaluatableQuery += ") ";
+      if(sitesNotEmpty)
+    	  evaluatableQuery += "and wp.pageDefinition.siteId in ( :siteIds )";
+
+      List matrixCells = this.getHibernateTemplate().findByNamedParam(evaluatableQuery, 
+    		  paramNames, params );
+
       // filter out group-restricted users
-      /*
+      
+      List filteredMatrixCells = new ArrayList();
       for ( Iterator it=matrixCells.iterator(); it.hasNext(); ) {
          EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
          WizardPage wizPage = getWizardPage( evalItem.getId() );
          Scaffolding scaffolding = 
             getScaffoldingCellByWizardPageDef( wizPage.getPageDefinition().getId() ).getScaffolding();
-         
-         if ( !allowAllGroups && scaffolding.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
+         boolean scaffoldCanViewAllGroups = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_ALL_GROUPS, getIdManager().getId(scaffolding.getReference()));
+       //if the current user doesn't have Access User List permission for the specific matrix, then
+         //this means they must not be able to see the owner for blind evaluation
+         if(!getAuthzManager().isAuthorized(MatrixFunctionConstants.ACCESS_USERLIST, getIdManager().getId(scaffolding.getReference()))) {
+        	 evalItem.setHideOwnerDisplay(true);
+         }
+
+         if ( !allowAllGroups && !scaffoldCanViewAllGroups ) {
             HashSet siteGroupUsers = (HashSet)siteHash.get( scaffolding.getWorksiteId().getValue() );
             if ( siteGroupUsers != null && siteGroupUsers.contains(wizPage.getOwner().getId().getValue()) )
                filteredMatrixCells.add( evalItem );
@@ -1375,7 +1405,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          }
          
       }
-      */
+      
+      
+      
       return filteredMatrixCells;
    }
    
@@ -1884,9 +1916,11 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       
       if(!canReview){
     	  if(page.getPageDefinition().isDefaultReviewers()){
-    		  //currently, this can only be true if its a matrix
-    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
-    		  canReview = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.REVIEW_MATRIX);
+    		  if(isMatrix){
+    			  //currently, this can only be true if its a matrix
+    			  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    			  canReview = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.REVIEW_MATRIX);
+    		  }
     	  }else{
     		  canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
     				  page.getPageDefinition().getId());
@@ -1922,8 +1956,17 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	  canViewOtherReviews = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_FEEDBACK_OTHER, getIdManager().getId(scaffolding.getReference()));
     	  canViewOtherEvals = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_EVAL_OTHER, getIdManager().getId(scaffolding.getReference()));
       }
+      org.sakaiproject.tool.api.Session session = SessionManager.getCurrentSession();
       
-      if (canEval || canReview || owns || canAccessAllCells || canViewOtherReviews || canViewOtherEvals) {
+      boolean hasAccessThroughLink = false;
+
+      String decPageId = (String) session.getAttribute("decPageId");
+      if(decPageId != null && !decPageId.equals("")){
+    	  hasAccessThroughLink = canUserAccessWizardPageAndLinkedArtifcact(page.getPageDefinition().getSiteId(), decPageId, "/wizard/page/" + pageId.getValue());
+      }
+
+      
+      if (hasAccessThroughLink || canEval || canReview || owns || canAccessAllCells || canViewOtherReviews || canViewOtherEvals) {
          //can I look at files? - own, review or eval
          getPageContents(page);
          
@@ -1936,13 +1979,13 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
                page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
          
-         org.sakaiproject.tool.api.Session session = SessionManager.getCurrentSession();
+         
          SecurityAdvisor contentAdvisor = (SecurityAdvisor)session.getAttribute("assignment.content.security.advisor");
          if (contentAdvisor != null)
         	 securityService.pushAdvisor(contentAdvisor);
       }
       
-      if ((owns && !hideEvaluations) || (isMatrix && canViewOtherEvals) || (!isMatrix && canEval)) {
+      if (hasAccessThroughLink || (owns && !hideEvaluations) || (isMatrix && canViewOtherEvals) || (!isMatrix && canEval)) {
          //can I look at reviews/evals/reflections? - own or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.EVALUATION_TYPE,
@@ -1950,7 +1993,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
                MatrixContentEntityProducer.MATRIX_PRODUCER);
       }
       
-      if (owns || (isMatrix && canViewOtherReviews) || (!isMatrix && (canEval || canReview))){
+      if (hasAccessThroughLink || owns || (isMatrix && canViewOtherReviews) || (!isMatrix && (canEval || canReview))){
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id, Review.FEEDBACK_TYPE,
@@ -3395,12 +3438,15 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		return returnList;
 	}
 	
-	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, List sentEmailAddrs, String parentTitle, String function){
+	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, HashMap<String, String> sendExtraEmails, String emailMessage, String parentTitle, String function){
 
     	String url;
     	String emailBody = "";
     	String subject = "";
+    	String emailBodyAnon = "";
+    	String subjectAnon = "";
     	User user = UserDirectoryService.getCurrentUser();
+    	boolean isOwner = wizPage.getOwner().getId().equals(user.getEid());
     	Boolean isMatrix = wizPage.getPageDefinition().getType().equals(wizPage.getPageDefinition().WPD_MATRIX_TYPE);
     	String uCasePageType = isMatrix ? messages.getString("email_uppercase_matrixCell") : messages.getString("email_uppercase_wizardPage");
     	String pageType = isMatrix ? messages.getString("email_matrixCell") : messages.getString("email_wizardPage");
@@ -3409,70 +3455,97 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	
     	String id = wizPage.getId()!=null ? wizPage.getId().getValue() : wizPage.getNewId().getValue();
     	
+    	String userNameHeader = user.getDisplayName();
+    	String userNameHeaderAnon = messages.getString("anon_user_header");
+		String userName = user.getDisplayName();
+		String userNameAnon = messages.getString("anon_user");
+    	
     	if(evaluation){
-    		subject = messages.getFormattedMessage("matrixEvaluationSubject", new Object[]{uCasePageType, user.getDisplayName()});   		
+    		subject = messages.getFormattedMessage("matrixEvaluationSubject", new Object[]{uCasePageType, userNameHeader});
+    		subjectAnon = messages.getFormattedMessage("matrixEvaluationSubject", new Object[]{uCasePageType, userNameHeaderAnon});
     	}else{
-    		subject = messages.getFormattedMessage("matrixFeedbackSubject", new Object[]{user.getDisplayName()});
+    		subject = messages.getFormattedMessage("matrixFeedbackSubject", new Object[]{userNameHeader});
+    		subjectAnon = messages.getFormattedMessage("matrixFeedbackSubject", new Object[]{userNameHeaderAnon});
     	}
 
     	ToolConfiguration toolConfig;
     	try {
     		Site wpSite = SiteService.getSite(wizPage.getPageDefinition().getSiteId());
-    		
-    		
+    		String placement;
     		if(isMatrix){
     			toolConfig = wpSite.getToolForCommonId("osp.matrix");
-    			String placement = toolConfig.getId();
-    			url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
-    				"/viewCell.osp?page_id=" + id;
-    		
+    			placement = toolConfig.getId();
     		}else{
     			toolConfig = wpSite.getToolForCommonId("osp.wizard");
-    			String placement = toolConfig.getId();
-    			if(wizPage.getPageDefinition().getType().equals(wizPage.getPageDefinition().WPD_WIZARD_SEQ_TYPE)){
-    				url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
-    					"/osp.wizard.run.helper/osp.wizard.page.helper/sequentialWizardPage.osp?page_id=" + id + "&directLinked=true";
-    			}else{
-    				url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
-        				"/osp.wizard.run.helper/osp.wizard.page.helper/wizardPage.osp?page_id=" + id + "&directLinked=true";
-    			}
+    			placement = toolConfig.getId();
     		}
+    		url =	ServerConfigurationService.getServerUrl() + 
+    		"/direct/matrixcell/" + wizPage.getId().getValue() + "/" + placement + "/viewCell.osp";
+
 
     		if(evaluation){
+    			
     			emailBody = messages.getFormattedMessage(
-    					"matrixEvaluationBody", new Object[] {user.getDisplayName(), pageType, wizPage.getPageDefinition().getTitle(),
+    					"matrixEvaluationBody", new Object[] {userName, pageType, wizPage.getPageDefinition().getTitle(),
+    							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), url, pageType, pageType, pageType});
+    			emailBodyAnon = messages.getFormattedMessage(
+    					"matrixEvaluationBody", new Object[] {userNameAnon, pageType, wizPage.getPageDefinition().getTitle(),
     							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), url, pageType, pageType, pageType});
     		}else{
     			emailBody = messages.getFormattedMessage(
-    					"matrixFeedbackBody", new Object[] {user.getDisplayName(), wizPage.getPageDefinition().getTitle(),
-    							parentTitle, wpSite.getTitle(), url});   			
+    					"matrixFeedbackBody", new Object[] {userName, wizPage.getPageDefinition().getTitle(),
+    							parentTitle, wpSite.getTitle(), url}); 
+    			emailBodyAnon = messages.getFormattedMessage(
+    					"matrixFeedbackBody", new Object[] {userNameAnon, wizPage.getPageDefinition().getTitle(),
+    							parentTitle, wpSite.getTitle(), url}); 			
     		}
+    		
+    		if(emailMessage != null && !"".equals(emailMessage)){
+				emailBody += messages.getFormattedMessage("matrixFeedbackBodyPersonalMessage", new Object[]{userName, emailMessage});
+				emailBodyAnon += messages.getFormattedMessage("matrixFeedbackBodyPersonalMessage", new Object[]{userNameAnon, emailMessage});
+			}
+    		
     		try {
 
     			String from = ServerConfigurationService.getString("setup.request", 
     					"postmaster@".concat(ServerConfigurationService.getServerName()));
 
-    			List<User> usersAllowedToViewAllGroupsForObject = null;
-    			if(isMatrix){
-    				String reference = getScaffoldingCellByWizardPageDef(wizPage.getPageDefinition().getId()).getScaffolding().getReference();
+    			//Username, Email
+    			HashMap<String, String> emails = new HashMap<String, String>();
+    			if(function != null && reviewObjectId != null){
+    				// add email addresses to the list based on function and reviewObjectId
+    				
+    				//get a list of users who have view all groups permission
+    				List<User> usersAllowedToViewAllGroupsForObject = null;
+    				if(isMatrix){
+    					String reference = getScaffoldingCellByWizardPageDef(wizPage.getPageDefinition().getId()).getScaffolding().getReference();
 
-    				usersAllowedToViewAllGroupsForObject = getSecurityService().unlockUsers(MatrixFunctionConstants.VIEW_ALL_GROUPS, reference);
+    					usersAllowedToViewAllGroupsForObject = getSecurityService().unlockUsers(MatrixFunctionConstants.VIEW_ALL_GROUPS, reference);
+    				}
+    				
+    				emails = getAuthzEmails(reviewObjectId, wpSite, groupAware, function, usersAllowedToViewAllGroupsForObject);
     			}
     			
-    			List<String> emails = getAuthzEmails(reviewObjectId, wpSite, groupAware, function, usersAllowedToViewAllGroupsForObject);
-    			
-    			//remove any sent email addresses:
-    			if(sentEmailAddrs != null){
-    				for (Iterator iterator = emails.iterator(); iterator.hasNext();) {
-    					String email = (String) iterator.next();
-    					if(sentEmailAddrs.contains(email)){
-    						iterator.remove();
+    			//add any extra email addresses:
+    			if(sendExtraEmails != null && sendExtraEmails.keySet() != null){
+    				if(emails != null && emails.keySet() != null){
+    					for (Iterator iterator = sendExtraEmails.keySet().iterator(); iterator.hasNext();) {    						
+    						String userId = (String) iterator.next();
+    						if(!emails.containsValue(sendExtraEmails.get(userId)))
+    							emails.put(userId, sendExtraEmails.get(userId));
     					}
     				}
     			}
 
-    			sendEmail(emails, from, subject, emailBody);
 
+    			String scaffoldRef = "";
+    			if(isMatrix){
+    				scaffoldRef = getScaffoldingCellByWizardPageDef(wizPage.getPageDefinition().getId()).getScaffolding().getReference();  				   		
+    			}
+    			
+    			//send the emails
+    			sendEmailNotifications(emails, isMatrix, from, subject, emailBody, subjectAnon, emailBodyAnon, scaffoldRef, isOwner, evaluation);
+    			
     		} catch (Exception e) {
     			e.printStackTrace();
     		}
@@ -3480,15 +3553,29 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     		e1.printStackTrace();
     	}
 	}
-		
-
-	private void sendEmail(List<String> toEmails, String from, String subject, String body){
-		for (String email : toEmails) {
-			if (validateEmail(email)) {
-				EmailService.send(from, email,
-						subject, body, null, null, null);
+	
+	public void sendEmailNotifications(HashMap<String, String> emails, boolean isMatrix, String from, String subject, String emailBody, String subjectAnon, String emailBodyAnon, String scaffoldRef, boolean isOwner, boolean isEvaluation){
+		Id scaffoldId = getIdManager().getId(scaffoldRef);
+		//Send the emails
+		if(emails != null && emails.keySet() != null){
+			for (String userId : emails.keySet()) {
+				String email = emails.get(userId);
+				if (validateEmail(email)) {
+					boolean canViewUsername = true;
+					if(isMatrix && !isOwner && isEvaluation){
+						//check if the reviewer/evaluator has privilage to view the uses name 
+						canViewUsername = getAuthzManager().isAuthorized(getAgentManager().getAgent(userId), MatrixFunctionConstants.ACCESS_USERLIST, scaffoldId);
+					}
+					if(canViewUsername){
+						EmailService.send(from, email,
+							subject, emailBody, null, null, null);
+					}else{
+						EmailService.send(from, email,
+								subjectAnon, emailBodyAnon, null, null, null);
+					}
+				}
 			}
-		}
+		}		
 	}
 	
 	/**
@@ -3504,13 +3591,13 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	 * 												but aren't in the current users group.  Null value is ok.
 	 * @return
 	 */
-	protected List<String> getAuthzEmails(Id reviewObjectId, Site site, boolean groupAware, String function, List<User> usersAllowedToViewAllGroupsForObject){
+	protected HashMap<String, String> getAuthzEmails(Id reviewObjectId, Site site, boolean groupAware, String function, List<User> usersAllowedToViewAllGroupsForObject){
 		
-		List<String> returnList = new ArrayList();
+		HashMap<String, String> returnMap = new HashMap<String, String>();
 		
 		if(reviewObjectId == null || site == null || function == null){
 			logger.warn("Invalid null argument passed to HibernateMatrixManager.getAuthzEmails");
-			return returnList;
+			return returnMap;
 		}
 		
 		//no need to look for groups if the site doesn't have groups
@@ -3560,8 +3647,8 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 								
 								email = user.getEmail();
 								if (validateEmail(email)
-										&& !returnList.contains(email)) {
-									returnList.add(email);
+										&& !returnMap.containsValue(email)) {
+									returnMap.put(user.getId(), email);
 								}
 							}
 						}
@@ -3572,8 +3659,8 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 					
 					if(!groupAware || (groupAware && usersInGroup.contains(user))){
 						String email = user.getEmail();
-						if (validateEmail(email) && !returnList.contains(email)) {
-							returnList.add(email);
+						if (validateEmail(email) && !returnMap.containsValue(email)) {
+							returnMap.put(user.getId(), email);
 						}
 					}
 				}
@@ -3582,7 +3669,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			}
 		}
 		
-		return returnList;		
+		return returnMap;		
 	}
 	
 	protected boolean validateEmail(String displayName)
@@ -3639,11 +3726,15 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		try
 		{
 			ToolSession toolSession = SessionManager.getCurrentToolSession();
-			List<DecoratedTaggingProvider> providers = (List) toolSession
-			.getAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
-			if (providers == null) {
+			List<DecoratedTaggingProvider> providers;
+			if(toolSession == null){
 				providers = getDecoratedProviders(item.getActivity());
-				toolSession.setAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM, providers);
+			}else{
+				providers = (List) toolSession.getAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
+				if (providers == null) {
+					providers = getDecoratedProviders(item.getActivity());
+					toolSession.setAttribute(HibernateMatrixManagerImpl.PROVIDERS_PARAM, providers);
+				}
 			}
 			
 			links = getLinkManager().getLinks(criteriaRef, true);
@@ -3750,4 +3841,128 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	public void setLinkManager(LinkManager linkManager) {
 		this.linkManager = linkManager;
 	}
+
+	public boolean canAccessAllMatrixCells(Id scaffoldingId){
+		Scaffolding scaffold = getScaffolding(scaffoldingId);
+		if(scaffold == null)
+	           throw new NullPointerException("The scaffolding was not found: " + scaffoldingId.getValue());
+		
+		return canAccessAllMatrixCellsHelper(scaffold);
+	}
+	
+	public boolean canAccessAllMatrixCellsHelper(Scaffolding scaffold){
+		Id worksiteId = scaffold.getWorksiteId();
+
+		if(scaffold.getOwner().getId().getValue().equals(UserDirectoryService.getCurrentUser().getId()))
+        	return true;
+
+        if (getAuthzManager().isAuthorized(MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(scaffold.getReference()))) {
+        	return true;
+        }
+        
+        return false;
+	}
+
+	public boolean canAccessScaffoldCellByScaffoldingCellId(Id scaffoldingCellId){
+		ScaffoldingCell sCell = getScaffoldingCell(scaffoldingCellId);
+
+		if(sCell == null)
+			throw new NullPointerException("The cell was not found.  ScaffoldingCell id for cell: " + scaffoldingCellId.getValue());
+		
+		return canAccessMatrixScaffoldCellHelper(sCell);
+	}
+	
+	public boolean canAccessScaffoldCellByWizPageDefId(Id wizPageDefId){
+		ScaffoldingCell sCell = getScaffoldingCellByWizardPageDef(wizPageDefId);
+
+		if(sCell == null)
+			throw new NullPointerException("The cell was not found.  Wizard Page Def for cell: " + wizPageDefId.getValue());
+		
+		return canAccessMatrixScaffoldCellHelper(sCell);
+	}
+	
+	public boolean canAccessMatrixScaffoldCellHelper(ScaffoldingCell sCell){
+		if(canAccessAllMatrixCellsHelper(sCell.getScaffolding())){
+			return true;
+		}
+
+		if(hasPermission(sCell.isDefaultEvaluators() ? sCell.getScaffolding().getId() : sCell.getWizardPageDefinition().getId(),
+				sCell.getScaffolding().getWorksiteId(),
+				MatrixFunctionConstants.EVALUATE_MATRIX)){
+			return true;
+		}
+
+		if(hasPermission(sCell.isDefaultReviewers() ? sCell.getScaffolding().getId() : sCell.getWizardPageDefinition().getId(),
+				sCell.getScaffolding().getWorksiteId(),
+				MatrixFunctionConstants.REVIEW_MATRIX)){
+			return true;
+		}
+		
+		
+		return false;
+		
+	}
+	
+	public boolean canAccessMatrixCell(Cell cell){
+		if(cell == null)
+			throw new NullPointerException("The cell passed was null");
+
+		//is owner of cell?
+		if(cell.getWizardPage().getOwner().getId()
+				.getValue().equals(SessionManager.getCurrentSessionUserId())){
+			return true;
+		}
+		
+		//canAccessMatrixScaffoldCellHelper will also check canAccessAnyMatrixCell
+		if(canAccessMatrixScaffoldCellHelper(cell.getScaffoldingCell())){
+			return true;
+		}
+
+		boolean allowParticipantFeedback = cell.getScaffoldingCell()
+		.isDefaultReviewers() ? cell.getScaffoldingCell()
+				.getScaffolding().isAllowRequestFeedback() : cell
+				.getScaffoldingCell().getWizardPageDefinition()
+				.isAllowRequestFeedback();
+
+		if(allowParticipantFeedback){
+			if(hasPermission(cell.getWizardPage().getId(), cell
+					.getScaffoldingCell().getScaffolding()
+					.getWorksiteId(),
+					MatrixFunctionConstants.FEEDBACK_MATRIX)){
+				return true;
+			}
+		}
+
+		return false;	
+	}
+
+	public boolean canUserAccessWizardPageAndLinkedArtifcact(String siteId, String pageId, String linkedArtifactId){
+		boolean canAccessCell = false;
+		boolean isPageLinked = false;
+		
+		if(canAccessMatrixCell(getCellFromPage(idManager.getId(pageId)))){
+			canAccessCell = true;
+		}
+		
+		if(canAccessCell){
+			WizardPage wizPage = getWizardPage(idManager.getId(pageId));
+			String wizPageOwnerId = wizPage.getOwner().getId().getValue();
+			String linkedArtifactReference = linkedArtifactId + "@" + wizPageOwnerId;
+			TaggableItem item = WizardActivityProducer.getItem(wizPage);
+			Set<DecoratedTaggableItem> taggableItems = getDecoratedTaggableItems(item, wizPage.getPageDefinition().getReference(), wizPage.getOwner().getId().getValue());
+			for (DecoratedTaggableItem decoratedTaggableItem : taggableItems) {
+				for (TaggableItem taggableItem : decoratedTaggableItem.getTaggableItems()) {
+					if(linkedArtifactReference.equals(taggableItem.getReference()) || linkedArtifactId.equals(taggableItem.getReference())){
+						isPageLinked = true;
+						break;
+					}
+				}
+				if(isPageLinked)
+					break;		
+			}
+		}
+		
+		return canAccessCell && isPageLinked;
+	}
+
 }

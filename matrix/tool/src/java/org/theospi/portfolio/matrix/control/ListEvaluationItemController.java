@@ -229,7 +229,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       model.put("hasGroups", hasGroups);
       
       
-      boolean allowAllGroups = false;
+      boolean allowAllGroups = true;
       List<Group> groupList = new ArrayList<Group>(getMatrixManager().getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine

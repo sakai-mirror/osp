@@ -33,9 +33,11 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.matrix.MatrixCellEntityProvider;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 
 public class MatrixCellEntityProviderImpl implements MatrixCellEntityProvider,
@@ -110,20 +112,33 @@ CoreEntityProvider, AutoRegisterEntityProvider, PropertyProvideable {
 		String placement = null;
 		String pageId = null;
 		String[] refParts = reference.split(Entity.SEPARATOR);
-		//String submissionId = "";
+		String decWrapper = "";
+		String decWrapperTag = "";
+		String decPageId = "";
+		String decSiteId = "";
 
 		if (refParts.length >= 4) {
 			//parsedRef = refParts[0] + Entity.SEPARATOR + refParts[1] + Entity.SEPARATOR + refParts[2];
 			placement = refParts[3];
 			pageId = refParts[2];
-			//if (refParts.length >= 5) {
-			//	submissionId = refParts[4].replaceAll("_", Entity.SEPARATOR);
-			//}
+			if (refParts.length >= 6) {
+				decWrapper = refParts[5].replaceAll("_", Entity.SEPARATOR);
+	    		if(decWrapper != null && !"".equals(decWrapper)){
+	    			String[] splitDec = decWrapper.split(Entity.SEPARATOR);
+	    			if(splitDec.length == 3){
+	    				decWrapperTag = splitDec[0];
+	    				decSiteId = splitDec[1];
+	    				decPageId = splitDec[2];
+	    			}
+	    		}
+			}
 		}
 
 		//String pageId = parsedRef;
 		try {
 			WizardPage page = matrixManager.getWizardPage(idManager.getId(pageId));
+			Boolean isMatrix = page.getPageDefinition().getType().equals(page.getPageDefinition().WPD_MATRIX_TYPE);
+			Boolean isSequential = page.getPageDefinition().getType().equals(page.getPageDefinition().WPD_WIZARD_SEQ_TYPE);
 			/*
 			props.put("title", assignment.getTitle());
 			props.put("author", assignment.getCreator());
@@ -143,10 +158,33 @@ CoreEntityProvider, AutoRegisterEntityProvider, PropertyProvideable {
 			//props.put("security.assignment.function", AssignmentService.SECURE_ACCESS_ASSIGNMENT);
 			//props.put("security.assignment.ref", submissionId);
 
-			String url = "/portal/directtool/" +  placement +
-			"/viewCell.osp?page_id=" + pageId;
-
-			props.put("url", url);
+			String url;
+			String urlBase = "/portal/directtool/";
+			if(isMatrix){
+				url = placement +
+				"/viewCell.osp?page_id=" + pageId;
+			}else if(isSequential){
+				url = placement +
+				"/osp.wizard.page.helper/sequentialWizardPage.osp?page_id=" + pageId;
+			}else{
+				url = placement +
+				"/osp.wizard.page.helper/wizardPage.osp?page_id=" + pageId;
+			}
+			
+			if(decWrapperTag != null && !"".equals(decWrapperTag)){
+				//change the base to "tool" since this is called inside a thickbox and will
+				//not add the Oncourse portal around the tool page.
+				urlBase = "/portal/tool/";
+				url += "&session.readOnlyMatrix=true&TB_iframe=true&session." + WizardPageHelper.WIZARD_PAGE + "=&panel=Main&override." + SpringTool.LAST_VIEW_VISITED + "=/viewCell.osp&decWrapperTag=" + decWrapperTag;
+			}
+			if(decSiteId != null && !"".equals(decSiteId)){
+				url += "&decSiteId=" + decSiteId;
+			}
+			if(decPageId != null && !"".equals(decPageId)){
+				url += "&decPageId=" + decPageId;
+			}
+			props.put("decPageId", decPageId);
+			props.put("url", urlBase + url);
 			/*
 			props.put("url", "/portal/tool/" + placement + "?assignmentId=" + assignment.getId() + 
 					"&submissionId=" + submissionId +

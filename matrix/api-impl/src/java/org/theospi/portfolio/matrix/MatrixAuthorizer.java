@@ -120,38 +120,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
     	  }
        }
       else if (function.equals(MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE)) {
-         //If I can eval, review, or own it
-         ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
-         //sCell.getWizardPageDefinition().get
-         
-         if(sCell == null)
-            throw new NullPointerException("The cell was not found.  Wizard Page Def for cell: " + id.getValue());
-            
-         Boolean returned = null;
-
-         Id worksiteId = sCell.getScaffolding().getWorksiteId();
-
-         // first check global perms for the site
-         if (checkPerms(facade, new String[]{MatrixFunctionConstants.EXPORT_SCAFFOLDING_ANY, MatrixFunctionConstants.REVISE_SCAFFOLDING_ANY}, worksiteId)) {
-            return Boolean.valueOf(true);
-         }
-         
-         //then check matrix perms
-       //if (checkPerms(facade, new String[]{MatrixFunctionConstants.CAN_USE_SCAFFOLDING}, idManager.getId(sCell.getScaffolding().getReference()))) {
-         if (SecurityService.unlock(MatrixFunctionConstants.CAN_USE_SCAFFOLDING, sCell.getScaffolding().getReference())) {
-             return Boolean.valueOf(true);
-          }
-
-         for (Iterator iter=sCell.getCells().iterator(); iter.hasNext();) {
-            Cell cell = (Cell)iter.next();
-            if (checkPerms(facade, new String[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-               MatrixFunctionConstants.REVIEW_MATRIX}, cell.getId())) {
-               return Boolean.valueOf(true);
-            }
-         }
-         returned = Boolean.valueOf(sCell.getScaffolding().getOwner().equals(agent));
-         if (returned.booleanValue())
-            return returned;
+    	  return Boolean.valueOf(true);
       }
       else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE)) {
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);

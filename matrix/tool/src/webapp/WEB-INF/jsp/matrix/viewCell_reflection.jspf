@@ -10,7 +10,7 @@
 			<osp:message key="reflection_section_header" />
 		</th>
 		<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
-		<th></th>
+		<th>&nbsp;</th>
 		<th><osp:message key="table_header_createdBy" /></th>
 		<th><osp:message key="table_header_modified" /></th>
 	</tr>
@@ -92,7 +92,16 @@
 			</td>
 			<td></td>
 			<td>
-				<c:out value="${reflections[0].reviewContentNode.technicalMetadata.owner.displayName}" />
+				<c:choose>
+					<c:when test="${((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || (scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser)}">
+						<c:out value="${reflections[0].reviewContentNode.technicalMetadata.owner.displayName}" />
+					</c:when>
+					<c:otherwise>
+						<span title="<fmt:message key="blind_evaluation_tooltip"/>">
+							<fmt:message key="blind_evaluation_username"></fmt:message>
+						</span>
+					</c:otherwise>
+				</c:choose>		
 			</td>
 			<td>
 				<fmt:formatDate	value="${reflections[0].reviewContentNode.technicalMetadata.lastModified}" pattern="${date_format}" />

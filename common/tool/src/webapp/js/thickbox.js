@@ -238,10 +238,10 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 					urlNoQuery = url.split('TB_');
 					jQuery("#TB_iframeContent").remove();
 					if(params['modal'] != "true"){//iframe no modal
-						jQuery("#TB_window").append("<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div>" + printDiv + "<div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div></div><iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe()' style='width:"+(ajaxContentW + 9)+"px;height:"+(ajaxContentH + 17)+"px;' > </iframe>");
+						jQuery("#TB_window").append("<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div>" + printDiv + "<div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a> or Esc Key</div></div><iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe("+(ajaxContentH + 17)+")' style='width:"+(ajaxContentW + 9)+"px;height:"+(ajaxContentH + 17)+"px;' > </iframe>");
 					}else{//iframe modal
 					jQuery("#TB_overlay").unbind();
-						jQuery("#TB_window").append("<iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe()' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;'> </iframe>");
+						jQuery("#TB_window").append("<iframe frameborder='0' hspace='0' src='"+url+"' id='TB_iframeContent' name='TB_iframeContent"+Math.round(Math.random()*1000)+"' onload='tb_showIframe("+(ajaxContentH + 17)+")' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;'> </iframe>");
 					}
 			}else{// not an iframe, ajax
 					if(jQuery("#TB_window").css("display") != "block"){
@@ -305,10 +305,10 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 }
 
 //helper functions below
-function tb_showIframe(){
+function tb_showIframe(height){
 	jQuery("#TB_load").remove();
 	jQuery("#TB_window").css({display:"block"});
-	
+	jQuery("#TB_iframeContent").css({height:height+"px"});//IE7 hack
 	//find elements that need to be hidden with a certain class
 	var frame = document.getElementById("TB_iframeContent");
 	var doc = frame.contentDocument;

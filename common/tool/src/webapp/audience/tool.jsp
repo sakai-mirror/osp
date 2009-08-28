@@ -133,6 +133,28 @@
                                       value="#{common_msgs.add}"/>
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
+                  <!-- other user and email user option -->
+                  <f:subview id="authorSelectedReviewers" rendered="#{audience.inviteFeedbackAudience}">                 
+                  	 <f:subview rendered="#{audience.inviteFeedbackAudience}" id="authorSelected1">
+					  <sakai:instruction_message value="#{common_msgs.matrixFeedbackAdditionalReviewers}"/>
+					 </f:subview>
+					 
+					 <f:subview rendered="#{audience.inviteFeedbackAudience}" id="authorSelected2">
+						<h:dataTable id="authorSelectedTable"
+		        			 cellpadding="0" 
+		                     cellspacing="0"		                    
+		                     value="#{audience.externalReviewersForMatrix}"
+		                     var="reviewerNames">	          
+		          			<h:column>
+		           
+		            			<h:outputText value="#{reviewerNames}"/>
+		          			</h:column>
+		          		</h:dataTable>
+					 </f:subview>
+                  	                                  
+                     
+                     <f:verbatim></p></f:verbatim>
+                  </f:subview>
 
                   <%-- optional message for browse user selection 
                   <f:subview id="browseUser" rendered="#{audience.maxList}" >

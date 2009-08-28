@@ -68,7 +68,6 @@ public class BaseScaffoldingController {
    private LockManager lockManager = null;
    private TaggingManager taggingManager;
    private WizardActivityProducer wizardActivityProducer;
-   private WorkflowManager workflowManager;
    private WorksiteManager worksiteManager = null;
    private AuthenticationManager authManager = null;
    
@@ -190,25 +189,6 @@ public class BaseScaffoldingController {
       
       return scaffolding;
    }
-   
-   protected Set createEvalWorkflows(ObjectWithWorkflow wpd) {
-		return getWorkflowManager().createEvalWorkflows(wpd);
-	}
-   
-	/**
-	 * @return Returns the workflowManager.
-	 */
-	public WorkflowManager getWorkflowManager() {
-		return workflowManager;
-	}
-
-	/**
-	 * @param workflowManager
-	 *            The workflowManager to set.
-	 */
-	public void setWorkflowManager(WorkflowManager workflowManager) {
-		this.workflowManager = workflowManager;
-	}
    
    /**
     ** Update the status of all matrix cells to match the initial status 

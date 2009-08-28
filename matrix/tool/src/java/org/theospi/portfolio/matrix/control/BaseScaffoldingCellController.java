@@ -128,9 +128,17 @@ public class BaseScaffoldingCellController {
 		getMatrixManager().removeFromSession(oldScaffoldingCell);
 
 		String oldStatus = oldScaffoldingCell.getInitialStatus();
-		scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
-				new HashSet(createEvalWorkflows(scaffoldingCell
-						.getWizardPageDefinition())));
+
+		Set<Workflow> evalWorkflows = new HashSet<Workflow>();
+		if (scaffoldingCell.isDefaultEvaluationForm()) {
+			evalWorkflows = getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition(), 
+					scaffoldingCell.getScaffolding().getEvaluationDevice());
+		}
+		else {
+			evalWorkflows = getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition());
+		}
+		scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
+		
 		getMatrixManager().storeScaffoldingCell(scaffoldingCell);
 		scaffoldingCell.getScaffolding().setModifiedDate(new Date(System.currentTimeMillis()));
 		getMatrixManager().storeScaffolding(scaffoldingCell.getScaffolding());

@@ -12,6 +12,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.tool.api.SessionManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -62,7 +63,7 @@ public class ViewCellInformationController implements Controller{
 		try {
 			sCell = matrixManager.getScaffoldingCell(id);
 		} catch (ObjectNotFoundException e) {
-			logger.warn("Can't find scaffolding cell with idl: " + strId + ".  Trying as a wizard page definition.");
+			logger.debug("Can't find scaffolding cell with id: " + strId + ".  Trying as a wizard page definition.");
 		}
 		if (sCell == null) {
 			sCell = matrixManager.getScaffoldingCellByWizardPageDef(id);
@@ -91,6 +92,11 @@ public class ViewCellInformationController implements Controller{
 		
 		model.put("site_title", siteTitle);
 		model.put("wizardPageDef", wizPageDef);
+		
+		String overrideLastView = (String)request.get("override." + SpringTool.LAST_VIEW_VISITED);
+        if (overrideLastView != null && !"".equalsIgnoreCase(overrideLastView)) {
+        	session.put(SpringTool.LAST_VIEW_VISITED, overrideLastView);
+        }
 		
 		return new ModelAndView("success", model);
 	}

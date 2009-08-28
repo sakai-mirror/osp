@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.util.FormNameGeneratorUtil;
@@ -72,6 +74,7 @@ import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 
 public class ReviewHelperController implements Controller {
@@ -89,6 +92,7 @@ public class ReviewHelperController implements Controller {
    private StyleManager styleManager;
    private AuthenticationManager authManager = null;
    private SecurityService securityService;
+   private WorkflowManager workflowManager;
 	
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String strId = null;
@@ -220,6 +224,7 @@ public class ReviewHelperController implements Controller {
       //
       Id id = getIdManager().getId(strId);
       ObjectWithWorkflow obj = null;
+      Set<Workflow> evalWorkflows = new HashSet<Workflow>();
 
       if (lookupId.equals(WizardPage.PROCESS_TYPE_KEY)) {
     	
@@ -228,13 +233,24 @@ public class ReviewHelperController implements Controller {
        		 //scaffoldingId is used for the reflection form when the default user forms
           	 //are selected for a matrix cell
        		 obj = matrixManager.getScaffolding(idManager.getId((String) request.get("scaffoldingId")));
+       		WizardPageDefinition wpd = page.getPageDefinition();
+       		 evalWorkflows = wpd.getEvalWorkflows();
+       		if (evalWorkflows == null || evalWorkflows.size() == 0) {
+       			
+       			evalWorkflows = getWorkflowManager().createEvalWorkflows(wpd, ((Scaffolding)obj).getEvaluationDevice());
+       			ScaffoldingCell sc = getMatrixManager().getScaffoldingCellByWizardPageDef(wpd.getId());
+       			sc.getWizardPageDefinition().setEvalWorkflows(evalWorkflows);
+       			getMatrixManager().storeScaffoldingCell(sc);
+       		}
        	 }else{
        		obj = page.getPageDefinition();
+       		evalWorkflows = obj.getEvalWorkflows();
        	 }
        	 
       }else {
     	  CompletedWizard cw = wizardManager.getCompletedWizard(id);
     	  obj = cw.getWizard();
+    	  evalWorkflows = obj.getEvalWorkflows();
       }
 
 
@@ -253,7 +269,7 @@ public class ReviewHelperController implements Controller {
          case Review.EVALUATION_TYPE:
             formTypeId = obj.getEvaluationDevice().getValue();
             session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS,
-            		obj.getEvalWorkflows());
+            		evalWorkflows);
             formTypeTitleKey = "osp.reviewType." + Review.EVALUATION_TYPE;
             break;
          case Review.REFLECTION_TYPE:
@@ -362,7 +378,7 @@ public class ReviewHelperController implements Controller {
     	   }
     	    
     	   String directLink = ServerConfigurationService.getServerUrl() + 
-    	   		"/direct/matrixcell/" + strId + "/" + placement.getId() + "/" +"/viewCell.osp";
+    	   		"/direct/matrixcell/" + strId + "/" + placement.getId() + "/viewCell.osp";
 
     	   String[] subjArray = {cellPageName, matrixWizardName, matrixWizardType, typeStr};
     	   String message_subject = myResources.getFormattedMessage("feedbackEvalNotificationSubject", subjArray);
@@ -619,6 +635,14 @@ public AuthenticationManager getAuthManager() {
 
 public void setAuthManager(AuthenticationManager authManager) {
 	this.authManager = authManager;
+}
+
+public WorkflowManager getWorkflowManager() {
+	return workflowManager;
+}
+
+public void setWorkflowManager(WorkflowManager workflowManager) {
+	this.workflowManager = workflowManager;
 }
 
 }

@@ -27,6 +27,7 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.util.ResourceLoader;
@@ -94,21 +95,17 @@ public class WizardItemImpl implements TaggableItem {
 		else if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_SEQ_TYPE))
 			view="sequentialWizardPage.osp";
 
-		url = ServerConfigurationService.getServerUrl() + "/portal/tool/" + 
-			placement + "/osp.wizard.page.helper/" + view;
+		url = ServerConfigurationService.getServerUrl() + "/direct/matrixcell/"
+				+ page.getId().getValue() + "/" + placement + "/" + view;
 		return url;
 	}
 	
 	public String getItemDetailUrlParams() {
-		return "?session.readOnlyMatrix=true" +
-			"&page_id=" + page.getId().getValue() + 
-			"&session." + WizardPageHelper.WIZARD_PAGE + "=" +
-			"&panel=Main" + 
-			"&TB_iframe=true";
+		return "?panel=Main&TB_iframe=true&override." + SpringTool.LAST_VIEW_VISITED + "=/viewCell.osp";
 	}
 	
 	public boolean getUseDecoration() {
-		return false;
+		return true;
 	}
 
 	public String getIconUrl()

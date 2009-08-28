@@ -126,45 +126,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return returned;
          
       } else if (function.equals(WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE)) {
-         //If I can eval, review, or own it
-         List pages = wizardManager.getCompletedWizardPagesByPageDef(id);
-         Boolean returned = null;
-
-         for (Iterator iter=pages.iterator(); iter.hasNext();) {
-            CompletedWizardPage cwp = (CompletedWizardPage)iter.next();
-            // why are we trying to get a wizard permission on a completed wizard page id?
-            // returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, cwp.getId()));
-            returned = isWizardAuthForEval(facade, agent, cwp.getCategory().getWizard().getWizard().getId());
-            
-            if (returned == null || !returned.booleanValue()) {
-               // again, why review wizard permission on the completed wizard page id
-               //returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, cwp.getId()));
-               returned = isWizardAuthForReview(facade, agent, cwp.getCategory().getWizard().getWizard().getId());
-            }
-            if (returned == null || !returned.booleanValue()) {
-               // if the user is the owner of the completed wizard
-               returned = Boolean.valueOf(cwp.getCategory().getWizard().getOwner().equals(agent));
-            }
-            if (returned == null || !returned.booleanValue()) {
-               // Again, with the cwp instead of the wizard
-               //returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD,id));
-               returned = isWizardViewAuth(facade, agent, cwp.getCategory().getWizard().getWizard().getId(), true);
-            }
-            if (returned == null || !returned.booleanValue()) {
-               // if the user is the owner of the actual wizard
-               returned = Boolean.valueOf(cwp.getCategory().getWizard().getWizard().getOwner().equals(agent));
-            }
-            if (returned.booleanValue())
-               return returned;
-         }
-        
-         WizardPageSequence wps = getWizardManager().getWizardPageSeqByDef(id);
-         
-         returned = Boolean.valueOf(wps.getCategory().getWizard().getOwner().equals(agent));
-         if (returned.booleanValue())
-            return returned;
-         
-         return null;
+         return Boolean.valueOf(true);
       } 
       else if (function.equals(WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARD)) {
          Wizard wizard = wizardManager.getWizard(id);

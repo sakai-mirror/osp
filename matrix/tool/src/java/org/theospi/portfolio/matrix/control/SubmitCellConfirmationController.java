@@ -89,7 +89,7 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
 			Id reviewObjectId = null;
 			String parentTitle = "";
 			if(isCellPage){
-				if(cell.getScaffoldingCell().isDefaultReviewers()){
+				if(cell.getScaffoldingCell().isDefaultEvaluators()){
 					reviewObjectId = cell.getScaffoldingCell().getScaffolding().getId();
 				}else{
 					reviewObjectId = cell.getScaffoldingCell().getWizardPageDefinition().getId();
@@ -100,7 +100,7 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
 				parentTitle = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId()).getCategory().getWizard().getName();
 				reviewObjectId = page.getPageDefinition().getId();
 			}
-			getMatrixManager().notifyAudience(page, reviewObjectId, true, null, parentTitle, MatrixFunctionConstants.EVALUATE_MATRIX);
+			getMatrixManager().notifyAudience(page, reviewObjectId, true, null, null, parentTitle, MatrixFunctionConstants.EVALUATE_MATRIX);
 
 			if (!isCellPage) {
 				getMatrixManager().submitPageForEvaluation(page);

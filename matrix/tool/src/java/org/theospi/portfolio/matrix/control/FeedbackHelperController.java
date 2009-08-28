@@ -46,23 +46,27 @@ public class FeedbackHelperController implements Controller {
 						"feedbackAction").toString().equals("save")) ? "save"
 						: "cancel";
 				model.put("feedbackAction", action);
+				HashMap<String, String> extraEmailAddrs = new HashMap<String, String>();
+				if(session.get("extraEmailAddrs") != null){
+					extraEmailAddrs = (HashMap<String, String>) session.get("extraEmailAddrs");
+					session.remove("extraEmailAddrs");
+				}
+				String emailMessage = null;
+				if(session.get("emailMessage") != null){
+					emailMessage = (String) session.get("emailMessage");
+					session.remove("emailMessage");
+				}
 				//Send email notification to Author Selected Reviewers:
-//				if("save".equals(action)){
-//					Cell cell = matrixManager.getCellFromPage(idManager.getId(request.get("inviteFeedbackReturn").toString()));
-//					Id reviewObjectId = null;
-//					if(cell.getScaffoldingCell().isDefaultReviewers()){
-//						reviewObjectId = cell.getScaffoldingCell().getScaffolding().getId();
-//					}else{
-//						reviewObjectId = cell.getScaffoldingCell().getWizardPageDefinition().getId();
-//					}
-//					List sentEmailAddrs = new ArrayList();
-//					if(session.get("sentEmailAddrs") != null){
-//						sentEmailAddrs = (List) session.get("sentEmailAddrs");
-//						session.remove("sentEmailAddrs");
-//					}
-//					
-//					notifyAudience(cell, reviewObjectId, true, sentEmailAddrs);
-//				}
+				if("save".equals(action)){
+					Cell cell = matrixManager.getCellFromPage(idManager.getId(request.get("inviteFeedbackReturn").toString()));
+					
+					
+					//by passing null for reviewObjectId or/and function, we are saying to ignore any selected reviewers in
+					//the matrix settings and only send emails to the ones the user selected.  To append
+					//matrix selected reviewers, all you have to do is change null to 
+					//MatrixFunctionConstants.REVIEW_MATRIX for function and pass the reviewObjectId
+					getMatrixManager().notifyAudience(cell.getWizardPage(), null, true, extraEmailAddrs, emailMessage, cell.getScaffoldingCell().getScaffolding().getTitle(), null);				
+				}
 				session.remove("feedbackAction");
 				return new ModelAndView("viewCell", model);
 			}else if(request.get("inviteFeedbackNotify") != null){
@@ -85,7 +89,7 @@ public class FeedbackHelperController implements Controller {
 				}else{
 					reviewObjectId = cell.getScaffoldingCell().getWizardPageDefinition().getId();
 				}
-				getMatrixManager().notifyAudience(cell.getWizardPage(), reviewObjectId, true, null, cell.getScaffoldingCell().getScaffolding().getTitle(), MatrixFunctionConstants.REVIEW_MATRIX);
+				getMatrixManager().notifyAudience(cell.getWizardPage(), reviewObjectId, true, null, null, cell.getScaffoldingCell().getScaffolding().getTitle(), MatrixFunctionConstants.REVIEW_MATRIX);
 				model.put("page_id", cell.getWizardPage().getId());
 				model.put("feedbackReturn", cell.getWizardPage().getId());
 				model.put("feedbackAction", "save");
