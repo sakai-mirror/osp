@@ -434,6 +434,7 @@
             <value>osp.presentation.delete</value>
             <value>osp.presentation.comment</value>
             <value>osp.presentation.create</value>
+            <value>osp.presentation.review</value>
          </list>
       </property>
    </bean>

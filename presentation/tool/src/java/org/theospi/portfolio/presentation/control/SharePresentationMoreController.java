@@ -130,15 +130,12 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       // Update list of Shared-with Users         
       List shareList = getShareList(presentation);
       
-      boolean isUpdated = false;
       if (shareBy.equals(SHAREBY_EMAIL) || shareBy.equals(SHAREBY_SEARCH) ) 
       {
          String shareUser = (String)request.get("share_user");
          if ( shareUser != null && !shareUser.equals("") ) {
             errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
-            if ( errMsg == null )
-               isUpdated = true;
-            else
+            if ( errMsg != null )
                model.put("errMsg", rl.getFormattedMessage(errMsg, new Object[]{shareUser}) );
          }
       }
@@ -151,17 +148,15 @@ public class SharePresentationMoreController extends AbstractPresentationControl
          }
 
          List availList = getAvailableUserList(presentation.getSiteId(), shareList, groupList);
-         isUpdated = updateAvailList( shareBy, request, presentation, shareList, availList );
+         updateAvailList( shareBy, request, presentation, shareList, availList );
          model.put("availList", availList );
       }
       else if ( shareBy.equals(SHAREBY_ROLE) || shareBy.equals(SHAREBY_ALLROLE) )
       {
          List availList = getAvailableRoleList(shareBy, presentation.getSiteId(), shareList);
-         isUpdated = updateAvailList( shareBy, request, presentation, shareList, availList );
+         updateAvailList( shareBy, request, presentation, shareList, availList );
          model.put("availList", availList );
       }
-      
-      model.put("isUpdated", new Boolean(isUpdated) );
       
       // Check if request to return to previous page
       if ( request.get("back") != null && errMsg == null )

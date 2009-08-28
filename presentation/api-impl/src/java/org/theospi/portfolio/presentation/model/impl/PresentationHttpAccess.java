@@ -26,13 +26,20 @@ import org.sakaiproject.entity.api.EntityCopyrightException;
 import org.sakaiproject.entity.api.EntityNotDefinedException;
 import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+
+import java.util.Collection;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,6 +53,30 @@ public class PresentationHttpAccess extends OspHttpAccessBase {
    private PresentationManager presentationManager;
    private IdManager idManager;
 
+   public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref,
+                            Collection copyrightAcceptedRefs) 
+      throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException
+   {
+      // Check if this reference is for presentation content
+      String[] parts = ref.getReference().split(Entity.SEPARATOR);
+      if ( parts.length != 4 )
+         super.handleAccess( req, res, ref, copyrightAcceptedRefs );
+         
+      // otherwise redirect to view the given presentation
+      String redirectUrl = ServerConfigurationService.getServerUrl()
+         + "/osp-presentation-tool/viewPresentation.osp?id=" 
+         + parts[3];
+
+      try
+      {
+         res.sendRedirect(res.encodeRedirectURL(redirectUrl));
+      }
+      catch ( IOException e )
+      {
+         throw new EntityNotDefinedException(ref.getReference());
+      }
+   }
+               
    protected void checkSource(Reference ref, ReferenceParser parser)
       throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
 

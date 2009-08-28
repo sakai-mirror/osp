@@ -27,11 +27,11 @@
    </query>
    
    <query name="findTerms">
-      from GlossaryEntry where lower(term)=lower(?) AND (worksite_id=? or worksite_id is null)
+      from GlossaryEntry where lower(term)=? AND (worksiteId=? or worksiteId is null)
    </query>
    
 	<query name="findAllSiteTerms">
-      from GlossaryEntry where worksite_id=? Order by term
+      from GlossaryEntry where worksiteId=? Order by term
    </query>
    
 	<query name="findAllTerms">
@@ -39,11 +39,11 @@
    </query>
    
 	<query name="findGlobalTerms">
-		from GlossaryEntry where worksite_id is null Order by term
+		from GlossaryEntry where worksiteId is null Order by term
    </query>
    
 	<query name="findByPhrase">
-		from GlossaryEntry where term like(?) AND (worksite_id=? or worksite_id is null)
+		from GlossaryEntry where term like(?) AND (worksiteId=? or worksiteId is null)
    </query>   
 
 </hibernate-mapping>

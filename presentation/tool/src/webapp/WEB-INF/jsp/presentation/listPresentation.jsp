@@ -5,6 +5,7 @@
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
 <osp-c:authZMap prefix="osp.presentation." var="can" />
+
 <script type="text/javascript" src="/library/js/jquery.js">
 </script>
 <script type="text/javascript">
@@ -223,6 +224,9 @@ $(document).ready(function() {
 			 <c:if test="${myworkspace}">
 			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
 			 </c:if>
+			 <c:if test="${!myworkspace && can.review}">
+			   <th scope="col" class="attach"><fmt:message key="table_header_review"/></th>
+			 </c:if>
 		  </tr>
 	   </thead>
 		<tbody>
@@ -294,6 +298,16 @@ $(document).ready(function() {
              <a
                 href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_show"/></a>
              </c:if>
+             
+             <c:if test="${!myworkspace && can.review && !presentation.isDefault}">
+             <a
+                href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_review_set"/></a>
+             </c:if>
+             <c:if test="${!myworkspace && can.review && presentation.isDefault}">
+             <a
+                href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_review_clear"/></a>
+             </c:if>
+             
 							</ul>
 						</li>
 					<li style="height:1px;width:1px;display:inline;">
@@ -317,9 +331,15 @@ $(document).ready(function() {
 		  </td>
         
 		  <td align="center">
-			 <c:if test="${presentationBean.shared}">
-				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
-			 </c:if>
+			 <c:choose>
+				 <c:when test="${presentationBean.public}">
+					<fmt:message key="comments_public"/>
+				 </c:when>
+				 <c:when test="${presentationBean.shared}">
+					<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+				 </c:when>
+				 <c:otherwise/>
+			 </c:choose>
 		  </td>
 		  
 		  <td align="center">
@@ -339,6 +359,14 @@ $(document).ready(function() {
 		  
 		  <c:if test="${myworkspace}">
 			 <td><c:out value="${presentation.worksiteName}" /></td>
+		  </c:if>
+        
+		  <c:if test="${!myworkspace && can.review}">
+			 <td align="center">
+			 <c:if test="${presentation.isDefault}">
+				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+			 </c:if>
+			 </td>
 		  </c:if>
 		</tr>
 	  </c:forEach>

@@ -146,6 +146,18 @@ public interface PresentationManager extends CleanupableService {
    public Document getPresentationPreviewLayoutAsXml(Presentation presentation, String pageId);
 
    /**
+    * Return a unrestricted list of all presentations for given toolId
+    * Portfolios returned may be unpublished/inactive/unshared
+    * User must have permission and portfolio.unrestricted.view must be enabled
+    *
+    * @param owner current user
+    * @param toolId current tool 
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
+    */
+   public Collection findAllPresentationsUnrestricted(Agent owner, String toolId, String showHidden);
+   
+   /**
     * Return a list of all presentations agent can view, optionally filtered by toolId.
     *
     * @param owner current user

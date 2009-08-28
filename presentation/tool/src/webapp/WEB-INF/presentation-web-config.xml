@@ -435,6 +435,35 @@
         </property>
     </bean>
 
+   <bean id="reviewPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+     <property name="controller">
+       <bean class="org.theospi.portfolio.presentation.control.ReviewPresentationController" parent="listScrollerController">
+         <property name="presentationService">
+           <ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
+         </property>    
+         <property name="serverConfigurationService">
+           <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+         </property>
+       </bean>
+     </property>
+     <property name="customTypedEditors">
+       <list>
+         <ref bean="idCustomEditor"/>
+       </list>
+     </property>
+     <property name="screenMappings">
+       <props>
+         <prop key="success">listPresentationRedirect</prop>
+       </props>
+     </property>
+     <property name="commandName">
+       <value>presentations</value>
+     </property>
+     <property name="commandClass">
+       <value>org.theospi.portfolio.presentation.model.Presentation</value>
+     </property>
+   </bean>
+
     <bean id="org.theospi.portfolio.presentation.support.PresentationService" class="org.theospi.portfolio.presentation.support.PresentationService">
 		<property name="authnManager">
 		    <ref bean="authManager"/>

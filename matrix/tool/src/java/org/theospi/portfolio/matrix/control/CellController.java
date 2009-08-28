@@ -270,14 +270,15 @@ public class CellController implements FormController, LoadObjectController {
 		model.put("reflections", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.REFLECTION_TYPE, siteId, getEntityProducer()));
 		model.put("cellForms", cellForms );
-		
+		model.put("numCellForms", cellForms.size() );		
 
 		Boolean readOnly = new Boolean(false);
 				
 		// Matrix-only initializations
 		if (cell.getCell().getMatrix() != null) {
 			model.put("allowItemFeedback", 
-						 getAllowItemFeedback( cell.getCell().getScaffoldingCell().getScaffolding().getItemFeedbackOption(), reviews, cellForms) );
+						 getAllowItemFeedback( cell.getCell().getScaffoldingCell().getScaffolding().getItemFeedbackOption(), 
+                                         reviews, cellForms, cell.getNodes()) );
 			model.put("allowGeneralFeedback", 
 						 getAllowGeneralFeedback( cell.getCell().getScaffoldingCell().getScaffolding().getGeneralFeedbackOption(), reviews) );
 			model.put("generalFeedbackNone", cell.getCell().getScaffoldingCell().getScaffolding().isGeneralFeedbackNone());
@@ -358,15 +359,46 @@ public class CellController implements FormController, LoadObjectController {
 	/**
 	 ** Return boolean array if item feedback is allowed based on feedback options
 	 **/
-	protected Boolean[] getAllowItemFeedback( int feedbackOption, List reviews, List<Node> cellForms )
+	protected Boolean[] getAllowItemFeedback( int feedbackOption, List reviews, List<Node> cellForms, List attachments )
 	{
-		Boolean[] allowItemFeedback = new Boolean[cellForms.size()];
+		Boolean[] allowItemFeedback = new Boolean[cellForms.size()+attachments.size()];
 		int index = -1;
-		
+
+      // First loop through forms		
 		for (Iterator cIt=cellForms.iterator(); cIt.hasNext();)
 		{
 			index++;
 			Node   thisNode   = (Node)cIt.next();
+				
+			if ( feedbackOption==WizardMatrixConstants.FEEDBACK_OPTION_SINGLE )
+			{
+				allowItemFeedback[index] = true;
+				for (Iterator rIt=reviews.iterator(); rIt.hasNext();)
+				{
+					Review thisReview = (Review)rIt.next();
+					if ( thisReview.getItemId() != null &&
+						  thisReview.getItemId().equals(thisNode.getId().getValue()) )
+					{
+						allowItemFeedback[index] = false;
+						break;
+					}
+				}
+			}
+			else if ( feedbackOption==WizardMatrixConstants.FEEDBACK_OPTION_NONE )
+			{
+				allowItemFeedback[index] = false;
+			}
+			else
+			{
+				allowItemFeedback[index] = true;
+			}
+		}
+		
+		// Second loop through attachments
+		for (Iterator aIt=attachments.iterator(); aIt.hasNext();)
+		{
+			index++;
+			Node   thisNode   = (Node)aIt.next();
 				
 			if ( feedbackOption==WizardMatrixConstants.FEEDBACK_OPTION_SINGLE )
 			{

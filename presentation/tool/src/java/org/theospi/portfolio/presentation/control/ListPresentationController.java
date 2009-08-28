@@ -49,6 +49,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 
@@ -82,21 +83,27 @@ public class ListPresentationController extends AbstractPresentationController {
       Collection presentations = null;
       String filterToolId = null;
       
+      String baseUrl  = getServerConfigurationService().getServerUrl();
+      boolean viewAll = getServerConfigurationService().getBoolean("osp.presentation.viewall", false) &&
+
+         getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
+                                        getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+      
       // If not on MyWorkspace, grab presentations for this tool only
-		if ( ! isOnWorkspaceTab() )
+      if ( ! isOnWorkspaceTab() )
          filterToolId = currentToolId;
         
       if ( filterList.equals(PREF_FILTER_VALUE_MINE) )
          presentations = getPresentationManager().findOwnerPresentations(currentAgent, filterToolId, showHidden);
       else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
          presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
+      else if ( viewAll && !isOnWorkspaceTab() )
+         presentations = getPresentationManager().findAllPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
       else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
          presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
 
       List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
-
-      String baseUrl = getServerConfigurationService().getServerUrl();
 
       String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?" 
          + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
@@ -214,22 +221,20 @@ public class ListPresentationController extends AbstractPresentationController {
    public class PresentationDataBean {
       Presentation m_presentation;
       int m_commentNum;
-      boolean m_shared;
+      boolean m_shared = false;
+      boolean m_public = false;
       
       public PresentationDataBean( Presentation presentation ) {
          m_presentation = presentation;
          
          // determine shared attributes (public is considered shared)
          if ( presentation.getIsPublic() ) {
+            m_public = true;
+         }
+         
+         List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
+         if (authzs.size() > 0)
             m_shared = true;
-         }
-         else {
-            List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
-            if (authzs.size() > 0)
-               m_shared = true;
-            else
-               m_shared = false;
-         }
          
          // find number of comments
          List comments = getPresentationManager().getPresentationComments( presentation.getId(), getAuthManager().getAgent() );
@@ -261,6 +266,10 @@ public class ListPresentationController extends AbstractPresentationController {
       
       public boolean getShared() {
          return m_shared;
+      }
+      
+      public boolean getPublic() {
+         return m_public;
       }
    }
 	

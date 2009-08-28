@@ -43,7 +43,7 @@
 		</tr>
 	</c:if>
 
-	<c:forEach var="node" items="${cellBean.nodes}">
+	<c:forEach var="node" items="${cellBean.nodes}" varStatus="loopStatus">
 		<c:set var="canReflect" value="true" />
 
 		<tr>
@@ -85,10 +85,14 @@
 					title="<fmt:message key="remove"/>"> 
 					<fmt:message key="remove"/></a>
 					<c:set var="hasFirstAction" value="true"/>
-			</c:if> <c:if
+			</c:if> 
+			<c:set var="aggIndex" value="${loopStatus.index+numCellForms}"/>
+			
+			<c:if
 				test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
 						((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
-									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm)) 
+						&& allowItemFeedback[aggIndex]}">
 				<c:if test="${hasFirstAction == 'true'}">
 				|
 				</c:if> <a class="TB_hideControl"

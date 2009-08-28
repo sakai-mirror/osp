@@ -438,10 +438,6 @@ public class DecoratedWizard implements DecoratedListInterface {
 	public ExternalContext processActionRunWizardHelper() {
 		getParent().clearInterface();
 
-		if(this.getBase().isPreview()){
-			parent.getWizardManager().deletePreviewWizardData(this.getBase());
-		}
-
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 
 		setBase(parent.getWizardManager().getWizard(getBase().getId()));

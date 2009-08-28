@@ -293,6 +293,14 @@
 		from Presentation p where owner=:owner and toolId=:toolId and p.id not in ( :hiddenId ) Order by p.name
    </query>
 
+   <query name="findPortfoliosUnrestrictedInclusive">
+   	from Presentation p where p.toolId=:toolId and p.id in ( :hiddenId )
+   </query>
+   
+   <query name="findPortfoliosUnrestrictedExclusive">
+   	from Presentation p where p.toolId=:toolId and p.id not in ( :hiddenId )
+   </query>
+   
    <query name="findPortfoliosByToolInclusive">
    	from Presentation p where p.toolId=:toolId and p.id in ( :id ) and p.id in ( :hiddenId )
    </query>
