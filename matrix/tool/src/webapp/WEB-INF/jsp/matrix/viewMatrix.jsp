@@ -101,7 +101,7 @@
 							<select name="view_user"  id="view_user-id" onchange="this.form.submit()">
 								<c:forEach var="user" items="${members}">
 									<option value="<c:out value="${user.id}"/>" <c:if test="${matrixOwner.id.value == user.id}"> selected="selected" </c:if>>
-										<c:out value="${user.sortName}"/>
+										<c:out value="${user.sortName}"/> (<c:out value="${user.eid}"/>)
 									</option>
 								</c:forEach>
 							</select>
