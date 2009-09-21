@@ -55,7 +55,7 @@ public class ReviewPresentationController extends ListPresentationController {
          presentation.setIsDefault( false );
       }
       
-      presentationService.savePresentation( presentation );
+      presentationService.savePresentation( presentation, false, false );
       
       return super.handleRequest(requestModel, request, session, 
                                  application, errors);

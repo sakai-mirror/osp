@@ -143,6 +143,10 @@ public class PresentationService {
 		return presentationManager.storePresentation(presentation);
 	}
 	
+	public Presentation savePresentation(Presentation presentation, boolean checkAuthz, boolean updateDates) {
+		return presentationManager.storePresentation(presentation, checkAuthz, updateDates);
+	}
+	
 	public List<PresentationComment> getComments(String presentationId) {
 		return presentationManager.getPresentationComments(idManager.getId(presentationId), authnManager.getAgent());
 	}
