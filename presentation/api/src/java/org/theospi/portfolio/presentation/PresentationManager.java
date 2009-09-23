@@ -153,6 +153,14 @@ public interface PresentationManager extends CleanupableService {
     */
    public Collection findPublicPresentations(String siteId);
 
+   /** Return the XML document string corresponding to the specified public portfolio's propertyForm
+    ** (portfolio must be publicly viewable).
+    **
+    ** @param portfolioId public portfolio
+    ** @return XML document string or null if error
+    **/
+   public String getPublicPropertyForm( Presentation presentation );
+
    /**
     * Return a unrestricted list of all presentations for given toolId
     * Portfolios returned may be unpublished/inactive/unshared
