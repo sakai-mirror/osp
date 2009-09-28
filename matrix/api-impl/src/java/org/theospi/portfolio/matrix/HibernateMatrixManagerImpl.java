@@ -328,10 +328,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public List getCells(Matrix matrix) {
-      getHibernateTemplate().setCacheQueries(true);
-      return getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
+	  getHibernateTemplate().setCacheQueries(true);
+	  
+      List list = getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
             matrix.getId());
+
+      //evict the wizard page since there could be stale data (ie. status)
+      //this is ok to evict after the query and will refresh for this call
+      for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		Cell cell = (Cell) iterator.next();
+		getHibernateTemplate().getSessionFactory().evictEntity("org.theospi.portfolio.matrix.model.WizardPage", cell.getWizardPage().getId());
+      }
       
+      return list;      
    }
 
    public Cell getCell(Matrix matrix, Criterion rootCriterion, Level level) {
