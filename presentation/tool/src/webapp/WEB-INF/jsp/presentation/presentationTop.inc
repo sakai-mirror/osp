@@ -62,13 +62,15 @@ $(document).ready(function() {
 		</c:if>
 		</c:otherwise>
 	</c:choose>
-	<c:choose>
-		<c:when test="${pres_active_page == 'share'}">
-			<li class="selected"><span><fmt:message key="pres_share"/></span></li>	
-		</c:when>
-		<c:otherwise>
-			<li><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></li>	
-		</c:otherwise>
-	</c:choose>
+	<c:if test="${!disableShare}">
+		<c:choose>
+			<c:when test="${pres_active_page == 'share'}">
+				<li class="selected"><span><fmt:message key="pres_share"/></span></li>	
+			</c:when>
+			<c:otherwise>
+				<li><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></li>	
+			</c:otherwise>
+		</c:choose> 
+	</c:if>	
 </ul>
 </form>

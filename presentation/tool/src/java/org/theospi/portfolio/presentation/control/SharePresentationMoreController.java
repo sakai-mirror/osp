@@ -44,6 +44,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.presentation.support.AgentWrapper;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;

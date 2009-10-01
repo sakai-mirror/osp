@@ -2379,6 +2379,31 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getNode(getIdManager().getId(nodeId));
    }
 
+   public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, List agentList) {
+      ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(itemDef.getType());
+      // for performance, don't do a deep load, only load id, displayName
+      artifactFinder.setLoadArtifacts(false);
+
+      if (itemDef.getHasMimeTypes()) {
+         Collection items = new ArrayList();
+         if (itemDef.getMimeTypes().size() > 0) {
+            for (Iterator i=itemDef.getMimeTypes().iterator();i.hasNext();) {
+               ItemDefinitionMimeType mimeType = (ItemDefinitionMimeType)i.next();
+               items.addAll(artifactFinder.findBySharedOwnerAndType(agentList, itemDef.getType(),
+                  new MimeType(mimeType.getPrimary(), mimeType.getSecondary())));
+            }
+         }
+         else {
+            return artifactFinder.findBySharedOwnerAndType(agentList, itemDef.getType());
+         }
+
+         return items;
+      }
+      else {
+         return artifactFinder.findBySharedOwnerAndType(agentList, itemDef.getType());
+      }
+   }
+   
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent) {
       ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(itemDef.getType());
       // for performance, don't do a deep load, only load id, displayName

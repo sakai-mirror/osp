@@ -53,6 +53,9 @@ public class EditPresentationController extends SimpleFormController {
 		List<PresentationComment> comments = presentationService.getComments(presentation.getId().getValue());
 		model.put("comments", comments);
 		model.put("numComments", new Integer(comments.size()));
+      
+		boolean disableShare = !presentationService.isOwner(presentation);
+		model.put("disableShare", new Boolean(disableShare));
 		
 		return model;
 	}

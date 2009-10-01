@@ -278,6 +278,7 @@ public interface PresentationManager extends CleanupableService {
    public Node getNode(Id artifactId, PresentationLayout layout);
 
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent);
+   public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, List agentList);
    
    public Document createDocument(Presentation presentation);
 
