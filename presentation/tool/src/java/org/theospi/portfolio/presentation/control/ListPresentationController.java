@@ -223,6 +223,7 @@ public class ListPresentationController extends AbstractPresentationController {
       int m_commentNum;
       boolean m_shared = false;
       boolean m_public = false;
+      boolean m_collab = false;
       
       public PresentationDataBean( Presentation presentation ) {
          m_presentation = presentation;
@@ -235,6 +236,12 @@ public class ListPresentationController extends AbstractPresentationController {
          List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
          if (authzs.size() > 0)
             m_shared = true;
+            
+         // Determine if user can collaboratively edit this portfolio
+         if ( presentation.getIsCollab() &&
+              getAuthzManager().isAuthorized(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId()) ) {
+                    m_collab = true;
+         }
          
          // find number of comments
          List comments = getPresentationManager().getPresentationComments( presentation.getId(), getAuthManager().getAgent() );
@@ -270,6 +277,10 @@ public class ListPresentationController extends AbstractPresentationController {
       
       public boolean getPublic() {
          return m_public;
+      }
+      
+      public boolean getIsCollab() {
+         return m_collab;
       }
    }
 	

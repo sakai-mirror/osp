@@ -330,7 +330,7 @@ public class PresentationService {
         // create list of collaborative authors
         if ( presentation.getIsCollab() ) {
            agentList.addAll(getShareList( presentation ) );
-           agentList.add( agent );
+           agentList.add( presentation.getOwner() );
         }
 
         PresentationTemplate template = presentationManager.getPresentationTemplate(presentation.getTemplate().getId());

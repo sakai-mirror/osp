@@ -269,7 +269,7 @@ $(document).ready(function() {
 									</a>
 								</li>
 							</c:if>
-							<c:if test="${isAuthorizedTo.edit || presentation.isCollab}">
+							<c:if test="${isAuthorizedTo.edit || presentationBean.isCollab}">
 									<a 
 									href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
 									</a>

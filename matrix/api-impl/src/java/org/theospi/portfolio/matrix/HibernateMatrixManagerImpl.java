@@ -2083,6 +2083,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return this.getClass();
    }
 
+   public Collection findBySharedOwnerAndType(List ownerList, String type) {
+      return null; // not implemented for matrices (only relevant to portfolios)
+   }
+
+   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
+      return null; // not implemented for matrices (only relevant to portfolios)
+   }
+
    /* (non-Javadoc)
     * @see org.theospi.portfolio.repository.ArtifactFinder#findByOwnerAndType(org.theospi.portfolio.shared.model.Id, java.lang.String)
     */
