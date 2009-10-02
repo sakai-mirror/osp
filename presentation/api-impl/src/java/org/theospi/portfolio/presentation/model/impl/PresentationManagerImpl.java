@@ -299,7 +299,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /** Return Presentation object corresponding to given id,
     ** optionally bypassing authorization check (for local export)
     **/
-   private Presentation getPresentation(final Id id, boolean checkAuth) {
+   public Presentation getPresentation(final Id id, boolean checkAuth) {
 
       HibernateCallback callback = new HibernateCallback() {
 
