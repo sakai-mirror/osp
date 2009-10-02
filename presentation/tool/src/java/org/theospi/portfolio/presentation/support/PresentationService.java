@@ -127,7 +127,11 @@ public class PresentationService {
 	}
 	
 	public Presentation getPresentation(String id) {
-		Presentation presentation = presentationManager.getPresentation(idManager.getId(id));
+		return getPresentation(id, true);
+	}
+	
+	public Presentation getPresentation(String id, boolean checkAuthz) {
+		Presentation presentation = presentationManager.getPresentation( idManager.getId(id), checkAuthz );
 		if (presentation == null)
 			throw new IllegalArgumentException("Portfolio does not exist with ID: " + id);
 		return presentation;

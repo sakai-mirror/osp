@@ -182,14 +182,19 @@ public class ViewPresentationControl extends AbstractPresentationController impl
                }
             }
             else {
-
-               getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
+               boolean viewAll = ServerConfigurationService.getBoolean("osp.presentation.viewall", false);
+               boolean canReview = getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
+                                                                  getIdManager().getId(pres.getSiteId() ) );
+               boolean canView = getAuthzManager().isAuthorized(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
+               
+               if ( !canView && (!viewAll || !canReview) )
+                  return new ModelAndView("expired"); // display expired or invalid message
             }
          }
 
          if (pres.isExpired() &&
             !pres.getOwner().getId().equals(getAuthManager().getAgent().getId())) {
-            return new ModelAndView("expired");
+            return new ModelAndView("expired"); // display expired or invalid message
          }
       }
 

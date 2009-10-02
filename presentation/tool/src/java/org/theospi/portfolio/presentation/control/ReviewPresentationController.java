@@ -46,7 +46,7 @@ public class ReviewPresentationController extends ListPresentationController {
       Agent current = getAuthManager().getAgent();
       String reviewAction = (String)request.get("review");
       String presentationId = (String)request.get("id");
-		Presentation presentation = presentationService.getPresentation(presentationId);
+		Presentation presentation = presentationService.getPresentation(presentationId, false);
       
       if ("true".equals(reviewAction)) {
          presentation.setIsDefault( true );
