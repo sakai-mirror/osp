@@ -35,6 +35,7 @@ import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 
 import java.util.Collection;
 import java.io.IOException;
@@ -80,17 +81,18 @@ public class PresentationHttpAccess extends OspHttpAccessBase {
    protected void checkSource(Reference ref, ReferenceParser parser)
       throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
 
-      try {
-         Presentation pres = presentationManager.getPresentation(
-            getIdManager().getId(parser.getId()));
-         if (pres == null) {
-            throw new EntityNotDefinedException(parser.getId());
-         }
-      }
-      catch (AuthorizationFailedException exp) {
+      Presentation pres = presentationManager.getPresentation( getIdManager().getId(parser.getId()), false);
+      if (pres == null) 
+         throw new EntityNotDefinedException(parser.getId());
+         
+      boolean viewAll = ServerConfigurationService.getBoolean("osp.presentation.viewall", false);
+      boolean canReview = getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
+                                                         getIdManager().getId(pres.getSiteId() ) );
+      boolean canView = getAuthzManager().isAuthorized(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
+      
+      if ( !canView && (!viewAll || !canReview) )
          throw new EntityPermissionException(SessionManager.getCurrentSessionUserId(), 
-               ContentHostingService.EVENT_RESOURCE_READ, ref.getReference());
-      }
+                                             ContentHostingService.EVENT_RESOURCE_READ, ref.getReference());
    }
 
    public PresentationManager getPresentationManager() {
