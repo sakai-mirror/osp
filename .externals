@@ -66,6 +66,6 @@ gmt https://source.sakaiproject.org/contrib/syracuse/gmt/trunk
 datapoint https://source.sakaiproject.org/contrib/syracuse/datapoint/trunk
 formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
 
-core-deploy https://source.sakaiproject.org/svn/sakai/trunk/common-deploy
+core-deploy https://source.sakaiproject.org/svn/sakai/trunk/core-deploy
 kernel-deploy https://source.sakaiproject.org/svn/sakai/trunk/kernel-deploy
 pack-demo https://source.sakaiproject.org/svn/sakai/trunk/pack-demo
