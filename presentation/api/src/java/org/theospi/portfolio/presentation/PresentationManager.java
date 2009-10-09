@@ -30,6 +30,7 @@ import org.jdom.Document;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
@@ -278,8 +279,8 @@ public interface PresentationManager extends CleanupableService {
 
    public Node getNode(Id artifactId, PresentationLayout layout);
 
+   public ContentResourceArtifact loadArtifactForItem(PresentationItem item);
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent);
-   public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, List agentList);
    
    public Document createDocument(Presentation presentation);
 

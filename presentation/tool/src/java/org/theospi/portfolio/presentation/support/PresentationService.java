@@ -324,32 +324,23 @@ public class PresentationService {
         Map<String, Object> model = new HashMap<String, Object>();
         Map<String, Object> artifacts = new HashMap<String, Object>();
         Map<String, Object> artifactCache = new HashMap<String, Object>();
+        Map<String, Object> itemHash = new HashMap<String, Object>();
         Agent agent = authnManager.getAgent();
         ArrayList agentList = new ArrayList();
         
-        // create list of collaborative authors
-        if ( presentation.getIsCollab() ) {
-           agentList.addAll(getShareList( presentation ) );
-           agentList.add( presentation.getOwner() );
-        }
-
+        // Create list of item definition types for this template
         PresentationTemplate template = presentationManager.getPresentationTemplate(presentation.getTemplate().getId());
         presentation.setTemplate(template);
-
         model.put("types", template.getSortedItems());
         
-        // Create sorted list of artifacts
+        // Create sorted list of artifacts eligible for inclusion in portfolio
         for (PresentationItemDefinition itemDef : (Set<PresentationItemDefinition>) template.getSortedItems()) {
 
            if (artifactCache.containsKey(itemDef.getType()) && !itemDef.getHasMimeTypes()){
               artifacts.put(itemDef.getId().getValue(), artifactCache.get(itemDef.getType()));
            } 
            else {
-              List itemArtifacts;
-              if ( presentation.getIsCollab() )
-                 itemArtifacts = (List) presentationManager.loadArtifactsForItemDef(itemDef, agentList);
-              else
-                 itemArtifacts = (List) presentationManager.loadArtifactsForItemDef(itemDef, agent);
+              List itemArtifacts = (List)presentationManager.loadArtifactsForItemDef(itemDef, agent);
                  
               // Update display name of resource content to include abbreviated folder name
               if (itemArtifacts.size() > 0 && itemArtifacts.get(0) instanceof ContentResourceArtifact) {
@@ -371,14 +362,36 @@ public class PresentationService {
               artifacts.put(itemDef.getId().getValue(), itemArtifacts);
            }
         }
-        model.put("artifacts", artifacts);
         
-        Collection items = new ArrayList();
-        for (Iterator i = presentation.getPresentationItems().iterator(); i.hasNext();) {
-           PresentationItem item = (PresentationItem) i.next();
-           items.add(item.getDefinition().getId().getValue() + "." + item.getArtifactId());
+        // Create map of presentation items currently included in portfolio
+        for (Iterator it = presentation.getPresentationItems().iterator(); it.hasNext();) {
+           PresentationItem item = (PresentationItem) it.next();
+           String itemId = item.getDefinition().getId().getValue() + "." + item.getArtifactId();
+           List artifactList = (List)artifacts.get( item.getDefinition().getId().getValue() );
+           ContentResourceArtifact itemArtifact = null;
+           
+           // search for artifact corresponding to presentation item
+           for (Iterator aIt = artifactList.iterator(); aIt.hasNext();) {
+              ContentResourceArtifact artifact = (ContentResourceArtifact)aIt.next();
+              if ( artifact.getId().getValue().equals(item.getArtifactId().getValue()) ) {
+                 itemArtifact = artifact;
+                 break;
+              }
+           }
+           
+           // load artifact if not found (e.g. artifact added by collaborative author)
+           if ( itemArtifact == null ) {
+              itemArtifact = presentationManager.loadArtifactForItem(item);
+              if ( itemArtifact != null )
+                 artifactList.add(itemArtifact);
+           }
+              
+           // add itemArtifact to map
+           itemHash.put( itemId, itemArtifact );
         }
-        model.put("items", items);
+
+        model.put("itemHash", itemHash);
+        model.put("artifacts", artifacts);
         
         return model;		
 	}

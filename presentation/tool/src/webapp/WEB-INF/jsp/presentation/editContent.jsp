@@ -17,8 +17,13 @@ $(document).ready(function() {
 		osp.bag.selections[$(this).attr('id')] = $(this).val();
 	});
 	osp.bag.formTypes = {};
-	<c:forEach var="itemDefinition" items="${types}">
+	<c:forEach var="itemDefinition" items="${types}" varStatus="loopCounter">
 		osp.bag.formTypes['<c:out value="${itemDefinition.id.value}"/>'] = '<c:out value="${itemDefinition.type}"/>';  
+      <!-- hide edit selected link until check for ownership -->
+   	<c:set var="list2">
+		   edit_items_<c:out value="${loopCounter.index}" />
+		</c:set>
+      $("#<c:out value="${list2}"/>").hide();
 	</c:forEach>
 	$('a.inlineFormEdit').click(function(ev) {
 		ev.preventDefault();
@@ -36,6 +41,15 @@ $(document).ready(function() {
 	});
 });
 
+	 function showEditSelect(listId) {
+		var selectedIndex = document.getElementById(listId).selectedIndex;
+		var selectedOption = document.getElementById(listId).options[selectedIndex];
+		if ( selectedOption.className != 'readOnly' )
+			$("#edit_"+listId).show();
+      else
+			$("#edit_"+listId).hide();
+	 }
+    
 	 function updateItems() {
 		 var arrBox = new Array();
 		 var i = 0;
@@ -132,8 +146,10 @@ $(document).ready(function() {
 													</td>
 													<c:if test="${itemDefinition.isFormType}">
 													<td style="text-align:right">
-														<a href="#<c:out value="${list2}"/>"
-													  class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
+														<a href="#<c:out value="${list2}"/>" 
+															id="edit_<c:out value="${list2}"/>"
+															class="inlineFormEdit">
+                                         <fmt:message key="edit_selected"/></a>
 													</td>
 													</c:if>
 												</tr>
@@ -143,28 +159,20 @@ $(document).ready(function() {
 									<tr>
 										<td style="width:40%">
 											<select multiple="multiple"
-													style="width:100%"
+												style="width:100%"
 												size="10"
 												ondblclick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false); updateItems();'
 												id="<c:out value="${list1}"/>"
 												name="<c:out value="${list1}"/>">
-												<c:forEach var="artifact"
-													items="${artifacts[itemDefinition.id.value]}">
-													<c:set var="value">
-														<c:out value="${itemDefinition.id.value}" />.<c:out
-															value="${artifact.id.value}" />
+                                    
+												<%-- construct list of unselected artifacts --%>
+												<c:forEach var="artifact" items="${artifacts[itemDefinition.id.value]}">
+													<c:set var="itemId">
+														<c:out value="${itemDefinition.id.value}" />.<c:out value="${artifact.id.value}" />
 													</c:set>
-													<c:set var="found" value="false" />
-													<c:forEach var="next"
-														items="${items}">
-														<c:if
-															test="${value eq next}">
-															<c:set var="found" value="true" />
-														</c:if>
-													</c:forEach>
-													<c:if test="${found == false}">
+													<c:if test="${empty itemHash[itemId]}">
 														<option
-															value="<c:out value="${value}" />">
+															value="<c:out value="${itemId}" />">
 															<c:out value="${artifact.displayName}" />
 														</option>
 													</c:if>
@@ -193,23 +201,34 @@ $(document).ready(function() {
 											/>
 										</td>
 										<td style="width:40%">
-											<select
+											<select multiple="multiple"
 												class="artifactPicker"
-												multiple="multiple"
 												style="width:100%"
 												size="10"
+												onclick="showEditSelect('<c:out value="${list2}"/>');"
 												ondblclick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false); updateItems();'
 												id="<c:out value="${list2}"/>"
 												name="<c:out value="${status.expression}"/>">
+												
+                                    <%-- construct list of selected artifacts --%>
 												<c:forEach var="artifact" items="${artifacts[itemDefinition.id.value]}">
-													<c:set var="value"><c:out value="${itemDefinition.id.value}"/>.<c:out value="${artifact.id.value}"/></c:set>
-													<c:forEach var="next" items="${items}">
-														<c:if test="${value eq next}">
-															<option value="<c:out value="${value}" />">
-																<c:out value="${artifact.displayName}"/>
-															</option>
-														</c:if>
-													</c:forEach>
+													<c:set var="itemId">
+													  <c:out value="${itemDefinition.id.value}"/>.<c:out value="${artifact.id.value}"/>
+													</c:set>
+													<c:if test="${not empty itemHash[itemId]}">
+														<c:choose>
+														  <c:when test="${itemHash[itemId].owner.id.value eq currentUser}">
+															 <c:set var="mine" value="true"/>
+														  </c:when>
+														  <c:otherwise>
+															 <c:set var="mine" value=""/>
+														  </c:otherwise>
+														</c:choose>
+														<option value="<c:out value="${itemId}" />"
+															<c:if test="${empty mine}">class="readOnly"</c:if> >
+															<c:out value="${artifact.displayName}"/>
+														</option>
+													</c:if>
 												</c:forEach>
 											</select>
 										</td>
@@ -243,14 +262,22 @@ $(document).ready(function() {
 											- - - - - - - - - - -</option>
 											<c:forEach var="artifact"
 												items="${artifacts[itemDefinition.id.value]}">
-												<c:set var="value">
-													<c:out
-														value="${itemDefinition.id.value}" />.<c:out
-														value="${artifact.id.value}" />
+												<c:set var="itemId">
+													<c:out value="${itemDefinition.id.value}" />.<c:out value="${artifact.id.value}" />
 												</c:set>
-												<option
-													value="<c:out value="${value}" />"
-													<c:forEach var="next" items="${items}"><c:if test="${value eq next}">selected="selected"</c:if></c:forEach>>
+												<option value="<c:out value="${itemId}" />"
+												  <c:if test="${not empty itemHash[itemId]}">
+													 selected="selected"
+													 <c:choose>
+														<c:when test="${itemHash[itemId].owner.id.value eq currentUser}">
+														  <c:set var="mine" value="true"/>
+														</c:when>
+														<c:otherwise>
+														  <c:set var="mine" value=""/>
+														</c:otherwise>
+													 </c:choose>
+												  </c:if>
+												>
 												<c:out
 													value="${artifact.displayName}" />
 												</option>
@@ -260,8 +287,10 @@ $(document).ready(function() {
 										<span class="itemAction"  style="margin-left:0;padding-left:0;white-space:nowrap;padding-top:4px;display:inline-block;">
 											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
-											<a href="#<c:out value="${selectBox}" />"
-											   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>|
+											<c:if test="${mine}">
+											  <a href="#<c:out value="${selectBox}" />"
+													class="inlineFormEdit"><fmt:message key="edit_selected"/></a>|
+											</c:if>
 											<a href="#" onclick="document.wizardform.<c:out value='${selectBox}'/>.selectedIndex=0;updateItems()">
 											   <fmt:message key="remove_selected"/></a>
 										</span>

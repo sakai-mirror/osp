@@ -46,6 +46,7 @@ import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
@@ -2379,28 +2380,27 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getNode(getIdManager().getId(nodeId));
    }
 
-   public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, List agentList) {
-      ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(itemDef.getType());
-      // for performance, don't do a deep load, only load id, displayName
-      artifactFinder.setLoadArtifacts(false);
-
-      if (itemDef.getHasMimeTypes()) {
-         Collection items = new ArrayList();
-         if (itemDef.getMimeTypes().size() > 0) {
-            for (Iterator i=itemDef.getMimeTypes().iterator();i.hasNext();) {
-               ItemDefinitionMimeType mimeType = (ItemDefinitionMimeType)i.next();
-               items.addAll(artifactFinder.findBySharedOwnerAndType(agentList, itemDef.getType(),
-                  new MimeType(mimeType.getPrimary(), mimeType.getSecondary())));
-            }
-         }
-         else {
-            return artifactFinder.findBySharedOwnerAndType(agentList, itemDef.getType());
-         }
-
-         return items;
-      }
-      else {
-         return artifactFinder.findBySharedOwnerAndType(agentList, itemDef.getType());
+   /**
+    ** Given a PresentationItem, load the corresponding ContentResourceArtifact
+    **
+    ** @param item PresentationItem
+    ** @return corresponding ContentResourceArtifact
+    **/
+   public ContentResourceArtifact loadArtifactForItem(PresentationItem item) {
+      String contentId = contentHosting.resolveUuid( item.getArtifactId().getValue() );
+      getSecurityService().pushAdvisor(
+            new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+                                        contentHosting.getReference(contentId)));
+      try
+      {
+         ContentResource resource = contentHosting.getResource(contentId);
+         Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+         Id resourceId = getIdManager().getId(contentHosting.getUuid(resource.getId()));
+         return new ContentResourceArtifact(resource,resourceId,resourceOwner);
+      }  
+      catch (Exception e) {
+         logger.warn(this+e.toString());
+         return null;
       }
    }
    

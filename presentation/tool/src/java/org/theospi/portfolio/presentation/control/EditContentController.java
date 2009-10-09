@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -58,6 +59,7 @@ public class EditContentController extends SimpleFormController {
       
 		boolean disableShare = !presentationService.isOwner(presentation);
 		model.put("disableShare", new Boolean(disableShare));
+		model.put("currentUser", SessionManager.getCurrentSessionUserId());
       
 		return model;
 	}
