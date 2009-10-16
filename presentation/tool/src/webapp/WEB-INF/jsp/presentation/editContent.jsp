@@ -217,7 +217,7 @@ $(document).ready(function() {
 													</c:set>
 													<c:if test="${not empty itemHash[itemId]}">
 														<c:choose>
-														  <c:when test="${itemHash[itemId].owner.id.value eq currentUser}">
+														  <c:when test="${itemDefinition.isFormType && itemHash[itemId].owner.id.value eq currentUser}">
 															 <c:set var="mine" value="true"/>
 														  </c:when>
 														  <c:otherwise>
@@ -269,7 +269,7 @@ $(document).ready(function() {
 												  <c:if test="${not empty itemHash[itemId]}">
 													 selected="selected"
 													 <c:choose>
-														<c:when test="${itemHash[itemId].owner.id.value eq currentUser}">
+														<c:when test="${itemDefinition.isFormType && itemHash[itemId].owner.id.value eq currentUser}">
 														  <c:set var="mine" value="true"/>
 														</c:when>
 														<c:otherwise>

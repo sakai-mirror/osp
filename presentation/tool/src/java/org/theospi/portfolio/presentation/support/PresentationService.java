@@ -92,6 +92,8 @@ public class PresentationService {
 	private ContentHostingService contentHostingService;
 	
 	private static final Log log = LogFactory.getLog(PresentationService.class);
+	private static final String WIZARD_ITEM_PLACEHOLDER = "Wizard/Matrix";
+	
 	public static final ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
 	
 	//TODO: Add signature for more parameterized creation -- not just complete current context (user, site, tool)
@@ -367,6 +369,13 @@ public class PresentationService {
         for (Iterator it = presentation.getPresentationItems().iterator(); it.hasNext();) {
            PresentationItem item = (PresentationItem) it.next();
            String itemId = item.getDefinition().getId().getValue() + "." + item.getArtifactId();
+           
+           if ( ! item.getDefinition().getIsFormType().booleanValue() ) 
+           {
+              itemHash.put( itemId, WIZARD_ITEM_PLACEHOLDER );
+              continue;
+           }
+              
            List artifactList = (List)artifacts.get( item.getDefinition().getId().getValue() );
            ContentResourceArtifact itemArtifact = null;
            
