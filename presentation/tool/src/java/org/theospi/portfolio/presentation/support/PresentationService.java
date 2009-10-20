@@ -151,7 +151,7 @@ public class PresentationService {
 		else if (Boolean.FALSE.equals(allowComments))
 			presentation.setAllowComments(false);
 		
-		presentation = presentationManager.storePresentation(presentation);
+		presentation = presentationManager.storePresentation(presentation, false, true);
 		return (presentation != null);
 	}
 	
