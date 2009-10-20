@@ -15,12 +15,16 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.support.PresentationService;
+import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.theospi.portfolio.presentation.intf.FreeFormHelper;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.entity.api.Entity;
 
 public class EditPresentationController extends SimpleFormController {
 	private PresentationService presentationService;
+	private static String REFERENCE_ROOT_METAOBJ = Entity.SEPARATOR+"metaobj";
 	
 	public EditPresentationController() {
 		setCommandClass(Presentation.class);
@@ -54,10 +58,24 @@ public class EditPresentationController extends SimpleFormController {
 		model.put("comments", comments);
 		model.put("numComments", new Integer(comments.size()));
       
-		boolean disableShare = !presentationService.isOwner(presentation);
-		model.put("disableShare", new Boolean(disableShare));
+		boolean isOwner = presentationService.isOwner(presentation);
+		model.put("disableShare", new Boolean(!isOwner));
+		model.put("disableOptions", new Boolean(!isOwner));
+      
+		if ( presentation.getPropertyForm() != null ) 
+			model.put("optionsFormUrl", getAccessUrl(presentation.getPropertyForm().getValue()) );
 		
 		return model;
+	}
+
+	/** Return access url for given formId
+	 **/	 
+	private String getAccessUrl( String formId ) {
+		StringBuilder formUrl = new StringBuilder();
+		formUrl.append( ServerConfigurationService.getAccessUrl() );
+		formUrl.append( REFERENCE_ROOT_METAOBJ );
+		formUrl.append( ContentHostingService.getReference(ContentHostingService.resolveUuid(formId)) );
+		return formUrl.toString();
 	}
 	
 	@Override

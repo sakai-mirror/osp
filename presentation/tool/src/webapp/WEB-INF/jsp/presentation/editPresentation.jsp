@@ -138,12 +138,6 @@ $(document).ready(function() {
 				</p>
 				<p class="quickLinkInfo <c:if test="${optionsAreNull}">disabled</c:if>">
 					<fmt:message key="active_caption" />
-					<c:if test="${not optionsAreNull}">
-						<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="sharing"/></a>
-					</c:if>
-					<c:if test="${optionsAreNull}">
-						<fmt:message key="sharing"/>
-					</c:if>
 				</p>
 				
 				<p class="quickLink">
@@ -175,11 +169,25 @@ $(document).ready(function() {
 			</c:if>
 			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
 			<c:if test="${not empty presentation.template.propertyFormType}">
-			<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
-			<p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
+			  <c:choose>
+				 <c:when test="${!disableOptions}">
+					<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
+				 </c:when>
+				 <c:when test="${optionsAreNull}">
+					<div class="quickLinkDisabled">
+					<p class="quickLink"><fmt:message key="pres_options"/></p>
+					</div>
+				 </c:when>
+				 <c:otherwise>
+					  <p class="quickLink"><a target="_blank" href="<c:out value="${optionsFormUrl}" />"><fmt:message key="pres_options"/></a></p>
+				 </c:otherwise>
+			  </c:choose>
+			  <p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
 			</c:if>
-			<p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
-			<p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
+			<c:if test="${!disableShare}">
+			  <p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
+			  <p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
+			</c:if>
 		</div>
 	</div>
 </td>
