@@ -111,11 +111,17 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       // Get specified portfolio/presentation      
       Map model = new HashMap();
-      String errMsg = null;
+      boolean returnRedirect = false;
       Presentation presentation = (Presentation) requestModel;
       presentation = getPresentationManager().getPresentation(presentation.getId());
       model.put("id", presentation.getId().getValue());
       
+      // Check if request to return to previous page 
+      if ( request.get("back") != null )
+         return new ModelAndView("back", model);
+      else if ( request.get("back_add") != null )
+         returnRedirect = true;
+         
       boolean myWorkspace = getSiteService().isUserSite(presentation.getSiteId());
       model.put("presentation", presentation);
       model.put("hasGroups", getHasGroups(presentation.getSiteId()));
@@ -134,9 +140,12 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       {
          String shareUser = (String)request.get("share_user");
          if ( shareUser != null && !shareUser.equals("") ) {
-            errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
+            String errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
             if ( errMsg != null )
+            {
                model.put("errMsg", rl.getFormattedMessage(errMsg, new Object[]{shareUser}) );
+               returnRedirect = false;
+            }
          }
       }
       else if ( shareBy.equals(SHAREBY_BROWSE) || shareBy.equals(SHAREBY_GROUP) )
@@ -144,26 +153,28 @@ public class SharePresentationMoreController extends AbstractPresentationControl
          List groupList = null;
          if ( shareBy.equals(SHAREBY_GROUP) ) {
             groupList = getGroupList(presentation.getSiteId(), request);
-            model.put("groupList", groupList );
+            if ( ! returnRedirect )
+               model.put("groupList", groupList );
          }
 
          List availList = getAvailableUserList(presentation.getSiteId(), shareList, groupList);
          updateAvailList( shareBy, request, presentation, shareList, availList );
-         model.put("availList", availList );
+         if ( ! returnRedirect )
+            model.put("availList", availList );
       }
       else if ( shareBy.equals(SHAREBY_ROLE) || shareBy.equals(SHAREBY_ALLROLE) )
       {
          List availList = getAvailableRoleList(shareBy, presentation.getSiteId(), shareList);
          updateAvailList( shareBy, request, presentation, shareList, availList );
-         model.put("availList", availList );
+         if ( ! returnRedirect )
+            model.put("availList", availList );
       }
       
-      // Check if request to return to previous page
-      if ( request.get("back") != null && errMsg == null )
+      // Check if request to return to previous page 
+      // Note: if next view is a redirect, do _not_ include large lists in model
+      if ( returnRedirect )
          return new ModelAndView("back", model);
-      else if ( request.get("back_add") != null && errMsg == null )
-         return new ModelAndView("back", model);
-      else   
+      else
          return new ModelAndView("share", model);
    }
 
