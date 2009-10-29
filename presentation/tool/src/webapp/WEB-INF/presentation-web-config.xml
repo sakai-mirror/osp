@@ -351,6 +351,9 @@
                 <property name="emailService">
                   <ref bean="org.sakaiproject.email.api.EmailService"/>
                 </property>
+                <property name="presentationService">
+                  <ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
+                </property>		
             </bean>
         </property>
         <property name="customTypedEditors">

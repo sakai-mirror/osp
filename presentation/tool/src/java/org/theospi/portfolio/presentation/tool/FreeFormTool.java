@@ -102,7 +102,7 @@ public class FreeFormTool extends HelperToolBase {
       }
       
       Presentation presentation = getPresentation();
-      getPresentationManager().storePresentation(presentation);
+      getPresentationManager().storePresentation(presentation, false, true);
       return "main";
    }
 

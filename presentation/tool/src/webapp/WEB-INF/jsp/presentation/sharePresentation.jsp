@@ -145,6 +145,22 @@ $(document).ready(function() {
    </p>
    
    <h3>
+      <fmt:message key="pres_share_collab"/>
+   </h3>
+
+   <div class="checkbox">
+      <input type="hidden" name="pres_share_collab" value="${pres_share_collab}" />
+      
+      <input type="checkbox" name="collab_checkbox" id="collab_checkbox"
+         <c:if test="${pres_share_collab=='true'}"> checked="checked"</c:if>
+         onclick="document.mainForm.pres_share_collab.value=(document.mainForm.collab_checkbox.checked) ? 'true' :'false'; document.mainForm.submit();"
+      />
+      <label for="pres_share_collab">
+         <fmt:message key="pres_share_collab_edit"/>
+      </label>
+   </div>	
+	
+   <h3>
       <fmt:message key="pres_share_this"/>
    </h3>
 
@@ -163,10 +179,5 @@ $(document).ready(function() {
        <input id="urlText" type="text" readonly="true" name="publicUrl" value="${publicUrl}" size="120"/>
    </div>	
 	
-   <!--
-   <div class="act">
-      <input name="notify" type="submit" value="<fmt:message key="button_notify" />" class="active" accesskey="n" />
-   </div>
-   -->
    </div> <%--end of #tabNavPanel --%>
 </form>

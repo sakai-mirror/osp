@@ -30,6 +30,7 @@ import org.jdom.Document;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
@@ -153,14 +154,6 @@ public interface PresentationManager extends CleanupableService {
     * @return collection of presentations
     */
    public Collection findPublicPresentations(String siteId);
-
-   /** Return the XML document string corresponding to the specified public portfolio's propertyForm
-    ** (portfolio must be publicly viewable).
-    **
-    ** @param portfolioId public portfolio
-    ** @return XML document string or null if error
-    **/
-   public String getPublicPropertyForm( Presentation presentation );
 
    /**
     * Return a unrestricted list of all presentations for given toolId
@@ -286,6 +279,7 @@ public interface PresentationManager extends CleanupableService {
 
    public Node getNode(Id artifactId, PresentationLayout layout);
 
+   public ContentResourceArtifact loadArtifactForItem(PresentationItem item);
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent);
    
    public Document createDocument(Presentation presentation);

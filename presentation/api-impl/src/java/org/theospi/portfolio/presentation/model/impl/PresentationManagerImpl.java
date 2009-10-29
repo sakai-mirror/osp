@@ -46,6 +46,7 @@ import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
@@ -344,44 +345,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          logger.debug(e);
          return null;
       }
-   }
-   
-   /** Return the XML document string corresponding to the specified public portfolio's propertyForm
-    ** (portfolio must be publicly viewable).
-    **
-    ** @param portfolioId public portfolio
-    ** @return XML document string or null if error
-    **/
-   public String getPublicPropertyForm( Presentation presentation )
-   {
-      StringBuilder options = new StringBuilder();
-      
-      if ( presentation == null || !presentation.getIsPublic() || presentation.getPropertyForm() == null)
-         return null;
-         
-      String formId = contentHosting.resolveUuid(presentation.getPropertyForm().getValue());
-      String ref = contentHosting.getReference(formId);
-      
-      try {
-         securityService.pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
-         
-         ContentResource resource = contentHosting.getResource(formId);
-         BufferedReader rdr = new BufferedReader( new InputStreamReader( resource.streamContent() ) );
-          
-          String line = rdr.readLine();
-          while ( line != null )
-          {
-             options.append( line );
-             line = rdr.readLine();
-          }
-      }
-      catch ( Exception e )
-      {
-         logger.warn(e);
-         return null;
-      }
-      
-      return options.toString();
    }
 
    protected boolean artifactExists(Id artifactId) {
@@ -2417,6 +2380,30 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getNode(getIdManager().getId(nodeId));
    }
 
+   /**
+    ** Given a PresentationItem, load the corresponding ContentResourceArtifact
+    **
+    ** @param item PresentationItem
+    ** @return corresponding ContentResourceArtifact
+    **/
+   public ContentResourceArtifact loadArtifactForItem(PresentationItem item) {
+      String contentId = contentHosting.resolveUuid( item.getArtifactId().getValue() );
+      getSecurityService().pushAdvisor(
+            new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+                                        contentHosting.getReference(contentId)));
+      try
+      {
+         ContentResource resource = contentHosting.getResource(contentId);
+         Agent resourceOwner = getAgentManager().getAgent(resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+         Id resourceId = getIdManager().getId(contentHosting.getUuid(resource.getId()));
+         return new ContentResourceArtifact(resource,resourceId,resourceOwner);
+      }  
+      catch (Exception e) {
+         logger.warn(this+e.toString());
+         return null;
+      }
+   }
+   
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent) {
       ArtifactFinder artifactFinder = getArtifactFinderManager().getArtifactFinderByType(itemDef.getType());
       // for performance, don't do a deep load, only load id, displayName

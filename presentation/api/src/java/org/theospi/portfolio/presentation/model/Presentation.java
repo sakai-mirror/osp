@@ -48,6 +48,7 @@ public class Presentation extends IdentifiableObject {
    private Collection viewers = new HashSet();
    private Date expiresOn;
    private boolean isPublic;
+   private boolean isCollab;
    private boolean isDefault;
    private Date created;
    private Date modified;
@@ -150,6 +151,14 @@ public class Presentation extends IdentifiableObject {
 
    public boolean getIsPublic() {
       return isPublic;
+   }
+
+   public void setIsCollab(boolean isCollab) {
+      this.isCollab = isCollab;
+   }
+
+   public boolean getIsCollab() {
+      return this.isCollab;
    }
 
    public void setIsPublic(boolean aPublic) {

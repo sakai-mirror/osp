@@ -592,12 +592,20 @@ public class WizardTool extends BuilderTool {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       
-      String currentUser = getCurrentUserId();
-      Agent currentAgent = getAuthManager().getAgent();
- 
-      WizardPage page = getMatrixManager().getWizardPageByPageDefAndOwner(pageSeq.getWizardPageDefinition().getId(), currentAgent);
+      WizardPage page = null;
       
-      if (page == null)
+      List cpages = getWizardManager().getCompletedWizardPagesByPageDef(pageSeq.getWizardPageDefinition().getId());
+      String currentUser = getCurrentUserId();
+      for(Iterator i = cpages.iterator(); i.hasNext();) {
+         CompletedWizardPage wizpage = (CompletedWizardPage)i.next();
+         
+         WizardPage wpage = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
+         if(wpage.getOwner().getId() != null && currentUser.equalsIgnoreCase(wpage.getOwner().getId().getValue())) {
+            page = wpage;
+            break;
+         }
+      }
+      if(page == null)
          throw new NullPointerException("Failed to find the requested page");
 
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);

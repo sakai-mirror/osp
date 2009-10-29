@@ -328,19 +328,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public List getCells(Matrix matrix) {
-	  getHibernateTemplate().setCacheQueries(true);
-	  
-      List list = getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
+      getHibernateTemplate().setCacheQueries(true);
+      return getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
             matrix.getId());
-
-      //evict the wizard page since there could be stale data (ie. status)
-      //this is ok to evict after the query and will refresh for this call
-      for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-		Cell cell = (Cell) iterator.next();
-		getHibernateTemplate().getSessionFactory().evictEntity("org.theospi.portfolio.matrix.model.WizardPage", cell.getWizardPage().getId());
-      }
       
-      return list;      
    }
 
    public Cell getCell(Matrix matrix, Criterion rootCriterion, Level level) {
@@ -570,25 +561,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          return null;
       }
       
-      page.getAttachments().size();
-      page.getPageForms().size();
-
-      removeFromSession(page);
-      return page;
-   }
-   
-   public WizardPage getWizardPageByPageDefAndOwner(Id pageId, Agent owner) {
-      Object[] params = new Object[]{pageId, owner};
-      List pageList = getHibernateTemplate().find("from WizardPage w where w.pageDefinition.id=? and w.owner=?", params);
-      
-      // check for invalid page (in case wizard/matrix is deleted)
-      if ( pageList == null || pageList.size() < 1 )
-      {
-         logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
-         return null;
-      }
-      
-      WizardPage page = (WizardPage)pageList.get(0); 
       page.getAttachments().size();
       page.getPageForms().size();
 
@@ -2109,6 +2081,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public Class getInterface() {
       return this.getClass();
+   }
+
+   public Collection findBySharedOwnerAndType(List ownerList, String type) {
+      return null; // not implemented for matrices (only relevant to portfolios)
+   }
+
+   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
+      return null; // not implemented for matrices (only relevant to portfolios)
    }
 
    /* (non-Javadoc)

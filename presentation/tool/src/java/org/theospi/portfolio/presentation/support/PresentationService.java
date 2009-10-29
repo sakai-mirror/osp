@@ -1,3 +1,23 @@
+/**********************************************************************************
+* $URL: https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/PresentationManager.java $
+* $Id: PresentationManager.java 64567 2009-07-02 20:40:39Z bkirschn@umich.edu $
+***********************************************************************************
+*
+* Copyright (c) 2009 The Sakai Foundation
+*
+* Licensed under the Educational Community License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*       http://www.osedu.org/licenses/ECL-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+**********************************************************************************/
 package org.theospi.portfolio.presentation.support;
 
 import java.util.ArrayList;
@@ -39,6 +59,9 @@ import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
@@ -49,6 +72,10 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.PresentationTemplateNameComparator;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
+
 
 public class PresentationService {
 	private IdManager idManager;
@@ -65,6 +92,8 @@ public class PresentationService {
 	private ContentHostingService contentHostingService;
 	
 	private static final Log log = LogFactory.getLog(PresentationService.class);
+	private static final String WIZARD_ITEM_PLACEHOLDER = "Wizard/Matrix";
+	
 	public static final ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
 	
 	//TODO: Add signature for more parameterized creation -- not just complete current context (user, site, tool)
@@ -104,7 +133,7 @@ public class PresentationService {
 	}
 	
 	public boolean updatePresentation(String presentationId, String name, String description, Boolean active, Boolean allowComments) {
-		Presentation presentation = editPresentation(presentationId);
+		Presentation presentation = getPresentation(presentationId);
 		
 		if (name != null)
 			presentation.setName(name);
@@ -122,7 +151,7 @@ public class PresentationService {
 		else if (Boolean.FALSE.equals(allowComments))
 			presentation.setAllowComments(false);
 		
-		presentation = presentationManager.storePresentation(presentation);
+		presentation = presentationManager.storePresentation(presentation, false, true);
 		return (presentation != null);
 	}
 	
@@ -136,13 +165,7 @@ public class PresentationService {
 			throw new IllegalArgumentException("Portfolio does not exist with ID: " + id);
 		return presentation;
 	}
-	
-	public Presentation editPresentation(String id) {
-		Presentation presentation = getPresentation(id);
-        authzManager.checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION, presentation.getId());
-        return presentation;
-	}
-	
+
 	public Presentation savePresentation(Presentation presentation) {
 		return presentationManager.storePresentation(presentation);
 	}
@@ -155,9 +178,16 @@ public class PresentationService {
 		return presentationManager.getPresentationComments(idManager.getId(presentationId), authnManager.getAgent());
 	}
 	
+	/** Returns true if current user is owner of specified presentation
+	 **/
+	public boolean isOwner(Presentation presentation) {
+		Agent agent = authnManager.getAgent();
+		return presentation.getOwner().getId().getValue().equals(agent.getId().getValue());
+	}
+	
 	public Map<String, Object> editOptions(String presentationId) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		Presentation presentation = editPresentation(presentationId);		
+		Presentation presentation = getPresentation(presentationId);		
 		PresentationTemplate template = presentation.getTemplate();
 		
 		if (template.getPropertyFormType() == null || Presentation.FREEFORM_TYPE.equals(presentation.getPresentationType()))
@@ -186,7 +216,7 @@ public class PresentationService {
 	
 	public Map<String, Object> createForm(String presentationId, String formTypeId) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		Presentation presentation = editPresentation(presentationId);
+		Presentation presentation = getPresentation(presentationId);
 		if (formTypeId == null)
 			throw new IllegalArgumentException("Cannot create null-typed forms");
 		
@@ -207,7 +237,7 @@ public class PresentationService {
 	
 	public Map<String, Object> editForm(String presentationId, String formTypeId, String formId) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		Presentation presentation = editPresentation(presentationId);
+		Presentation presentation = getPresentation(presentationId);
 		if (formTypeId == null)
 			formTypeId = getFormType(formId);
 		
@@ -238,7 +268,7 @@ public class PresentationService {
 	
 	public void saveOptions(String presentationId, String artifactId) {
 		try {
-			Presentation presentation = editPresentation(presentationId);
+			Presentation presentation = getPresentation(presentationId);
 			String formId = contentHostingService.resolveUuid(artifactId);
 			contentHostingService.checkResource(formId);
 			presentation.setPropertyForm(idManager.getId(artifactId));
@@ -252,26 +282,68 @@ public class PresentationService {
 		}
 	}
 	
+   
+   /**
+    ** Parse role id and return Site title
+    **/
+    private String getSiteFromRoleMember( String roleMember ) {
+       Reference ref = EntityManager.newReference( roleMember );
+       String siteId = ref.getContainer();
+       String siteTitle = "";
+       try {
+          siteTitle = siteService.getSite(siteId).getTitle();
+       }
+       catch (IdUnusedException e) {
+          log.warn(e.toString());
+       }
+            
+       return siteTitle;
+    }
+    
+   /**
+    ** Get authorized share list from the database for this portfolio, return a list of Agent objects
+    **/
+   public List getShareList( Presentation presentation ) {
+      List authzList = authzManager.getAuthorizations(null, 
+                                                      AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, 
+                                                      presentation.getId() );
+               
+      ArrayList shareList = new ArrayList(authzList.size());                                            
+      for (Iterator it=authzList.iterator(); it.hasNext(); ) {
+         Agent agent = ((Authorization)it.next()).getAgent();
+         if ( agent.isRole() ) {
+            String worksiteName = getSiteFromRoleMember(agent.getId().getValue());
+            agent = new AgentWrapper( agent, worksiteName );
+         }
+         shareList.add( agent );
+      }
+      
+      return shareList;
+   }
+   
 	public Map<String, Object> getPresentationArtifacts(String presentationId) {
-		Presentation presentation = getPresentation(presentationId);
-		Map<String, Object> model = new HashMap<String, Object>();
+        Presentation presentation = getPresentation(presentationId);
+        Map<String, Object> model = new HashMap<String, Object>();
         Map<String, Object> artifacts = new HashMap<String, Object>();
         Map<String, Object> artifactCache = new HashMap<String, Object>();
+        Map<String, Object> itemHash = new HashMap<String, Object>();
         Agent agent = authnManager.getAgent();
-
+        ArrayList agentList = new ArrayList();
+        
+        // Create list of item definition types for this template
         PresentationTemplate template = presentationManager.getPresentationTemplate(presentation.getTemplate().getId());
         presentation.setTemplate(template);
-
         model.put("types", template.getSortedItems());
         
-        // Create sorted list of artifacts
+        // Create sorted list of artifacts eligible for inclusion in portfolio
         for (PresentationItemDefinition itemDef : (Set<PresentationItemDefinition>) template.getSortedItems()) {
 
            if (artifactCache.containsKey(itemDef.getType()) && !itemDef.getHasMimeTypes()){
               artifacts.put(itemDef.getId().getValue(), artifactCache.get(itemDef.getType()));
            } 
            else {
-              List itemArtifacts = (List) presentationManager.loadArtifactsForItemDef(itemDef, agent);
+              List itemArtifacts = (List)presentationManager.loadArtifactsForItemDef(itemDef, agent);
+                 
               // Update display name of resource content to include abbreviated folder name
               if (itemArtifacts.size() > 0 && itemArtifacts.get(0) instanceof ContentResourceArtifact) {
                  // don't do this for forms, as their display name is OK as is
@@ -292,14 +364,43 @@ public class PresentationService {
               artifacts.put(itemDef.getId().getValue(), itemArtifacts);
            }
         }
-        model.put("artifacts", artifacts);
         
-        Collection items = new ArrayList();
-        for (Iterator i = presentation.getPresentationItems().iterator(); i.hasNext();) {
-           PresentationItem item = (PresentationItem) i.next();
-           items.add(item.getDefinition().getId().getValue() + "." + item.getArtifactId());
+        // Create map of presentation items currently included in portfolio
+        for (Iterator it = presentation.getPresentationItems().iterator(); it.hasNext();) {
+           PresentationItem item = (PresentationItem) it.next();
+           String itemId = item.getDefinition().getId().getValue() + "." + item.getArtifactId();
+           
+           if ( ! item.getDefinition().getIsFormType().booleanValue() ) 
+           {
+              itemHash.put( itemId, WIZARD_ITEM_PLACEHOLDER );
+              continue;
+           }
+              
+           List artifactList = (List)artifacts.get( item.getDefinition().getId().getValue() );
+           ContentResourceArtifact itemArtifact = null;
+           
+           // search for artifact corresponding to presentation item
+           for (Iterator aIt = artifactList.iterator(); aIt.hasNext();) {
+              ContentResourceArtifact artifact = (ContentResourceArtifact)aIt.next();
+              if ( artifact.getId().getValue().equals(item.getArtifactId().getValue()) ) {
+                 itemArtifact = artifact;
+                 break;
+              }
+           }
+           
+           // load artifact if not found (e.g. artifact added by collaborative author)
+           if ( itemArtifact == null ) {
+              itemArtifact = presentationManager.loadArtifactForItem(item);
+              if ( itemArtifact != null )
+                 artifactList.add(itemArtifact);
+           }
+              
+           // add itemArtifact to map
+           itemHash.put( itemId, itemArtifact );
         }
-        model.put("items", items);
+
+        model.put("itemHash", itemHash);
+        model.put("artifacts", artifacts);
         
         return model;		
 	}
@@ -463,5 +564,5 @@ public class PresentationService {
 	public void setContentHostingService(ContentHostingService contentHostingService) {
 		this.contentHostingService = contentHostingService;
 	}
-	
+
 }

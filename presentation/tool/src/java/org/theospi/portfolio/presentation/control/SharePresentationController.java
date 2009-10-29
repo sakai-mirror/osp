@@ -38,6 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
+import org.theospi.portfolio.presentation.support.PresentationService;
 
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.Tool;
@@ -55,12 +56,12 @@ import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.email.api.EmailService; 
 import org.sakaiproject.util.ResourceLoader;
-import org.sakaiproject.entity.api.Reference;
 
 /**
  **/
 public class SharePresentationController extends AbstractPresentationController implements Controller {
    protected final Log logger = LogFactory.getLog(getClass());
+   private PresentationService presentationService;
 
    private ServerConfigurationService serverConfigurationService;
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
@@ -70,9 +71,11 @@ public class SharePresentationController extends AbstractPresentationController 
    private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    
    private final String SHARE_PUBLIC  = "pres_share_public";
+   private final String SHARE_COLLAB  = "pres_share_collab";
    
    public final static String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
    public final static String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
+   public final static String SHARE_COLLAB_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.collab";
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Map model = new HashMap();
@@ -105,6 +108,9 @@ public class SharePresentationController extends AbstractPresentationController 
       String isPublic = getIsPublic(request, presentation);
       model.put(SHARE_PUBLIC, isPublic );
          
+      String isCollab = getIsCollab(request, presentation);
+      model.put(SHARE_COLLAB, isCollab );
+         
       List revisedShareList = getRevisedShareList( request, presentation );
       
       model.put("presentation", presentation);
@@ -112,9 +118,11 @@ public class SharePresentationController extends AbstractPresentationController 
       model.put("shareList", revisedShareList );
       
       // save presentation share status (if changed)
-      if ( ! isPublic.equals( String.valueOf(presentation.getIsPublic()) ) )
+      if ( ! isPublic.equals( String.valueOf(presentation.getIsPublic()) ) ||
+           ! isCollab.equals( String.valueOf(presentation.getIsCollab()) ) )
       {
          presentation.setIsPublic( Boolean.valueOf(isPublic).booleanValue() );
+         presentation.setIsCollab( Boolean.valueOf(isCollab).booleanValue() );
          getPresentationManager().storePresentation(presentation);
       }
       
@@ -217,43 +225,28 @@ public class SharePresentationController extends AbstractPresentationController 
       return isPublic;
    }
    
-   /**
-    ** Get authorized share list from the database for this portfolio, return a list of Agent objects
+   /** 
+    ** Get (String) true/false value of presentation's collaborative share status
     **/
-   private List getShareList( Presentation presentation ) {
-      List authzList = getAuthzManager().getAuthorizations(null, 
-                                                           AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, 
-                                                           presentation.getId() );
-               
-      ArrayList shareList = new ArrayList(authzList.size());                                            
-      for (Iterator it=authzList.iterator(); it.hasNext(); ) {
-         Agent agent = ((Authorization)it.next()).getAgent();
-         if ( agent.isRole() ) {
-            String worksiteName = getSiteFromRoleMember(agent.getId().getValue());
-            agent = new AgentWrapper( agent, worksiteName );
-         }
-         shareList.add( agent );
-      }
+   private String getIsCollab( Map request, Presentation presentation ) {
+      Session session = SessionManager.getCurrentSession();
+      String isCollab = null;
       
-      return shareList;
+      // first, check for form change
+      if ( request.get(SHARE_COLLAB) != null && ! request.get(SHARE_COLLAB).equals("") )
+         isCollab = (String)request.get(SHARE_COLLAB);
+         
+      // Next, check session attribute status
+      else if ( session.getAttribute(SHARE_COLLAB_ATTRIBUTE+presentation.getId().getValue()) != null ) 
+         isCollab = (String)session.getAttribute(SHARE_COLLAB_ATTRIBUTE+presentation.getId().getValue());
+      
+      // Finally, use presentation's persistant value
+      else
+         isCollab = String.valueOf( presentation.getIsCollab() );
+      
+      session.setAttribute(SHARE_COLLAB_ATTRIBUTE+presentation.getId().getValue(), isCollab);
+      return isCollab;
    }
-
-   /**
-    ** Parse role id and return Site title
-    **/
-    private String getSiteFromRoleMember( String roleMember ) {
-       Reference ref = EntityManager.newReference( roleMember );
-       String siteId = ref.getContainer();
-       String siteTitle = "";
-       try {
-          siteTitle = SiteService.getSite(siteId).getTitle();
-       }
-       catch (IdUnusedException e) {
-          logger.warn(e.toString());
-       }
-            
-       return siteTitle;
-    }
 
    /**
     ** get session-based share list and remove selected-for-removal members 
@@ -264,7 +257,7 @@ public class SharePresentationController extends AbstractPresentationController 
       
       List shareList = (List)session.getAttribute(SHARE_LIST_ATTRIBUTE+presentation.getId().getValue());
       if ( shareList == null )
-         shareList = getShareList( presentation );
+         shareList = presentationService.getShareList( presentation );
    
       List revisedShareList = new ArrayList();
       
@@ -279,8 +272,8 @@ public class SharePresentationController extends AbstractPresentationController 
       {
          for (Iterator it=shareList.iterator(); it.hasNext(); ) {
             Agent member = (Agent)it.next();
-	    if ( member.getId() != null && request.get(member.getId().getValue()) == null )
-		    revisedShareList.add( member );
+            if ( member.getId() != null && request.get(member.getId().getValue()) == null )
+               revisedShareList.add( member );
          }
       }
       
@@ -294,7 +287,7 @@ public class SharePresentationController extends AbstractPresentationController 
     **/
    private void saveRevisedShareList( List revisedShareList, Presentation presentation ) {
    
-      List origShareList = getShareList( presentation );
+      List origShareList = presentationService.getShareList( presentation );
       
       // Setup hashmap of revisedShareList
       HashMap revisedHash = new HashMap( revisedShareList.size() );
@@ -359,4 +352,8 @@ public class SharePresentationController extends AbstractPresentationController 
    public void setUserDirectoryService( UserDirectoryService userDirectoryService) {
       this.userDirectoryService = userDirectoryService;
    }
+   
+	public void setPresentationService(PresentationService presentationService) {
+		this.presentationService = presentationService;
+	}
 }

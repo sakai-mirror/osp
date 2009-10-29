@@ -2196,6 +2196,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
 	   return getXmlRenderer().getArtifactAsXml(artifact, container, site, context);
    }
 
+   public Collection findBySharedOwnerAndType(List ownerList, String type) {
+      return null; // not implemented for wizards (only relevant to portfolios)
+   }
+
+   public Collection findBySharedOwnerAndType(List ownerList, String type, MimeType mimeType) {
+      return null; // not implemented for wizards (only relevant to portfolios)
+   }
+
    public Collection findByOwnerAndType(Id owner, String type) {
       return findByOwner(owner);
    }

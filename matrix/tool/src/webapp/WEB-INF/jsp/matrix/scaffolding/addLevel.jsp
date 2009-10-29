@@ -26,7 +26,7 @@
 			</c:if>			
 				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_columnName"/></label> 
 				<input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id" 
-					   value="<c:out value="${status.displayValue}"/>"  maxlength="95"/>
+					   value="<c:out value="${status.displayValue}"/>" />
 				  <c:if test="${status.error}">
 					 <span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 				  </c:if>

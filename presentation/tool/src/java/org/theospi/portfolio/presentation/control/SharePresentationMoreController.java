@@ -44,6 +44,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.presentation.support.AgentWrapper;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
@@ -111,17 +112,11 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       // Get specified portfolio/presentation      
       Map model = new HashMap();
-      boolean returnRedirect = false;
+      String errMsg = null;
       Presentation presentation = (Presentation) requestModel;
       presentation = getPresentationManager().getPresentation(presentation.getId());
       model.put("id", presentation.getId().getValue());
       
-      // Check if request to return to previous page 
-      if ( request.get("back") != null )
-         return new ModelAndView("back", model);
-      else if ( request.get("back_add") != null )
-         returnRedirect = true;
-         
       boolean myWorkspace = getSiteService().isUserSite(presentation.getSiteId());
       model.put("presentation", presentation);
       model.put("hasGroups", getHasGroups(presentation.getSiteId()));
@@ -140,12 +135,9 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       {
          String shareUser = (String)request.get("share_user");
          if ( shareUser != null && !shareUser.equals("") ) {
-            String errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
+            errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
             if ( errMsg != null )
-            {
                model.put("errMsg", rl.getFormattedMessage(errMsg, new Object[]{shareUser}) );
-               returnRedirect = false;
-            }
          }
       }
       else if ( shareBy.equals(SHAREBY_BROWSE) || shareBy.equals(SHAREBY_GROUP) )
@@ -153,28 +145,26 @@ public class SharePresentationMoreController extends AbstractPresentationControl
          List groupList = null;
          if ( shareBy.equals(SHAREBY_GROUP) ) {
             groupList = getGroupList(presentation.getSiteId(), request);
-            if ( ! returnRedirect )
-               model.put("groupList", groupList );
+            model.put("groupList", groupList );
          }
 
          List availList = getAvailableUserList(presentation.getSiteId(), shareList, groupList);
          updateAvailList( shareBy, request, presentation, shareList, availList );
-         if ( ! returnRedirect )
-            model.put("availList", availList );
+         model.put("availList", availList );
       }
       else if ( shareBy.equals(SHAREBY_ROLE) || shareBy.equals(SHAREBY_ALLROLE) )
       {
          List availList = getAvailableRoleList(shareBy, presentation.getSiteId(), shareList);
          updateAvailList( shareBy, request, presentation, shareList, availList );
-         if ( ! returnRedirect )
-            model.put("availList", availList );
+         model.put("availList", availList );
       }
       
-      // Check if request to return to previous page 
-      // Note: if next view is a redirect, do _not_ include large lists in model
-      if ( returnRedirect )
+      // Check if request to return to previous page
+      if ( request.get("back") != null && errMsg == null )
          return new ModelAndView("back", model);
-      else
+      else if ( request.get("back_add") != null && errMsg == null )
+         return new ModelAndView("back", model);
+      else   
          return new ModelAndView("share", model);
    }
 

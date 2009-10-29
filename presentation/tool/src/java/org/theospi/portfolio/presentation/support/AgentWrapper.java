@@ -18,7 +18,7 @@
  * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.presentation.control;
+package org.theospi.portfolio.presentation.support;
 
 import java.util.List;
 

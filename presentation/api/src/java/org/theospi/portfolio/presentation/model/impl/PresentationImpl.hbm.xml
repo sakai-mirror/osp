@@ -73,6 +73,7 @@
       <property name="description" type="string" column="description" not-null="false"/>
       <property name="isDefault" type="boolean" column="isDefault" not-null="false"/>
       <property name="isPublic" type="boolean" column="isPublic" not-null="false"/>
+      <property name="isCollab" type="boolean" column="isCollab" not-null="false"/>
       <property name="presentationType" type="string" column="presentationType" not-null="true"/>
       <property name="expiresOn" type="java.util.Date" not-null="false"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
