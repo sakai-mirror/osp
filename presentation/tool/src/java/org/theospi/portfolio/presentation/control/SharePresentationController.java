@@ -300,15 +300,15 @@ public class SharePresentationController extends AbstractPresentationController 
       HashMap revisedHash = new HashMap( revisedShareList.size() );
       for (Iterator it=revisedShareList.iterator(); it.hasNext(); ) {
          Agent member = (Agent)it.next();
-	 revisedHash.put( member.getId().getValue(), member );
+         revisedHash.put( member.getId().getValue(), member );
       }
       
       // Setup hashmap of origShareList and check for deletions
       HashMap originalHash = new HashMap( origShareList.size() );
       for (Iterator it=origShareList.iterator(); it.hasNext(); ) {
          Agent member = (Agent)it.next();
-	 if (member.getId() != null)
-	     originalHash.put( member.getId().getValue(), member );
+         if (member.getId() != null)
+            originalHash.put( member.getId().getValue(), member );
          
          // Check for deletions from original shareList
          if (member.getId() != null && ! revisedHash.containsKey(member.getId().getValue()) )
