@@ -60,7 +60,6 @@ $(document).ready(function() {
 <spring:nestedPath path="presentation">
 
 <div class="tabNavPanel">
- <!-- temp separation; end of tabs -->
 
 <form name="mainForm" id="mainForm" method="post" onsubmit="return true;">
 <input type="hidden" name="freeFormContent" value=""/>
@@ -72,7 +71,37 @@ $(document).ready(function() {
 
 <table class="itemSummary">
 <tbody>
+
+<%-- Portfolio Name:  --%>
+<spring:bind path="presentation.name">
+	<tr>
+		<th><fmt:message key="table_row_portfolio_name"/></th>
+		<td id="presentationName">
+		<span class="editableText portfolio_name"><c:out value="${status.value}"/></span>
+		<input class="inlineEdit" type="text" style="display:none;margin:0;" size="40" />
+		<span class="itemAction">
+			<a href="#" class="editLink"><fmt:message key="edit"/></a>
+			<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
+			<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
+		</span>
+		</td>
+	<tr>
+</spring:bind>
 <%-- Description:  --%>
+<spring:bind path="description">
+	<tr>
+		<th><fmt:message key="table_row_description"/></th>
+		<td  id="presentationDescription">
+			<span class="editableText"><c:out value="${status.value}" /></span>
+			<textarea class="inlineEdit" cols="40" rows="4" style="display:none;"></textarea>
+			<span class="itemAction"><a href="#" class="editLink"><fmt:message key="edit"/></a></span>
+			<p class="itemAction">
+				<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
+				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
+			</p>
+		</td>		
+	</tr>
+</spring:bind>
 <%-- Type of Portfolio: --%>
 <spring:bind path="template.name">
 	<tr>
@@ -92,20 +121,6 @@ $(document).ready(function() {
 	<tr>
 		<th><fmt:message key="table_row_modified"/></th>
 		<td><c:out value="${status.value}" /></td>
-	</tr>
-</spring:bind>
-<spring:bind path="description">
-	<tr>
-		<th><fmt:message key="table_row_description"/></th>
-		<td  id="presentationDescription">
-			<span class="editableText"><c:out value="${status.value}" /></span>
-			<textarea class="inlineEdit" cols="40" rows="4" style="display:none;"></textarea>
-			<span class="itemAction"><a href="#" class="editLink"><fmt:message key="edit"/></a></span>
-			<p class="itemAction">
-				<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
-			</p>
-		</td>		
 	</tr>
 </spring:bind>
 

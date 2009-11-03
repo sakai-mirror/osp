@@ -16,13 +16,9 @@ $(document).ready(function() {
 	<tr>
 		<td  style="vertical-align:middle;text-align:left">
 			<spring:bind path="presentation.name">
-				<div id="presentationName" class="shorttext">
-					<span class="editableText portfolio_name"><c:out value="${status.value}"/></span>
-					<input class="inlineEdit" type="text" style="display:none;margin:0;" size="40" />
-					<span class="itemAction">
-						<a href="#" class="editLink"><fmt:message key="edit"/></a>
-						<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-						<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
+				<div class="shorttext">
+					<span class="presentationNameTitle">
+					<c:out value="${status.value}"/>
 					</span>
 				</div>
 			</spring:bind>
