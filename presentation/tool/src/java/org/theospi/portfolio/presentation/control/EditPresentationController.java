@@ -59,6 +59,9 @@ public class EditPresentationController extends SimpleFormController {
 		model.put("numComments", new Integer(comments.size()));
       
 		boolean isOwner = presentationService.isOwner(presentation);
+		boolean optionsAreNull = presentation.getTemplate().getPropertyFormType() != null && presentation.getPropertyForm() == null;
+		
+		model.put("optionsAreNull", new Boolean(optionsAreNull));
 		model.put("disableShare", new Boolean(!isOwner));
 		model.put("disableOptions", new Boolean(!isOwner));
       

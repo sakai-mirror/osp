@@ -234,20 +234,28 @@ $(document).ready(function() {
 	  <c:forEach var="presentationBean" items="${presentations}" varStatus="loopCounter">
 	
 		<c:set var="presentation" value="${presentationBean.presentation}" />
+		<c:set var="optionsAreNull" value="${presentation.template.propertyFormType != null and presentation.propertyForm == null}" />
 		<c:set var="isAuthorizedTo" value="${presentation.authz}" />
 		<osp-c:authZMap prefix="osp.presentation." var="presCan" qualifier="${presentation.id}"/>
 	
 		<tr
-		<c:if test="${presentation.expired}">
+		<c:if test="${presentation.expired || optionsAreNull}">
 		class="inactive"
 		</c:if>
 		>
 		  <td style="white-space:nowrap">
-		  		  <h4>
-		  <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"</c:if>
-					href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
-			 <c:out value="${presentation.name}" />
-		  </a>
+		  <h4>
+			 <c:choose>
+				<c:when test="${!optionsAreNull}">
+				  <a target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>
+					  href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
+					  <c:out value="${presentation.name}" />
+					</a>
+				</c:when>
+				<c:otherwise>
+				  <c:out value="${presentation.name}" />
+				</c:otherwise>
+			 </c:choose>
 		  </h4>	
 		  </td>
         
@@ -263,7 +271,7 @@ $(document).ready(function() {
 							&nbsp;<fmt:message key="table_action_action"/>
 							<img src = "/library/image/sakai/icon-dropdn.gif?panel=Main" border="0"  alt="Add"  class="dropdn"/> 
 							<ul  id="menu-<c:out  value="${loopCounter.index}" />" class="makeMenuChild">
-							<c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+							<c:if test="${presentation.owner.id.value == osp_agent.id.value && !optionsAreNull}">
 								<li>
 									<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/>
 									</a>

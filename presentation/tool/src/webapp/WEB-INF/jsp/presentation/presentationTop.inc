@@ -23,12 +23,15 @@ $(document).ready(function() {
 				</div>
 			</spring:bind>
 		</td>
-		<td   style="vertical-align:middle; text-align:right">
-			<a href="<osp:url value="listPresentation.osp" />"><fmt:message key="return_to_list" /></a> | 
-			<a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"</c:if>
-				href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
-				<fmt:message key="pres_preview" />
-			</a>
+		<td style="vertical-align:middle; text-align:right">
+			<a href="<osp:url value="listPresentation.osp" />"><fmt:message key="return_to_list" /></a>
+			<c:if test="${!optionsAreNull}">
+			  |
+			  <a target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"
+					href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
+					<fmt:message key="pres_preview" />
+			  </a>
+			</c:if>
 		</td>
 	</tr>
 </table>
@@ -58,7 +61,7 @@ $(document).ready(function() {
 		</c:if>
 		</c:otherwise>
 	</c:choose>
-	<c:if test="${!disableShare}">
+	<c:if test="${!disableShare && !optionsAreNull}">
 		<c:choose>
 			<c:when test="${pres_active_page == 'share'}">
 				<li class="selected"><span><fmt:message key="pres_share"/></span></li>	

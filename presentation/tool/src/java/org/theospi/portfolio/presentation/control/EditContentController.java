@@ -58,6 +58,9 @@ public class EditContentController extends SimpleFormController {
 		Map model = presentationService.getPresentationArtifacts(presentation.getId().getValue());
       
 		boolean disableShare = !presentationService.isOwner(presentation);
+		boolean optionsAreNull = presentation.getTemplate().getPropertyFormType() != null && presentation.getPropertyForm() == null;
+      
+		model.put("optionsAreNull", new Boolean(optionsAreNull));
 		model.put("disableShare", new Boolean(disableShare));
 		model.put("currentUser", SessionManager.getCurrentSessionUserId());
       

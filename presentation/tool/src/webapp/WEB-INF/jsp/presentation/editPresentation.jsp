@@ -5,7 +5,6 @@
 <fmt:setBundle basename="org.theospi.portfolio.presentation.bundle.Messages"/>
 
 <c:set var="pres_active_page" value="summary" />
-<c:set var="optionsAreNull" value="${presentation.template.propertyFormType != null and presentation.propertyForm == null}" />
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
 
 <script type="text/javascript">
@@ -171,13 +170,6 @@ $(document).ready(function() {
 <td  class="presentation_menu_body">
 	<div class="presentation_menu_block">
 		<div>
-			<c:if test="${! presentation.isFreeFormType}">
-				<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
-			</c:if>
-			<c:if test="${presentation.isFreeFormType}">
-				<p class="quickLink"><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><fmt:message key="pres_content"/></a></p>
-			</c:if>
-			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
 			<c:if test="${not empty presentation.template.propertyFormType}">
 			  <c:choose>
 				 <c:when test="${!disableOptions}">
@@ -194,9 +186,30 @@ $(document).ready(function() {
 			  </c:choose>
 			  <p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
 			</c:if>
+
+			<c:choose>			 
+				<c:when test="${presentation.isFreeFormType}">
+					<p class="quickLink"><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><fmt:message key="pres_content"/></a></p>
+				</c:when>
+				<c:otherwise> <%-- templated portfolio --%>
+					<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
+				</c:otherwise>
+			</c:choose>
+         
+			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
 			<c:if test="${!disableShare}">
-			  <p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
-			  <p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
+			<div <c:if test="${optionsAreNull}">class="quickLinkDisabled"</c:if>>			
+			  <c:choose>
+				 <c:when test="${optionsAreNull}">
+					<p class="quickLink"><fmt:message key="pres_share"/></p>
+					<p class="quickLinkInfo"><fmt:message key="inactive_hint"/></p>
+				 </c:when>
+				 <c:otherwise>
+					<p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
+					<p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
+				 </c:otherwise>
+			  </c:choose>
+			</div>
 			</c:if>
 		</div>
 	</div>
