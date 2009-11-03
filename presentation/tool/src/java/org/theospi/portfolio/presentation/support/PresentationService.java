@@ -118,7 +118,6 @@ public class PresentationService {
 		presentation.setPresentationType(presentationType);
 		presentation.setTemplate(template);
 		presentation.setName(template.getName()+" - "+agent.getDisplayName());
-		presentation.setExpiresOn(new GregorianCalendar(1970, 1, 1).getTime());
 		return presentationManager.storePresentation(presentation);
 	}
 	

@@ -127,16 +127,15 @@ $(document).ready(function() {
 <td class="presentation_menu_body">
 	<div class="presentation_menu_block">
 		<div>
-			<div <c:if test="${optionsAreNull}">class="quickLinkDisabled"</c:if>>
+			<div> 
 				<p class="quickLink">
 					<input class="autoPost" type="radio"
 					       id="btnActive"
 					       name="active" value="true"
-					       <c:if test="${optionsAreNull}">disabled="disabled"</c:if>
 					       <c:if test="${active}">checked="checked"</c:if> />
 					<label for="btnActive"><fmt:message key="button_active" /></label>
 				</p>
-				<p class="quickLinkInfo <c:if test="${optionsAreNull}">disabled</c:if>">
+				<p class="quickLinkInfo">
 					<fmt:message key="active_caption" />
 				</p>
 				
@@ -144,7 +143,6 @@ $(document).ready(function() {
 					<input class="autoPost" type="radio"
 					       id="btnInactive"
 					       name="active" value="false"
-					       <c:if test="${optionsAreNull}">disabled="disabled"</c:if>
 					       <c:if test="${not active}">checked="checked"</c:if> />
 					<label for="btnInactive"><fmt:message key="button_inactive" /></label>
 				</p>
@@ -152,9 +150,6 @@ $(document).ready(function() {
 					<fmt:message key="inactive_caption" />
 				</p>
 			</div>
-			<c:if test="${optionsAreNull}">
-			<p class="quickLinkInfo"><fmt:message key="inactive_hint"/></p>
-			</c:if>
 		</div>
 	</div>
 </td>
