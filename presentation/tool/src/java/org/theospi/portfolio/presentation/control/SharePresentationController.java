@@ -116,6 +116,7 @@ public class SharePresentationController extends AbstractPresentationController 
       model.put("presentation", presentation);
       model.put("publicUrl", getPublicUrl(presentation));
       model.put("shareList", revisedShareList );
+      model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
       
       // save presentation share status (if changed)
       if ( ! isPublic.equals( String.valueOf(presentation.getIsPublic()) ) ||
@@ -324,7 +325,7 @@ public class SharePresentationController extends AbstractPresentationController 
     **/
    private String getPublicUrl( Presentation presentation ) {
       String baseUrl = getServerConfigurationService().getServerUrl();
-      String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + presentation.getId().getValue();
+      String url =  baseUrl + PresentationService.VIEW_PRESENTATION_URL + presentation.getId().getValue();
       return url;
    }
    

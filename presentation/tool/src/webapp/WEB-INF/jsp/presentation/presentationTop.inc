@@ -28,7 +28,7 @@ $(document).ready(function() {
 			<c:if test="${!optionsAreNull}">
 			  |
 			  <a target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"
-					href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
+					href="<c:out value="${baseUrl}"/><c:out value="${presentation.id.value}" />">
 					<fmt:message key="pres_preview" />
 			  </a>
 			</c:if>

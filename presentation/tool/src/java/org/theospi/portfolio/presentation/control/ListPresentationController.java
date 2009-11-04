@@ -52,6 +52,7 @@ import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.presentation.support.PresentationService;
 
 public class ListPresentationController extends AbstractPresentationController {
 
@@ -105,9 +106,7 @@ public class ListPresentationController extends AbstractPresentationController {
       List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
 
-      String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?" 
-         + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
-      model.put("baseUrl", url);
+      model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());

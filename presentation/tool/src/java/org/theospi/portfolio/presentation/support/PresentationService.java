@@ -94,8 +94,10 @@ public class PresentationService {
 	private static final Log log = LogFactory.getLog(PresentationService.class);
 	private static final String WIZARD_ITEM_PLACEHOLDER = "Wizard/Matrix";
 	
-	public static final ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
+	private static final ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
 	
+	public static final String VIEW_PRESENTATION_URL =	 "/osp-presentation-tool/viewPresentation.osp?id=";
+      
 	//TODO: Add signature for more parameterized creation -- not just complete current context (user, site, tool)
 	public Presentation createPresentation(String presentationType, String templateId) {
 		if (!Presentation.FREEFORM_TYPE.equals(presentationType) && !Presentation.TEMPLATE_TYPE.equals(presentationType)) {

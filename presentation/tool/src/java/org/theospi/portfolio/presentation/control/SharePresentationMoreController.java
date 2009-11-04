@@ -45,6 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.support.AgentWrapper;
+import org.theospi.portfolio.presentation.support.PresentationService;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
@@ -122,6 +123,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       model.put("hasGroups", getHasGroups(presentation.getSiteId()));
       model.put("myWorkspace", myWorkspace);
       model.put("guestEnabled", getGuestUserEnabled());
+      model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
       
       String shareBy = (String)request.get(SHAREBY_KEY);
       if ( shareBy==null || shareBy.equals("") )

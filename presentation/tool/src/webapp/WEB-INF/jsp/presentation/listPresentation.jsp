@@ -248,7 +248,7 @@ $(document).ready(function() {
 			 <c:choose>
 				<c:when test="${!optionsAreNull}">
 				  <a target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"
-					  href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
+					  href="<c:out value="${baseUrl}"/><c:out value="${presentation.id.value}" />">
 					  <c:out value="${presentation.name}" />
 					</a>
 				</c:when>
