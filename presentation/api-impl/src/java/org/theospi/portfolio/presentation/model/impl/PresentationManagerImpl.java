@@ -771,14 +771,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
-   public Collection findAllPresentationsUnrestricted(Agent owner, String toolId, String showHidden) {
+   public Collection findAllPresentationsUnrestricted(Agent viewer, String toolId, String showHidden) {
       
       // TBD: support for all site/tools user is a member when toolId is null
       if ( toolId == null )
          return new Vector();
       
       // Build list of hidden presentation authzs
-      Collection hiddenAuthzs = getAuthzManager().getAuthorizations(owner, 
+      Collection hiddenAuthzs = getAuthzManager().getAuthorizations(viewer, 
             PresentationFunctionConstants.HIDE_PRESENTATION, null);
       List<Id> hiddenIds = new ArrayList<Id>();
       hiddenIds.add(getIdManager().getId("last")); // ensure list not empty
@@ -803,12 +803,22 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                                                                          "findPortfoliosUnrestrictedExclusive", 
                                                                          paramNames, params);
       
+      // Make sure all presentations have valid owner
+      Collection finalPresList = new ArrayList();
       for (Iterator i=presList.iterator();i.hasNext();) {
          Presentation pres = (Presentation)i.next();
-         pres.setAuthz(new PresentationAuthzMap(owner, pres));
+         if ( pres.getOwner().getId() != null ) 
+         {
+            pres.setAuthz(new PresentationAuthzMap(viewer, pres));
+            finalPresList.add(pres);
+         }
+         else
+         {
+            getHibernateTemplate().evict(pres);
+         }
       }
       
-      return presList;
+      return finalPresList;
    }
    
    /**

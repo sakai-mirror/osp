@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.model.Presentation;
+import org.sakaiproject.metaobj.shared.model.Id;
 
 public class PresentationAuthzMap extends HashMap {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -36,13 +37,14 @@ public class PresentationAuthzMap extends HashMap {
    private boolean owner = false;
 
    /**
-    * Constructs a new, empty hashtable with a default initial capacity (11)
-    * and load factor, which is <tt>0.75</tt>.
+    * Constructor for specified user and presentation
     */
    public PresentationAuthzMap(Agent currentAgent, Presentation presentation) {
       this.currentAgent = currentAgent;
       this.presentation = presentation;
-      owner = presentation.getOwner().getId().equals(currentAgent.getId());
+      Id presOwner = presentation.getOwner().getId();
+      if ( presOwner != null )
+         this.owner = presOwner.equals(currentAgent.getId());
    }
 
    /**
