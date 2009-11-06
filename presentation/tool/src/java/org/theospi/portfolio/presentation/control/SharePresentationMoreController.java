@@ -119,9 +119,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       model.put("id", presentation.getId().getValue());
       
       // Check if request to return to previous page 
-      if ( request.get("back") != null )
-         return new ModelAndView("back", model);
-      else if ( request.get("back_add") != null )
+      if ( request.get("back") != null || request.get("back_add") != null )
          returnRedirect = true;
          
       boolean myWorkspace = getSiteService().isUserSite(presentation.getSiteId());
