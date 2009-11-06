@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,10 +91,13 @@ public class EditPresentationController extends SimpleFormController {
 			session.setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
 			return new ModelAndView("freeFormPresentationRedirect");
 		}
-		
+
 		else
 		{
-			return new ModelAndView("listPresentationRedirect");
+			// refresh portfolio prior to redisplay
+			HashMap map = new HashMap();
+			map.put("id", presentation.getId().getValue());
+			return new ModelAndView("editPresentationRedirect", map );
 		}
 	}
 	
