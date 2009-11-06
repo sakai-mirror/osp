@@ -66,9 +66,6 @@ public class EditPresentationController extends SimpleFormController {
 		model.put("disableShare", new Boolean(!isOwner));
 		model.put("disableOptions", new Boolean(!isOwner));
       
-		if ( presentation.getPropertyForm() != null ) 
-			model.put("optionsFormUrl", getAccessUrl(presentation.getPropertyForm().getValue()) );
-		
 		return model;
 	}
 

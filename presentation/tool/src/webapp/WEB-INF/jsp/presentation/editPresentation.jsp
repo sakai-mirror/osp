@@ -170,21 +170,9 @@ $(document).ready(function() {
 <td  class="presentation_menu_body">
 	<div class="presentation_menu_block">
 		<div>
-			<c:if test="${not empty presentation.template.propertyFormType}">
-			  <c:choose>
-				 <c:when test="${!disableOptions}">
-					<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
-				 </c:when>
-				 <c:when test="${optionsAreNull}">
-					<div class="quickLinkDisabled">
-					<p class="quickLink"><fmt:message key="pres_options"/></p>
-					</div>
-				 </c:when>
-				 <c:otherwise>
-					  <p class="quickLink"><a target="_blank" href="<c:out value="${optionsFormUrl}" />"><fmt:message key="pres_options"/></a></p>
-				 </c:otherwise>
-			  </c:choose>
-			  <p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
+			<c:if test="${not empty presentation.template.propertyFormType && !disableOptions}">
+				<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
+				<p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
 			</c:if>
 
 			<c:choose>			 
