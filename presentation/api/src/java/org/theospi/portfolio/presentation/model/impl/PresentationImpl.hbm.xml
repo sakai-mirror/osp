@@ -183,7 +183,7 @@
       <property name="type" column="type" type="string" not-null="false" />
       <property name="value" column="value" type="string" not-null="false" length="2147483647" />
       <property name="regionItemSeq" column="seq_num" type="int" not-null="true" />
-      <set name="properties" lazy="false" inverse="true" cascade="all-delete-orphan">
+      <set name="properties" lazy="false" inverse="true" cascade="all">
          <key column="presentation_page_item_id" />
          <one-to-many class="PresentationItemProperty" />
       </set>

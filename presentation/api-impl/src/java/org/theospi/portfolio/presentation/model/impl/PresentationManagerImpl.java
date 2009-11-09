@@ -664,6 +664,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                page.setCreated(new Date(System.currentTimeMillis()));
                page.setNewId(page.getId());
                page.setId(null);
+               page.setNewObject(false);
                getHibernateTemplate().save(page);
             }
             else {
