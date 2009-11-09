@@ -14,7 +14,31 @@
       <fmt:message key="text_CautionDeleteMatrix"/>
 	</c:if>
 </div>
-
+<c:if test="${totalLinksNum > 0}">
+	<div class="alertMessage">
+		<c:if test="${totalLinksNum > 1}">
+			<fmt:message key="confirmDeleteLinkWarningPart1Plural">
+				<fmt:param value="${totalLinksNum}"/> 
+			</fmt:message>
+		</c:if>
+		<c:if test="${totalLinksNum == 1}">
+			<fmt:message key="confirmDeleteLinkWarningPart1Singlular">
+				<fmt:param value="${totalLinksNum}"/> 
+			</fmt:message>
+		</c:if>
+		<c:if test="${linkedSitesNum > 1}">
+			<fmt:message key="confirmDeleteLinkWarningPart2Plural">
+				<fmt:param value="${linkedSitesNum}"/> 
+			</fmt:message>
+		</c:if>
+		<c:if test="${linkedSitesNum == 1}">
+			<fmt:message key="confirmDeleteLinkWarningPart2Singlular">
+				<fmt:param value="${linkedSitesNum}"/> 
+			</fmt:message>
+		</c:if>
+		
+	</div>
+</c:if>
 <form method="post">
    <div class="act">
       <input name="continue" type="submit" value="<fmt:message key="button_continue" />" class="active" accesskey="s" />

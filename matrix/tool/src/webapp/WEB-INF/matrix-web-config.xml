@@ -62,6 +62,51 @@
       <property name="commandClass"><value>java.util.ArrayList</value></property>    
    </bean>
    
+   <bean id="listPageActivitiesController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+   	<property name="controller">
+   		<bean class="org.theospi.portfolio.matrix.control.ListPageActivities">
+   			<property name="taggingManager">
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
+            </property>
+            <property name="linkManager">
+            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
+            </property>
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+            </property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+   		</bean>
+   	</property>
+   	<property name="screenMappings">
+         <props>
+            <prop key="success">listPageActivities</prop>
+            <prop key="goback">editScaffoldingCellRedirect</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>pageActivities</value></property>
+      <property name="commandClass"><value>java.util.HashSet</value></property> 
+   </bean>
+   
+   <bean id="scaffoldingCellInfoController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ScaffoldingCellInfoController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">cellDetail</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>scaffoldingCell</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingCell</value></property>    
+   </bean>
+   
    <bean id="exposedScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ExposedScaffoldingController">
@@ -99,6 +144,12 @@
             </property>
             <property name="styleManager">
                <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+            </property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
+            </property>
+            <property name="wizardActivityProducer">
+               <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
          </bean>
       </property>
@@ -138,6 +189,9 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="wizardManager">
+               <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+            </property>
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
@@ -148,6 +202,12 @@
               <list>
                 <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
               </list>
+            </property>
+            <property name="serverConfigurationService">
+            	<ref bean="org.sakaiproject.component.api.ServerConfigurationService" />
+            </property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
             </property>
          </bean>
       </property>
@@ -162,6 +222,8 @@
             <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
             <prop key="tagItem">tagItemRedirect</prop>
+            <prop key="viewCellInformation">viewCellInformationRedirect</prop>
+            <prop key="inviteFeedbackConfirm">inviteFeedbackConfirmRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -210,7 +272,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageSeqAndMatrixRedirect</prop>
+            <prop key="success">wizardPageHierRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
@@ -240,6 +302,40 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
       <property name="formView"><value>viewCell</value></property>
    </bean>
+
+	<bean id="viewCellInformationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean
+         	class="org.theospi.portfolio.matrix.control.ViewCellInformationController">
+         	<property name="idManager">
+         		<ref bean="idManager" />
+         	</property>
+         	<property name="matrixManager">
+         		<ref bean="matrixManager" />
+         	</property>
+         	<property name="wizardManager">
+         		<ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+         	</property>
+         	<property name="sessionManager">
+         		<ref bean="org.sakaiproject.tool.api.SessionManager" />
+         	</property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewCellInformation</prop>
+         </props>
+      </property> 
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>wizardPageDef</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.WizardPageDefinition</value></property>
+    
+   </bean>
+
 
    <bean id="viewAssignmentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
@@ -469,6 +565,13 @@
             <property name="styleManager">
                <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
             </property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
+            </property>
+            <property name="workflowManager">
+               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -487,11 +590,40 @@
       <property name="commandName"><value>string</value></property>
       <property name="commandClass"><value>java.lang.String</value></property>
    </bean>
+   
+   <bean id="feedbackHelperController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.FeedbackHelperController">
+         	<property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>        	
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="inviteFeedback">inviteFeedback</prop>
+            <prop key="viewCell">viewCellRedirect</prop>
+            <prop key="viewScaffolding">matrixRedirect</prop>
+            <prop key="notifyAudience">notifyAudience</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>string</value></property>
+      <property name="commandClass"><value>java.lang.String</value></property>
+   </bean>
+   
 
    <bean id="reviewPostProcessor" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ReviewPostProcessor">
             <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -567,8 +699,8 @@
             <property name="styleManager">
                <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
             </property>
-<!--             <property name="authManager"><ref bean="authManager"/></property>
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+      <!--  <property name="homeFactory"><ref bean="homeFactory"/></property>
             <property name="repositoryManager"><ref bean="repositoryManager"/></property>
             <property name="matrixAuthorizer"><ref bean="matrixAuthorizer"/></property>
 
@@ -617,6 +749,8 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+            <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -637,6 +771,8 @@
             <prop key="moveCriterion">moveCriterionRedirect</prop>
             <prop key="removeLevCrit">removeLevCritRedirect</prop>
             <prop key="editScaffoldingConfirm">editScaffoldingConfirmRedirect</prop>
+            <prop key="selectEvaluators">selectCellEvaluators</prop>
+            <prop key="selectReviewers">selectCellEvaluators</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
@@ -808,6 +944,12 @@
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
+             <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -932,6 +1074,8 @@
             <prop key="editInstructions">editInstructions</prop>
             <prop key="editRationale">editRationale</prop>
             <prop key="editExamples">editExamples</prop>
+            <prop key="editRubrics">editRubrics</prop>
+            <prop key="editExpectations">editExpectations</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
@@ -983,11 +1127,13 @@
 			<prop key="return">viewScaffoldingRedirect</prop>
             <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
+            <prop key="selectReviewers">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
             <prop key="deleteGuidance">editScaffoldingCellRedirect</prop>
             <prop key="editInstructions">editInstructions</prop>
             <prop key="editRationale">editRationale</prop>
             <prop key="editExamples">editExamples</prop>
+            <prop key="listPageActivities">listPageActivitiesRedirect</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
@@ -1066,6 +1212,9 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="linkManager">
+            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
+            </property>
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
@@ -1084,7 +1233,24 @@
       <property name="commandName"><value>scaffolding</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
    </bean>
-   
+ 
+   <bean id="inviteFeedbackConfirmationController"  class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.InviteFeedbackConfirmationController">
+	         <property name="matrixManager"><ref bean="matrixManager"/></property>
+    	     <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+         	<prop key="success">inviteFeedbackConfirm</prop>
+            <prop key="cancel">wizardPageSeqAndMatrixRedirect</prop>
+         </props>
+      </property>
+		<property name="commandName"><value>model</value></property>
+     	 <property name="commandClass"><value>java.util.Map</value></property>
+   </bean>
+
    <bean id="removeLevCritConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.RemoveLevCritConfirmationController">
@@ -1113,6 +1279,12 @@
             </property>
             <property name="reviewManager">
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+            <property name="agentManager">
+               <ref bean="agentManager"/>
+            </property>
+            <property name="wizardManager">
+               <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
             </property>
          </bean>
       </property>

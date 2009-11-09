@@ -126,8 +126,92 @@
 					   </h:column>
 					</sakai:flat_list>
 				</h:panelGroup>
-			</h:panelGrid>	
-	     </fieldset>
+			</h:panelGrid>
+
+			<h4><h:outputText value="#{msgs.guidance_rubric}" /></h4>
+			<p class="indnt1"><h:commandLink id="addRubric"
+				value="#{msgs.guidance_rubric_add}"
+				action="#{wizard.current.processActionEditRubric}"
+				rendered="#{empty wizard.current.guidanceRubric && empty wizard.current.guidanceRubricAttachments}" />
+			<h:outputText value="#{msgs.guidance_rubric_empty_msg}"
+				rendered="#{empty wizard.current.guidanceRubric && empty  wizard.current.guidanceRubricAttachments}"
+				styleClass="instruction" /></p>
+
+			<h:panelGrid columns="1" styleClass="listHier bordered-l"
+				cellpadding="0" cellspacing="0" border="0" summary=""
+				style="width:70%"
+				rendered="#{(not empty wizard.current.guidanceRubric) || (not empty wizard.current.guidanceRubricAttachments)}"
+				headerClass="itemAction  wizardSupportTableHead">
+				<f:facet name="header">
+					<h:commandLink id="editRubric"
+						value="#{msgs.guidance_rubric_revise}"
+						action="#{wizard.current.processActionEditRubric}" />
+				</f:facet>
+				<h:panelGroup>
+					<h:outputText value="#{wizard.current.rubric.text}" escape="false" />
+					<sakai:flat_list
+						value="#{wizard.current.guidanceRubricAttachments}"
+						var="attachment" summary="layout"
+						rendered="#{not empty wizard.current.guidanceRubricAttachments}">
+						<h:column>
+							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}"
+								mapType="image" var="imagePath" pathPrefix="/library/image/" />
+							<h:graphicImage id="rubricFileIcon" value="#{imagePath}"
+								alt="#{attachment.displayName}"
+								title="#{attachment.displayName}" />
+							<h:outputLink title="#{attachment.displayName}"
+								value="#{attachment.fullReference.base.url}" target="_new">
+								<h:outputText value="#{attachment.displayName}" />
+							</h:outputLink>
+							<h:outputText value=" (#{attachment.contentLength})" />
+						</h:column>
+					</sakai:flat_list>
+				</h:panelGroup>
+			</h:panelGrid>
+
+
+			<h4><h:outputText value="#{msgs.guidance_expectations}" /></h4>
+			<p class="indnt1"><h:commandLink id="addExpectations"
+				value="#{msgs.guidance_expectations_add}"
+				action="#{wizard.current.processActionEditExpectations}"
+				rendered="#{empty wizard.current.guidanceExpectations && empty wizard.current.guidanceExpectationsAttachments}" />
+			<h:outputText value="#{msgs.guidance_expectations_empty_msg}"
+				rendered="#{empty wizard.current.guidanceExpectations && empty  wizard.current.guidanceExpectationsAttachments}"
+				styleClass="instruction" /></p>
+
+			<h:panelGrid columns="1" styleClass="listHier bordered-l"
+				cellpadding="0" cellspacing="0" border="0" summary=""
+				style="width:70%"
+				rendered="#{(not empty wizard.current.guidanceExpectations) || (not empty wizard.current.guidanceExpectationsAttachments)}"
+				headerClass="itemAction  wizardSupportTableHead">
+				<f:facet name="header">
+					<h:commandLink id="editExpectations"
+						value="#{msgs.guidance_expectations_revise}"
+						action="#{wizard.current.processActionEditExpectations}" />
+				</f:facet>
+				<h:panelGroup>
+					<h:outputText value="#{wizard.current.expectations.text}" escape="false" />
+					<sakai:flat_list
+						value="#{wizard.current.guidanceExpectationsAttachments}"
+						var="attachment" summary="layout"
+						rendered="#{not empty wizard.current.guidanceExpectationsAttachments}">
+						<h:column>
+							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}"
+								mapType="image" var="imagePath" pathPrefix="/library/image/" />
+							<h:graphicImage id="expectationsFileIcon" value="#{imagePath}"
+								alt="#{attachment.displayName}"
+								title="#{attachment.displayName}" />
+							<h:outputLink title="#{attachment.displayName}"
+								value="#{attachment.fullReference.base.url}" target="_new">
+								<h:outputText value="#{attachment.displayName}" />
+							</h:outputLink>
+							<h:outputText value=" (#{attachment.contentLength})" />
+						</h:column>
+					</sakai:flat_list>
+				</h:panelGroup>
+			</h:panelGrid>
+			
+		</fieldset>
 		 
 		 <fieldset class="fieldsetVis">
 		 	<legend>User forms</legend>

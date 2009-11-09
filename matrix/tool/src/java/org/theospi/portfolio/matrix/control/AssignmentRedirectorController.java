@@ -52,7 +52,7 @@ public class AssignmentRedirectorController implements LoadObjectController {
          String assignments = AssignmentHelper.joinAssignmentList( assignList );
          session.put(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS, assignments);
          
-         String context = pageDef.getSiteId().getValue();
+         String context = pageDef.getSiteId();
          session.put(AssignmentHelper.WIZARD_PAGE_CONTEXT, context);
       
          session.put("assignReturnView", request.get("assignReturnView"));

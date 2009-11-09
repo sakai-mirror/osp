@@ -37,7 +37,7 @@ import org.theospi.portfolio.security.model.AuthZMap;
 
 public class AuthZMapTag extends TagSupport {
 
-   private Id qualifier;
+   private Object qualifier;
    private boolean useSite;
    private String prefix;
    private String var;
@@ -97,12 +97,17 @@ public class AuthZMapTag extends TagSupport {
          qual = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
       }
       else {
-         qual = qualifier;
+    	  if (qualifier instanceof Id) {
+    		  qual = (Id)qualifier;
+    	  }
+    	  else {
+    		  qual = getIdManager().getId((String)qualifier);
+    	  }         
       }
       return qual;
    }
 
-   public void setQualifier(Id qualifier) {
+   public void setQualifier(Object qualifier) {
       this.qualifier = qualifier;
    }
 

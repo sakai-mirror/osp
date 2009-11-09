@@ -40,7 +40,7 @@ public class EvaluationContentWrapperForWizardPage extends
 
    
    public EvaluationContentWrapperForWizardPage(Id id, String title, Agent owner, 
-         Date submittedDate, String wizardType, Id siteId) throws UserNotDefinedException {
+         Date submittedDate, String wizardType, String siteId) throws UserNotDefinedException {
      
       super(id, title, owner, submittedDate, siteId);
 		

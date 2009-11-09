@@ -56,6 +56,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
+import org.theospi.portfolio.matrix.util.FormNameGeneratorUtil;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
@@ -191,12 +192,12 @@ public class CellFormPickerController extends CellController implements FormCont
 
       }
       else if (createFormAction != null) {
-         String view = setupSessionInfo(request, session, pageId, pageTitle, createFormAction);
+         String view = setupSessionInfo(request, session, pageId, createFormAction);
          session.put(WHICH_HELPER_KEY, HELPER_CREATOR);
          return new ModelAndView(view);
       }
       else if (viewFormAction != null) {
-         setupSessionInfo(request, session, pageId, pageTitle, viewFormAction);
+         setupSessionInfo(request, session, pageId, viewFormAction);
          getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(
                ContentHostingService.EVENT_RESOURCE_READ,
                (String)request.get("current_form_id")));
@@ -207,7 +208,7 @@ public class CellFormPickerController extends CellController implements FormCont
    }
 
    protected String setupSessionInfo(Map request, Map<String, Object> session,
-                                     String pageId, String pageTitle, String formTypeId) {
+                                     String pageId, String formTypeId) {
       String retView = "formCreator";
       session.put("page_id", pageId);
       session.put(FormHelper.FORM_STYLES, getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
@@ -249,7 +250,7 @@ public class CellFormPickerController extends CellController implements FormCont
          }
 
          //CWM OSP-UI-09 - for auto naming
-         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(pageTitle, objectTitle, bean.getDescription(), 1, contentResourceList));
+         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, FormNameGeneratorUtil.getFormDisplayName(bean.getDescription(), 1, contentResourceList));
       } else {
          //session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
          session.remove(ResourceEditingHelper.CREATE_TYPE);
@@ -262,63 +263,6 @@ public class CellFormPickerController extends CellController implements FormCont
       }
       return retView;
    }
-
-   /**
-    * 
-    * @param pageTitle
-    * @param objectTitle
-    * @param formTypeName
-    * @param count: this keeps track of the number of times getFormDisplayName is called for naming reasons
-    * @param contentResourceList: a list of the resources for looking up the names to compare to the new name
-    * @return
-    */
-   protected String getFormDisplayName(String pageTitle, String objectTitle, String formTypeName, int count, List contentResourceList) {
-      String includePageTitle = "";
-      String name = "";
-      
-      if (pageTitle != null && pageTitle.length() > 0)
-         includePageTitle = pageTitle + "-";
-
-      name = objectTitle + "-" + includePageTitle + formTypeName;
-      
-      if(count > 1){
-    	  name = name + " (" + count + ")";
-      }
-      
-      count++;
-      
-      return formDisplayNameExists(name, contentResourceList) && contentResourceList != null ? 
-    		  getFormDisplayName(pageTitle, objectTitle, formTypeName, count, contentResourceList) : name;
-
-   }
-   
-   
-   /**
-    * 
-    * @param name
-    * @param contentResourceList
-    * @return
-    * 
-    * returns true if the name passed exists in the list of contentResource
-    * otherwise returns false
-    */
-   protected boolean formDisplayNameExists(String name, List contentResourceList){
-	   
-	   
-	   if(contentResourceList != null){
-		   ContentResource cr;
-		   for(int i = 0; i < contentResourceList.size(); i++){
-			   cr = (ContentResource) contentResourceList.get(i);
-			   if(name.equals(cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()).toString())){
-				   return true;
-			   }
-		   }
-	   }
-  
-	   return false;
-   }
-   
-   
 
    protected String createFolder(String base, String append, String appendDisplay, String appendDescription) {
       //String folder = "/user/" +

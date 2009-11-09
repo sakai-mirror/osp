@@ -25,12 +25,6 @@
             <bean id="org.sakaiproject.content.api.ContentHostingService.EVENT_RESOURCE_READ"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVIEW_MATRIX"
-               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-            </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EVALUATE_MATRIX"
-               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-            </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
@@ -40,24 +34,40 @@
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CREATE_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EXPORT_SCAFFOLDING"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVISE_SCAFFOLDING_ANY"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.USE_SCAFFOLDING"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVISE_SCAFFOLDING_OWN"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EDIT_SCAFFOLDING"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.DELETE_SCAFFOLDING_ANY"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.DELETE_SCAFFOLDING_OWN"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.DELETE_SCAFFOLDING"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING_ANY"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING_OWN"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EXPORT_SCAFFOLDING_ANY"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EXPORT_SCAFFOLDING_OWN"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.ACCESS_ALL_CELLS"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_EVAL_OTHER"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_FEEDBACK_OTHER"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.MANAGE_STATUS"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.ACCESS_USERLIST"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_ALL_GROUPS"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.CAN_USE_SCAFFOLDING"/>
          </list>
       </property>
    </bean>
@@ -140,6 +150,7 @@
    <bean id="matrixManagerTarget" class="org.theospi.portfolio.matrix.HibernateMatrixManagerImpl">
       <property name="importFolderName"><value>Imported Matrices' Files</value></property>
       <property name="useExperimentalMatrix"><value>false</value></property>
+      <property name="enableDafaultMatrixOptions"><value>true</value></property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
@@ -180,6 +191,12 @@
       </property>
       <property name="eventService">
       	<ref bean="org.theospi.event.EventService"/>
+      </property>
+      <property name="taggingManager">
+        <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
+      </property>
+      <property name="linkManager">
+      	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
       </property>
    </bean>
 
@@ -233,6 +250,31 @@
       </property>
       <property name="matrixManager"><ref bean="matrixManager"/></property>
    </bean>
+   
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospScaffolding"
+      class="org.theospi.portfolio.matrix.model.impl.ScaffoldingEntityProducer"
+      init-method="init"
+		destroy-method="destroy"
+		singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+      </property>
+      <property name="matrixManager">
+         <ref bean="matrixManager"/>
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+   </bean>
+   
+   	<bean id="org.theospi.portfolio.matrix.model.impl.MatrixCellEntityProviderImpl"
+		class="org.theospi.portfolio.matrix.model.impl.MatrixCellEntityProviderImpl">
+		<property name="matrixManager" ref="matrixManager" />
+		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+		<property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+	</bean>
    
    <bean id="org.sakaiproject.entity.api.HttpAccess.ospWorkflow"
       class="org.theospi.portfolio.workflow.impl.WorkflowHttpAccess">
@@ -308,6 +350,20 @@
        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
     <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.LOCKED_STATUS"
        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.ACCESS_ALL_CELLS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_EVAL_OTHER"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_FEEDBACK_OTHER"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.MANAGE_STATUS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.ACCESS_USERLIST"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_ALL_GROUPS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CAN_USE_SCAFFOLDING"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding"
       class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"  init-method="init">
@@ -324,7 +380,6 @@
             <entry>
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
-                  <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.edit</value>
                   <value>osp.matrix.scaffolding.delete</value>
@@ -333,35 +388,47 @@
                </list>
             </entry>
             <entry>
-               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.review"/></key>
-               <list>
-                  <value>osp.matrix.review</value>
-               </list>
-            </entry>
-            <entry>
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.access"/></key>
                <list>
                   <value>osp.matrix.scaffolding.use</value>
                </list>
             </entry>
-            <entry>
-               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.evaluate"/></key>
-               <list>
-                  <value>osp.matrix.evaluate</value>
-               </list>
-            </entry>
          </map>
       </property>
       <property name="functions">
-         <list>
-            <value>osp.matrix.scaffolding.use</value>
+         <list>           
             <value>osp.matrix.scaffolding.create</value>
-            <value>osp.matrix.scaffolding.edit</value>
-            <value>osp.matrix.scaffolding.delete</value>
-            <value>osp.matrix.scaffolding.publish</value>
-            <value>osp.matrix.scaffolding.export</value>
-            <value>osp.matrix.review</value>
-            <value>osp.matrix.evaluate</value>
+            <value>osp.matrix.scaffolding.revise.any</value>
+            <value>osp.matrix.scaffolding.revise.own</value>
+            <value>osp.matrix.scaffolding.delete.any</value>
+            <value>osp.matrix.scaffolding.delete.own</value>
+            <value>osp.matrix.scaffolding.publish.any</value>
+            <value>osp.matrix.scaffolding.publish.own</value>
+            <value>osp.matrix.scaffolding.export.any</value>
+            <value>osp.matrix.scaffolding.export.own</value>
+         </list>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffoldingSpecific"
+      class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"  init-method="init">
+
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="permissionManager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
+      </property>
+      <property name="agentManager"><ref bean="agentManager" /></property>
+      <property name="permissionEditName"><value>scaffoldingSpecific</value></property>
+      <property name="functionPrefix"><value>osp.matrix</value></property>
+      <property name="functions">
+         <list>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.CAN_USE_SCAFFOLDING"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.ACCESS_ALL_CELLS"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_EVAL_OTHER"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_FEEDBACK_OTHER"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.MANAGE_STATUS"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.ACCESS_USERLIST"/>
+            <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_ALL_GROUPS"/>
          </list>
       </property>
    </bean>
@@ -380,23 +447,20 @@
             <entry>
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
-                  <value>osp.matrix.evaluate</value>
-                  <value>osp.matrix.viewOwner</value>
+               	  <value>osp.portfolio.evaluation.use</value>
                </list>
             </entry>
             <entry>
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.evaluate"/></key>
                <list>
-                  <value>osp.matrix.evaluate</value>
-                  <value>osp.matrix.viewOwner</value>
+                  <value>osp.portfolio.evaluation.use</value>
                </list>
             </entry>
          </map>
       </property>
       <property name="functions">
          <list>
-            <value>osp.matrix.evaluate</value>
-            <value>osp.matrix.viewOwner</value>
+            <value>osp.portfolio.evaluation.use</value>
          </list>
       </property>
    </bean>
@@ -414,6 +478,9 @@
             </entry>
             <entry key="review">
                <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.review"/>
+            </entry>
+            <entry key="scaffoldingSpecific">
+               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffoldingSpecific"/>
             </entry>
          </map>
       </property>
@@ -434,5 +501,20 @@
          </list>
       </property>
    </bean>
+   
+   <bean id="org.theospi.portfolio.tagging.impl.MatrixTaggingProvider"
+    class="org.theospi.portfolio.tagging.impl.MatrixTaggingProviderImpl"
+    init-method="init"
+    singleton="true">
+    <property name="taggingManager">
+      <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
+    </property>
+    <property name="linkManager">
+      <ref bean="org.sakaiproject.taggable.api.LinkManager" />
+    </property>
+    <property name="siteAssocManager">
+      <ref bean="org.sakaiproject.siteassociation.api.SiteAssocManager" />
+    </property>
+  </bean>
 
 </beans>

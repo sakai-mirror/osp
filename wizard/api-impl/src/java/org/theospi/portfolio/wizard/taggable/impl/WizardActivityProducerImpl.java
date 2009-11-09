@@ -31,6 +31,7 @@ import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.ResourceLoader;
@@ -64,15 +65,17 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	TaggingManager taggingManager;
 
 	AuthorizationFacade authzManager;
+	
+	private AuthenticationManager authnManager = null;
 
 	SessionManager sessionManager;
 
 	List<String> ratingProviderIds;
 
 	public boolean allowGetItems(TaggableActivity activity,
-			TaggingProvider provider) {
+			TaggingProvider provider, boolean getMyItemsOnly) {
 		// FIXME http://bugs.sakaiproject.org/jira/browse/GM-84
-		return !getItems(activity, provider).isEmpty();
+		return !getItems(activity, provider, getMyItemsOnly).isEmpty();
 	}
 
 	public boolean allowRemoveTags(TaggableActivity activity) {
@@ -108,8 +111,10 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 					MatrixFunctionConstants.CREATE_SCAFFOLDING, cell
 							.getScaffolding().getId())
 					|| authzManager.isAuthorized(
-							MatrixFunctionConstants.DELETE_SCAFFOLDING, cell
-									.getScaffolding().getId());
+							MatrixFunctionConstants.DELETE_SCAFFOLDING_ANY, cell
+									.getScaffolding().getId()) || (authzManager.isAuthorized(
+											MatrixFunctionConstants.DELETE_SCAFFOLDING_OWN, cell
+											.getScaffolding().getId()) && cell.getScaffolding().getOwner().getId().equals(getAuthnManager().getAgent().getId()));
 		}
 		return authorized;
 	}
@@ -150,7 +155,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		// We aren't picky about the provider, so ignore that argument.
 		List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
 		for (WizardPageDefinition def : wizardManager.findWizardPageDefs(
-				idManager.getId(context), true)) {
+				context, true)) {
 			activities.add(getActivity(def));
 		}
 		return activities;
@@ -183,11 +188,11 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		if (reference != null) {
 			if (WizardReference.REF_DEF.equals(reference.getType())) {
 				context = wizardManager.getWizardPageDefinition(
-						idManager.getId(reference.getId())).getSiteId().getValue();
+						idManager.getId(reference.getId())).getSiteId();
 			} else {
 				context = matrixManager.getWizardPage(
 						idManager.getId(reference.getId())).getPageDefinition()
-						.getSiteId().getValue();
+						.getSiteId();
 			}
 		}
 		return context;
@@ -197,7 +202,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return WizardActivityProducer.PRODUCER_ID;
 	}
 
-	public TaggableItem getItem(String itemRef, TaggingProvider provider) {
+	public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemOnly) {
 		TaggableItem item = null;
 		if (checkReference(itemRef)) {
 			// Only return item to a specified rating (evalutation) provider
@@ -214,7 +219,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 									.equals(
 											MatrixFunctionConstants.COMPLETE_STATUS))
 							&& (page.getOwner().getId().getValue().equals(
-									sessionManager.getCurrentSessionUserId()) || canEvaluate(page))) {
+									sessionManager.getCurrentSessionUserId()) || (!getMyItemOnly && canEvaluate(page)))) {
 						item = getItem(page);
 					}
 				}
@@ -234,7 +239,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
-			String userId, TaggingProvider provider) {
+			String userId, TaggingProvider provider, boolean getMyItemsOnly) {
 		List<TaggableItem> items = new ArrayList<TaggableItem>();
 		// Return custom list of items to rating providers. This
 		// list should match that seen in the evaluation item list (?)
@@ -251,7 +256,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 								MatrixFunctionConstants.PENDING_STATUS) || page
 								.getStatus()
 								.equals(MatrixFunctionConstants.COMPLETE_STATUS))
-						&& (page.getOwner().getId().getValue().equals(userId) || canEvaluate(page))) {
+						&& (page.getOwner().getId().getValue().equals(userId) || (!getMyItemsOnly && canEvaluate(page)))) {
 					items.add(getItem(page));
 					// There is only one submitted page per definition, so break
 					// here
@@ -267,7 +272,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
-			TaggingProvider provider) {
+			TaggingProvider provider, boolean getMyItemsOnly) {
 		List<TaggableItem> items = new ArrayList<TaggableItem>();
 		// Only return items to a specified rating provider
 		if (ratingProviderIds.contains(provider.getId())) {
@@ -283,7 +288,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 								MatrixFunctionConstants.PENDING_STATUS) || page
 								.getStatus()
 								.equals(MatrixFunctionConstants.COMPLETE_STATUS))
-						&& canEvaluate(page)) {
+						&& (!getMyItemsOnly && canEvaluate(page))) {
 					items.add(getItem(page));
 				}
 			}
@@ -293,6 +298,23 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 					+ provider.getId() + " not allowed!");
 		}
 		return items;
+	}
+	
+	public boolean hasSubmissions(TaggableActivity activity,
+			TaggingProvider provider, boolean getMyItemsOnly) {
+		List<TaggableItem> items = getItems(activity, provider, getMyItemsOnly);
+		return items.size() > 0;
+	}
+	
+	public boolean hasSubmissions(TaggableActivity activity, String userId,
+			TaggingProvider provider, boolean getMyItemsOnly) {
+		List<TaggableItem> items = getItems(activity, userId, provider, getMyItemsOnly);
+		return items.size() > 0;
+	}
+	
+	public String getItemPermissionOverride() {
+		//TODO figure out what perm to use here
+		return null;
 	}
 
 	public String getName() {
@@ -335,5 +357,13 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	public void setWizardManager(WizardManager wizardManager) {
 		this.wizardManager = wizardManager;
+	}
+
+	public AuthenticationManager getAuthnManager() {
+		return authnManager;
+	}
+
+	public void setAuthnManager(AuthenticationManager authnManager) {
+		this.authnManager = authnManager;
 	}
 }

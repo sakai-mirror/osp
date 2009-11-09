@@ -99,7 +99,7 @@ public class ViewAssignmentController implements FormController, LoadObjectContr
       // row
       try {
          if ( page != null ) { // wizard page
-            Cell cell = WizardPageController.createCellWrapper(page);
+            Cell cell = getMatrixManager().createCellWrapper(page);
             cellBean.setCell(cell);
          }
          else {   // matrix cell

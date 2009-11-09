@@ -21,30 +21,36 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggingManager;
-import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
+import org.sakaiproject.taggable.api.Link;
+import org.sakaiproject.taggable.api.LinkManager;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
+
 
 /**
  * Delete scaffolding and associated matrix data if user confirms
@@ -56,10 +62,14 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 	private IdManager idManager = null;
 
 	private AuthorizationFacade authzManager = null;
+	
+	private AuthenticationManager authnManager = null;
 
 	private TaggingManager taggingManager = null;
 
 	private WizardActivityProducer wizardActivityProducer = null;
+	
+	private LinkManager linkManager = null;
 
 	private final Log logger = LogFactory.getLog(getClass());
 
@@ -78,6 +88,40 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 
 		Map model = new HashMap();
 		model.put("scaffolding_published", scaffolding.isPublished());
+		
+		int linkedSitesNum = 0, totalLinksNum = 0;
+		try {
+			List<String> uniqueSites = new ArrayList<String>();
+			Set<ScaffoldingCell> sCells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
+			//go through each cell and look up the links to that cell
+			for (Iterator iterator = sCells.iterator(); iterator.hasNext();) {
+				ScaffoldingCell sCell = (ScaffoldingCell) iterator.next();
+				List<Link> linksList = getLinkManager().getLinks(sCell.getWizardPageDefinition().getReference(), true);
+				for (Iterator iterator2 = linksList.iterator(); iterator2.hasNext();) {
+					//for each link check to see if the site is a new site and increment counter
+					Link link = (Link) iterator2.next();								
+					if(!uniqueSites.contains(link.getActivityRef())){
+						//if activity already exists, then we know the site already exists
+						uniqueSites.add(link.getActivityRef());
+						String context = getTaggingManager().getContext(link.getActivityRef());
+						if(!uniqueSites.contains(context)){
+							//if this is a new site, then increment counter
+							uniqueSites.add(context);
+							linkedSitesNum++;
+						}
+					}					
+				}
+				totalLinksNum += linksList.size();
+			}			
+		} catch (PermissionException e1) {
+			e1.printStackTrace();
+		}
+		
+		
+		model.put("linkedSitesNum", linkedSitesNum);
+		model.put("totalLinksNum", totalLinksNum);
+		
+		
 
 		String cancel = (String) request.get("cancel");
 		String doit = (String) request.get("continue");
@@ -87,8 +131,16 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 		else if (doit == null)
 			return new ModelAndView("delete", model);
 
-		getAuthzManager().checkPermission(
-				MatrixFunctionConstants.DELETE_SCAFFOLDING, id);
+		try{
+			getAuthzManager().checkPermission(
+					MatrixFunctionConstants.DELETE_SCAFFOLDING_ANY, id);
+		}catch(AuthorizationFailedException e){
+			//if exception thrown, then check to see if both: user owns matrix and has permission to 
+			//delete own matrices
+			getAuthzManager().checkPermission(
+						MatrixFunctionConstants.DELETE_SCAFFOLDING_OWN, id);
+			
+		}
 
 		if (scaffolding.getExposedPageId() != null
 				&& !scaffolding.getExposedPageId().equals("")) {
@@ -105,14 +157,21 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 		// if taggable, remove tags for all page defs
 		try {
 			if (getTaggingManager().isTaggable()) {
-				Set<ScaffoldingCell> cells = scaffolding.getScaffoldingCells();
+				Set<ScaffoldingCell> cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
 				for (ScaffoldingCell cell : cells) {
 					for (TaggingProvider provider : getTaggingManager()
 							.getProviders()) {
-						System.out.println(cell.getTitle());
+
+						//Remove stuff where the cells are the activities
 						TaggableActivity activity = getWizardActivityProducer()
 								.getActivity(cell.getWizardPageDefinition());
 						provider.removeTags(activity);
+						
+						//Remove stuff where the cell is the linked item
+						List<Link> links = getLinkManager().getLinks(cell.getWizardPageDefinition().getReference(), true);
+						for (Link link : links) {
+							getLinkManager().removeLink(link);
+						}
 					}
 				}
 			}
@@ -165,5 +224,21 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 	public void setWizardActivityProducer(
 			WizardActivityProducer wizardActivityProducer) {
 		this.wizardActivityProducer = wizardActivityProducer;
+	}
+
+	public AuthenticationManager getAuthnManager() {
+		return authnManager;
+	}
+
+	public void setAuthnManager(AuthenticationManager authnManager) {
+		this.authnManager = authnManager;
+	}
+
+	public LinkManager getLinkManager() {
+		return linkManager;
+	}
+
+	public void setLinkManager(LinkManager linkManager) {
+		this.linkManager = linkManager;
 	}
 }

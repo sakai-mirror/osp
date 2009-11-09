@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.cover.AssignmentService;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.FunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -44,20 +48,16 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.user.api.UserNotDefinedException;
-import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.assignment.api.AssignmentSubmission;
-import org.sakaiproject.assignment.api.Assignment;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.user.api.User;
-
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
@@ -70,10 +70,13 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.assignment.AssignmentHelper;
+import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
    protected final Log logger = LogFactory.getLog(getClass());
+   private SecurityService securityService;
    
    public static final String VIEW_USER = "view_user";
    
@@ -85,7 +88,9 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 	
    private ToolManager toolManager;
    private StyleManager styleManager;
-
+   
+   private WizardActivityProducer wizardActivityProducer;
+   
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
 
       MatrixGridBean grid = (MatrixGridBean)incomingModel;
@@ -201,6 +206,13 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
             cellBean.setAssignments(getAssignments(cell.getWizardPage(), matrix.getOwner()));
+            
+            if (getMatrixManager().getTaggingManager().isTaggable()) {
+    			TaggableItem item = wizardActivityProducer.getItem(cell.getWizardPage());
+    			
+    			Set<TaggableItem> taggableItems = getMatrixManager().getTaggableItems(item, cell.getWizardPage().getPageDefinition().getReference(), cell.getWizardPage().getOwner().getId().getValue());
+    			cellBean.setTaggableItems(taggableItems);    			
+    		}            
             row.add(cellBean);
          }
          matrixContents.add(row);
@@ -228,9 +240,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
       String filteredGroup = (String) request.get(GROUP_FILTER);
-      boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
-      			|| grid.getScaffolding().getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
-      List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
+      boolean allowAllGroups = getAuthzManager().isAuthorized(getAuthManager().getAgent(), MatrixFunctionConstants.VIEW_ALL_GROUPS, getIdManager().getId(grid.getScaffolding().getReference()));
+      List<Group> groupList = new ArrayList<Group>(getMatrixManager().getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine
       Collections.sort(groupList, new Comparator<Group>() {
@@ -238,19 +249,25 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
     	  }});
       
-      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
+      List userList = new ArrayList(getMatrixManager().getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
 		
-      Collections.sort(userList);
+      Collections.sort(userList, new Comparator<User>(){
+
+		public int compare(User arg0, User arg1) {
+			return arg0.getSortName().compareToIgnoreCase(arg1.getSortName());
+		}
+      });
+      
       model.put("members", userList);
       model.put("userGroups", groupList);
       //TODO: Address why the fn:length() function can't be loaded or another handy way to pull collection size via EL
       model.put("userGroupsCount", groupList.size());
-      model.put("hasGroups", hasGroups(worksiteId));
+      model.put("hasGroups", getMatrixManager().hasGroups(worksiteId));
       model.put("filteredGroup", request.get(GROUP_FILTER));
       //TODO: Clean this up for efficiency.. We're going back to the SiteService too much
       
       if ((owner != null && !owner.equals(getAuthManager().getAgent())) ||
-           !getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING,getWorksiteManager().getCurrentWorksiteId()))
+           !getAuthzManager().isAuthorized(MatrixFunctionConstants.CAN_USE_SCAFFOLDING, getIdManager().getId(grid.getScaffolding().getReference())))
          readOnly = Boolean.valueOf(true);
 
       model.put("worksite", worksiteId );
@@ -271,6 +288,9 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
       
       model.put("showFooter", getShowFooter(grid));
+      
+      model.put("cellsICanAccess", getCellsICanAccess(getMatrixManager().getMatrix(
+				grid.getMatrixId())));
       
       return model;
    }
@@ -341,81 +361,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return null;
 
    } // getCurrentSitePageId
-    
-    private Set getGroupList(String worksiteId, boolean allowAllGroups) {
-    	try {
-			Site site = SiteService.getSite(worksiteId);
-			return getGroupList(site, allowAllGroups);
-		} catch (IdUnusedException e) {
-			logger.error("", e);
-		}
-		return new HashSet();    	
-    }
-    
-    private Set getGroupList(Site site, boolean allowAllGroups) {
-    	Set groups = new HashSet();
-		if (site.hasGroups()) {
-            String currentUser = SessionManager.getCurrentSessionUserId();
-            if (allowAllGroups) {
-            	groups.addAll(site.getGroups());
-            }
-            else {
-            	groups.addAll(site.getGroupsWithMember(currentUser));
-            }
-		}
-		return groups;
-    }
-    
-    private boolean hasGroups(String worksiteId) {
-		try {
-			Site site = SiteService.getSite(worksiteId);
-			return site.hasGroups();
-		} catch (IdUnusedException e) {
-			logger.error("", e);
-		}
-		return false;
-	}
 
-	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
-		Set members = new HashSet();
-		Set users = new HashSet();
-
-		try {
-			Site site = SiteService.getSite(worksiteId);
-			if (site.hasGroups()) {
-				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
-					members.addAll(site.getMembers());
-				}
-				else if ( filterGroupId != null && !filterGroupId.equals("") ) {
-					Group group = site.getGroup(filterGroupId);
-					members.addAll(group.getMembers());
-				}
-				else {
-					for (Iterator iter = groups.iterator(); iter.hasNext();) {
-						Group group = (Group) iter.next();
-						members.addAll(group.getMembers());
-					}
-				}
-			} 
-			else {
-				members.addAll(site.getMembers());
-			}
-
-			for (Iterator memb = members.iterator(); memb.hasNext();) {
-				try {
-					Member member = (Member) memb.next();
-					users.add(UserDirectoryService.getUser(member.getUserId()));
-				} catch (UserNotDefinedException e) {
-					logger.warn("Unable to find user: " + e.getId() + " "
-							+ e.toString());
-				}
-			}
-		} catch (IdUnusedException e) {
-			logger.error("", e);
-		}
-		return users;
-	}
-   
    private Cell getCell(Collection<Cell> cells, Criterion criterion, Level level) {
       for (Iterator<Cell> iter=cells.iterator(); iter.hasNext();) {
          Cell cell = (Cell) iter.next();
@@ -433,22 +379,58 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       //model.put("view_user", request.get("view_user"));
       return new ModelAndView("success", model);
    }
-
    
+   private List<String> getCellsICanAccess(Matrix matrix){
+	   List<String> accessIds = new ArrayList<String>();
+	   
+	   boolean canViewAllCells = getMatrixManager().canAccessAllMatrixCells(matrix.getScaffolding().getId());
+	   
+	   for (Iterator iterator = matrix.getCells().iterator(); iterator
+	   .hasNext();) {
+		  
+		   Cell cell = (Cell) iterator.next();
+		   if(!canViewAllCells){
+			   if(getMatrixManager().canAccessMatrixCell(cell)){
+				   accessIds.add(cell.getId().getValue());
+			   }
+		   }else{
+			   accessIds.add(cell.getId().getValue());
+		   }
+	   }
 
-   public ToolManager getToolManager() {
-      return toolManager;
+	   return accessIds;
    }
+ 
 
-   public void setToolManager(ToolManager toolManager) {
-      this.toolManager = toolManager;
-   }
+	public ToolManager getToolManager() {
+		return toolManager;
+	}
 
-public StyleManager getStyleManager() {
-	return styleManager;
-}
+	public void setToolManager(ToolManager toolManager) {
+		this.toolManager = toolManager;
+	}
 
-public void setStyleManager(StyleManager styleManager) {
-	this.styleManager = styleManager;
-}
+	public StyleManager getStyleManager() {
+		return styleManager;
+	}
+
+	public void setStyleManager(StyleManager styleManager) {
+		this.styleManager = styleManager;
+	}
+
+	public SecurityService getSecurityService() {
+		return securityService;
+	}
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+
+	public WizardActivityProducer getWizardActivityProducer() {
+		return wizardActivityProducer;
+	}
+
+	public void setWizardActivityProducer(
+			WizardActivityProducer wizardActivityProducer) {
+		this.wizardActivityProducer = wizardActivityProducer;
+	}
 }

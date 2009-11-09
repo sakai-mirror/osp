@@ -30,7 +30,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
@@ -60,6 +62,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
    private ToolManager toolManager;
    private WorkflowManager workflowManager;
    private StyleManager styleManager;
+   private AuthenticationManager authManager;
 
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.LoadObjectController#fillBackingObject(java.lang.Object, java.util.Map, java.util.Map, java.util.Map)
@@ -109,9 +112,13 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
    public Map referenceData(Map request, Object command, Errors errors) {
-      Map model = new HashMap();
+      
+	   Agent currentAgent = getAuthManager().getAgent();
+	   Map model = new HashMap();
+      
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
+      model.put("osp_agent", currentAgent);
       model.put("tool", getToolManager().getCurrentPlacement());
       
       model.put("styles",
@@ -127,6 +134,9 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
          Map session, Map application, Errors errors) {
       Map model = new HashMap();
       model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "false");
+      
+      if(request.get("toolPermissionSaved") != null)
+    	  model.put("toolPermissionSaved", request.get("toolPermissionSaved"));
       return new ModelAndView("success", model);
    }
    
@@ -219,4 +229,12 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
    public void setStyleManager(StyleManager styleManager) {
 	   this.styleManager = styleManager;
    }
+
+public AuthenticationManager getAuthManager() {
+	return authManager;
+}
+
+public void setAuthManager(AuthenticationManager authManager) {
+	this.authManager = authManager;
+}
 }

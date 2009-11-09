@@ -61,6 +61,14 @@ public class DecoratedGuidance {
    public DecoratedGuidanceItem getRationale() {
       return getItem(Guidance.RATIONALE_TYPE);
    }
+   
+   public DecoratedGuidanceItem getRubric() {
+	   return getItem(Guidance.RUBRIC_TYPE);
+   }
+
+   public DecoratedGuidanceItem getExpectations() {
+	   return getItem(Guidance.EXPECTATIONS_TYPE);
+   }
 
    public String processActionEdit() {
       return tool.processActionEdit(base);

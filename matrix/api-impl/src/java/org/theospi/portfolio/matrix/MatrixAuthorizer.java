@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix;
 
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -63,20 +64,31 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
    public Boolean isAuthorized(AuthorizationFacade facade, Agent agent,
                                String function, Id id) {
       logger.debug("isAuthorized?(...) invoked in MatrixAuthorizer");
-         
+      
+      
+      
       if (MatrixFunctionConstants.EVALUATE_MATRIX.equals(function) ||
-            MatrixFunctionConstants.REVIEW_MATRIX.equals(function) ||
-            MatrixFunctionConstants.USE_SCAFFOLDING.equals(function)) {
+            MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
          return new Boolean(facade.isAuthorized(function,id));
       }
-      else if (MatrixFunctionConstants.DELETE_SCAFFOLDING.equals(function)) {
-         Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
-         if (scaffolding == null)
-            return new Boolean(facade.isAuthorized(agent,function,id));
-         
-         if (!scaffolding.isPublished() && (scaffolding.getOwner().equals(agent)) || 
-               facade.isAuthorized(agent,function,scaffolding.getWorksiteId()))
-            return new Boolean(true);
+      else if (MatrixFunctionConstants.DELETE_SCAFFOLDING_ANY.equals(function)) {
+    	  Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
+    	  if (scaffolding == null)
+    		  return new Boolean(facade.isAuthorized(agent,function,id));
+
+    	  if (!scaffolding.isPublished() && (scaffolding.getOwner().equals(agent)) || 
+    			  facade.isAuthorized(agent,function,scaffolding.getWorksiteId()))
+    		  return new Boolean(true);
+      }else if(MatrixFunctionConstants.DELETE_SCAFFOLDING_OWN.equals(function)) {
+    	  Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
+    	  if (scaffolding == null)
+    		  return new Boolean(facade.isAuthorized(agent,function,id));
+
+    	  if(scaffolding.getOwner().equals(agent)){
+    		  if (!scaffolding.isPublished() || 
+    				  facade.isAuthorized(agent,function,scaffolding.getWorksiteId()))
+    			  return new Boolean(true);
+    	  }
       }
       else if (ContentHostingService.EVENT_RESOURCE_READ.equals(function)) {
          return isFileAuth(facade, agent, id);
@@ -84,40 +96,31 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       else if (function.equals(MatrixFunctionConstants.CREATE_SCAFFOLDING)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
       }
-      else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING)) {
+      else if (function.equals(MatrixFunctionConstants.REVISE_SCAFFOLDING_ANY)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      }else if(function.equals(MatrixFunctionConstants.REVISE_SCAFFOLDING_OWN)) {
+    	  Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
+    	  if (scaffolding == null)
+    		  return new Boolean(facade.isAuthorized(agent,function,id));
+
+    	  if(scaffolding.getOwner().equals(agent)){
+    		  return new Boolean(facade.isAuthorized(agent,function,id));
+    	  }
+      }
+      else if (function.equals(MatrixFunctionConstants.EXPORT_SCAFFOLDING_ANY)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
       }
-      else if (function.equals(MatrixFunctionConstants.EXPORT_SCAFFOLDING)) {
-         return new Boolean(facade.isAuthorized(agent,function,id));
-      }
+      else if (function.equals(MatrixFunctionConstants.EXPORT_SCAFFOLDING_OWN)) {
+    	  Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
+    	  if (scaffolding == null)
+    		  return new Boolean(facade.isAuthorized(agent,function,id));
+
+    	  if(scaffolding.getOwner().equals(agent)){
+    		  return new Boolean(facade.isAuthorized(agent,function,id));
+    	  }
+       }
       else if (function.equals(MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE)) {
-         //If I can eval, review, or own it
-         ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
-         //sCell.getWizardPageDefinition().get
-         
-         if(sCell == null)
-            throw new NullPointerException("The cell was not found.  Wizard Page Def for cell: " + id.getValue());
-            
-         Boolean returned = null;
-
-         Id worksiteId = sCell.getScaffolding().getWorksiteId();
-
-         // first check global perms for the site
-         if (checkPerms(facade, new String[]{MatrixFunctionConstants.USE_SCAFFOLDING,
-            MatrixFunctionConstants.EVALUATE_MATRIX, MatrixFunctionConstants.REVIEW_MATRIX}, worksiteId)) {
-            return Boolean.valueOf(true);
-         }
-
-         for (Iterator iter=sCell.getCells().iterator(); iter.hasNext();) {
-            Cell cell = (Cell)iter.next();
-            if (checkPerms(facade, new String[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-               MatrixFunctionConstants.REVIEW_MATRIX}, cell.getId())) {
-               return Boolean.valueOf(true);
-            }
-         }
-         returned = Boolean.valueOf(sCell.getScaffolding().getOwner().equals(agent));
-         if (returned.booleanValue())
-            return returned;
+    	  return Boolean.valueOf(true);
       }
       else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE)) {
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
@@ -129,11 +132,21 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       }
       else if (function.equals(MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL)) {
          WizardPage page = getMatrixManager().getWizardPage(id);
-         Id siteId = page.getPageDefinition().getSiteId();
+         Id siteId = getIdManager().getId(page.getPageDefinition().getSiteId());
 //       make sure that the target site gets tested
          
          facade.pushAuthzGroups(siteId.getValue());
          return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, siteId));
+      }
+      else if (function.equals(MatrixFunctionConstants.ACCESS_ALL_CELLS) ||
+    		  function.equals(MatrixFunctionConstants.VIEW_EVAL_OTHER) ||
+    		  function.equals(MatrixFunctionConstants.VIEW_FEEDBACK_OTHER) ||
+    		  function.equals(MatrixFunctionConstants.MANAGE_STATUS) ||
+    		  function.equals(MatrixFunctionConstants.ACCESS_USERLIST) ||
+    		  function.equals(MatrixFunctionConstants.VIEW_ALL_GROUPS) ||
+    		  function.equals(MatrixFunctionConstants.CAN_USE_SCAFFOLDING)) {
+    	  return new Boolean(SecurityService.unlock(agent.getId().getValue(),function,id.getValue()));
+    	  //return new Boolean(getExplicitAuthz().isAuthorized(agent,function,id));
       }
             
       return null;  //don't care
@@ -148,10 +161,6 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       return false;
    }
 
-   protected Boolean isCellAuthForEval(AuthorizationFacade facade, Agent agent, Id cellId) {
-      return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cellId));
-   }
-
    public Boolean isFileAuth(AuthorizationFacade facade, Agent agent, Id artifactId) {
       // check if this id is attached to any cell
       if (artifactId == null)
@@ -162,22 +171,14 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       if (cells.size() == 0) {
          return null;
       }
-
-      // does this user have access to any of the above cells
-      for (Iterator i = cells.iterator(); i.hasNext();) {
-         Cell cell = (Cell) i.next();
-         Id siteId = cell.getMatrix().getScaffolding().getWorksiteId();
-         if (getExplicitAuthz().isAuthorized(agent, 
-                  MatrixFunctionConstants.REVIEW_MATRIX, siteId) || 
-               getExplicitAuthz().isAuthorized(agent, 
-                  MatrixFunctionConstants.EVALUATE_MATRIX, siteId)) {
-            return new Boolean(true);
-         }
-
-         Boolean returned = isCellAuthForEval(facade, agent, cell.getId());
-         if (returned != null && returned.booleanValue()) {
-            return returned;
-         }
+      ScaffoldingCell sCell = ((Cell) cells.get(0)).getScaffoldingCell();
+      
+      if((sCell.isDefaultEvaluators() && getExplicitAuthz().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
+    		  (!sCell.isDefaultEvaluators() && getExplicitAuthz().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
+    		  (sCell.isDefaultReviewers() && getExplicitAuthz().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
+    		  (!sCell.isDefaultReviewers() && getExplicitAuthz().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
+    		  (getExplicitAuthz().isAuthorized(agent, MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(sCell.getScaffolding().getReference())))){
+    	  return new Boolean(true);
       }
 
       return null;

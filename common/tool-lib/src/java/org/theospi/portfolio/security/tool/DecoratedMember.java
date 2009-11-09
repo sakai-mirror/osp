@@ -23,6 +23,8 @@ package org.theospi.portfolio.security.tool;
 import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -111,5 +113,20 @@ public class DecoratedMember {
 
    public int hashCode() {
       return base.hashCode();
+   }
+   
+   public String getEmail() {
+       if (base.isRole()) {
+           return "ROLE" + "." + base.getDisplayName();
+       } else {
+           try {
+               return UserDirectoryService.getUserByEid(base.getEid().toString()).getEmail();
+           }
+
+           catch (UserNotDefinedException e) {
+               return "";
+           }
+       }
+
    }
 }

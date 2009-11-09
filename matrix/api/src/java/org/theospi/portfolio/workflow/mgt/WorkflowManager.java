@@ -47,4 +47,6 @@ public interface WorkflowManager {
    
    public Set createEvalWorkflows(ObjectWithWorkflow obj);
    
+   public Set createEvalWorkflows(ObjectWithWorkflow wpd, Id evalId);
+   
 }

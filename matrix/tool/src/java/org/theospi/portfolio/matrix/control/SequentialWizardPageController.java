@@ -28,6 +28,7 @@ import java.util.Map;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.matrix.HibernateMatrixManagerImpl;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
@@ -139,7 +140,7 @@ public class SequentialWizardPageController extends WizardPageController {
       if (request.get("matrix") != null) {
     	  
 			if (getTaggingManager().isTaggable()) {
-				session.remove(PROVIDERS_PARAM);
+				session.remove(HibernateMatrixManagerImpl.PROVIDERS_PARAM);
 			}
 			
          session.put(ToolFinishedView.ALTERNATE_DONE_URL, "finishSeqWizard");

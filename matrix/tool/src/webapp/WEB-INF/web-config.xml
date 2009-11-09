@@ -119,12 +119,16 @@
               <prop key="/moveCriterion.osp">moveCriterionController</prop>
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
               
+              <prop key="/scaffoldingCellInfo.osp">scaffoldingCellInfoController</prop>
+              <prop key="/listPageActivities.osp">listPageActivitiesController</prop>
+              
               <!-- pretty is an alternate matrix editing view -->
               <prop key="/prettyScaffolding.osp">prettyScaffoldingController</prop>
               
               <prop key="/editScaffoldingCell.osp">editScaffoldingCellController</prop>
               <prop key="/deleteScaffolding.osp">deleteScaffoldingController</prop>
               <prop key="/deleteScaffoldingConfirmation.osp">deleteScaffoldingConfirmationController</prop>
+              <prop key="/inviteFeedbackConfirm.osp">inviteFeedbackConfirmationController</prop>
 
               <prop key="/removeLevCrit.osp">removeLevCritConfirmationController</prop>
               <prop key="/removeExpectation.osp">removeExpectationConfirmationController</prop> 
@@ -133,6 +137,8 @@
             <prop key="/editScaffoldingConfirm.osp">editScaffoldingConfirmController</prop>
             <prop key="/editScaffoldingCellConfirm.osp">editScaffoldingCellConfirmController</prop>
             <prop key="/reviewHelper.osp">reviewHelperController</prop>
+            <prop key="/feedbackHelper.osp">feedbackHelperController</prop>
+            <prop key="/viewCellInformation.osp">viewCellInformationController</prop>           
             <prop key="/reviewPostProcessor.osp">reviewPostProcessor</prop>
             <prop key="/exposedScaffolding.osp">exposedScaffoldingController</prop>
 

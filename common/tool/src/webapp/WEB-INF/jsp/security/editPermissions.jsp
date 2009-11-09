@@ -74,7 +74,8 @@
 
 
    <div class="act">
-      <input type="submit" value="<fmt:message key="button_save"/>" accesskey="s" class="active" />
+   	  <input type="hidden" id="toolPermissionsSaved" name="toolPermissionsSaved" value="false"/>
+      <input type="submit" value="<fmt:message key="button_save"/>" accesskey="s" class="active" onclick="javascript:document.getElementById('toolPermissionsSaved').value=true"/>
       <input name="_cancel" type="submit" value="<fmt:message key="button_cancel"/>" accesskey="x"/>
    </div>
 

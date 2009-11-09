@@ -21,6 +21,7 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -127,10 +128,20 @@ public class BaseScaffoldingCellController {
 		getMatrixManager().removeFromSession(oldScaffoldingCell);
 
 		String oldStatus = oldScaffoldingCell.getInitialStatus();
-		scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
-				new HashSet(createEvalWorkflows(scaffoldingCell
-						.getWizardPageDefinition())));
+
+		Set<Workflow> evalWorkflows = new HashSet<Workflow>();
+		if (scaffoldingCell.isDefaultEvaluationForm()) {
+			evalWorkflows = getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition(), 
+					scaffoldingCell.getScaffolding().getEvaluationDevice());
+		}
+		else {
+			evalWorkflows = getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition());
+		}
+		scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
+		
 		getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+		scaffoldingCell.getScaffolding().setModifiedDate(new Date(System.currentTimeMillis()));
+		getMatrixManager().storeScaffolding(scaffoldingCell.getScaffolding());
 		List cells = getMatrixManager().getCellsByScaffoldingCell(
 				scaffoldingCell.getId());
 		for (Iterator iter = cells.iterator(); iter.hasNext();) {

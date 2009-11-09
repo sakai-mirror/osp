@@ -76,6 +76,12 @@ public class EvaluationContentComparator implements Comparator {
       
       else if (criteria.equals(SORT_DATE))
       {
+    	 if(o1 == null || ((EvaluationContentWrapper) o1).getSubmittedDate() == null)
+    		 return asc ? -1 : 1;
+    	 
+    	 if(o2 == null || ((EvaluationContentWrapper) o2).getSubmittedDate() == null)
+    		 return asc ? 1 : -1;
+    	 
          // sorted by the date
          if (((EvaluationContentWrapper) o1)
             .getSubmittedDate()
@@ -92,6 +98,11 @@ public class EvaluationContentComparator implements Comparator {
       }
       else if (criteria.equals(SORT_OWNER))
       {
+    	  if(o1 == null || ((EvaluationContentWrapper) o1).getOwner() == null || ((EvaluationContentWrapper) o1).isHideOwnerDisplay())
+     		 return asc ? -1 : 1;
+     	 
+     	 if(o2 == null || ((EvaluationContentWrapper) o2).getOwner() == null ||  ((EvaluationContentWrapper) o2).isHideOwnerDisplay())
+     		 return asc ? 1 : -1;
          // sorted by the owner
          result =
             ((EvaluationContentWrapper) o1)

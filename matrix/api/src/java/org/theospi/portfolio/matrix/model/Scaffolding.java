@@ -22,23 +22,24 @@ package org.theospi.portfolio.matrix.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.exception.IdUnusedException;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 
 /**
  */
-public class Scaffolding extends IdentifiableObject implements Serializable {
+public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private Id id;
    private List levels = new ArrayList();
    private List criteria = new ArrayList();
@@ -51,6 +52,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private String pendingColor;
    private String completedColor;
    private String lockedColor;
+   private String returnedColor;
    
    private Style style;
    
@@ -62,6 +64,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private boolean published = false;
    private Agent publishedBy;
    private Date publishedDate;
+   private Date modifiedDate;
    
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
@@ -69,7 +72,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    transient private boolean validate;
    
    private int workflowOption;
-   private int reviewerGroupAccess;
    private int generalFeedbackOption;
    private int itemFeedbackOption;
    private Set matrix = new HashSet();
@@ -80,6 +82,17 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public static final int VERTICAL_PROGRESSION = 2;
    public static final int OPEN_PROGRESSION = 3;
    public static final int MANUAL_PROGRESSION = 4;
+   
+   private List additionalForms = new ArrayList();
+   private List<String> attachments = new ArrayList();
+   private Collection evaluators = new HashSet();
+   private Collection reviewers = new HashSet();   
+   private boolean allowRequestFeedback = true;
+   private boolean hideEvaluations = false;
+   
+   //this variable is used for version control: if this is null when importing a matrix,
+   //then the matrix is an older version and set all defaults to false
+   private boolean defaultFormsMatrixVersion = false;
    
    public Scaffolding() {}
    
@@ -348,14 +361,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public void setWorkflowOption(int workflowOption) {
       this.workflowOption = workflowOption;
    }
-   
-   public int getReviewerGroupAccess() {
-	   return reviewerGroupAccess;
-   }
-
-   public void setReviewerGroupAccess(int reviewerGroupAccess) {
-	   this.reviewerGroupAccess = reviewerGroupAccess;
-   }
 
    public int getGeneralFeedbackOption() {
 	   return generalFeedbackOption;
@@ -421,10 +426,85 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    }
 
    public Style getStyle() {
-      return style;
+	   return style;
    }
 
    public void setStyle(Style style) {
-      this.style = style;
+	   this.style = style;
    }
+
+   public List getAdditionalForms() {
+	   return additionalForms;
+   }
+
+   public void setAdditionalForms(List additionalForms) {
+	   this.additionalForms = additionalForms;
+   }
+
+   public List<String> getAttachments() {
+	   return attachments;
+   }
+
+   public void setAttachments(List<String> attachments) {
+	   this.attachments = attachments;
+   }
+
+   public Collection getEvaluators() {
+	   return evaluators;
+   }
+
+   public void setEvaluators(Collection evaluators) {
+	   this.evaluators = evaluators;
+   }
+
+   public String getReturnedColor() {
+	   return returnedColor;
+   }
+
+   public void setReturnedColor(String returnedColor) {
+	   this.returnedColor = returnedColor;
+   }
+
+   public boolean isAllowRequestFeedback() {
+	   return allowRequestFeedback;
+   }
+
+   public void setAllowRequestFeedback(boolean allowRequestFeedback) {
+	   this.allowRequestFeedback = allowRequestFeedback;
+   }
+
+public Collection getReviewers() {
+	return reviewers;
+}
+
+public void setReviewers(Collection reviewers) {
+	this.reviewers = reviewers;
+}
+
+public boolean isDefaultFormsMatrixVersion() {
+	return defaultFormsMatrixVersion;
+}
+
+public void setDefaultFormsMatrixVersion(boolean defaultFormsMatrixVersion) {
+	this.defaultFormsMatrixVersion = defaultFormsMatrixVersion;
+}
+
+public Date getModifiedDate() {
+	return modifiedDate;
+}
+
+public void setModifiedDate(Date modifiedDate) {
+	this.modifiedDate = modifiedDate;
+}
+public String getReference() {
+	return "/scaffolding/" + getWorksiteId() + "/" + getId().getValue();
+}
+
+public boolean isHideEvaluations() {
+	return hideEvaluations;
+}
+
+public void setHideEvaluations(boolean hideEvaluations) {
+	this.hideEvaluations = hideEvaluations;
+}
 }

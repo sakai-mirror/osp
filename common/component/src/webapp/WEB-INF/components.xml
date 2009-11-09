@@ -508,7 +508,7 @@
                <property name="role" value="CIG Coordinator"/>
                <property name="maintain" value="true"/>
             </bean>
-            <value>CIG Participant</value>
+            <value>Participant</value>
             <value>Reviewer</value>
             <value>Evaluator</value>
          </list>
@@ -529,7 +529,7 @@
                <property name="role" value="CIG Coordinator"/>
                <property name="maintain" value="true"/>
             </bean>
-            <value>CIG Participant</value>
+            <value>Participant</value>
             <value>Reviewer</value>
             <value>Evaluator</value>
          </list>
@@ -706,7 +706,7 @@
                         <value>osp.wizard.export</value>
                      </list>
                   </entry>
-                  <entry key="CIG Participant">
+                  <entry key="Participant">
                      <list>
                         <value>annc.read</value>
                         <value>asn.read</value>
@@ -925,7 +925,7 @@
                         <value>osp.wizard.export</value>
                      </list>
                   </entry>
-                  <entry key="CIG Participant">
+                  <entry key="Participant">
                      <list>
                         <value>annc.read</value>
                         <value>asn.read</value>
@@ -1336,7 +1336,7 @@
             </entry>
             <entry key="portfolio">
                <list>
-                  <value>CIG Participant</value>
+                  <value>Participant</value>
                </list>
             </entry>
          </map>

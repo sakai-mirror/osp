@@ -71,7 +71,9 @@ public class GuidanceTool extends HelperToolBase {
    private boolean showExamples = true;
    private boolean showInstructions = true;
    private boolean showRationale = true;
-
+   private boolean showRubric = true;
+   private boolean showExpectations = true;
+   
    private GuidanceManager guidanceManager;
    private ContentHostingService contentHostingService;
    
@@ -168,6 +170,8 @@ public class GuidanceTool extends HelperToolBase {
       toolSession.removeAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG);
       toolSession.removeAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG);
       toolSession.removeAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG);
+      toolSession.removeAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG);
+      toolSession.removeAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG);
    }
 
    public Reference decorateReference(String reference) {
@@ -246,6 +250,34 @@ public class GuidanceTool extends HelperToolBase {
       }
       return showRationale;
    }
+   
+   public boolean isRubricRendered() {
+	      //boolean showRationale = true; 
+	      if (getAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG) != null) {
+	         if (getAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG) instanceof Boolean) {
+	            showRubric = ((Boolean) getAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG)).booleanValue();
+	         } else {
+	        	 showRubric =
+	               "true".equalsIgnoreCase((String) getAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG));
+	         }
+	         removeAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG);
+	      }
+	      return showRubric;
+	   }
+   
+   public boolean isExpectationsRendered() {
+	      //boolean showRationale = true; 
+	      if (getAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG) != null) {
+	         if (getAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG) instanceof Boolean) {
+	            showExpectations = ((Boolean) getAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG)).booleanValue();
+	         } else {
+	        	 showExpectations =
+	               "true".equalsIgnoreCase((String) getAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG));
+	         }
+	         removeAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG);
+	      }
+	      return showExpectations;
+	   }
 
    /**
     * sample
@@ -266,6 +298,8 @@ public class GuidanceTool extends HelperToolBase {
       typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "true");
       typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
       typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
       invokeTool(guidance, typeFlags);
       return null;
    }
@@ -278,6 +312,8 @@ public class GuidanceTool extends HelperToolBase {
       typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
       typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
       typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "true");
+      typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
       invokeTool(guidance, typeFlags);
       return null;
    }
@@ -290,8 +326,38 @@ public class GuidanceTool extends HelperToolBase {
       typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
       typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "true");
       typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
       invokeTool(guidance, typeFlags);
       return null;
+   }
+
+   public String processActionEditRubric(Guidance guidance) {
+	   guidance = getGuidanceManager().getGuidance(guidance.getId());
+
+	   Map typeFlags = new HashMap();
+
+	   typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "true");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
+	   invokeTool(guidance, typeFlags);
+	   return null;
+   }
+
+   public String processActionEditExpectations(Guidance guidance) {
+	   guidance = getGuidanceManager().getGuidance(guidance.getId());
+
+	   Map typeFlags = new HashMap();
+
+	   typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "true");
+	   invokeTool(guidance, typeFlags);
+	   return null;
    }
 
    /**
@@ -340,6 +406,8 @@ public class GuidanceTool extends HelperToolBase {
       typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "true");
       typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
       typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
       invokeTool(newGuidance, typeFlags);
 
       return null;
@@ -355,26 +423,63 @@ public class GuidanceTool extends HelperToolBase {
       typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "true");
       typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
       typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
       invokeTool(newGuidance, typeFlags);
 
       return null;
    }
-   
+
    public String processActionNewRationale() {
-      Placement placement = ToolManager.getCurrentPlacement();
-      String currentSite = placement.getContext();
-      Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+	   Placement placement = ToolManager.getCurrentPlacement();
+	   String currentSite = placement.getContext();
+	   Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
 
-      Map typeFlags = new HashMap();
-      
-      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "true");
-      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
-      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
-      invokeTool(newGuidance, typeFlags);
+	   Map typeFlags = new HashMap();
 
-      return null;
+	   typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "true");
+	   typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
+	   invokeTool(newGuidance, typeFlags);
+
+	   return null;
    }
 
+   public String processActionNewRubric() {
+	   Placement placement = ToolManager.getCurrentPlacement();
+	   String currentSite = placement.getContext();
+	   Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+
+	   Map typeFlags = new HashMap();
+
+	   typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "true");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "false");
+	   invokeTool(newGuidance, typeFlags);
+
+	   return null;
+   }
+
+   public String processActionNewExpectations() {
+	   Placement placement = ToolManager.getCurrentPlacement();
+	   String currentSite = placement.getContext();
+	   Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+
+	   Map typeFlags = new HashMap();
+
+	   typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_RUBRIC_FLAG, "false");
+	   typeFlags.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, "true");
+	   invokeTool(newGuidance, typeFlags);
+
+	   return null;
+   }
    /**
     * sample
     * @param guidance

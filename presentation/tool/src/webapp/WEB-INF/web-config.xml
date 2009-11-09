@@ -122,6 +122,8 @@
                <prop key="/addComment.osp">addCommentController</prop>
                <prop key="/js/htmlarea/popups/insertImage.osp">insertImageController</prop>
 
+               <prop key="notifyViewersRedirect.osp">notifyViewersController</prop>
+               
                <!--  presentation layout -->
                <prop key="/listLayout.osp">listLayoutController</prop>
                <prop key="/addLayout.osp">addLayoutController</prop>

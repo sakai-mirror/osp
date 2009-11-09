@@ -184,7 +184,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSite = placement.getContext();
       Agent agent = getAuthManager().getAgent();
-      Wizard wizard = new Wizard(getIdManager().createId(), agent, getIdManager().getId(currentSite));
+      Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite);
       return wizard;
    }
    
@@ -225,7 +225,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
                wizardId);
       if (checkAuthz == WIZARD_VIEW_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
-               wizard.getSiteId());
+        		 getIdManager().getId(wizard.getSiteId()));
       if (checkAuthz == WIZARD_EDIT_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.EDIT_WIZARD,
                wizardId);
@@ -353,7 +353,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    private void removeTool(Wizard wizard) {
-      String siteId = wizard.getSiteId().getValue();
+      String siteId = wizard.getSiteId();
       try {
          Site siteEdit = SiteService.getSite(siteId);
 
@@ -369,7 +369,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    private void addTool(Wizard wizard) {
-      String siteId = wizard.getSiteId().getValue();
+      String siteId = wizard.getSiteId();
       try {
          Site siteEdit = SiteService.getSite(siteId);
 
@@ -428,7 +428,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             List reviews = getReviewManager().getReviewsByParent(
                   page.getId().getValue(), 
-                  page.getPageDefinition().getSiteId().getValue(),
+                  page.getPageDefinition().getSiteId(),
                   WizardEntityProducer.WIZARD_PRODUCER);
             for (Iterator iter = reviews.iterator(); iter.hasNext();) {
                Review review = (Review)iter.next();
@@ -510,14 +510,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public Reference decorateReference(Wizard wizard, String reference) {
       String fullRef = ContentEntityUtil.getInstance().buildRef(WizardEntityProducer.WIZARD_PRODUCER,
-            wizard.getSiteId().getValue(), wizard.getId().getValue(), reference);
+            wizard.getSiteId(), wizard.getId().getValue(), reference);
 
       return getEntityManager().newReference(fullRef);
    }
 
    public List listWizardsByType(String owner, String siteIdStr, String type) {
-      Id siteId = getIdManager().getId(siteIdStr);
-      Object[] params = new Object[]{getAgentManager().getAgent(owner), new Boolean(true), siteId, type};
+      Object[] params = new Object[]{getAgentManager().getAgent(owner), new Boolean(true), siteIdStr, type};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? and w.type=? order by seq_num", params);
    }
@@ -544,18 +543,17 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public List listAllWizardsByOwner(String owner, String siteIdStr) {
       Agent ownerAgent = getAgentManager().getAgent(owner);
-      Id siteId = getIdManager().getId(siteIdStr);
-      Object[] params = new Object[]{ownerAgent, new Boolean(true), siteId};
+      Object[] params = new Object[]{ownerAgent, new Boolean(true), siteIdStr};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? order by seq_num", params);
    }
 
-   public List findWizardsByOwner(String ownerId, Id siteId) {
+   public List findWizardsByOwner(String ownerId, String siteId) {
       Object[] params = new Object[]{getAgentManager().getAgent(ownerId), siteId};
       return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? order by seq_num", params);
    }
 
-   public List findPublishedWizards(List<Id> sites) {
+   public List findPublishedWizards(List<String> sites) {
       String[] paramNames = new String[] {"published", "siteIds"};
       Object[] params = new Object[]{new Boolean(true), sites};
       return getHibernateTemplate().findByNamedParam("from Wizard w where w.published=:published " +
@@ -566,7 +564,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
-   public List findPublishedWizards(List<Id> sites, boolean lazy) {
+   public List findPublishedWizards(List<String> sites, boolean lazy) {
       if (lazy) 
          return findPublishedWizardsLazy(sites);
       else
@@ -574,7 +572,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    
-   protected List findPublishedWizardsLazy(List<Id> sites) {
+   protected List findPublishedWizardsLazy(List<String> sites) {
       Criteria c = this.getSession().createCriteria(Wizard.class);
       Criteria rootCat = c.createCriteria("rootCategory");
       rootCat.setFetchMode("childPages", FetchMode.SELECT);
@@ -585,16 +583,16 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return new ArrayList(c.list());
    }
    
-   public List findPublishedWizards(Id siteId) {
+   public List findPublishedWizards(String siteId) {
       Object[] params = new Object[]{new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
    
-   public List<WizardPageDefinition> findWizardPageDefs(final Id siteId) {
+   public List<WizardPageDefinition> findWizardPageDefs(final String siteId) {
 	   return findWizardPageDefs(siteId, false);
 	}
 
-   public List<WizardPageDefinition> findWizardPageDefs(final Id siteId,
+   public List<WizardPageDefinition> findWizardPageDefs(final String siteId,
 			final boolean deep) {
 		return (List) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) {
@@ -798,7 +796,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       boolean canEval = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             cw.getWizard().getId());
       boolean canReview = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            cw.getWizard().getSiteId());
+    		  getIdManager().getId(cw.getWizard().getSiteId()));
       boolean canReflect = canEval || canReview;
       
       boolean owns = cw.getOwner().getId().equals(getAuthManager().getAgent().getId());
@@ -807,7 +805,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or eval
          getReviewManager().getReviewsByParentAndType(
                id.getValue(), Review.EVALUATION_TYPE,
-               cw.getWizard().getSiteId().getValue(),
+               cw.getWizard().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
       }
       
@@ -815,7 +813,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id.getValue(), Review.FEEDBACK_TYPE,
-               cw.getWizard().getSiteId().getValue(),
+               cw.getWizard().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
       
@@ -823,7 +821,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or reflect
          getReviewManager().getReviewsByParentAndType(
                id.getValue(), Review.REFLECTION_TYPE,
-               cw.getWizard().getSiteId().getValue(),
+               cw.getWizard().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
    }
@@ -854,7 +852,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
-   public Id getWizardIdSiteId(final Id wizardId) {
+   public String getWizardIdSiteId(final Id wizardId) {
       
       try {
     	  net.sf.ehcache.Element elem = null;
@@ -863,12 +861,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
          if(siteCache != null && elem != null) {
         	   if(elem.getValue() == null)
         	      return null;
-            return idManager.getId( elem.getValue().toString() );
+            return elem.getValue().toString();
          }
       } catch(CacheException e) {
          logger.warn("the wizard ehcache had an exception", e);
       }
-      Id siteId;
+      String siteId;
       
       HibernateCallback hcb = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException  {
@@ -878,15 +876,15 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             query.setParameter(0, wizardId.getValue(), Hibernate.STRING);
 
-            Id results = (Id) query.uniqueResult();
+            String results = (String) query.uniqueResult();
             
             return results;
          }
       };
 		
-      siteId = ((Id)getHibernateTemplate().execute(hcb));
+      siteId = ((String)getHibernateTemplate().execute(hcb));
       if(siteCache != null && siteId != null)
-         siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), siteId.getValue()));
+         siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), siteId));
       if(siteCache != null && siteId == null)
          siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), null));
       
@@ -1079,7 +1077,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
        Map     importData = new HashMap();
       Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), 
-											  getIdManager().getId(worksiteId));
+											  worksiteId);
       String tempDirName = getIdManager().createId().getValue();
 
       // set values not coming from the zip
@@ -1428,7 +1426,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
                pageSequenceNode.getChildTextTrim("sequence")));
 
          Element pageDefNode = pageSequenceNode.getChild("pageDef");
-         WizardPageDefinition wizardPageDefinition = new WizardPageDefinition();
+         boolean defaults = false;
+         WizardPageDefinition wizardPageDefinition = new WizardPageDefinition(wizard.getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE, 
+        		 defaults, defaults, defaults, defaults, defaults, defaults, defaults);
 
          wizardPageDefinition.setNewId(getIdManager().createId());
 
@@ -2231,13 +2231,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
       CompletedWizard cw = this.getCompletedWizard(id);
       if (cw != null) {
 	      List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-	            Review.REFLECTION_TYPE, cw.getWizard().getSiteId().getValue(),
+	            Review.REFLECTION_TYPE, cw.getWizard().getSiteId(),
 	            WizardEntityProducer.WIZARD_PRODUCER);
 	      List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-	            Review.EVALUATION_TYPE, cw.getWizard().getSiteId().getValue(),
+	            Review.EVALUATION_TYPE, cw.getWizard().getSiteId(),
 	            WizardEntityProducer.WIZARD_PRODUCER);
 	      List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-	            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId().getValue(),
+	            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId(),
 	            WizardEntityProducer.WIZARD_PRODUCER);
 	      cw.setReflections(reflections);
 	      cw.setEvaluations(evaluations);
@@ -2257,13 +2257,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
          WizardPage page = cPage.getWizardPage();
          
          List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId().getValue(),
+               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
          List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId().getValue(),
+               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
          List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId().getValue(),
+               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
          page.setReflections(reflections);
          page.setEvaluations(evaluations);
@@ -2419,7 +2419,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
       try {
-         List wizards = this.findPublishedWizards( idManager.getId(fromContext) );
+         List wizards = this.findPublishedWizards(fromContext);
          if (wizards == null) {
             return;
          }
@@ -2450,25 +2450,57 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    }
 
-   protected List getEvaluatableWizardPages(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
-      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-                                      MatrixFunctionConstants.PENDING_STATUS,
-                                      agent, roles, worksiteIds};
-	
-      List wizardPages = this.getHibernateTemplate().findByNamedParam("select distinct new " +
-            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
-            "cwp.wizardPage.id, " +
-            "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
-            "cwp.wizardPage.modified, " +
-            "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
-            "from CompletedWizardPage cwp, " +
-            "Authorization auth " +
-            "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
-            "and auth.function = :evaluate and cwp.wizardPage.status = :pendingStatus and " +
-            "(auth.agent=:user or auth.agent in ( :roles )) " +
-            " and cwp.wizardPage.pageDefinition.siteId in ( :siteIds )",
-             paramNames, params );
+   protected List getEvaluatableWizardPages(Agent agent, List<Agent> roles, List<String> worksiteIds, HashMap siteHash) {
+	   String[] paramNames;
+	   Object[] params;
+
+	   boolean rolesNotEmpty = (roles != null && roles.size() > 0);
+	   boolean sitesNotEmpty = (worksiteIds != null && worksiteIds.size() > 0);
+	   if(rolesNotEmpty && sitesNotEmpty){
+		   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+		   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+				   MatrixFunctionConstants.PENDING_STATUS,
+				   agent, roles, worksiteIds};
+	   }else{
+		   if(!rolesNotEmpty){
+			   if(!sitesNotEmpty){
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user"};
+				   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent};
+			   }else{
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user", "siteIds"};
+				   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent, worksiteIds};
+			   }
+		   }else{
+			   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles"};
+			   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+					   MatrixFunctionConstants.PENDING_STATUS,
+					   agent, roles};
+		   }
+	   }
+
+
+	   String evaulatableSQL = "select distinct new " +
+	   "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
+	   "cwp.wizardPage.id, " +
+	   "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
+	   "cwp.wizardPage.modified, " +
+	   "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
+	   "from CompletedWizardPage cwp, " +
+	   "Authorization auth " +
+	   "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
+	   "and auth.function = :evaluate and cwp.wizardPage.status = :pendingStatus and " +
+	   "(auth.agent=:user";
+	   if(rolesNotEmpty)
+		   evaulatableSQL += " or auth.agent in ( :roles )";
+	   evaulatableSQL += ") ";
+	   if(sitesNotEmpty)
+		   evaulatableSQL += " and cwp.wizardPage.pageDefinition.siteId in ( :siteIds )";
+
+	   List wizardPages = this.getHibernateTemplate().findByNamedParam(evaulatableSQL, paramNames, params );
       
       // filter out group-restricted users
       List filteredWizardPages = new ArrayList();
@@ -2480,7 +2512,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          Wizard wizard = seq.getCategory().getWizard();
          
          if ( !allowAllGroups && wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
-            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId().getValue() );
+            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId() );
             if ( siteGroupUsers != null && siteGroupUsers.contains(wizPage.getOwner().getId().getValue()) )
                filteredWizardPages.add( evalItem );
          }
@@ -2492,27 +2524,62 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return filteredWizardPages;
    }
    
-   protected List getEvaluatableWizards(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
-     
-      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
-                                      MatrixFunctionConstants.PENDING_STATUS,
-                                      agent, roles, worksiteIds};
-	
-      List wizards = this.getHibernateTemplate().findByNamedParam("select distinct new " +
-            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
-            "cw.wizard.id, " +
-            "cw.wizard.name, cw.owner, " +
-            "cw.created, cw.wizard.siteId) " +
-            "from CompletedWizard cw, " +
-            "Authorization auth " +
-            "where cw.wizard.id = auth.qualifier " +
-            "and auth.function = :evaluate and cw.status = :pendingStatus and " +
-				"(auth.agent=:user or auth.agent in ( :roles )) " +
-            " and cw.wizard.siteId in ( :siteIds )",
-             paramNames, params );
-				
-      // filter out group-restricted users
+   protected List getEvaluatableWizards(Agent agent, List<Agent> roles, List<String> worksiteIds, HashMap siteHash) {
+	   
+	   String[] paramNames;
+	   Object[] params;
+
+	   boolean rolesNotEmpty = (roles != null && roles.size() > 0);
+	   boolean sitesNotEmpty = (worksiteIds != null && worksiteIds.size() > 0);
+	   if(rolesNotEmpty && sitesNotEmpty){
+		   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+		   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+				   MatrixFunctionConstants.PENDING_STATUS,
+				   agent, roles, worksiteIds};
+	   }else{
+		   if(!rolesNotEmpty){
+			   if(!sitesNotEmpty){
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user"};
+				   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent};
+			   }else{
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user", "siteIds"};
+				   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent, worksiteIds};
+			   }
+		   }else{
+			   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles"};
+			   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+					   MatrixFunctionConstants.PENDING_STATUS,
+					   agent, roles};
+		   }
+	   }
+
+
+	   String evaluatableSQL = "select distinct new " +
+	   "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
+	   "cw.wizard.id, " +
+	   "cw.wizard.name, cw.owner, " +
+	   "cw.created, cw.wizard.siteId) " +
+	   "from CompletedWizard cw, " +
+	   "Authorization auth " +
+	   "where cw.wizard.id = auth.qualifier " +
+	   "and auth.function = :evaluate and cw.status = :pendingStatus and " +
+	   "(auth.agent=:user";
+	   
+	   if(rolesNotEmpty)
+		   evaluatableSQL += " or auth.agent in ( :roles )";
+	   
+	   evaluatableSQL += ") ";
+	   
+	   if(sitesNotEmpty)
+		   evaluatableSQL += " and cw.wizard.siteId in ( :siteIds )";
+	   
+	   List wizards = this.getHibernateTemplate().findByNamedParam(evaluatableSQL, paramNames, params );
+
+	   // filter out group-restricted users
       List filteredWizards = new ArrayList();
       for ( Iterator it=wizards.iterator(); it.hasNext(); ) {
          EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
@@ -2520,7 +2587,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          CompletedWizard completedWiz = getCompletedWizard( wizard, evalItem.getOwner().getId(), false );
          
          if ( !allowAllGroups && wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
-            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId().getValue() );
+            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId() );
             if ( siteGroupUsers != null && siteGroupUsers.contains(completedWiz.getOwner().getId().getValue()) )
                filteredWizards.add( evalItem );
          }
@@ -2544,7 +2611,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 		
       for (Iterator i = siteList.iterator(); i.hasNext();) {
          Site site = (Site) i.next();
-			siteIds.add( idManager.getId(site.getId()) );
+			siteIds.add( site.getId() );
       }
 		
       return getEvaluatableItems(agent, siteIds);
@@ -2588,18 +2655,18 @@ public class WizardManagerImpl extends HibernateDaoSupport
     * @param agent Agent 
     * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
     */
-   public List getEvaluatableItems(Agent agent, List<Id>siteIds) {
+   public List getEvaluatableItems(Agent agent, List<String>siteIds) {
       List roles = new ArrayList();
       HashMap siteHash = new HashMap( siteIds.size() );
       
       // Find user roles in each specified site
       for (Iterator i = siteIds.iterator(); i.hasNext();) {
-         Id worksiteId = (Id)i.next();
-         List siteUserRoles = agent.getWorksiteRoles(worksiteId.getValue());
+         String worksiteId = (String)i.next();
+         List siteUserRoles = agent.getWorksiteRoles(worksiteId);
          roles.addAll( siteUserRoles );
          
-         HashSet siteGroupUsers = getSiteGroupUsers( agent, worksiteId.getValue() );
-         siteHash.put( worksiteId.getValue(), siteGroupUsers );
+         HashSet siteGroupUsers = getSiteGroupUsers( agent, worksiteId );
+         siteHash.put( worksiteId, siteGroupUsers );
       }
       
       List evalItems = matrixManager.getEvaluatableCells(agent, roles, siteIds, siteHash);

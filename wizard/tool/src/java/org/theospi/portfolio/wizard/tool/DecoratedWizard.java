@@ -170,7 +170,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       			|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
 					
     	try {
-			Site site = SiteService.getSite(base.getSiteId().getValue());
+			Site site = SiteService.getSite(base.getSiteId());
 			if (site.hasGroups()) {
             String currentUser = SessionManager.getCurrentSessionUserId();
             if (allowAllGroups) {
@@ -193,7 +193,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	
 	public List getUserListForSelect() {
 		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = base.getSiteId().getValue();
+		String currentSiteId = base.getSiteId();
 		List theList = getUserList(currentSiteId);
 
 		String user = getParent().getCurrentUserId()!=null ? 
@@ -204,7 +204,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	}
 
 	private List getUserList(String worksiteId) {
-		Set members = new HashSet();
+		Set<String> userIds = new HashSet<String>();
 		List users = new ArrayList();
 
       boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
@@ -215,35 +215,34 @@ public class DecoratedWizard implements DecoratedListInterface {
 			if ( site.hasGroups() ) {
 				String filterGroupId = parent.getCurrentGroupId();
 				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
-					members.addAll(site.getMembers());
+					userIds.addAll(site.getUsers());
 				}
 				else if ( filterGroupId != null && !filterGroupId.equals("") ) {
 					Group group = site.getGroup(filterGroupId);
-					members.addAll(group.getMembers());
+					userIds.addAll(group.getUsers());
 				}
 				else {
 					String currentUser = SessionManager.getCurrentSessionUserId();
 					Collection groups = site.getGroupsWithMember(currentUser);
 					for (Iterator iter = groups.iterator(); iter.hasNext();) {
 						Group group = (Group) iter.next();
-						members.addAll(group.getMembers());
+						userIds.addAll(group.getUsers());
 					}
 				}
 			}
 			else {
-				members.addAll(site.getMembers());
+				userIds.addAll(site.getUsers());
 			}
 
-			for (Iterator memb = members.iterator(); memb.hasNext();) {
+			for (String userId : userIds) {
+				User user;
 				try {
-					Member member = (Member) memb.next();
-					User user = UserDirectoryService.getUser(member.getUserId());
-
+					user = UserDirectoryService.getUser(userId);
 					users.add(getParent().createSelect(user.getId(), user.getSortName()));
 				}
 				catch (UserNotDefinedException e) {
 					getParent().logger.warn(myResources.getString("err_user_not_found") + e.getId());
-				}
+				}				
 			}
 			Collections.sort(users, new UserSelectListComparator());
 		}
@@ -476,9 +475,22 @@ public class DecoratedWizard implements DecoratedListInterface {
 
 	public String processActionEditExamples()
 	{
+		parent.processActionGuidanceHelper(getBase(), 3);
+		return null;
+	}
+	
+	public String processActionEditRubric(){
 		parent.processActionGuidanceHelper(getBase(), 4);
 		return null;
 	}
+	
+	public String processActionEditExpectations(){
+		parent.processActionGuidanceHelper(getBase(), 5);
+		return null;
+	}
+	
+	
+	
 
 	public DecoratedCompletedWizard getRunningWizard() {
 		return runningWizard;
@@ -507,6 +519,20 @@ public class DecoratedWizard implements DecoratedListInterface {
 			return null;
 		}
 		return getBase().getGuidance().getRationale();
+	}
+	
+	public GuidanceItem getRubric() {
+		if (getBase().getGuidance() == null) {
+			return null;
+		}
+		return getBase().getGuidance().getRubric();
+	}
+	
+	public GuidanceItem getExpectations() {
+		if (getBase().getGuidance() == null) {
+			return null;
+		}
+		return getBase().getGuidance().getExpectations();
 	}
 
 	public boolean isGuidanceAvailable() {
@@ -607,6 +633,56 @@ public class DecoratedWizard implements DecoratedListInterface {
 		return item.getAttachments();
 	}
 
+	public String getGuidanceRubric() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return "";
+		}
+		GuidanceItem item = guidance.getRubric();
+		if (item == null) {
+			return "";
+		}
+		return limitString(item.getText(), 100);
+	}
+
+	public List getGuidanceRubricAttachments() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return new ArrayList();
+		}
+		GuidanceItem item = guidance.getRubric();
+		if (item == null) {
+			return new ArrayList();
+		}
+		assureAttachmentAccess(guidance);
+		return item.getAttachments();
+	}
+	
+	public String getGuidanceExpectations() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return "";
+		}
+		GuidanceItem item = guidance.getExpectations();
+		if (item == null) {
+			return "";
+		}
+		return limitString(item.getText(), 100);
+	}
+
+	public List getGuidanceExpectationsAttachments() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return new ArrayList();
+		}
+		GuidanceItem item = guidance.getExpectations();
+		if (item == null) {
+			return new ArrayList();
+		}
+		assureAttachmentAccess(guidance);
+		return item.getAttachments();
+	}
+	
 	public List getEvaluators() {
 		return parent.getEvaluators(getBase());
 	}

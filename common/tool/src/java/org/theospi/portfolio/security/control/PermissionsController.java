@@ -20,14 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.control;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,8 +40,10 @@ import org.theospi.portfolio.security.model.PermissionsEdit;
 
 public class PermissionsController extends AbstractFormController implements FormController, LoadObjectController {
    protected final transient Log logger = LogFactory.getLog(getClass());
-
    private PermissionManager permissionManager;
+   private SecurityService securityService;
+   
+   private static final String REALM_UPDATE_PERMISSION = "realm.upd";
 
    /**
     * Create a map of all data the form requries.
@@ -58,25 +64,62 @@ public class PermissionsController extends AbstractFormController implements For
       if (request.get("message") != null) {
          model.put("message", request.get("message"));
       }
-
+      
       return model;
    }
 
    public ModelAndView processCancel(Map request, Map session, Map application,
                                      Object command, Errors errors) throws Exception {
-      return new ModelAndView("helperDone");
-   }
+		if (request.get(getPermissionManager().RETURN_KEY) != null
+				&& request.get(getPermissionManager().RETURN_KEY) != ""
+				&& request.get(getPermissionManager().RETURN_KEY) instanceof String)
+			return new ModelAndView("helperDone", (String) request
+					.get(getPermissionManager().RETURN_KEY), request
+					.get(getPermissionManager().RETURN_KEY_VALUE));
+		else
+			return new ModelAndView("helperDone");
+	}
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       PermissionsEdit edit = (PermissionsEdit)incomingModel;
       edit.setSiteId(ToolManager.getCurrentPlacement().getContext());
-      return getPermissionManager().fillPermissions(edit);
+      
+      return getPermissionManager().fillPermissions(edit, useQualifier(edit));
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       PermissionsEdit edit = (PermissionsEdit)requestModel;
-      getPermissionManager().updatePermissions(edit);
-      return new ModelAndView("helperDone");
+      
+      getSecurityService().pushAdvisor(new SimpleSecurityAdvisor(
+    		  SessionManager.getCurrentSessionUserId(), 
+    		  REALM_UPDATE_PERMISSION, "/realm/" + edit.getQualifier().getValue()));
+      
+      getPermissionManager().updatePermissions(edit, useQualifier(edit));
+      
+      getSecurityService().popAdvisor();
+      
+      Map returnMap = new HashMap();
+      returnMap.put("toolPermissionSaved", request.get("toolPermissionsSaved"));
+
+      if (request.get(getPermissionManager().RETURN_KEY) != null
+				&& request.get(getPermissionManager().RETURN_KEY) != "")
+			returnMap.put(request.get(getPermissionManager().RETURN_KEY),
+					request.get(getPermissionManager().RETURN_KEY_VALUE));
+
+		return new ModelAndView("helperDone", returnMap);
+	}
+   
+   /**
+    * Determine if the qualifier is different than the site id
+    * @param edit
+    * @return
+    */
+   private boolean useQualifier(PermissionsEdit edit) {
+	   boolean retVal = false;
+	   if (edit.getSiteId() != null && edit.getQualifier() != null) {
+		   retVal = !edit.getSiteId().equals(edit.getQualifier().getValue());
+	   }
+	   return retVal;
    }
 
    public PermissionManager getPermissionManager() {
@@ -86,4 +129,39 @@ public class PermissionsController extends AbstractFormController implements For
    public void setPermissionManager(PermissionManager permissionManager) {
       this.permissionManager = permissionManager;
    }
+
+   public SecurityService getSecurityService() {
+	   return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+	   this.securityService = securityService;
+   }
+   
+   /**
+	 * A simple SecurityAdviser that can be used to override permissions for one user for one function.
+	 */
+	protected class SimpleSecurityAdvisor implements SecurityAdvisor
+	{
+		protected String m_userId;
+		protected String m_function;
+		protected String m_reference;
+
+		public SimpleSecurityAdvisor(String userId, String function, String reference)
+		{
+			m_userId = userId;
+			m_function = function;
+			m_reference = reference;
+		}
+
+		public SecurityAdvice isAllowed(String userId, String function, String reference)
+		{
+			SecurityAdvice rv = SecurityAdvice.PASS;
+			if (m_userId.equals(userId) && m_function.equals(function) && m_reference.equals(reference))
+			{
+				rv = SecurityAdvice.ALLOWED;
+			}
+			return rv;
+		}
+	}
 }

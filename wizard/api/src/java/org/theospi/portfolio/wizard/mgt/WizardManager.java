@@ -92,11 +92,11 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            A list of site Ids (Strings)
 	 * @return
 	 */
-	public List findPublishedWizards(List<Id> sites);
+	public List findPublishedWizards(List<String> sites);
 
-	public List findPublishedWizards(Id siteId);
+	public List findPublishedWizards(String siteId);
    
-   public List findPublishedWizards(List<Id> sites, boolean lazy);
+   public List findPublishedWizards(List<String> sites, boolean lazy);
    
    /**
     ** Find all WizardPageSequence objects associated with this wizard
@@ -114,7 +114,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            The identifier of the site.
 	 * @return A list of wizard page definitions for this site.
 	 */
-	public List<WizardPageDefinition> findWizardPageDefs(final Id siteId);
+	public List<WizardPageDefinition> findWizardPageDefs(final String siteId);
 
 	/**
 	 * Method to get each wizard page definition for the site identified by the
@@ -127,10 +127,10 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            wizard pages.
 	 * @return A list of wizard page definitions for this site.
 	 */
-	public List<WizardPageDefinition> findWizardPageDefs(final Id siteId,
+	public List<WizardPageDefinition> findWizardPageDefs(final String siteId,
 			final boolean deep);
 
-	public List findWizardsByOwner(String ownerId, Id siteId);
+	public List findWizardsByOwner(String ownerId, String siteId);
 
 	public Collection getAvailableForms(String siteId, String type);
 
@@ -233,7 +233,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            wizardId
 	 * @return Id of the site
 	 */
-	public Id getWizardIdSiteId(final Id wizardId);
+	public String getWizardIdSiteId(final Id wizardId);
 
 	/**
 	 * Method to get the wizard page definition identified by the given
@@ -317,7 +317,7 @@ public interface WizardManager extends WorkflowEnabledManager {
     * @param worksiteIds List of worksite Ids
     * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
     */
-   List getEvaluatableItems(Agent agent, List<Id> worksiteIds);
+   List getEvaluatableItems(Agent agent, List<String> worksiteIds);
 
    /**
     * get all the cells, pages, and wizards that this user can evaluate within all worksites they are a member of

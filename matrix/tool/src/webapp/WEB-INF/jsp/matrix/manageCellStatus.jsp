@@ -32,6 +32,18 @@
          <input type="radio" id="changeAll" name="changeOption" value="changeAll" />
          <label for="changeAll"><fmt:message key="label_forAllMatrixUsers"/></label>
       </div>
+      <div class="checkbox indnt1">
+         <input type="radio" id="changeGroup" name="changeOption" value="changeGroup" />
+         <label for="changeGroup"><fmt:message key="label_forGroupMatrixUsers"/></label>
+         	<select id="groupId" name="groupId">
+				<c:forEach items="${groups}" var="group">
+					<option value="${group.id}">
+						<c:out value="${group.title}" />
+					</option>
+				</c:forEach>
+				<option value="ungrouped"><fmt:message key="text_ungrouped"/></option>
+			</select>
+      </div>
    </fieldset>
     
    <div class="act">

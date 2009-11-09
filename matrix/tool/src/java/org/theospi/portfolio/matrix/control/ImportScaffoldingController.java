@@ -130,7 +130,7 @@ public class ImportScaffoldingController implements Controller, FormController {
          
          attachments = 
             AssignmentHelper.filterAssignmentsBySite( attachments, 
-                                                      wpd.getSiteId().getValue() );
+                                                      wpd.getSiteId() );
          wpd.setAttachments(attachments);
       }
    }
