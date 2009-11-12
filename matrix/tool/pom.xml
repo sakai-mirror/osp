@@ -45,9 +45,6 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-<!--
-      This has been relocated to sakai-kernel-util
-      org.sakaiproject.kernel.utilsakai-util-->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-matrix-impl</artifactId>
@@ -56,20 +53,11 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-util${sakai.version}-->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.2</version>
     </dependency>
-<!--org.sakaiprojectsakai-component${sakai.version}-->
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
-<!--org.sakaiprojectsakai-tool-api${sakai.version}-->
-<!--org.sakaiprojectsakai-content-api${sakai.version}-->
-<!--org.sakaiprojectsakai-user-api${sakai.version}-->
-<!--org.sakaiprojectsakai-util-api${sakai.version}-->
-<!--org.sakaiprojectsakai-authz-api${sakai.version}-->
-<!--org.sakaiprojectsakai-entity-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
@@ -102,8 +90,6 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-util${sakai.version}-->
-<!--org.sakaiprojectsakai-component-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment-api</artifactId>
@@ -160,8 +146,6 @@
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
     </dependency>
-<!--${sakai.ehcache.groupId}${sakai.ehcache.artifactId}${sakai.ehcache.version}-->
-<!--${sakai.hibernate.groupId}${sakai.hibernate.artifactId}${sakai.hibernate.version}-->
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
@@ -189,17 +173,17 @@
       <version>1.1.01</version>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-widgets-sun-depend</artifactId>
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-tool</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-tool</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-app</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-app</artifactId>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
@@ -228,8 +212,6 @@
       <version>1.0.1</version>
       <scope>provided</scope>
     </dependency>
-<!--javax.servletservlet-api${sakai.servletapi.version}-->
-<!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}-->
     <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
