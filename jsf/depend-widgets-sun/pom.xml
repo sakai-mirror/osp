@@ -22,12 +22,12 @@
       <artifactId>osp-jsf-widgets</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.sakaiproject</groupId>
-          <artifactId>sakai-jsf-widgets-myfaces</artifactId>
+          <groupId>org.sakaiproject.jsf</groupId>
+          <artifactId>myfaces-widgets</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.sakaiproject</groupId>
-          <artifactId>sakai-jsf-widgets</artifactId>
+          <groupId>org.sakaiproject.jsf</groupId>
+          <artifactId>jsf-widgets</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.apache.myfaces.core</groupId>
@@ -44,8 +44,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets-sun</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-widgets-sun</artifactId>
     </dependency>
   </dependencies>
 </project>

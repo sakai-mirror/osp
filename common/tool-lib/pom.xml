@@ -48,16 +48,10 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-<!--
-      This has been relocated to sakai-kernel-util
-      org.sakaiproject.kernel.utilsakai-util-->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
-<!--org.sakaiprojectsakai-user-api${sakai.version}-->
-<!--org.sakaiprojectsakai-email-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
@@ -66,16 +60,6 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-tool-api${sakai.version}-->
-<!--org.sakaiprojectsakai-content-api${sakai.version}-->
-<!--org.sakaiprojectsakai-entity-api${sakai.version}-->
-<!--org.sakaiprojectsakai-util${sakai.version}-->
-<!--org.sakaiprojectsakai-component${sakai.version}-->
-<!--org.sakaiprojectsakai-component-api${sakai.version}-->
-<!--org.sakaiprojectsakai-util-api${sakai.version}-->
-<!--org.sakaiprojectsakai-authz-api${sakai.version}-->
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment-api</artifactId>
@@ -94,15 +78,15 @@
 <!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-tool</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-tool</artifactId>
 <!--url: http://sakaiproject.org/ -->
     </dependency>
 <!-- Sakai tag library -->
 <!-- Adaptor to use tag library with Sun's RI -->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
+      <groupId>org.sakaiproject.jsf</groupId>
+      <artifactId>jsf-widgets-sun-depend</artifactId>
       <type>pom</type>
 <!--url: http://sakaiproject.org/ -->
     </dependency>
