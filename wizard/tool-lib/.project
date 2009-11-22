@@ -4,10 +4,6 @@
   <projects>
     <project>osp-common-tool-lib</project>
     <project>osp-wizard-api</project>
-    <project>sakai-depend-jsf-widgets-sun</project>
-    <project>sakai-jsf-tool</project>
-    <project>sakai-jsf-widgets</project>
-    <project>sakai-jsf-widgets-sun</project>
     <project>sakai-metaobj-api</project>
     <project>sakai-metaobj-tool-lib</project>
   </projects>

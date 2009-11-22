@@ -5,9 +5,6 @@
     These widgets will be deployed as a jar file containing OSP JSF widgets (components).  
     Web applications can include this jar in order to use the OSP JSF widgets in a JSF tool.</comment>
   <projects>
-    <project>sakai-depend-jsf-widgets-myfaces</project>
-    <project>sakai-jsf-widgets</project>
-    <project>sakai-jsf-widgets-myfaces</project>
     <project>sakai-metaobj-api</project>
   </projects>
   <buildSpec>
