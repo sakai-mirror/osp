@@ -600,7 +600,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          presentation.setOwner(getAuthnManager().getAgent());
       }
 
-      // creating new presentation
       if (presentation.isNewObject()) {
          if (updateDates || presentation.getCreated() == null) {
             presentation.setCreated(new Date(System.currentTimeMillis()));
@@ -617,38 +616,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
          getHibernateTemplate().save(presentation);
          eventService.postEvent(EventConstants.EVENT_PORTFOLIO_ADD, presentation.getId().getValue());
-      } 
-      
-      // saving modified presentation
-      else {
+      } else {
          if (checkAuthz) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
                presentation.getId());
          }
-         
-         // In order to mitigate timing issues with save/refresh:
-         //    - FlushMode is set to FLUSH_EAGER 
-         //    - auto-commit is set to true
-         try {
-            int oldFlushMode = getHibernateTemplate().getFlushMode();
-            boolean oldAutoCommit = getSession().connection().getAutoCommit();
-            try {
-               getHibernateTemplate().setFlushMode(getHibernateTemplate().FLUSH_EAGER);
-               getSession().connection().setAutoCommit(true); 
-               getHibernateTemplate().merge(presentation);
-               eventService.postEvent(EventConstants.EVENT_PORTFOLIO_REVISE, presentation.getId().getValue());
-            }
-            catch (Exception e ) {
-               logger.warn(e);
-            }
-            finally {
-               getHibernateTemplate().setFlushMode(oldFlushMode);
-               getSession().connection().setAutoCommit(oldAutoCommit); 
-            }
-         }
-         catch (Exception e ) {
-            logger.warn(e);
-         }
+         getHibernateTemplate().merge(presentation);
+         eventService.postEvent(EventConstants.EVENT_PORTFOLIO_REVISE, presentation.getId().getValue());
       }
       
       storePresentationPages(presentation.getPages(), presentation.getId());
