@@ -24,6 +24,7 @@ package org.theospi.portfolio.admin.service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -48,6 +49,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ini
    private long pollingInterval;
    private SchedulerManager schedulerManager;
    private ContentHostingService contentHostingService;
+   private ServerConfigurationService serverConfigurationService;
    private List initUsers = new ArrayList();
 
    protected void executePlugin(SakaiIntegrationPlugin plugin) {
@@ -61,23 +63,27 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ini
    public void afterPropertiesSet() throws Exception {
       logger.info("afterPropertiesSet()");
       // go through each integration plugin and execute it...
-      Session sakaiSession = SessionManager.getCurrentSession();
-      String userId = sakaiSession.getUserId();
-
-      try {
-         sakaiSession.setUserId("admin");
-         sakaiSession.setUserEid("admin");
-         createUserResourceDir();
-         for (Iterator i=getIntegrationPlugins().iterator();i.hasNext();) {
-            String pluginId = (String) i.next();
-            SakaiIntegrationPlugin plugin = (SakaiIntegrationPlugin) ComponentManager.get(pluginId);
-            executePlugin(plugin);
-         }
-      } catch (Exception e) {
-         logger.warn("Temporarily catching all exceptions in osp.SakaiIntegrationServiceImpl.afterPropertiesSet()", e);
-      } finally {
-         sakaiSession.setUserEid(userId);
-         sakaiSession.setUserId(userId);
+      
+      //SAK-15884, only if portfolioAdmin.autocreate not set to true
+      if(serverConfigurationService.getBoolean("PortfolioAdmin.autocreate", true)) {
+	      Session sakaiSession = SessionManager.getCurrentSession();
+	      String userId = sakaiSession.getUserId();
+	
+	      try {
+	         sakaiSession.setUserId("admin");
+	         sakaiSession.setUserEid("admin");
+	         createUserResourceDir();
+	         for (Iterator i=getIntegrationPlugins().iterator();i.hasNext();) {
+	            String pluginId = (String) i.next();
+	            SakaiIntegrationPlugin plugin = (SakaiIntegrationPlugin) ComponentManager.get(pluginId);
+	            executePlugin(plugin);
+	         }
+	      } catch (Exception e) {
+	         logger.warn("Temporarily catching all exceptions in osp.SakaiIntegrationServiceImpl.afterPropertiesSet()", e);
+	      } finally {
+	         sakaiSession.setUserEid(userId);
+	         sakaiSession.setUserId(userId);
+	      }
       }
    }
 
@@ -136,6 +142,14 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ini
 
    public void setContentHostingService(ContentHostingService contentHostingService) {
       this.contentHostingService = contentHostingService;
+   }
+   
+   public ServerConfigurationService getServerConfigurationService() {
+      return serverConfigurationService;
+   }
+   
+   public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+      this.serverConfigurationService = serverConfigurationService;
    }
 
    public List getInitUsers() {

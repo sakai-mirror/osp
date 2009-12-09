@@ -667,6 +667,9 @@
       <property name="contentHostingService">
          <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
+      <property name="serverConfigurationService">
+         <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+      </property>
    </bean>
    <!-- above: setup user and program admin site -->
 
