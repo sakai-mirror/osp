@@ -24,18 +24,10 @@
 	<tr>
 		<td style="vertical-align:middle;text-align:left">
 				<div id="presentationName" class="shorttext">
-					<span class="editableText portfolio_name"><h:outputText value="#{freeForm.presentation.name}"/></span>
+					<span class="presentationNameTitle"><h:outputText value="#{freeForm.presentation.name}"/></span>
 				</div>
 		</td>
 		<td style="vertical-align:middle; text-align:right">
-
-		<h:commandLink action="#{freeForm.processActionReturn}" title="#{msgs.return_to_list}">
-					<h:outputText value="#{msgs.return_to_list}"/> 
-		</h:commandLink> 
-      <c:if test="${not empty freeForm.pageList}">
-		|
-      <a href="${freeForm.previewUrl}" target="_blank"><h:outputText value="#{msgs.pres_preview}"/></a>
-      </c:if>
 		</td>
 	</tr>
 </table>
@@ -51,13 +43,11 @@
 			<h:outputText value="#{msgs.pres_content}"/>
 		</span>	
 	</li>
-   <c:if test="${not empty freeForm.pageList}">
 	<li>
 		<h:commandLink action="#{freeForm.processActionShare}" title="#{msgs.pres_share}">
 					<h:outputText value="#{msgs.pres_share}"/> 
 		</h:commandLink>
 	</li>
-    </c:if>
 </ul>	
 			<div class="tabNavPanel">
 				<sakai:instruction_message value="#{msgs.instructions_freeForm}"/>

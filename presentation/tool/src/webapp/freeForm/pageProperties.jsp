@@ -21,7 +21,7 @@
 	<tr>
 		<td style="vertical-align:middle;text-align:left">
 				<div id="presentationName" class="shorttext">
-					<span class="editableText portfolio_name"><h:outputText value="#{freeForm.presentation.name}"/></span>
+					<span class="presentationNameTitle"><h:outputText value="#{freeForm.presentation.name}"/></span>
 				</div>
 		</td>
 	</tr>

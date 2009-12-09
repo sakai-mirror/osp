@@ -413,10 +413,15 @@ public class PresentationService {
     **/
    public boolean getOptionsOrPages( Presentation presentation ) {
 		boolean requiredStuff = false;
+      List pages = presentation.getPages();
+      
+      // make sure free-form portfolio pages are loaded
+      if ( presentation.getIsFreeFormType() && pages == null )
+         pages = presentationManager.getPresentationPagesByPresentation( presentation.getId() );
       
       if ( !presentation.getIsFreeFormType() && presentation.getPropertyForm() != null )
          requiredStuff = true;
-      else if ( presentation.getIsFreeFormType() && presentation.getPages() != null && presentation.getPages().size() > 0 )
+      else if ( presentation.getIsFreeFormType() && pages.size() > 0 )
          requiredStuff = true;
          
       return requiredStuff;
