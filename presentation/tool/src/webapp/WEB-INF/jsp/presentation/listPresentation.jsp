@@ -336,7 +336,7 @@ $(document).ready(function() {
 	  <c:forEach var="presentationBean" items="${presentations}" varStatus="loopCounter">
 	
 		<c:set var="presentation" value="${presentationBean.presentation}" />
-		<c:set var="optionsAreNull" value="${presentation.template.propertyFormType != null and presentation.propertyForm == null}" />
+		<c:set var="optionsAreNull" value="${(!presentation.isFreeFormType and presentation.propertyForm == null) || (presentation.isFreeFormType && empty presentation.pages)}" />
 		<c:set var="isAuthorizedTo" value="${presentation.authz}" />
 		<osp-c:authZMap prefix="osp.presentation." var="presCan" qualifier="${presentation.id}"/>
 	

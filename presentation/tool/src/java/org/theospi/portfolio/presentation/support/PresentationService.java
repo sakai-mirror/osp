@@ -406,6 +406,22 @@ public class PresentationService {
         return model;		
 	}
 	
+   /** Checks if required options (for templated portfolio) or pages (for free-form portfolio) are set
+    **
+    ** @param presentation specified presentation
+    ** @return true if required options/pages are set; otherwise returns false
+    **/
+   public boolean getOptionsOrPages( Presentation presentation ) {
+		boolean requiredStuff = false;
+      
+      if ( !presentation.getIsFreeFormType() && presentation.getPropertyForm() != null )
+         requiredStuff = true;
+      else if ( presentation.getIsFreeFormType() && presentation.getPages() != null && presentation.getPages().size() > 0 )
+         requiredStuff = true;
+         
+      return requiredStuff;
+   }
+   
 	private int FOLDER_MAX_LEN = 16; // maximum display size for folder name
 	private int FOLDER_ABBR_SIZE = 7; // abbreviated folder name prefix/suffix size
 	private String FOLDER_ABBR_TOKEN = ".."; // abbreviated folder name token
