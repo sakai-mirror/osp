@@ -94,7 +94,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
       // detailed configuration is in presentation/tool/src/bundle/ehcache.xml,
       // which ends up in tomcat/webapps/osp-presentation-tool/WEB-INF/classes/
 
-      if ( !ServerConfigurationService.getBoolean("cache.osp.presentation.data",true) )
+      if ( !ServerConfigurationService.getBoolean("cache.osp.presentation.data",false) )
          return null;
 
       String cacheName = "org.theospi.portfolio.presentation.control.ViewPresentationControl.XML";
