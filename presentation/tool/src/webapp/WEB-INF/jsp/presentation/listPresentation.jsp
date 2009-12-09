@@ -211,21 +211,123 @@ $(document).ready(function() {
    <%-- Otherwise display list of portfolios --%>
 	<c:otherwise>
 		
+	  <!--  
+			reverse the sort-order of the currently sorted column for the next click.
+			other columns will sort ascending if they are clicked. Also, set the class
+			of the th-element to allow the presentation to show the direction of sorting
+		-->
+	  <c:choose>
+			<c:when test="${sortOrderIsAscending}">
+				 <c:set var="sortDirImageUrl" value="/library/image/sakai/sortascending.gif" />
+				 <c:set var="sortorder" value="descending" /><%-- toggle --%>
+			</c:when>
+			<c:otherwise>
+				 <c:set var="sortDirImageUrl" value="/library/image/sakai/sortdescending.gif" />
+				 <c:set var="sortorder" value="ascending" /> <%-- toggle --%>
+			</c:otherwise>
+	  </c:choose>
+     
+		<c:choose>
+			<c:when test="${sortOn eq 'name'}">
+				 <c:set var="sortorder_name" value="${sortorder}" />
+				 <c:set var="className_name" value="${sortOrderIsAscending ? 'SortedAscending' : 'SortedDescending'}" />
+			</c:when>
+			<c:otherwise>
+				 <c:set var="sortorder_name" value="ascending" />
+				 <c:set var="className_name" value="Unsorted" />
+			</c:otherwise>
+	  </c:choose>
+	  <c:choose>
+			<c:when test="${sortOn eq 'dateModified'}">
+				 <c:set var="sortorder_dateModified" value="${sortorder}" />
+				 <c:set var="className_dateModified" value="${sortOrderIsAscending ? 'SortedAscending' : 'SortedDescending'}" />
+			</c:when>
+			<c:otherwise>
+				 <c:set var="sortorder_dateModified" value="descending" />
+				 <c:set var="className_dateModified" value="Unsorted" />
+			</c:otherwise>
+	  </c:choose>
+	  <c:choose>
+			<c:when test="${sortOn eq 'owner'}">
+				 <c:set var="sortorder_owner" value="${sortorder}" />
+				 <c:set var="className_owner" value="${sortOrderIsAscending ? 'SortedAscending' : 'SortedDescending'}" />
+			</c:when>
+			<c:otherwise>
+				 <c:set var="sortorder_owner" value="ascending" />
+				 <c:set var="className_owner" value="Unsorted" />
+			</c:otherwise>
+	  </c:choose>
+	  <c:choose>
+			<c:when test="${sortOn eq 'reviewed'}">
+				 <c:set var="sortorder_reviewed" value="${sortorder}" />
+				 <c:set var="className_reviewed" value="${sortOrderIsAscending ? 'SortedAscending' : 'SortedDescending'}" />
+			</c:when>
+			<c:otherwise>
+				 <c:set var="sortorder_reviewed" value="ascending" />
+				 <c:set var="className_reviewed" value="Unsorted" />
+			</c:otherwise>
+	  </c:choose>
+     
+
 	<table class="listHier ospTable" cellspacing="0" cellpadding="0"  border="0" summary="<fmt:message key=" table_presentationManager_summary" />" >
 	   <thead>
 		  <tr>
-			 <th scope="col"><fmt:message key="table_header_name"/></th>
-			 <th scope="col" class="attach"></th>
-			 <th scope="col"><fmt:message key="table_header_owner"/></th>
-			 <th scope="col"><fmt:message key="table_header_dateModified"/></th>
+			<th scope="col" class="${className_name}">
+				<a href="<osp:url value="listPresentation.osp">
+								<osp:param name="sortOn" value="name"/>
+								<osp:param name="sortorder" value="${sortorder_name}"/>
+								</osp:url>">
+				<fmt:message key="table_header_name" /></a> 
+				<c:if	test="${sortOn eq 'name'}">
+					<img src="${sortDirImageUrl}" />
+				</c:if>
+			</th>
+          
+			<th scope="col" class="attach"></th>
+          
+			<th scope="col" class="${className_owner}">
+				<a href="<osp:url value="listPresentation.osp">
+								<osp:param name="sortOn" value="owner"/>
+								<osp:param name="sortorder" value="${sortorder_owner}"/>
+								</osp:url>">
+				<fmt:message key="table_header_owner" /></a> 
+				<c:if	test="${sortOn eq 'owner'}">
+					<img src="${sortDirImageUrl}" />
+				</c:if>
+			</th>
+          
+			<th scope="col" class="${className_dateModified}">
+				<a href="<osp:url value="listPresentation.osp">
+								<osp:param name="sortOn" value="dateModified"/>
+								<osp:param name="sortorder" value="${sortorder_dateModified}"/>
+								</osp:url>">
+				<fmt:message key="table_header_dateModified" /></a> 
+				<c:if	test="${sortOn eq 'dateModified'}">
+					<img src="${sortDirImageUrl}" />
+				</c:if>
+			</th>
+          
 			 <th scope="col" class="attach"><fmt:message key="table_header_status"/></th>
+          
 			 <th scope="col" class="attach"><fmt:message key="table_header_shared"/></th>
+          
 			 <th scope="col" class="attach"><fmt:message key="table_header_comments"/></th>
+          
 			 <c:if test="${myworkspace}">
 			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
 			 </c:if>
+          
 			 <c:if test="${!myworkspace && can.review}">
-			   <th scope="col" class="attach"><fmt:message key="table_header_review"/></th>
+				 <th scope="col" class="${className_reviewed}">
+					 <a href="<osp:url value="listPresentation.osp">
+								 <osp:param name="sortOn" value="reviewed"/>
+								 <osp:param name="sortorder" value="${sortorder_reviewed}"/>
+								</osp:url>">
+					 <fmt:message key="table_header_review" /></a> 
+					 <c:if test="${sortOn eq 'reviewed'}">
+						 <img src="${sortDirImageUrl}" />
+					 </c:if>
+				 </th>
 			 </c:if>
 		  </tr>
 	   </thead>

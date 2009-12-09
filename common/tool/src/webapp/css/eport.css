@@ -443,7 +443,7 @@ INPUT.colorBox {
 .ospTable th{
 	background:transparent !important;
 	color:#777;
-	text-transform:uppercase;
+#	text-transform:uppercase;
 	border:0 !important;
 	padding-right: 2em !important;
 }

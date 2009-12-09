@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +51,7 @@ import org.sakaiproject.user.cover.PreferencesService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.model.Presentation;
@@ -63,11 +67,40 @@ public class ListPresentationController extends AbstractPresentationController {
    private final static String PORTFOLIO_PREFERENCES = "org.theospi.portfolio.presentation.placement.";
    private final static String PREF_HIDDEN = "org.theospi.portfolio.presentation.hidden.";
    private final static String PREF_FILTER = "org.theospi.portfolio.presentation.filter.";
+   private final static String PREF_SORT_ORDER = "org.theospi.portfolio.presentation.sortOrder.";
+   private final static String PREF_SORT_KEY = "org.theospi.portfolio.presentation.sortKey.";
    
    private final static String PREF_FILTER_VALUE_ALL    = "all";
    private final static String PREF_FILTER_VALUE_MINE   = "mine";
    private final static String PREF_FILTER_VALUE_SHARED = "shared";
    
+   private final static String SORTCOLUMN_KEY = "sortOn";
+   private static final Object SORTORDER_KEY = "sortorder";
+   private static final String SORTORDER_ISASCENDING_KEY = "sortOrderIsAscending";
+ 
+   // NOTE that this list needs to be synced with the values in the listPresention.jsp 
+   private static final String SORTORDER_ASCENDING = "ascending";
+   private static final String NAME_COLUMNKEY = "name";
+   private static final String DATEMODIFIED_COLUMNKEY = "dateModified";
+   private static final String OWNER_COLUMNKEY = "owner";
+   private static final String REVIEWED_COLUMNKEY = "reviewed";
+   
+   private static final Map<String, Comparator<Presentation>> sortName2PresentationComparator = initSortName2PresentationComparator();
+   
+   private static final Map<String, Comparator<Presentation>> initSortName2PresentationComparator() {
+      Map<String, Comparator<Presentation>> result = new HashMap<String, Comparator<Presentation>>(4);
+      result.put(NAME_COLUMNKEY,
+                 new PresentationComparators.ByNameComparator());
+      result.put(DATEMODIFIED_COLUMNKEY,
+                 new PresentationComparators.ByDateModifiedComparator());
+      result.put(OWNER_COLUMNKEY,
+                 new PresentationComparators.ByOwnerComparator());
+      result.put(REVIEWED_COLUMNKEY,
+                 new PresentationComparators.ByReviewedComparator());
+      return result;
+   }
+ 
+   @SuppressWarnings("unchecked")
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
@@ -80,13 +113,18 @@ public class ListPresentationController extends AbstractPresentationController {
       String filterList = getUserPreferenceProperty(PREF_FILTER, 
                                                     (String)request.get("filterListKey"),
                                                     PREF_FILTER_VALUE_ALL);
+      String sortColumn = getUserPreferenceProperty(PREF_SORT_KEY, 
+                                                    (String)request.get(SORTCOLUMN_KEY),
+                                                    NAME_COLUMNKEY);
+      String sortOrder = getUserPreferenceProperty(PREF_SORT_ORDER, 
+                                                   (String)request.get(SORTORDER_KEY),
+                                                   SORTORDER_ASCENDING);
       
       Collection presentations = null;
       String filterToolId = null;
       
       String baseUrl  = getServerConfigurationService().getServerUrl();
       boolean viewAll = getServerConfigurationService().getBoolean("osp.presentation.viewall", false) &&
-
          getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
                                         getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
       
@@ -103,9 +141,15 @@ public class ListPresentationController extends AbstractPresentationController {
       else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
          presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
 
+       // Sort the presentations
+      Boolean sortOrderIsAscending = SORTORDER_ASCENDING.equals(sortOrder) ? true : false;
+      sortPresentations(presentations, sortColumn, sortOrderIsAscending);
+       
       List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
-
+       
+      model.put(SORTORDER_ISASCENDING_KEY, sortOrderIsAscending);
+      model.put(SORTCOLUMN_KEY, sortColumn);
       model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
@@ -118,12 +162,32 @@ public class ListPresentationController extends AbstractPresentationController {
       return new ModelAndView("success", model);
    }
    
+   /** Sort given collection of presentations, using given sortColumn in ascending or descending order
+    **
+    **/
+   private void sortPresentations(final Collection<Presentation> presentations,
+                                  final String sortColumn, final Boolean inAscendingOrder) 
+   {
+      Comparator<Presentation> comparator = sortName2PresentationComparator.get(sortColumn);
+      
+      if (comparator != null) {
+         if (!inAscendingOrder) {
+            comparator = Collections.reverseOrder(comparator);
+         }
+         Collections.sort((List)presentations, comparator);
+      } 
+      else {
+         logger.error("no comparator defined for column " + sortColumn);
+      }
+   }
+   
    /**
     ** If prefValue provided, save it and return, 
     ** otherwise retrieve stored prefValue for given prefKey
     **
     ** @param prefKey preference key
     ** @param prefValue optional new value to save
+    ** @param dfltValue default value
     */
    protected String getUserPreferenceProperty(String prefKey, String prefValue, String dfltValue) 
    {
