@@ -72,7 +72,7 @@ $(document).ready(function() {
 <tbody>
 
 <%-- Portfolio Name:  --%>
-<spring:bind path="presentation.name">
+<spring:bind path="name">
 	<tr>
 		<th><fmt:message key="table_row_portfolio_name"/></th>
 		<td id="presentationName">
