@@ -96,12 +96,10 @@ $(document).ready(function() {
     <c:if test="${isMaintainer}">
         <li><span><a href="<osp:url value="osp.permissions.helper/editPermissions">
                 <osp:param name="message"><fmt:message key="message_permissionsEdit">
-	              <fmt:param><c:out value="${tool.title}"/></fmt:param>
-      		     <fmt:param><c:out value="${worksite.title}"/></fmt:param>
-                 </fmt:message> 
-                </osp:param>
+	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
+		  <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message></osp:param>
                 <osp:param name="name" value="presentation"/>
-                <osp:param name="qualifier" value="${worksite.id}"/>
+                <osp:param name="qualifier" value="${tool.id}"/>
                 <osp:param name="returnView" value="listPresentationRedirect"/>
                 <osp:param name="session.${lastViewKey}" value="/listPresentation.osp"/>
                 </osp:url>"
@@ -309,6 +307,16 @@ $(document).ready(function() {
 				</c:if>
 			</th>
           
+			 <th scope="col" class="attach"><fmt:message key="table_header_status"/></th>
+          
+			 <th scope="col" class="attach"><fmt:message key="table_header_shared"/></th>
+          
+			 <th scope="col" class="attach"><fmt:message key="table_header_comments"/></th>
+          
+			 <c:if test="${myworkspace}">
+			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
+			 </c:if>
+          
 			 <c:if test="${!myworkspace && can.review}">
 				 <th scope="col" class="${className_reviewed}">
 					 <a href="<osp:url value="listPresentation.osp">
@@ -321,16 +329,6 @@ $(document).ready(function() {
 					 </c:if>
 				 </th>
 			 </c:if>
-          
-			 <th scope="col" class="attach"><fmt:message key="table_header_status"/></th>
-          
-			 <th scope="col" class="attach"><fmt:message key="table_header_shared"/></th>
-          
-			 <th scope="col" class="attach"><fmt:message key="table_header_comments"/></th>
-          
-			 <c:if test="${myworkspace}">
-			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
-			 </c:if>          
 		  </tr>
 	   </thead>
 		<tbody>
@@ -338,7 +336,7 @@ $(document).ready(function() {
 	  <c:forEach var="presentationBean" items="${presentations}" varStatus="loopCounter">
 	
 		<c:set var="presentation" value="${presentationBean.presentation}" />
-		<c:set var="optionsAreNull" value="${!presentation.isFreeFormType and presentation.propertyForm == null}" />
+		<c:set var="optionsAreNull" value="${presentation.template.propertyFormType != null and presentation.propertyForm == null}" />
 		<c:set var="isAuthorizedTo" value="${presentation.authz}" />
 		<osp-c:authZMap prefix="osp.presentation." var="presCan" qualifier="${presentation.id}"/>
 	
@@ -436,14 +434,6 @@ $(document).ready(function() {
         
 		  <td><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
         
-		  <c:if test="${!myworkspace && can.review}">
-			 <td align="center" width="5%">
-			 <c:if test="${presentation.isDefault}">
-				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
-			 </c:if>
-			 </td>
-		  </c:if>
-        
 		  <td align="center">
 			 <c:if test="${!presentation.expired}">
 				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
@@ -479,6 +469,14 @@ $(document).ready(function() {
 		  
 		  <c:if test="${myworkspace}">
 			 <td><c:out value="${presentation.worksiteName}" /></td>
+		  </c:if>
+        
+		  <c:if test="${!myworkspace && can.review}">
+			 <td align="center">
+			 <c:if test="${presentation.isDefault}">
+				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+			 </c:if>
+			 </td>
 		  </c:if>
 		</tr>
 	  </c:forEach>

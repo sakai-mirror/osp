@@ -24,10 +24,16 @@
 	<tr>
 		<td style="vertical-align:middle;text-align:left">
 				<div id="presentationName" class="shorttext">
-					<span class="presentationNameTitle"><h:outputText value="#{freeForm.presentation.name}"/></span>
+					<span class="editableText portfolio_name"><h:outputText value="#{freeForm.presentation.name}"/></span>
 				</div>
 		</td>
 		<td style="vertical-align:middle; text-align:right">
+
+		<h:commandLink action="#{freeForm.processActionReturn}" title="#{msgs.return_to_list}">
+					<h:outputText value="#{msgs.return_to_list}"/> 
+		</h:commandLink> 
+		|
+      <a href="${freeForm.previewUrl}" target="_blank"><h:outputText value="#{msgs.pres_preview}"/></a>
 		</td>
 	</tr>
 </table>
