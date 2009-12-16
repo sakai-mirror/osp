@@ -132,8 +132,6 @@
                 <module>web</module>
                 <module>webservices</module>
                 <module>usermembership</module>
-                <module>gmt</module>
-                <module>datapoint</module>
                 <module>formbuilder</module>
             </modules>
         </profile>
