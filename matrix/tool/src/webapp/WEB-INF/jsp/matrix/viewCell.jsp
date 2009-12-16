@@ -747,7 +747,7 @@
 
 <!-- ************* General Review (Feedback) Area Start ************* -->
 
-<c:if test="${ ( ((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) 
+<c:if test="${ ( ((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) 
 					  && (cell.scaffoldingCell.reviewDevice != null)
 					  && (not generalFeedbackNone) )
 					|| not empty reviews }">
