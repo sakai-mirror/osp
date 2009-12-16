@@ -385,7 +385,8 @@ public class ReviewHelperController implements Controller {
 
     	   String[] contentArray = {cellPageType, cellPageName, cellPageTypeBig, matrixWizardType, matrixWizardName, siteName, typeIntroStr, directLink};
     	   String content = myResources.getFormattedMessage("feedbackEvalNotificationBody", contentArray);
-    	   String from = ServerConfigurationService.getString("setup.request", "oncourse_notification@iu.edu");
+         String from = "postmaster@".concat(ServerConfigurationService.getServerName());
+    	   from = ServerConfigurationService.getString("setup.request", from);
     	   //String to = ownerUser.getEmail();
     	   EmailService.send(from, to, message_subject, content, to, from, null);
        }
