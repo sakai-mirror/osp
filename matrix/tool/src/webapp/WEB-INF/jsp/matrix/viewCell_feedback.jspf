@@ -1,9 +1,9 @@
 <!-- ************* General Review (Feedback) Area Start ************* -->
 
-<c:if
-	test="${(((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
-	((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
-		|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm)) && (not generalFeedbackNone || not empty reviews))}">
+<c:if test="${ ( ((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) 
+					  && (cell.scaffoldingCell.reviewDevice != null)
+					  && (not generalFeedbackNone) )
+					|| not empty reviews }">
 		<tr>
 			<td colspan="6"></td>
 		</tr>
