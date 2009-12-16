@@ -194,6 +194,7 @@ function mySetMainFrameHeight(id)
 	<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_matrix_summary"/>">
 	   <thead>
 		  <tr>
+			 <!-- matrix title -->
 			 <th scope="col">
 				<c:if test="${sortBy == 'title' && sortAscending == true }">
 		 			<a href="<osp:url value="listScaffolding.osp">
@@ -225,6 +226,7 @@ function mySetMainFrameHeight(id)
 			 <c:if test="${!studentView || myworkspace}">
 			 	<th scope="col"></th>
 			 </c:if>
+			 <!-- matrix owner -->
 			 <c:if test="${!studentView}">
 			 	<th scope="col">
 			 		<c:if test="${sortBy == 'owner' && sortAscending == true }">
@@ -255,7 +257,7 @@ function mySetMainFrameHeight(id)
 			 		</c:if>	
 			 	</th>
 			 </c:if>
-			 <c:if test="${!studentView}">
+			 <!-- matrix status (publish/preview) -->
 				<th scope="col">
 					<c:if test="${sortBy == 'published' && sortAscending == true }">
 				 		<a href="<osp:url value="listScaffolding.osp">
@@ -284,7 +286,7 @@ function mySetMainFrameHeight(id)
 	               		</a>
 			 		</c:if>	
 				</th>
-			 </c:if>
+			 <!-- matrix last modified date -->
 			 <c:if test="${!studentView}">
 				 <th scope="col">
 			 		<c:if test="${sortBy == 'modified' && sortAscending == true }">
@@ -315,6 +317,7 @@ function mySetMainFrameHeight(id)
 			 		</c:if>			 
 				 </th>
 			 </c:if>
+			 <!-- matrix worksite -->
 			 <c:if test="${myworkspace}">
 			 	<th scope="col">
 				 	<c:if test="${sortBy == 'worksite' && sortAscending == true }">
@@ -442,7 +445,7 @@ function mySetMainFrameHeight(id)
 								key="action_permissions" /> </a>
 						</c:if>
 						<%--  Hiding this functionality as it hasn't gotten much testing
-				d				<c:if test="${isMaintainer && empty dScaffold.scaffolding.exposedPageId}">
+								<c:if test="${isMaintainer && empty dScaffold.scaffolding.exposedPageId}">
 									<c:if test="${hasFirstAction}" > | </c:if>
 									<c:set var="hasFirstAction" value="true" />
 									<a href="<osp:url value="exposedScaffolding.osp"/>&expose=true&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}"/>">
@@ -466,7 +469,6 @@ function mySetMainFrameHeight(id)
 						<c:out value="${dScaffold.scaffolding.owner.displayName}" />
 				</td>
 				</c:if>
-				<c:if test="${!studentView}">
 				  <td>
 					 <c:if test="${dScaffold.scaffolding.published}">
 						<fmt:message key="scaffolding_published_true"/>
@@ -478,7 +480,6 @@ function mySetMainFrameHeight(id)
 						<fmt:message key="scaffolding_published_false"/>
 					 </c:if>
 				 </td>
-				 </c:if>
 				 <c:if test="${!studentView}">
 					 <td>
 					 	<fmt:formatDate
