@@ -18,9 +18,18 @@
 <spring:bind path="presentationType">
 	<input id="presType" type="hidden" name="${status.expression}"/>
 </spring:bind>
+<c:set var="showCreate" value="${freeFormEnabled || not empty availableTemplates}" />
 
 <div class="presentationTypeDialog">
-	<h3><fmt:message key="heading_createPresentation"/></h3>
+    <%-- In case we get here without any available types, which should typically not happen due to links being supressed --%>
+    <c:choose>
+        <c:when test="${showCreate}">
+            <h3><fmt:message key="heading_createPresentation"/></h3>
+        </c:when>
+        <c:otherwise>
+            <h3><fmt:message key="heading_createUnavailable"/></h3>
+        </c:otherwise>
+    </c:choose>
 	<spring:bind path="*">
 		<c:if test="${status.error}">
 			<%-- FIXME: This needs an appropriate class for error msg --%>
@@ -51,24 +60,34 @@
 		</c:if>
 		
 		<%-- Handle option to turn free-form off --%>
-		<ul class="presentationTypeGroup">
-			<li class="portfolioTypeOption">
-				<input type="radio"
-					id="${status.expression}-freeForm"
-					name="${status.expression}"
-					value="${freeFormTemplateId.value}"
-					onclick="getElementById('presType').value = 'osp.presentation.type.freeForm';" />
-				<label for="${status.expression}-freeForm"><fmt:message key="label_freeForm"/></label>
-				<p class="messageInstruction">
-					<fmt:message key="addPresentation1_manageYourself"/>
-				</p>
-			</li>
-		</ul>
+		<c:if test="${freeFormEnabled}">
+			<ul class="presentationTypeGroup">
+				<li class="portfolioTypeOption">
+					<input type="radio"
+						id="${status.expression}-freeForm"
+						name="${status.expression}"
+						value="${freeFormTemplateId.value}"
+						onclick="getElementById('presType').value = 'osp.presentation.type.freeForm';" />
+					<label for="${status.expression}-freeForm"><fmt:message key="label_freeForm"/></label>
+					<p class="messageInstruction">
+						<fmt:message key="addPresentation1_manageYourself"/>
+					</p>
+				</li>
+			</ul>
+		</c:if>
 	</spring:bind>
+    <c:if test="${!showCreate}">
+        <div class="presentationTypeGroup">
+            <p style="text-align: center;"><fmt:message key="no_portfolio_types" /></p>
+            <p style="text-align: center;"><a href="<osp:url value="listPresentation.osp" />"><fmt:message key="return_to_list" /></a></p>
+        </div>
+    </c:if>
 </div>
 
+<c:if test="${showCreate}">
 <div class="act">
 	<input type="submit" name="submit" value="<fmt:message key="button_create"/>" /> <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>" />
 </div>
+</c:if>
 </spring:nestedPath>
 </form>

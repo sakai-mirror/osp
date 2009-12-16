@@ -30,6 +30,7 @@ public class CreatePresentationController extends SimpleFormController {
 		HashMap<String, Object> model = new HashMap<String, Object>();
 		model.put("availableTemplates", presentationService.getAvailableTemplates());
 		model.put("freeFormTemplateId", Presentation.FREEFORM_TEMPLATE_ID);
+		model.put("freeFormEnabled", presentationService.isFreeFormEnabled());
 		return model;
 	}
 	

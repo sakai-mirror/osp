@@ -34,6 +34,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -90,6 +91,7 @@ public class PresentationService {
 	
 	private SiteService siteService;
 	private ContentHostingService contentHostingService;
+	private ServerConfigurationService serverConfigurationService;
 	
 	private static final Log log = LogFactory.getLog(PresentationService.class);
 	private static final String WIZARD_ITEM_PLACEHOLDER = "Wizard/Matrix";
@@ -97,6 +99,8 @@ public class PresentationService {
 	private static final ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
 	
 	public static final String VIEW_PRESENTATION_URL =	 "/osp-presentation-tool/viewPresentation.osp?id=";
+
+	public static final String PROP_FREEFORM_DISABLED = "osp.freeform.disabled";
       
 	//TODO: Add signature for more parameterized creation -- not just complete current context (user, site, tool)
 	public Presentation createPresentation(String presentationType, String templateId) {
@@ -131,6 +135,33 @@ public class PresentationService {
         availableTemplates.addAll(presentationManager.findPublishedTemplates(toolManager.getCurrentPlacement().getContext()));
         availableTemplates.addAll(presentationManager.findGlobalTemplates());
         return new ArrayList<PresentationTemplate>(availableTemplates);
+	}
+
+	//NOTE: This method is context-aware, checking properties of the current tool
+	public boolean isFreeFormEnabled() {
+
+		//Leave free-form on by default if not configured
+		boolean disabled = serverConfigurationService.getBoolean(PROP_FREEFORM_DISABLED, false);
+		try {
+			String siteWide = siteService.findTool(toolManager.getCurrentPlacement().getId())
+				.getContainingPage().getContainingSite().getProperties()
+				.getProperty(PROP_FREEFORM_DISABLED);
+
+			//We want to allow sites to turn free-form back on if off system-wide, or off if on by default
+			//But be specific about the property values
+			if ("true".equalsIgnoreCase(siteWide) || "1".equals(siteWide))
+				disabled = true;
+			else if ("false".equalsIgnoreCase(siteWide) || "0".equals(siteWide))
+				disabled = false;
+		}
+		catch (Exception e) {
+			if (log.isDebugEnabled())
+				log.debug("Error retrieving site properties for tool placement: " + toolManager.getCurrentPlacement());
+		}
+
+		//NOTE: This method inverts the logic. To admins, disabling is the natural action because enabled is default.
+		//      In the code, enabled is the more natural state.
+		return !disabled;
 	}
 	
 	public boolean updatePresentation(String presentationId, String name, String description, Boolean active, Boolean allowComments) {
@@ -564,6 +595,10 @@ public class PresentationService {
 
 	public void setContentHostingService(ContentHostingService contentHostingService) {
 		this.contentHostingService = contentHostingService;
+	}
+
+	public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
 	}
 
 }
