@@ -528,6 +528,9 @@
 	</bean>
 	
 	<bean id="editPresentationFormController" class="org.theospi.portfolio.presentation.control.EditPresentationFormController" parent="supportedController">
+		<property name="idManager">
+			<ref bean="idManager"/>
+		</property>	
 	</bean>
 	
     <bean id="viewPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">

@@ -197,6 +197,13 @@ public class PresentationService {
 			throw new IllegalArgumentException("Portfolio does not exist with ID: " + id);
 		return presentation;
 	}
+	
+	public PresentationItemDefinition getPresentationItemDefinition(String id) {
+		PresentationItemDefinition presentationItemDef = presentationManager.getPresentationItemDefinition(idManager.getId(id));
+		if (presentationItemDef == null)
+			throw new IllegalArgumentException("Portfolio Item Definition does not exist with ID: " + id);
+		return presentationItemDef;
+	}
 
 	public Presentation savePresentation(Presentation presentation) {
 		return presentationManager.storePresentation(presentation);

@@ -59,12 +59,12 @@ public abstract class AbstractCalloutController extends AbstractController {
 	
 	protected ModelAndView handleSave(String presentationId, HttpSession session) {
 		String reference = (String) session.getAttribute(FormHelper.RETURN_REFERENCE_TAG);
-		save(presentationId, reference);
+		save(presentationId, reference, session);
 		cleanUpSession(session);
 		return sendToReturn(presentationId);
 	}
 		
-	protected void save(String presentationId, String reference) {
+	protected void save(String presentationId, String reference, HttpSession session) {
 		return;
 	}
 	
