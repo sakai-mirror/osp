@@ -111,6 +111,11 @@
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-matrix-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.sitemanage</groupId>
+      <artifactId>sakai-site-manage-util</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
 <!-- OSP tag library -->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
