@@ -113,6 +113,7 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.util.SiteConstants;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.taggable.api.Link;
 import org.sakaiproject.taggable.api.LinkManager;
@@ -3367,17 +3368,27 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	}
 
 	public Set getGroupList(Site site, boolean allowAllGroups) {
-		Set groups = new HashSet();
+		Set groupSet = new HashSet();
+		Collection siteGroups = null;
+      
 		if (site.hasGroups()) {
 			String currentUser = SessionManager.getCurrentSessionUserId();
 			if (allowAllGroups) {
-				groups.addAll(site.getGroups());
+				siteGroups = site.getGroups();
 			}
 			else {
-				groups.addAll(site.getGroupsWithMember(currentUser));
+				siteGroups = site.getGroupsWithMember(currentUser);
+			}
+      
+			// Only add worksite groups (e.g. not section groups)
+			for (Iterator it = siteGroups.iterator(); it.hasNext(); ) {
+				Group group = (Group)it.next();
+				if ( group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+					groupSet.add(group);
 			}
 		}
-		return groups;
+      
+		return groupSet;
 	}
 
 	public Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {

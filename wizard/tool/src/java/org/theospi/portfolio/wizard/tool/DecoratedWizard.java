@@ -28,6 +28,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.util.SiteConstants;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -164,25 +165,26 @@ public class DecoratedWizard implements DecoratedListInterface {
 	}
 
 	public List getGroupListForSelect() {
-    	List groupSelect = new ArrayList();
-		Set groups = new HashSet();
-      boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
-      			|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
+		List groupSelect = new ArrayList();
+		Collection groups = null;
+		boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
+					|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
 					
-    	try {
+		try {
 			Site site = SiteService.getSite(base.getSiteId());
 			if (site.hasGroups()) {
-            String currentUser = SessionManager.getCurrentSessionUserId();
-            if (allowAllGroups) {
-            	groups.addAll(site.getGroups());
-            }
-            else {
-            	groups.addAll(site.getGroupsWithMember(currentUser));
-            }
+				String currentUser = SessionManager.getCurrentSessionUserId();
+				if (allowAllGroups) {
+					groups = site.getGroups();
+				}
+				else {
+					groups = site.getGroupsWithMember(currentUser);
+				}
 			}
 			for (Iterator it = groups.iterator(); it.hasNext();) {
 				Group group = (Group) it.next();
-				groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
+				if ( group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+					groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
 			}
 		} 
 		catch (IdUnusedException e) {
