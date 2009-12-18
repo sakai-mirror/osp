@@ -49,6 +49,11 @@ public class EditPresentationFormController extends AbstractCalloutController {
 			PresentationItem pi = new PresentationItem();
 			pi.setArtifactId(idManager.getId(reference));
 			pi.setDefinition(itemDef);
+			int size = presentation.getPresentationItems().size();
+			if (!itemDef.isAllowMultiple() && size > 0) {
+			//If I can only have one item and there is already one, clear it so the new one wins
+				presentation.getPresentationItems().clear();
+			}
 			presentation.getPresentationItems().add(pi);
 		}
 		return;
