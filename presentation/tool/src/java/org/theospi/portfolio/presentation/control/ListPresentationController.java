@@ -63,6 +63,7 @@ public class ListPresentationController extends AbstractPresentationController {
    protected final Log logger = LogFactory.getLog(getClass());
    private ListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
+   private PresentationService presentationService;
    
    private final static String PORTFOLIO_PREFERENCES = "org.theospi.portfolio.presentation.placement.";
    private final static String PREF_HIDDEN = "org.theospi.portfolio.presentation.hidden.";
@@ -147,6 +148,9 @@ public class ListPresentationController extends AbstractPresentationController {
        
       List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
+
+      List templates = presentationService.getAvailableTemplates();
+      model.put("createAvailable", presentationService.isFreeFormEnabled() || templates.size() > 0);
        
       model.put(SORTORDER_ISASCENDING_KEY, sortOrderIsAscending);
       model.put(SORTCOLUMN_KEY, sortColumn);
@@ -265,6 +269,10 @@ public class ListPresentationController extends AbstractPresentationController {
    public void setServerConfigurationService(
          ServerConfigurationService serverConfigurationService) {
       this.serverConfigurationService = serverConfigurationService;
+   }
+
+   public void setPresentationService(PresentationService presentationService) {
+      this.presentationService = presentationService;
    }
    
    

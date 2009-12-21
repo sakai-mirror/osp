@@ -5,6 +5,7 @@
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
 <osp-c:authZMap prefix="osp.presentation." var="can" />
+<c:set var="showCreate" value="${can.create && createAvailable}" />
 
 <script type="text/javascript" src="/library/js/jquery.js">
 </script>
@@ -88,7 +89,7 @@ $(document).ready(function() {
 
 
 <ul class="navIntraTool">
-    <c:if test="${can.create}">
+    <c:if test="${showCreate}">
         <li class="firstToolBarItem"><span><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio"/>"> <fmt:message key="action_new_portfolio"/> </a></span></li>
     </c:if>
@@ -183,7 +184,7 @@ $(document).ready(function() {
 	<c:when  test="${empty presentations && showHidden == 'all'}">
       <p align="center">
 		<fmt:message key="table_empty_list_all"/>
-      <c:if test="${filterList != 'shared' && can.create}">
+      <c:if test="${filterList != 'shared' && showCreate}">
         <br/><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
       </c:if>
@@ -193,7 +194,7 @@ $(document).ready(function() {
 	<c:when  test="${empty presentations && showHidden == 'hidden'}">
       <p align="center">
 		<fmt:message key="table_empty_list_hidden"/>
-      <c:if test="${filterList != 'shared' && can.create}">
+      <c:if test="${filterList != 'shared' && showCreate}">
         <br/><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
       </c:if>
@@ -203,7 +204,7 @@ $(document).ready(function() {
 	<c:when  test="${empty presentations && showHidden == 'visible'}">
       <p align="center">
 		<fmt:message key="table_empty_list_visible"/>
-      <c:if test="${filterList != 'shared' && can.create}">
+      <c:if test="${filterList != 'shared' && showCreate}">
         <br/><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
       </c:if>
