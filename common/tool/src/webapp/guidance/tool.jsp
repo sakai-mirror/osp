@@ -15,7 +15,7 @@
 
 <sakai:view>
    <sakai:view_title value="#{common_msgs.guidance_title}"/>
-   <sakai:instruction_message value="#{guidance.guidanceInstructions}" />
+   <sakai:instruction_message value="#{guidance.guidanceInstructions} #{guidance.pageContext2}"/>
    <sakai:messages />
 <h:form>
 

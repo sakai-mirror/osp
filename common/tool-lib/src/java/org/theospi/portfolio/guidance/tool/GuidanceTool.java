@@ -172,6 +172,8 @@ public class GuidanceTool extends HelperToolBase {
       toolSession.removeAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG);
       toolSession.removeAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG);
       toolSession.removeAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG);
+      toolSession.removeAttribute(GuidanceHelper.CONTEXT);
+      toolSession.removeAttribute(GuidanceHelper.CONTEXT2);
    }
 
    public Reference decorateReference(String reference) {
@@ -619,6 +621,30 @@ public class GuidanceTool extends HelperToolBase {
 
    public void setFormDisplayName(String formDisplayName) {
       this.formDisplayName = formDisplayName;
+   }
+   /**
+    * Context (GuidanceHelper.CONTEXT) is used to describe the page/tool
+    * that is being used in this helper.  Context is the main title (ex. matrix or wizard name)
+    * and context 2 is used for the subtitle (ex. matrix cell or wizard page).  If left
+    * blank, then nothing displays on the page.
+    * @return
+    */
+
+   public String getPageContext(){
+	   String context = (String) getAttribute(GuidanceHelper.CONTEXT);
+	   return context != null ? context : "";
+   }
+
+   /**
+    * Context2 (GuidanceHelper.CONTEXT2) is used to describe the page/tool
+    * that is being used in this helper.  Context is the main title (ex. matrix or wizard name)
+    * and Context2 is used for the subtitle (ex. matrix cell or wizard page).  If left
+    * blank, then nothing displays on the page.
+    * @return
+    */
+   public String getPageContext2(){
+	   String context2 = (String) getAttribute(GuidanceHelper.CONTEXT2);
+	   return context2 != null ? context2 : "";
    }
 
 

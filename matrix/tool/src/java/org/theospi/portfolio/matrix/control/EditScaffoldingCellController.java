@@ -513,6 +513,17 @@ public class EditScaffoldingCellController extends
 				|| forwardView.equals("editExpectations")) {
 			Boolean bTrue = new Boolean(true);
 			Boolean bFalse = new Boolean(false);
+			//guidance context
+			session.remove(GuidanceHelper.CONTEXT);
+			session.remove(GuidanceHelper.CONTEXT2);
+
+			if(scaffoldingCell.getScaffolding() != null){
+				session.put(GuidanceHelper.CONTEXT,
+						scaffoldingCell.getScaffolding().getTitle());
+			}
+			session.put(GuidanceHelper.CONTEXT2,
+					scaffoldingCell.getTitle());
+			
 			session.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, bFalse);
 			session.put(GuidanceHelper.SHOW_RATIONALE_FLAG, bFalse);
 			session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bFalse);

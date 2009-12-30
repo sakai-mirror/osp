@@ -37,4 +37,11 @@ public interface GuidanceHelper {
    
    public static final String SHOW_EXPECTATIONS_FLAG =
 	      "org.theospi.portfolio.guidance.expectationsFlag";
+
+   public static final String CONTEXT =
+       "org.theospi.portfolio.guidance.context";
+   
+   public static final String CONTEXT2 =
+       "org.theospi.portfolio.guidance.context2";
 }
+
