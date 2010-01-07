@@ -1,6 +1,9 @@
 package org.theospi.portfolio.presentation.control;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,15 +52,37 @@ public class EditPresentationFormController extends AbstractCalloutController {
 			PresentationItem pi = new PresentationItem();
 			pi.setArtifactId(idManager.getId(reference));
 			pi.setDefinition(itemDef);
-			int size = presentation.getPresentationItems().size();
+			Set<PresentationItem> items = (Set<PresentationItem>)presentation.getPresentationItems();
+			int size = items.size();
 			if (!itemDef.isAllowMultiple() && size > 0) {
-			//If I can only have one item and there is already one, clear it so the new one wins
-				presentation.getPresentationItems().clear();
+				//If I can only have one item and there is already one, clear it so the new one wins
+				clearItemsByType(itemDef, items);
 			}
-			presentation.getPresentationItems().add(pi);
+			items.add(pi);
 		}
 		return;
-	}	
+	}
+	
+	/**
+	 * Iterate through the presentation items and remove the once that match the passed item definition
+	 * @param itemDef
+	 * @param items
+	 * @return The number of items removed
+	 */
+	private int clearItemsByType(PresentationItemDefinition itemDef, Set<PresentationItem> items) {
+		int countRemoved = 0;
+		List<PresentationItem> toRemove = new ArrayList<PresentationItem>();
+		for (PresentationItem item : items) {
+			if (item.getDefinition() == itemDef) {
+				toRemove.add(item);
+			}
+		}
+		for (PresentationItem item : toRemove) {
+			items.remove(item);
+			countRemoved++;
+		}
+		return countRemoved;
+	}
 	
 	@Override
 	protected void cleanUpSession(HttpSession session) {
