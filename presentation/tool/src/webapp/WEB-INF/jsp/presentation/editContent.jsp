@@ -129,7 +129,7 @@ $(document).ready(function() {
 													</td>
 													<c:if test="${itemDefinition.isFormType}">
 														<td style="text-align:right">
-															<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
+															<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;itemDefId=<c:out value="${itemDefinition.id}"/>"
 												   class="inlineCreate"><fmt:message key="create_new"/></a>
 												   &nbsp;
 														</td>
@@ -285,7 +285,7 @@ $(document).ready(function() {
 										</select>
 									<c:if test="${itemDefinition.isFormType}">
 										<span class="itemAction"  style="margin-left:0;padding-left:0;white-space:nowrap;padding-top:4px;display:inline-block;">
-											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
+											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;itemDefId=<c:out value="${itemDefinition.id}"/>"
 											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
 											<c:if test="${mine}">
 											  <a href="#<c:out value="${selectBox}" />"

@@ -3,6 +3,7 @@ package org.theospi.portfolio.presentation.control;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class EditOptionsController extends AbstractCalloutController {
 
@@ -17,7 +18,7 @@ public class EditOptionsController extends AbstractCalloutController {
 	}
 	
 	@Override
-	protected void save(String presentationId, String reference) {
+	protected void save(String presentationId, String reference, HttpSession session) {
 		presentationService.saveOptions(presentationId, reference);
 	}
 }
