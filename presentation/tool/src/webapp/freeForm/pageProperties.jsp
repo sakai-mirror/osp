@@ -107,13 +107,20 @@
 								</f:subview>
 								<h:inputText id="layoutFile" value="#{freeForm.currentPage.layoutName}"
 											 readonly="true" rendered="#{freeForm.currentPage.renderLayoutName}"/>
-	
+
+								<h:inputHidden id="layoutFileHidden" value="" required="true"
+									rendered="#{freeForm.currentPage.selectedLayout.base == null}" />
+								<h:inputHidden id="layoutFileHidden"
+									value="#{freeForm.currentPage.selectedLayout}"
+									required="true"
+									rendered="#{freeForm.currentPage.selectedLayout.base != null}" />
 								<h:outputText value=" "/>
 								<h:commandLink action="#{freeForm.currentPage.processActionSelectLayout}"
 											   immediate="true">
 									<h:outputText value="#{msgs.select_layout}"/>
 								</h:commandLink>
-	
+								<h:message for="layoutFileHidden"
+									styleClass="alertMessageInline" style="border:none" />
 							</h:panelGroup>
 							<h:outputLabel id="blank" value=""/>
 							<h:panelGroup>
