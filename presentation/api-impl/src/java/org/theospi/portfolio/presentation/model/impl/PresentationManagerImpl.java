@@ -2506,7 +2506,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       List pages = getHibernateTemplate().findByNamedQuery("findPortfolioPagesByPortfolioAndSequence", 
             new Object[]{presentationId, new Integer(pageIndex)});
 
-      return (PresentationPage)pages.get(0);
+      return (pages == null || pages.size() == 0) ? null : (PresentationPage)pages.get(0);
    }
    
    
