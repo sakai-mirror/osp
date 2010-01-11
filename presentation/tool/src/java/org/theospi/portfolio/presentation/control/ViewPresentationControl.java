@@ -235,6 +235,10 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             else {
                doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
             }
+            if(doc == null){
+            	model.put("noPagesFound", true);
+            	return new ModelAndView("notFound", model);
+            }
          }
          Site site = SiteService.getSite(pres.getSiteId());
          getAuthzManager().pushAuthzGroups(site.getId());
