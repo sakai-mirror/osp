@@ -63,7 +63,7 @@ public class ListPresentationController extends AbstractPresentationController {
    protected final Log logger = LogFactory.getLog(getClass());
    private ListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
-   private PresentationService presentationService;
+   protected PresentationService presentationService;
    
    private final static String PORTFOLIO_PREFERENCES = "org.theospi.portfolio.presentation.placement.";
    private final static String PREF_HIDDEN = "org.theospi.portfolio.presentation.hidden.";

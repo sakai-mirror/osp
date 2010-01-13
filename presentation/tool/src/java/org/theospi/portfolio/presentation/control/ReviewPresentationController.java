@@ -37,7 +37,6 @@ import org.theospi.portfolio.presentation.model.Presentation;
  ** to indicate whether it has been reviewed or vetted. 
  **/
 public class ReviewPresentationController extends ListPresentationController {
-	private PresentationService presentationService;
    
    /* (non-Javadoc)
     * @see org.sakaiproject.metaobj.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
@@ -60,9 +59,4 @@ public class ReviewPresentationController extends ListPresentationController {
       return super.handleRequest(requestModel, request, session, 
                                  application, errors);
    }
-
-	public void setPresentationService(PresentationService presentationService) {
-		this.presentationService = presentationService;
-	}
-
 }
