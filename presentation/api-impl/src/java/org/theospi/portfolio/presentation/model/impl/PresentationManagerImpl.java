@@ -346,6 +346,44 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          return null;
       }
    }
+   
+   /** Return the XML document string corresponding to the specified public portfolio's propertyForm
+    ** (portfolio must be publicly viewable).
+    **
+    ** @param portfolioId public portfolio
+    ** @return XML document string or null if error
+    **/
+   public String getPublicPropertyForm( Presentation presentation )
+   {
+      StringBuilder options = new StringBuilder();
+      
+      if ( presentation == null || !presentation.getIsPublic() || presentation.getPropertyForm() == null)
+         return null;
+         
+      String formId = contentHosting.resolveUuid(presentation.getPropertyForm().getValue());
+      String ref = contentHosting.getReference(formId);
+      
+      try {
+         securityService.pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
+         
+         ContentResource resource = contentHosting.getResource(formId);
+         BufferedReader rdr = new BufferedReader( new InputStreamReader( resource.streamContent() ) );
+          
+          String line = rdr.readLine();
+          while ( line != null )
+          {
+             options.append( line );
+             line = rdr.readLine();
+          }
+      }
+      catch ( Exception e )
+      {
+         logger.warn(e);
+         return null;
+      }
+      
+      return options.toString();
+   }
 
    protected boolean artifactExists(Id artifactId) {
       return (getNode(artifactId) != null);
