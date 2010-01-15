@@ -25,7 +25,6 @@ osp.bag = osp.bag || {};
 					$.extend(params, that.params);
 					params[that.field] = data;
 					$.post(that.url, params);
-					document.mainForm.submit();
 				}
 				that.hideEdit();
 			});
