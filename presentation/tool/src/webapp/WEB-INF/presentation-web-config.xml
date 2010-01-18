@@ -421,6 +421,9 @@
                 <property name="serverConfigurationService">
                     <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
                 </property>
+                <property name="presentationService">
+                  <ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
+                </property>		
             </bean>
         </property>
         <property name="customTypedEditors">
