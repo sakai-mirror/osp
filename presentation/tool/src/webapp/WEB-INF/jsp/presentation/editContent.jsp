@@ -161,7 +161,6 @@ $(document).ready(function() {
 											<select multiple="multiple"
 												style="width:100%"
 												size="10"
-												ondblclick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false); updateItems();'
 												id="<c:out value="${list1}"/>"
 												name="<c:out value="${list1}"/>">
                                     
@@ -206,7 +205,6 @@ $(document).ready(function() {
 												style="width:100%"
 												size="10"
 												onclick="showEditSelect('<c:out value="${list2}"/>');"
-												ondblclick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false); updateItems();'
 												id="<c:out value="${list2}"/>"
 												name="<c:out value="${status.expression}"/>">
 												
