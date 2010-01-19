@@ -21,14 +21,20 @@
 
 package org.theospi.portfolio.matrix.model.impl;
 
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.CoreEntityProvider;
+import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.ActionsExecutionControllable;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.PropertyProvideable;
+import org.sakaiproject.entitybroker.entityprovider.extension.ActionReturn;
+import org.sakaiproject.entitybroker.entityprovider.extension.CustomAction;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.site.api.Site;
@@ -41,7 +47,7 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 
 public class MatrixCellEntityProviderImpl implements MatrixCellEntityProvider,
-CoreEntityProvider, AutoRegisterEntityProvider, PropertyProvideable {
+CoreEntityProvider, AutoRegisterEntityProvider, PropertyProvideable, ActionsExecutionControllable {
 
 	private MatrixManager matrixManager;
 	private SiteService siteService;
@@ -228,4 +234,37 @@ CoreEntityProvider, AutoRegisterEntityProvider, PropertyProvideable {
 	public void setIdManager(IdManager idManager) {
 		this.idManager = idManager;
 	}
+	
+	public Object executeActions(EntityView entityView, String action, Map<String, Object> actionParams, OutputStream outputStream) {
+		ActionReturn actRet = null;
+		if ("canUserAccessWizardPageAndLinkedArtifcact".equals(action)) {
+			boolean boolResult = canUserAccessWizardPageAndLinkedArtifcact((String)actionParams.get("siteId"), 
+					(String)actionParams.get("pageId"), 
+					(String)actionParams.get("linkedArtifactId"));
+			actRet = new ActionReturn(boolResult);
+		}
+		return actRet;
+	}
+
+	public CustomAction[] defineActions() {
+		return new CustomAction[] {
+				new CustomAction("canUserAccessWizardPageAndLinkedArtifcact", null)
+		
+		};
+	}
+	
+
+	/**
+	 * 
+	 * @param siteId
+	 * @param pageId
+	 * @param linkedArtifactId
+	 * @return
+	 */
+	@EntityCustomAction(action="canUserAccessWizardPageAndLinkedArtifcact")
+	public boolean canUserAccessWizardPageAndLinkedArtifcact(String siteId, String pageId, String linkedArtifactId) {
+
+		return matrixManager.canUserAccessWizardPageAndLinkedArtifcact(siteId, pageId, linkedArtifactId);
+
+    }
 }
