@@ -5,7 +5,7 @@
 <fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
 
 
-<osp-c:authZMap	prefix="osp.wizard." var="wizardCan" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}" />
+<osp-c:authZMap	prefix="osp.wizard." var="wizardCan" qualifier="${siteId}" />
 <c:set var="canOperateWizard" value="false" /> 
 <c:if test="${wizardId != null}">
 	<osp-c:authZMap	prefix="osp.wizard." var="canOperate" qualifier="${wizardId}" />

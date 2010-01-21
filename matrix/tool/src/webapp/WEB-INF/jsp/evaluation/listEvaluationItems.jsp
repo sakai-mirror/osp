@@ -24,8 +24,6 @@
             <fmt:message key="action_permissions"/>
         </a>
     </c:if>
-    <%-- 
-    <c:if test="${!isUserSite}" >
        <c:if test="${hasFirstAction}" > | </c:if>
        <c:if test="${currentSiteEvalsKey == evalType}">
           <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${allEvalsKey}" />"><fmt:message key="show_all_evals"/></a>
@@ -33,8 +31,6 @@
       <c:if test="${allEvalsKey == evalType}">
          <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${currentSiteEvalsKey}" />"><fmt:message key="show_site_evals"/></a>
        </c:if>
-    </c:if>
-    --%>
 </div>
 
 <c:if test="${!canPort.use}">

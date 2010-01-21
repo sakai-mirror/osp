@@ -251,6 +251,7 @@ public class CellController implements FormController, LoadObjectController {
 		
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
 		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId();
+		model.put("siteId", idManager.getId(siteId));
 		List reviews =	
 			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
 		ArrayList<Node> cellForms = new ArrayList<Node>(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));

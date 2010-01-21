@@ -101,7 +101,8 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       
       List list = new ArrayList();
-      String evalType = CURRENT_SITE_EVALS; //(String)request.get("evalTypeKey");
+      //String evalType = CURRENT_SITE_EVALS; //(String)request.get("evalTypeKey");
+      String evalType = (String)request.get("evalTypeKey");
       String sortColumn = (String)request.get("sortByColumn");
       String sortDirection = (String)request.get("direction");
       
