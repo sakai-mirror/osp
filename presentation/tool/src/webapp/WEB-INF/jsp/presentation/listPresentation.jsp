@@ -112,15 +112,6 @@ $(document).ready(function() {
 
 <ul class="tabNav specialLink">
     <c:choose>
-      <c:when test="${filterList != 'all'}">
-          <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=all"><fmt:message key="action_filter_all"/></a></li>
-      </c:when>
-      <c:otherwise>
-        <li class="selected"><span><fmt:message key="action_filter_all"/></span></li>
-      </c:otherwise>
-    </c:choose>
-    
-    <c:choose>
       <c:when test="${filterList != 'mine'}">
           <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=mine"><fmt:message key="action_filter_mine"/></a></li>
       </c:when>
@@ -135,6 +126,15 @@ $(document).ready(function() {
       </c:when>
       <c:otherwise>
         <li class="selected"><span><fmt:message key="action_filter_shared"/></span></li>
+      </c:otherwise>
+    </c:choose>
+    
+    <c:choose>
+      <c:when test="${filterList != 'public'}">
+          <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=public"><fmt:message key="action_filter_public"/></a></li>
+      </c:when>
+      <c:otherwise>
+        <li class="selected"><span><fmt:message key="action_filter_public"/></span></li>
       </c:otherwise>
     </c:choose>
 	</ul>

@@ -71,7 +71,8 @@ public class ListPresentationController extends AbstractPresentationController {
    private final static String PREF_SORT_ORDER = "org.theospi.portfolio.presentation.sortOrder.";
    private final static String PREF_SORT_KEY = "org.theospi.portfolio.presentation.sortKey.";
    
-   private final static String PREF_FILTER_VALUE_ALL    = "all";
+   private final static String PREF_FILTER_VALUE_ALL    = "all"; // deprecated - but keep for parsing old preferences
+   private final static String PREF_FILTER_VALUE_PUBLIC = "public";
    private final static String PREF_FILTER_VALUE_MINE   = "mine";
    private final static String PREF_FILTER_VALUE_SHARED = "shared";
    
@@ -113,14 +114,18 @@ public class ListPresentationController extends AbstractPresentationController {
                                                     PresentationManager.PRESENTATION_VIEW_VISIBLE);
       String filterList = getUserPreferenceProperty(PREF_FILTER, 
                                                     (String)request.get("filterListKey"),
-                                                    PREF_FILTER_VALUE_ALL);
+                                                    PREF_FILTER_VALUE_MINE);
       String sortColumn = getUserPreferenceProperty(PREF_SORT_KEY, 
                                                     (String)request.get(SORTCOLUMN_KEY),
                                                     NAME_COLUMNKEY);
       String sortOrder = getUserPreferenceProperty(PREF_SORT_ORDER, 
                                                    (String)request.get(SORTORDER_KEY),
                                                    SORTORDER_ASCENDING);
-      
+                                                   
+      // Reset deprecated 'ALL' preference with 'MINE' preference
+      if ( filterList.equals(PREF_FILTER_VALUE_ALL) )
+         filterList = PREF_FILTER_VALUE_MINE;
+         
       Collection presentations = null;
       String filterToolId = null;
       
@@ -134,13 +139,20 @@ public class ListPresentationController extends AbstractPresentationController {
          filterToolId = currentToolId;
         
       if ( filterList.equals(PREF_FILTER_VALUE_MINE) )
+      {
          presentations = getPresentationManager().findOwnerPresentations(currentAgent, filterToolId, showHidden);
+      }
       else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
-         presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
-      else if ( viewAll && !isOnWorkspaceTab() )
-         presentations = getPresentationManager().findAllPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
-      else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
-         presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
+      {
+         if ( viewAll && !isOnWorkspaceTab() )
+            presentations = getPresentationManager().findOtherPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
+         else
+            presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
+      }
+      else // ( filterList.equals(PREF_FILTER_VALUE_PUBLIC) )
+      {
+         presentations = getPresentationManager().findPublicPresentations(currentAgent, filterToolId, showHidden);
+      }
 
        // Sort the presentations
       Boolean sortOrderIsAscending = SORTORDER_ASCENDING.equals(sortOrder) ? true : false;

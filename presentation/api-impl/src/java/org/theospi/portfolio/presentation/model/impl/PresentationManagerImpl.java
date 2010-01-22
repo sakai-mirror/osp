@@ -809,9 +809,80 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
-   public Collection findAllPresentationsUnrestricted(Agent viewer, String toolId, String showHidden) {
+   public Collection findPublicPresentations(Agent viewer, String toolId, String showHidden) 
+   {
+      // Build list of hidden presentation authzs
+      Collection hiddenAuthzs = getAuthzManager().getAuthorizations(viewer, 
+            PresentationFunctionConstants.HIDE_PRESENTATION, null);
+      List<Id> hiddenIds = new ArrayList<Id>();
+      hiddenIds.add(getIdManager().getId("last")); // ensure list not empty
       
-      // TBD: support for all site/tools user is a member when toolId is null
+      if ( !showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+         hiddenIds = buildPresList(hiddenAuthzs);
+
+      Collection presList;
+      
+      if ( toolId != null )
+      {
+         String[] paramNames = new String[] {"toolId", "hiddenId"};
+         Object[] params = new Object[]{toolId, hiddenIds};
+         
+         if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                            "findPublicPortfoliosByToolInclusive", 
+                                                                            paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                            "findPublicPortfoliosByToolExclusive", 
+                                                                            paramNames, params);
+         else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                            "findPublicPortfoliosByToolExclusive", 
+                                                                            paramNames, params);
+      }
+      else
+      {
+         String[] paramNames = new String[] {"hiddenId"};
+         Object[] params = new Object[]{hiddenIds};
+         
+         if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                            "findPublicPortfoliosInclusive", 
+                                                                            paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                            "findPublicPortfoliosExclusive", 
+                                                                            paramNames, params);
+         else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                                            "findPublicPortfoliosExclusive", 
+                                                                            paramNames, params);
+      }
+      
+      // Make sure all presentations have valid owner
+      Collection finalPresList = new ArrayList();
+      for (Iterator i=presList.iterator();i.hasNext();) {
+         Presentation pres = (Presentation)i.next();
+         if ( pres.getOwner().getId() != null )
+         {
+            pres.setAuthz(new PresentationAuthzMap(viewer, pres));
+            finalPresList.add(pres);
+         }
+         else
+         {
+            getHibernateTemplate().evict(pres);
+         }
+      }
+      
+      return finalPresList;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public Collection findOtherPresentationsUnrestricted(Agent viewer, String toolId, String showHidden) {
+      
+      // No support for aggregating all sites (permission constraints)
       if ( toolId == null )
          return new Vector();
       
@@ -841,11 +912,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                                                                          "findPortfoliosUnrestrictedExclusive", 
                                                                          paramNames, params);
       
-      // Make sure all presentations have valid owner
+      // Make sure all presentations have valid owner (and the owner is not the current user)
       Collection finalPresList = new ArrayList();
       for (Iterator i=presList.iterator();i.hasNext();) {
          Presentation pres = (Presentation)i.next();
-         if ( pres.getOwner().getId() != null ) 
+         if ( pres.getOwner().getId() != null && ! pres.getOwner().getId().equals(viewer.getId()) )
          {
             pres.setAuthz(new PresentationAuthzMap(viewer, pres));
             finalPresList.add(pres);

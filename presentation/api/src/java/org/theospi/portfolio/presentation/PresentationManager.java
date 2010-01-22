@@ -155,6 +155,16 @@ public interface PresentationManager extends CleanupableService {
     */
    public Collection findPublicPresentations(String siteId);
 
+   /**
+    * Return a list presentation ids of all publicly shared presentations (optionally filtered by toolId)
+    *
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
+    */
+   public Collection findPublicPresentations(Agent viewer, String toolId, String showHidden);
+
    /** Return the XML document string corresponding to the specified public portfolio's propertyForm
     ** (portfolio must be publicly viewable).
     **
@@ -163,18 +173,6 @@ public interface PresentationManager extends CleanupableService {
     **/
    public String getPublicPropertyForm( Presentation presentation );
 
-   /**
-    * Return a unrestricted list of all presentations for given toolId
-    * Portfolios returned may be unpublished/inactive/unshared
-    * User must have permission and portfolio.unrestricted.view must be enabled
-    *
-    * @param owner current user
-    * @param toolId current tool 
-    * @param showHidden option to show all, hidden, not hidden portfolios
-    * @return collection of presentations
-    */
-   public Collection findAllPresentationsUnrestricted(Agent owner, String toolId, String showHidden);
-   
    /**
     * Return a list of all presentations agent can view, optionally filtered by toolId.
     *
@@ -185,6 +183,18 @@ public interface PresentationManager extends CleanupableService {
     */
    public Collection findAllPresentations(Agent viewer, String toolId, String showHidden);
 
+   /**
+    * Return a unrestricted list of presentations for given toolId
+    * Portfolios returned may be unpublished/inactive/unshared, but the current user is not the owner
+    * User must have permission and portfolio.unrestricted.view must be enabled
+    *
+    * @param owner current user
+    * @param toolId current tool 
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
+    */
+   public Collection findOtherPresentationsUnrestricted(Agent owner, String toolId, String showHidden);
+   
    /**
     * Return a list of presentation  shared with agent, optionally filtered by toolId.
     *

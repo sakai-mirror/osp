@@ -231,6 +231,22 @@
 		from Presentation where isPublic != 0 and siteId=?
    </query>
       
+   <query name="findPublicPortfoliosExclusive">
+		from Presentation p where p.isPublic != 0 and p.id not in (:hiddenId)
+   </query>
+      
+   <query name="findPublicPortfoliosInclusive">
+		from Presentation p where p.isPublic != 0 and p.id in (:hiddenId)
+   </query>
+      
+   <query name="findPublicPortfoliosByToolExclusive">
+		from Presentation p where p.isPublic != 0 and p.toolId=:toolId and p.id not in (:hiddenId)
+   </query>
+      
+   <query name="findPublicPortfoliosByToolInclusive">
+		from Presentation p where p.isPublic != 0 and p.toolId=:toolId and p.id in (:hiddenId)
+   </query>
+      
    <query name="findPortfolios">
 		from Presentation
    </query>
