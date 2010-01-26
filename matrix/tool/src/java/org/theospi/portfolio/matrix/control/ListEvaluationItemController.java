@@ -101,7 +101,6 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       
       List list = new ArrayList();
-      //String evalType = CURRENT_SITE_EVALS; //(String)request.get("evalTypeKey");
       String evalType = (String)request.get("evalTypeKey");
       String sortColumn = (String)request.get("sortByColumn");
       String sortDirection = (String)request.get("direction");
@@ -332,7 +331,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       
       //If the site is a my workapace site, default to all sites
       if ( SiteService.isUserSite(getWorksiteManager().getCurrentWorksiteId().getValue()) )
-         defaultProp = ALL_EVALS;
+         return ALL_EVALS;
          
       String prop = evalPrefs.getProperty(EVAL_SITE_FETCH);
       if (prop != null) 
