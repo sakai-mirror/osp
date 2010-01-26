@@ -165,26 +165,19 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
          agentRoles.addAll(agent.getWorksiteRoles(site));
       }
 
-      // If this is a user's My Workspace, or if not in any site, aggregate roles from all member sites
-      if ( ToolManager.getCurrentPlacement() == null || SiteService.isUserSite(ToolManager.getCurrentPlacement().getContext()) ) {
-         List allSites = SiteService.getSites(SelectionType.ACCESS, null, null,
-                                            null, null, null);
-         allSites.addAll ( SiteService.getSites(SelectionType.UPDATE, null, null,
-                                            null, null, null) );
-         for (Iterator it = allSites.iterator();it.hasNext();) {
-            Site site = (Site)it.next();
-            agentRoles.addAll(agent.getWorksiteRoles( site.getId() ));
-         }
-         
-         // finally, add user agent for user-based aurhorizations
-         agentRoles.add(agent);
+      // aggregate roles from all member sites
+      List allSites = SiteService.getSites(SelectionType.ACCESS, null, null,
+                                           null, null, null);
+      allSites.addAll ( SiteService.getSites(SelectionType.UPDATE, null, null,
+                                             null, null, null) );
+      for (Iterator it = allSites.iterator();it.hasNext();) {
+         Site site = (Site)it.next();
+         agentRoles.addAll(agent.getWorksiteRoles( site.getId() ));
       }
-
-      // Otherwise just get roles from current worksite
-      else  {
-         agentRoles.addAll(agent.getWorksiteRoles());
-      }
-         
+      
+      // finally, add user agent for user-based aurhorizations
+      agentRoles.add(agent);
+      
       return agentRoles;
    }
 
