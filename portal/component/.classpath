@@ -1,0 +1,10 @@
+<classpath>
+  <classpathentry kind="src" path="src/webapp" output="m2-target/test-classes" including="**/*.xml|**/*.xsd|**/*.properties" excluding="**/*.java"/>
+  <classpathentry kind="output" path="m2-target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="src" path="/osp-portal-impl"/>
+  <classpathentry kind="src" path="/sakai-util"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>

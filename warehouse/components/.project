@@ -1,0 +1,20 @@
+<projectDescription>
+  <name>osp-warehouse-component</name>
+  <comment/>
+  <projects>
+    <project>osp-common-impl</project>
+    <project>osp-warehouse-impl</project>
+    <project>sakai-content-util</project>
+    <project>sakai-metaobj-impl</project>
+    <project>sakai-util</project>
+    <project>sakai-warehouse-impl</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
