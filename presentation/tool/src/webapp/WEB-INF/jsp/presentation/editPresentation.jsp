@@ -64,67 +64,7 @@ $(document).ready(function() {
 <input type="hidden" name="freeFormContent" value=""/>
 
 <div class="presentationPanel">
-<h3>
-   <fmt:message key="pres_details"/>
-</h3>
 
-<table class="itemSummary">
-<tbody>
-
-<%-- Portfolio Name:  --%>
-<spring:bind path="name">
-	<tr>
-		<th><fmt:message key="table_row_portfolio_name"/></th>
-		<td id="presentationName">
-		<span class="editableText portfolio_name"><c:out value="${status.value}"/></span>
-		<input class="inlineEdit" type="text" style="display:none;margin:0;" size="40" />
-		<span class="itemAction">
-			<a href="#" class="editLink"><fmt:message key="edit"/></a>
-			<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-			<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
-		</span>
-		</td>
-	<tr>
-</spring:bind>
-<%-- Description:  --%>
-<spring:bind path="description">
-	<tr>
-		<th><fmt:message key="table_row_description"/></th>
-		<td  id="presentationDescription">
-			<span class="editableText"><c:out value="${status.value}" /></span>
-			<textarea class="inlineEdit" cols="40" rows="4" style="display:none;"></textarea>
-			<span class="itemAction"><a href="#" class="editLink"><fmt:message key="edit"/></a></span>
-			<p class="itemAction">
-				<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
-			</p>
-		</td>		
-	</tr>
-</spring:bind>
-<%-- Type of Portfolio: --%>
-<spring:bind path="template.name">
-	<tr>
-		<th><fmt:message key="table_row_type"/></th>
-		<td><c:out value="${status.value}" /></td>
-	</tr>
-</spring:bind>
-<%-- Created On: --%>
-<spring:bind path="created">
-	<tr>
-		<th><fmt:message key="table_row_created"/></th>
-		<td><c:out value="${status.value}" /></td>
-	</tr>
-</spring:bind>
-<%-- Modified On: --%>
-<spring:bind path="modified">
-	<tr>
-		<th><fmt:message key="table_row_modified"/></th>
-		<td><c:out value="${status.value}" /></td>
-	</tr>
-</spring:bind>
-
-</tbody>
-</table>
 <table style="width: 100%;" cellspacing="10" class="presentation_menu">
 <tbody>
 <tr>
@@ -246,6 +186,37 @@ $(document).ready(function() {
 	</div>
 </td>
 </tr>
+</table>
+
+<h3>
+   <fmt:message key="pres_details"/>
+</h3>
+
+<table class="itemSummary">
+<tbody>
+
+<spring:bind path="template.name">
+	<tr>
+		<th><fmt:message key="table_row_type"/></th>
+		<td><c:out value="${status.value}" /></td>
+	</tr>
+</spring:bind>
+<%-- Created On: --%>
+<spring:bind path="created">
+	<tr>
+		<th><fmt:message key="table_row_created"/></th>
+		<td><c:out value="${status.value}" /></td>
+	</tr>
+</spring:bind>
+<%-- Modified On: --%>
+<spring:bind path="modified">
+	<tr>
+		<th><fmt:message key="table_row_modified"/></th>
+		<td><c:out value="${status.value}" /></td>
+	</tr>
+</spring:bind>
+
+</tbody>
 </table>
 
 </spring:nestedPath>

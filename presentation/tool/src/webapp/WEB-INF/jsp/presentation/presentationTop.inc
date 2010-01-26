@@ -15,10 +15,15 @@ $(document).ready(function() {
 <table width="100%" style="margin-top:1em">
 	<tr>
 		<td  style="vertical-align:middle;text-align:left">
+         <%-- Portfolio Name:  --%>
 			<spring:bind path="presentation.name">
-				<div class="shorttext">
-					<span class="presentationNameTitle">
-					<c:out value="${status.value}"/>
+				<div id="presentationName">
+					<span class="editableText portfolio_name"><c:out value="${status.value}"/></span>
+					<input class="inlineEdit" type="text" style="display:none;margin:0;" size="40" />
+					<span class="itemAction">
+						<a href="#" class="editLink"><fmt:message key="action_edit_title"/></a>
+						<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
+						<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
 					</span>
 				</div>
 			</spring:bind>
@@ -34,6 +39,23 @@ $(document).ready(function() {
 			</c:if>
 		</td>
 	</tr>
+   <tr>
+		<td style="vertical-align:middle;text-align:left" colspan="2">
+       <%-- Description:  --%>
+         <spring:bind path="presentation.description">
+      		<div id="presentationDescription">
+      		   <fmt:message key="table_row_description"/>
+      			<span class="editableText"><c:out value="${status.value}" /></span>
+      			<textarea class="inlineEdit" cols="40" rows="4" style="display:none;"></textarea>
+      			<span class="itemAction">
+                  <a href="#" class="editLink"><fmt:message key="edit"/></a>
+      				<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
+      				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
+      			</span>
+      		</div>
+      </spring:bind>
+     </td>
+   </tr>
 </table>
 
 <form method="post" name="topForm" id="topForm" style="margin:0">
