@@ -180,11 +180,11 @@ public class DecoratedWizard implements DecoratedListInterface {
 				else {
 					groups = site.getGroupsWithMember(currentUser);
 				}
-			}
-			for (Iterator it = groups.iterator(); it.hasNext();) {
-				Group group = (Group) it.next();
-				if ( group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
-					groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
+				for (Iterator it = groups.iterator(); it.hasNext();) {
+					Group group = (Group) it.next();
+					if ( group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+						groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
+				}
 			}
 		} 
 		catch (IdUnusedException e) {
