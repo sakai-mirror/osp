@@ -367,68 +367,65 @@ $(document).ready(function() {
         <!-- START selection of actions/options -->
 		  <td>
            <form name="form${presentation.id.value}" style="margin:0">
-				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';"></a>
-				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='block';" class="skip"><fmt:message key="table_action_action_open"/></a>
-		
-		   <%-- desNote: alternate rendering - using the resources menu as model - come back to it if time--%>	
-					<ul style="z-index:<c:out  value="${1000 - loopCounter.index}" />;margin:0;display:block" class="makeMenu">
-						<li  class="menuOpen" id="<c:out  value="${loopCounter.index}" />">
-							&nbsp;<fmt:message key="table_action_action"/>
-							<img src = "/library/image/sakai/icon-dropdn.gif?panel=Main" border="0"  alt="Add"  class="dropdn"/> 
-							<ul  id="menu-<c:out  value="${loopCounter.index}" />" class="makeMenuChild">
-							<c:if test="${presentation.owner.id.value == osp_agent.id.value && !optionsAreNull}">
-								<li>
-									<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/>
-									</a>
-								</li>
-							</c:if>
-							<c:if test="${isAuthorizedTo.edit || presentationBean.isCollab}">
-									<a 
-									href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
-									</a>
-							</c:if>
-  <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-             <a
-                href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
-             </c:if>
-   
-             <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-             <a 
-                href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
-             </c:if>
-             
-             <c:if test="${isAuthorizedTo.delete}">
-             <a
-                href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}"/>"><fmt:message key="table_action_delete"/></a>
-             </c:if>
-             
-             <c:if test="${!presCan.hide}">
-             <a
-                href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_hide"/></a>
-             </c:if>
-             
-             <c:if test="${presCan.hide}">
-             <a
-                href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_show"/></a>
-             </c:if>
-             
-             <c:if test="${!myworkspace && can.review && !presentation.isDefault}">
-             <a
-                href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_review_set"/></a>
-             </c:if>
-             <c:if test="${!myworkspace && can.review && presentation.isDefault}">
-             <a
-                href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_review_clear"/></a>
-             </c:if>
-             
-							</ul>
-						</li>
-					<li style="height:1px;width:1px;display:inline;">
-						<a href="#"  class="skip" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';document.getElementById('last-<c:out  value="${loopCounter.index}" />').focus()" ><fmt:message key="table_action_action_close"/></a>
-					</li>
-						
-					</ul>
-						<a href="#" id="last-<c:out  value="${loopCounter.index}" />" class="skip"></a>
+               <a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';"></a>
+               <a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='block';" class="skip"><fmt:message key="table_action_action_open"/></a>
+
+               <%-- desNote: alternate rendering - using the resources menu as model - come back to it if time--%>
+               <ul style="z-index:<c:out  value="${1000 - loopCounter.index}" />;margin:0;display:block" class="makeMenu">
+                   <li  class="menuOpen" id="<c:out  value="${loopCounter.index}" />">
+						&nbsp;<fmt:message key="table_action_action"/>
+						<img src = "/library/image/sakai/icon-dropdn.gif?panel=Main" border="0"  alt="Add"  class="dropdn"/> 
+						<ul  id="menu-<c:out  value="${loopCounter.index}" />" class="makeMenuChild">
+						<c:if test="${presentation.owner.id.value == osp_agent.id.value && !optionsAreNull}">
+							<li>
+								<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/>
+								</a>
+							</li>
+						</c:if>
+						<c:if test="${isAuthorizedTo.edit || presentationBean.isCollab}">
+								<a 
+								href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
+								</a>
+						</c:if>
+                        <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+                        <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
+                        </c:if>
+                        
+                        <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+                        <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
+                        </c:if>
+                        
+                        <c:if test="${isAuthorizedTo.delete}">
+                        <a href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}"/>"><fmt:message key="table_action_delete"/></a>
+                        </c:if>
+                        
+                        <c:if test="${!presCan.hide}">
+                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_hide"/></a>
+                        </c:if>
+                        
+                        <c:if test="${presCan.hide}">
+                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_show"/></a>
+                        </c:if>
+                        
+                        <c:if test="${!myworkspace && can.review && !presentation.isDefault}">
+                        <a href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_review_set"/></a>
+                        </c:if>
+                        <c:if test="${!myworkspace && can.review && presentation.isDefault}">
+                        <a href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_review_clear"/></a>
+                        </c:if>
+
+                        <!-- http://jira.sakaiproject.org/browse/SAK-17351 -->
+                        <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+                        <a href="<osp:url value="copyPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_copy"/></a>
+                        </c:if>
+
+                        </ul>
+                   </li>
+                   <li style="height:1px;width:1px;display:inline;">
+                       <a href="#"  class="skip" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';document.getElementById('last-<c:out  value="${loopCounter.index}" />').focus()" ><fmt:message key="table_action_action_close"/></a>
+                   </li>
+               </ul>
+			<a href="#" id="last-<c:out  value="${loopCounter.index}" />" class="skip"></a>
            </form>
         </td>
         <!-- END selection of actions/options -->
