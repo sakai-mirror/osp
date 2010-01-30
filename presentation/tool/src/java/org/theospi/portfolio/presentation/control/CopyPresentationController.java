@@ -21,12 +21,20 @@
 
 package org.theospi.portfolio.presentation.control;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationItem;
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.presentation.model.PresentationPageRegion;
 
 /**
  * This triggers the presentation copy function
@@ -46,7 +54,66 @@ public class CopyPresentationController extends ListPresentationController {
         // Agent current = getAuthManager().getAgent();
         // getPresentationManager();
         logger.info("Copy activated for presentation: "+id);
-        // TODO actually do the copy, I'm sure this is the easy part... -AZ
+        Presentation original = (Presentation) requestModel;
+        if (original != null) {
+            original = getPresentationManager().getPresentation(original.getId());
+            if (original != null) {
+                // ready to copy
+                logger.info("Ready to copy presentation: "+original.getName());
+                // TODO actually do the copy, I'm sure this is the easy part... -AZ
+                Presentation copy = new Presentation();
+                copy.setNewObject(true);
+                copy.setAllowComments(original.isAllowComments());
+                copy.setDescription(original.getDescription());
+                copy.setExpiresOn(original.getExpiresOn());
+                copy.setIsCollab(original.getIsCollab());
+                copy.setIsDefault(original.getIsDefault());
+                copy.setIsPublic(original.getIsPublic());
+                HashSet<PresentationItem> copiedItems = new HashSet<PresentationItem>(original.getItems().size());
+                for (PresentationItem item : (Set<PresentationItem>) original.getItems()) {
+                    copiedItems.add(item);
+                }
+                copy.setItems(copiedItems); // list (ref)
+                copy.setLayout(original.getLayout()); // obj (ref)
+                copy.setName("Copy of "+original.getName());
+                copy.setOwner(original.getOwner()); // should we copy this?
+                List<PresentationPage> origPages = getPresentationManager().getPresentationPagesByPresentation(original.getId());
+                if (origPages != null && ! origPages.isEmpty()) {
+                    ArrayList<PresentationPage> copiedPages = new ArrayList<PresentationPage>(origPages.size());
+                    for (PresentationPage page : origPages) {
+                        PresentationPage cp = new PresentationPage();
+                        cp.setNewObject(true);
+                        cp.setDescription(page.getDescription());
+                        cp.setKeywords(page.getKeywords());
+                        cp.setLayout(page.getLayout());
+                        cp.setPresentation(page.getPresentation());
+                        if (page.getRegions() != null) {
+                            HashSet<PresentationPageRegion> copiedRegions = new HashSet<PresentationPageRegion>();
+                            for (PresentationPageRegion region : (Set<PresentationPageRegion>) page.getRegions()) {
+                                copiedRegions.add(region);
+                            }
+                            cp.setRegions(copiedRegions);
+                        }
+                        cp.setSequence(page.getSequence());
+                        cp.setStyle(page.getStyle());
+                        cp.setTitle(page.getTitle());
+                        copiedPages.add(cp);
+                    }
+                    copy.setPages(copiedPages); // list (ref)
+                }
+                //copy.set(original.getPresentationItems()); // list
+                copy.setPresentationType(original.getPresentationType());
+                copy.setProperties(original.getProperties()); // obj (ref)
+                copy.setPropertyForm(original.getPropertyForm());
+                copy.setSecretExportKey(original.getSecretExportKey());
+                copy.setSiteId(original.getSiteId());
+                copy.setStyle(original.getStyle()); // obj (ref)
+                copy.setTemplate(original.getTemplate()); // obj (ref)
+                copy.setToolId(original.getToolId());
+                Presentation savedCopy = getPresentationManager().storePresentation(copy, true, true);
+                logger.info("Copied presentation from "+original.getId()+" to "+savedCopy.getId());
+            }
+        }
 
         return super.handleRequest(requestModel, request, session, application, errors);
     }
