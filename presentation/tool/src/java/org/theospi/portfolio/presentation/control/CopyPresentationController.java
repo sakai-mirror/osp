@@ -86,7 +86,7 @@ public class CopyPresentationController extends ListPresentationController {
                         cp.setDescription(page.getDescription());
                         cp.setKeywords(page.getKeywords());
                         cp.setLayout(page.getLayout());
-                        cp.setPresentation(page.getPresentation());
+                        cp.setPresentation(copy);
                         if (page.getRegions() != null) {
                             HashSet<PresentationPageRegion> copiedRegions = new HashSet<PresentationPageRegion>();
                             for (PresentationPageRegion region : (Set<PresentationPageRegion>) page.getRegions()) {
