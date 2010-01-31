@@ -61,6 +61,7 @@ public class CopyPresentationController extends ListPresentationController {
                 // ready to copy
                 logger.info("Ready to copy presentation: "+original.getName());
                 // TODO actually do the copy, I'm sure this is the easy part... -AZ
+                // NOTE: All this will move down into the service eventually -AZ
                 Presentation copy = new Presentation();
                 copy.setNewObject(true);
                 copy.setAllowComments(original.isAllowComments());
@@ -86,7 +87,7 @@ public class CopyPresentationController extends ListPresentationController {
                         cp.setDescription(page.getDescription());
                         cp.setKeywords(page.getKeywords());
                         cp.setLayout(page.getLayout());
-                        cp.setPresentation(copy);
+                        cp.setPresentation(copy); // NOTE: this should be set automatically when null -AZ
                         if (page.getRegions() != null) {
                             HashSet<PresentationPageRegion> copiedRegions = new HashSet<PresentationPageRegion>();
                             for (PresentationPageRegion region : (Set<PresentationPageRegion>) page.getRegions()) {
@@ -104,7 +105,7 @@ public class CopyPresentationController extends ListPresentationController {
                 //copy.set(original.getPresentationItems()); // list
                 copy.setPresentationType(original.getPresentationType());
                 copy.setProperties(original.getProperties()); // obj (ref)
-                copy.setPropertyForm(original.getPropertyForm());
+                copy.setPropertyForm(original.getPropertyForm()); // ref (id)
                 copy.setSecretExportKey(original.getSecretExportKey());
                 copy.setSiteId(original.getSiteId());
                 copy.setStyle(original.getStyle()); // obj (ref)
