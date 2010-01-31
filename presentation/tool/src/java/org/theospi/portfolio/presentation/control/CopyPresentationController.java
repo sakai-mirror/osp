@@ -21,10 +21,10 @@
 
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -56,6 +56,8 @@ public class CopyPresentationController extends ListPresentationController {
         logger.info("Copy activated for presentation: "+id);
         Presentation original = (Presentation) requestModel;
         if (original != null) {
+            getPresentationManager().copyPresentation(original.getId());
+            /*
             original = getPresentationManager().getPresentation(original.getId());
             if (original != null) {
                 // ready to copy
@@ -114,6 +116,7 @@ public class CopyPresentationController extends ListPresentationController {
                 Presentation savedCopy = getPresentationManager().storePresentation(copy, true, true);
                 logger.info("Copied presentation from "+original.getId()+" to "+savedCopy.getId());
             }
+            */
         }
 
         return super.handleRequest(requestModel, request, session, application, errors);

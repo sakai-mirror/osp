@@ -311,5 +311,15 @@ public interface PresentationManager extends CleanupableService {
    public Presentation getPresentation(Id id, String secretExportKey);
    
    public boolean isGlobal();
-   
+
+   /**
+    * Copy an existing presentation,
+    * this will duplicate the presentation for the current owner,
+    * does not include comments
+    * 
+    * @param presentationId the id for a presentation
+    * @return the copy of the presentation
+    */
+   public Presentation copyPresentation(Id presentationId);
+
 }
