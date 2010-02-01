@@ -46,6 +46,9 @@ public class CreatePresentationController extends SimpleFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		CreatePresentationCommand bean = (CreatePresentationCommand) command;
 		Presentation presentation = presentationService.createPresentation(bean.getPresentationType(), bean.getTemplateId());
+		if(null != bean.getPresentationName() && !"".equals(bean.getPresentationName().trim())){
+			presentation.setName(bean.getPresentationName());
+		}
 		if (presentation == null) {
 			errors.reject("error.presentationTypeRequired");
 			return showForm(request, response, errors);

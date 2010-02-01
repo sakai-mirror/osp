@@ -6,6 +6,7 @@ package org.theospi.portfolio.presentation.support;
 public class CreatePresentationCommand {
 	private String presentationType;
 	private String templateId;
+	private String presentationName;
 	
 	public CreatePresentationCommand() {}
 	
@@ -20,5 +21,13 @@ public class CreatePresentationCommand {
 	}
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
+	}
+
+	public String getPresentationName() {
+		return presentationName;
+	}
+
+	public void setPresentationName(String presentationName) {
+		this.presentationName = presentationName;
 	}
 }

@@ -21,6 +21,15 @@
 <c:set var="showCreate" value="${freeFormEnabled || not empty availableTemplates}" />
 
 <div class="presentationTypeDialog">
+	<h3><fmt:message key="new_portfolio_enterName"/></h3>
+	<p class="messageInstruction indnt2">
+		<fmt:message key="new_portfolio_enterNameInstructions"/>
+	</p>
+	<p class="indnt2">
+		<spring:bind path="presentationName">
+			<input type="text" size="40" name="${status.expression}" value="${status.value}"/>
+		</spring:bind>
+	</p>
     <%-- In case we get here without any available types, which should typically not happen due to links being supressed --%>
     <c:choose>
         <c:when test="${showCreate}">
