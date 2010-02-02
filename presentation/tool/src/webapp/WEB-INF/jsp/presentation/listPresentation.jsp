@@ -416,7 +416,7 @@ $(document).ready(function() {
 
                         <!-- http://jira.sakaiproject.org/browse/SAK-17351 -->
                         <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-                        <a href="<osp:url value="copyPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_copy"/></a>
+                        <a href="<osp:url value="copyPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_duplicate"/></a>
                         </c:if>
 
                         </ul>
