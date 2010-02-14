@@ -3679,6 +3679,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
        logger.info("Ready to copy presentation: "+original.getName());
        Presentation copy = new Presentation();
        copy.setNewObject(true);
+       copy.setAdvancedNavigation(original.isAdvancedNavigation());
        copy.setAllowComments(original.isAllowComments());
        copy.setDescription(original.getDescription());
        copy.setExpiresOn(original.getExpiresOn());
