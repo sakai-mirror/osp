@@ -91,6 +91,27 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		}
 		return helperInfo;
 	}
+	
+	public Map<String, TaggingHelperInfo> getActivityHelperInfo(String context, List<String> activityRefs) {
+		TaggingHelperInfo helperInfo = null;
+		Map<String, TaggingHelperInfo> returnMap = new HashMap<String, TaggingHelperInfo>();
+		if (allowTagActivities(context)) {
+			
+			for (String activityRef : activityRefs) {
+				TaggableActivity activity = taggingManager.getActivity(activityRef, this);
+				if (activity != null && context.equals(activity.getContext())) {
+					Map<String, String> parameterMap = new HashMap<String, String>();
+					parameterMap.put(ACTIVITY_REF, activityRef);
+					String text = messages.getString("act_helper_text");
+					String title = messages.getString("act_helper_title");
+					helperInfo = taggingManager.createTaggingHelperInfoObject(LINK_HELPER, text, title,
+							parameterMap, this);
+					returnMap.put(activityRef, helperInfo);
+				}
+			}
+		}
+		return returnMap;
+	}
 
 
 	public TaggingHelperInfo getItemHelperInfo(String itemRef) {
