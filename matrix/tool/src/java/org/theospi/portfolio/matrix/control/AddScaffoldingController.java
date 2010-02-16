@@ -255,7 +255,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
 		session.remove(AudienceSelectionHelper.CONTEXT2);
 		
 		session.put(AudienceSelectionHelper.CONTEXT, scaffolding.getTitle());
-		}
 	}  
    
    
