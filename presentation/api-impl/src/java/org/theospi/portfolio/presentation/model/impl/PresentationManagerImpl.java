@@ -3680,12 +3680,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
        Presentation copy = new Presentation();
        copy.setNewObject(true);
        copy.setAdvancedNavigation(original.isAdvancedNavigation());
-       copy.setAllowComments(original.isAllowComments());
+       copy.setAllowComments(false); // FORCED
        copy.setDescription(original.getDescription());
        copy.setExpiresOn(original.getExpiresOn());
        copy.setIsCollab(original.getIsCollab());
        copy.setIsDefault(original.getIsDefault());
-       copy.setIsPublic(original.getIsPublic());
+       copy.setIsPublic(false); // FORCED
        HashSet<PresentationItem> copiedItems = new HashSet<PresentationItem>(original.getItems().size());
        for (PresentationItem item : (Set<PresentationItem>) original.getItems()) {
            copiedItems.add(item);
