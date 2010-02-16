@@ -3351,11 +3351,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                }
             }
             //make sure it is not null
-            if (tempFormDef != null)
-            	template.setPropertyFormType(tempFormDef.getId());
+            if (tempFormDef != null) {
+               template.setPropertyFormType(tempFormDef.getId());
+               logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " is being updated to use form with id " + tempFormDef.getId().getValue());
+            }
             
             storeTemplate(template, false);
-            logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " is being updated to use form with id " + tempFormDef.getId().getValue());
          }
       } catch (Exception e) {
          logger.warn("Unexpected error occurred in PresentationManagerImpl.convertPortfolioTemplates()", e);

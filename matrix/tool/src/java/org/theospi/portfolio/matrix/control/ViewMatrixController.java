@@ -159,16 +159,15 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             if (scaffolding.isPublished() || scaffolding.isPreview()) {
                matrix = getMatrixManager().createMatrix(currentAgent, scaffolding);
             }
-            else {
-               grid.setScaffolding(scaffolding);
-               return incomingModel;
-            }
          }
       }
       
-      //not really sure why this is here, but making sure matrix isn't null
-      if (matrix != null)
-    	  scaffolding = matrix.getScaffolding();
+      if (matrix == null) {
+         grid.setScaffolding(scaffolding);
+         return incomingModel;
+      }
+
+      scaffolding = matrix.getScaffolding();
       
       if (createAuthz) {
          getAuthzManager().createAuthorization(getAuthManager().getAgent(), 

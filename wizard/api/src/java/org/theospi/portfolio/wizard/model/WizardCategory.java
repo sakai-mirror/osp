@@ -59,28 +59,11 @@ public class WizardCategory extends IdentifiableObject {
    }
    
    public boolean equals(Object in) {
-      if (this == in) {
-         return true;
-      }
-      if (in == null && this == null) {
-         return true;
-      }
-      if (in == null && this != null) {
-         return false;
-      }
-      if (this == null && in != null) {
-         return false;
-      }
-      if (!this.getClass().isAssignableFrom(in.getClass())) {
-         return false;
-      }
-      if (this.getId() == null && ((IdentifiableObject) in).getId() == null) {
-         return false;
-      }
-      if (this.getId() == null || ((IdentifiableObject) in).getId() == null) {
-         return false;
-      }
-      return this.getId().equals(((IdentifiableObject) in).getId());
+      return super.equals(in);
+   }
+
+   public int hashCode() {
+      return super.hashCode();
    }
 
    public String getTitle() {

@@ -65,12 +65,20 @@ public class GenericXmlRenderer implements PresentableObjectHome {
 
    protected Element getObjectStructureRoot(){
       SAXBuilder builder = new SAXBuilder();
+      InputStream is = null;
       try {
-         InputStream is = getClass().getResourceAsStream(getObjectStructure());
+         is = getClass().getResourceAsStream(getObjectStructure());
          Document doc = builder.build(is);
          return doc.getRootElement();
       } catch (Exception e) {
          throw new SchemaInvalidException(e);
+      }
+      finally {
+         try {
+            is.close();
+         } catch (Exception e) {
+            logger.warn("Error cleaning up resource:", e);
+         }
       }
    }
 

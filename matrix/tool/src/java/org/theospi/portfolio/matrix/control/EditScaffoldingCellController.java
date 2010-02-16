@@ -168,7 +168,7 @@ public class EditScaffoldingCellController extends
 		model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
 		model.put("feedbackOpts", sCell.getScaffolding());
 
-		if (sCell != null && sCell.getScaffolding() != null){
+		if (sCell.getScaffolding() != null){
 			//after the cell used booleans are set to false, have "icCellUsed(sCell)" update them accordingly
 			if(sCell.getScaffolding().isPublished()){
 				customFormUsed = getMatrixManager().getFormCountByPageDef(sCell.getWizardPageDefinition().getId()) > 0;

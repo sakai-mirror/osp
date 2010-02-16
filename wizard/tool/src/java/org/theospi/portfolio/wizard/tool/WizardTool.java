@@ -320,24 +320,25 @@ public class WizardTool extends BuilderTool {
 
       DecoratedWizard lastWizard = null;
 
-      for (Iterator i=wizards.iterator();i.hasNext();) {
-         Wizard wizard = (Wizard)i.next();
-         DecoratedWizard current = new DecoratedWizard(this, wizard);
-         current.setTotalPages(getWizardManager().getTotalPageCount(wizard));
-         returned.add(current);
-         if (lastWizard != null) {
-            lastWizard.setNext(current);
-            current.setPrev(lastWizard);
+      if (wizards != null) {
+         for (Iterator i=wizards.iterator();i.hasNext();) {
+            Wizard wizard = (Wizard)i.next();
+            DecoratedWizard current = new DecoratedWizard(this, wizard);
+            current.setTotalPages(getWizardManager().getTotalPageCount(wizard));
+            returned.add(current);
+            if (lastWizard != null) {
+               lastWizard.setNext(current);
+               current.setPrev(lastWizard);
+            }
+            lastWizard = current;
          }
-         lastWizard = current;
-      }
 
-      if (lastWizard != null) {
-         setNextWizard(lastWizard.getBase().getSequence() + 1);
-      }
+         if (lastWizard != null) {
+            setNextWizard(lastWizard.getBase().getSequence() + 1);
+         }
 
-      if (wizards != null) 
-    	  setWizardListSize(wizards.size());
+         setWizardListSize(wizards.size());
+      }
       
       return returned;
    }
@@ -1448,7 +1449,6 @@ public class WizardTool extends BuilderTool {
    {
       ToolSession session = SessionManager.getCurrentToolSession();
       if(session.getAttribute("savedPage") != null) {
-         WizardPage page = (WizardPage)session.getAttribute("savedPage");
          session.removeAttribute("savedPage");
          
          pageSaved = true;

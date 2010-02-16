@@ -242,15 +242,23 @@ public class PortfolioMirror extends Mirror {
       public synchronized void writePage(Page page) throws IOException {
          if (page instanceof StreamedPage) {
             StreamedPage sp = (StreamedPage)page;
-            FileOutputStream fos = new FileOutputStream(file);
-            byte[] buffer = new byte[PresentationExport.BUFFER];
-            InputStream is = sp.getStream();
+            FileOutputStream fos = null;
+            try {
+               fos = new FileOutputStream(file);
+               byte[] buffer = new byte[PresentationExport.BUFFER];
+               InputStream is = sp.getStream();
 
-            int count;
-            while ((count = is.read(buffer, 0, PresentationExport.BUFFER)) != -1) {
-               fos.write(buffer, 0, count);
+               int count;
+               while ((count = is.read(buffer, 0, PresentationExport.BUFFER)) != -1) {
+                  fos.write(buffer, 0, count);
+               }
+            } finally {
+               try {
+                  fos.close();
+               } catch (Exception e) {
+                  logger.warn("Error cleaning up resource: ", e);
+               }
             }
-            fos.close();
          }
          else {
             super.writePage(page);
