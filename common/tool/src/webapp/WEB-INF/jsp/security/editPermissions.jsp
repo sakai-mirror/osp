@@ -60,10 +60,10 @@
                <img alt="This permission is read only"  src="<osp:url value="/img/checkon.gif"/>" border="0"/>
             </c:if>
             <c:if test="${checked != 'checkedPerm'}">
-                  <input type="checkbox" name="<c:out value="${status.expression}"/>"
+                  <label><input type="checkbox" name="<c:out value="${status.expression}"/>"
                      value="<c:out value="${checkValue}" />"
                      <c:out value="${checked}" />
-                     />
+                     /><span class="skip"><fmt:message key="perm.list.check.label"/></span></label>
             </c:if>
             </td>
             </c:forEach>
