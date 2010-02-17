@@ -33,8 +33,7 @@
   		<c:if test="${!status.error}">
 			 <p class="shorttext">
 		</c:if>
-            <span class="reqStar">*</span>
-			<label for="<c:out value="${status.expression}"/>-id" ><fmt:message key="label_displayName"/></label>
+			<label for="<c:out value="${status.expression}"/>-id" ><span class="reqStar">*</span><fmt:message key="label_displayName"/></label>
             <input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id" 
                      value="<c:out value="${status.value}"/>" 
                   size="25" maxlength="25" <c:out value="${disabledText}"/> />
@@ -60,9 +59,7 @@
   		<c:if test="${!status.error}">
 			 <p class="shorttext">
 		</c:if>
-            <span class="reqStar">*</span>
-            <label for="xhtmlFileName"><fmt:message key="label_XHTMLLayoutFile"/></label>
-            
+            <label for="xhtmlFileName"><span class="reqStar" >*</span><fmt:message key="label_XHTMLLayoutFile"/></label>
             <input type="text" id="xhtmlFileName" disabled="disabled"
                 value="<c:out value="${xhtmlFileName}"/>" />
             <input type="hidden" name="xhtmlFileId" id="xhtmlFileId"
