@@ -24,8 +24,7 @@
 		<c:if test="${!status.error}">
         	<p class="shorttext">
 		</c:if>
-		<span class="reqStar">*</span>
-            <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_name"/></label>
+            <label for="<c:out value="${status.expression}"/>-id"><span class="reqStar">*</span><fmt:message key="label_name"/></label>
             <input
                 type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
                maxlength="50" value="<c:out value="${status.value}"/>" />
