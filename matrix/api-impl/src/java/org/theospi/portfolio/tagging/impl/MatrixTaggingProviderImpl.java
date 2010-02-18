@@ -53,7 +53,15 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 	public String getSimpleTextLabel() {
 		return messages.getString("provider_text_label");
 	}
+	
+	public String getHelpLabel() {
+		return messages.getString("provider_help_label");
+	}
 
+	public String getHelpDescription() {
+		return messages.getString("provider_help_desc");
+	}
+	
 	public boolean allowViewTags(String context) {
 		boolean allow = false;
 		List<String> associations = siteAssocManager.getAssociatedFrom(context);
