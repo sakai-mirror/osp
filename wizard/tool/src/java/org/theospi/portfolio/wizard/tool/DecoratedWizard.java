@@ -194,7 +194,6 @@ public class DecoratedWizard implements DecoratedListInterface {
 	}
 	
 	public List getUserListForSelect() {
-		Placement placement = ToolManager.getCurrentPlacement();
 		String currentSiteId = base.getSiteId();
 		List theList = getUserList(currentSiteId);
 

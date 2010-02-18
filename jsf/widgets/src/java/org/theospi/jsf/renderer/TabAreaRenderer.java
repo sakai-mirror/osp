@@ -79,7 +79,6 @@ public class TabAreaRenderer extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
 
-		String directionStr = (String) RendererUtil.getAttribute(context, component, "direction");
 		String height = (String) RendererUtil.getAttribute(context, component, "height");
 		String width = (String) RendererUtil.getAttribute(context, component, "width");
 		

@@ -153,8 +153,10 @@ public class CellController implements FormController, LoadObjectController {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 		
 		CellFormBean cell = (CellFormBean) command;
+		if (cell == null || cell.getCell() == null)
+			logger.warn("Cell backing bean or cell.getCell() is null -- NPE imminent.");
 				
-		if((cell != null || cell.getCell() == null) && request.get("feedbackReturn") != null){
+		if(request.get("feedbackReturn") != null){
 			//feedbackReturn is returned from FeedbackHelperController and is the Id of the wizardPage of the cell.
 			cell.setCell(matrixManager.getCellFromPage(idManager.getId(request.get("feedbackReturn").toString())));
 			if(request.get("feedbackAction") != null && request.get("feedbackAction").toString().equals("save")){
