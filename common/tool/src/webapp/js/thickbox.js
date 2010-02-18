@@ -52,13 +52,14 @@ function tb_init(domChunk){
 	var t = this.title || this.name || null;
 	var a = this.href || this.alt;
 	var g = this.rel || false;
+	localIframeId = iframeId;
 	//check size of parent iframe -- HACK
 	if (jQuery(document).height() < getPageScrollTop() + 600) {
 		mySetMainFrameHeight(getPageScrollTop() + 600);
 	}
 	//END HACK
 	
-	localIframeId = iframeId;
+	
 	tb_show(t,a,g, this.tagName);
 	this.blur();
 	return false;
