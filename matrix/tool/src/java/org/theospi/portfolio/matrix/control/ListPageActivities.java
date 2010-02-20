@@ -38,6 +38,7 @@ import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
@@ -67,7 +68,7 @@ public class ListPageActivities extends AbstractMatrixController
 		
 		
 		WizardPageDefinition wpd = getMatrixManager().getWizardPageDefinition(pageId);
-		model.put("pageTitle", wpd.getTitle());
+		model.put("pageTitle", Validator.escapeHtml(wpd.getTitle()));
 		
 		Map<String, String> siteNames = new HashMap<String, String>();
 		
