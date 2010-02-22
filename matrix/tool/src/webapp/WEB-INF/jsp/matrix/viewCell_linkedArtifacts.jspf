@@ -10,7 +10,7 @@
 				</td>
 			</tr>
 		</c:if>
-		<c:forEach var="taggableItem" items="${taggableItemType.taggableItems}">
+		<c:forEach var="taggableItem" items="${taggableItemType.sortedTaggableItems}">
 		<tr>
 			<td colspan="2">
 				<span class="indnt2">
