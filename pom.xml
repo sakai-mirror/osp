@@ -4,7 +4,7 @@
   <parent>
     <artifactId>base</artifactId>
     <groupId>org.sakaiproject</groupId>
-    <version>2.8-SNAPSHOT</version>
+    <version>SAK-17351-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>Sakai OSP Project</name>
@@ -16,6 +16,18 @@
     <developerConnection>scm:svn:https://source.sakaiproject.org/svn/osp/trunk</developerConnection>
     <url>https://source.sakaiproject.org/svn/osp/trunk</url>
   </scm>
+  
+	<distributionManagement>
+        <downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>sakai-maven-snapshots-scp</id>
+            <name>Sakai snapshot Repo</name>
+            <url>scp://source.sakaiproject.org/var/www/html/maven2-snapshots</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
+  
   <modules>
     <module>common</module>
     <module>glossary</module>
