@@ -300,13 +300,17 @@ public class RepositoryUpgrader {
 
     */
 
-   protected List getChildren(ReFolder parentFolder) throws SQLException
+   protected List getChildren(ReFolder parentFolder) //throws SQLException
 
    {
 
-      final Connection connection = SqlService.borrowConnection();
+      Connection connection = null;
+      boolean wasCommit = false;
+	try {
+		connection = SqlService.borrowConnection();
+	
 
-      boolean wasCommit = connection.getAutoCommit();
+      wasCommit = connection.getAutoCommit();
 
       connection.setAutoCommit(false);
 
@@ -402,11 +406,7 @@ public class RepositoryUpgrader {
 
       
 
-      connection.commit();
 
-      connection.setAutoCommit(wasCommit);
-
-      SqlService.returnConnection(connection);
 
 
 
@@ -421,7 +421,28 @@ public class RepositoryUpgrader {
       
 
       return children;
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	finally {
+	      try {
+			connection.commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+	      try {
+			connection.setAutoCommit(wasCommit);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	      SqlService.returnConnection(connection);
+	}
+	return null;
    }
 
    
