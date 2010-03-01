@@ -7,7 +7,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.siteassociation.api.SiteAssocManager;
 import org.sakaiproject.taggable.api.Link;
 import org.sakaiproject.taggable.api.LinkManager;
@@ -18,7 +24,13 @@ import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.tagging.api.MatrixTaggingProvider;
 
 public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
@@ -30,6 +42,11 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 	protected TaggingManager taggingManager;
 	protected LinkManager linkManager;
 	protected SiteAssocManager siteAssocManager;
+	private IdManager idManager = null;
+	private AuthorizationFacade authzManager = null;
+	private AgentManager agentManager = null;
+	private MatrixManager matrixManager = null;
+	private EntityManager entityManager = null;
 	
 	protected static final String LINK_HELPER = "osp.matrix.link";
 	
@@ -71,6 +88,44 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		return allow;
 	}
 	
+	public boolean allowGetActivity(String activityRef, String userId, String taggedItem) {
+		Agent currentUser = getAgentManager().getAgent(userId);
+		Reference ref = getEntityManager().newReference(taggedItem);
+		Id pageDefId = getIdManager().getId(ref.getId());
+		ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(pageDefId);
+		Id scaffoldingId = sCell.getScaffolding().getId();
+		Scaffolding scaff = getMatrixManager().getScaffolding(scaffoldingId);
+		boolean editAny = getAuthzManager().isAuthorized(currentUser, MatrixFunctionConstants.REVISE_SCAFFOLDING_ANY, getIdManager().getId(ref.getContext()));
+		
+		boolean editMine = scaff.getOwner().equals(currentUser) 
+			&& getAuthzManager().isAuthorized(currentUser, MatrixFunctionConstants.REVISE_SCAFFOLDING_OWN, getIdManager().getId(ref.getContext()));
+		
+		return editAny || editMine;
+	}
+	
+	public boolean allowGetItem(String itemRef, String userId, String taggedItem) {
+		String[] itemRefs = {itemRef};
+		return allowGetItems(itemRefs, userId, taggedItem);
+	}
+	
+	public boolean allowGetItems(String[] itemRefs, String userId, String taggedItem) {
+		//do perm check and add a security advisor
+		Agent agent = getAgentManager().getAgent(userId);
+		Reference ref = getEntityManager().newReference(taggedItem);
+		Id pageDefId = getIdManager().getId(ref.getId());
+		ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(pageDefId);
+		if(UserDirectoryService.getCurrentUser().getId().equals(userId) ||
+				(sCell.isDefaultEvaluators() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
+				(!sCell.isDefaultEvaluators() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
+				(sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
+				(!sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
+				(getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(sCell.getScaffolding().getReference())))){
+			//SecurityService.pushAdvisor(new MySecurityAdvisor(userId, Arrays.asList(functions), Arrays.asList(itemRefs)));  
+			return new Boolean(true);
+		}
+		return false;
+	}
+
 	/**
 	 * If there are any associations, allow it
 	 * @param activityContext
@@ -197,5 +252,45 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 	public void setSiteAssocManager(SiteAssocManager siteAssocManager)
 	{
 		this.siteAssocManager = siteAssocManager;
+	}
+
+	public IdManager getIdManager() {
+		return idManager;
+	}
+
+	public void setIdManager(IdManager idManager) {
+		this.idManager = idManager;
+	}
+
+	public AuthorizationFacade getAuthzManager() {
+		return authzManager;
+	}
+
+	public void setAuthzManager(AuthorizationFacade authzManager) {
+		this.authzManager = authzManager;
+	}
+
+	public AgentManager getAgentManager() {
+		return agentManager;
+	}
+
+	public void setAgentManager(AgentManager agentManager) {
+		this.agentManager = agentManager;
+	}
+
+	public void setMatrixManager(MatrixManager matrixManager) {
+		this.matrixManager = matrixManager;
+	}
+
+	public MatrixManager getMatrixManager() {
+		return matrixManager;
+	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 }
