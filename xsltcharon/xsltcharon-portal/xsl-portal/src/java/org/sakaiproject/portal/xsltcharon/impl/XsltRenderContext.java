@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL:$
- * $Id:$
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2008 The Sakai Foundation
@@ -230,8 +230,14 @@ public class XsltRenderContext implements PortalRenderContext {
       site.setAttribute("selected", siteMap.get("isCurrentSite").toString());
       site.setAttribute("myWorkspace", siteMap.get("isMyWorkspace").toString());
       site.setAttribute("depth", siteMap.get("depth").toString());
-      site.setAttribute("child", siteMap.get("isChild").toString());
       site.setAttribute("order", "" + index);
+      
+      if ( siteMap.get("isChild") != null )
+         site.setAttribute("child", siteMap.get("isChild").toString());
+      else if ( siteMap.get("parentSite") != null )
+         site.setAttribute("child", Boolean.TRUE.toString());
+      else
+         site.setAttribute("child", Boolean.FALSE.toString());
 
       return site;
    }
