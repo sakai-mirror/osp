@@ -103,25 +103,34 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		return editAny || editMine;
 	}
 	
-	public boolean allowGetItem(String itemRef, String userId, String taggedItem) {
+	public boolean allowGetItem(String activityRef, String itemRef, String userId, String taggedItem) {
 		String[] itemRefs = {itemRef};
-		return allowGetItems(itemRefs, userId, taggedItem);
+		return allowGetItems(activityRef, itemRefs, userId, taggedItem);
 	}
 	
-	public boolean allowGetItems(String[] itemRefs, String userId, String taggedItem) {
-		//do perm check and add a security advisor
-		Agent agent = getAgentManager().getAgent(userId);
-		Reference ref = getEntityManager().newReference(taggedItem);
-		Id pageDefId = getIdManager().getId(ref.getId());
-		ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(pageDefId);
-		if(UserDirectoryService.getCurrentUser().getId().equals(userId) ||
-				(sCell.isDefaultEvaluators() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
-				(!sCell.isDefaultEvaluators() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
-				(sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
-				(!sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
-				(getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(sCell.getScaffolding().getReference())))){
-			//SecurityService.pushAdvisor(new MySecurityAdvisor(userId, Arrays.asList(functions), Arrays.asList(itemRefs)));  
-			return new Boolean(true);
+	public boolean allowGetItems(String activityRef, String[] itemRefs, String userId, String taggedItem) {
+		//make sure item is properly linked and then do perm check
+
+		try {
+			Link link = getLinkManager().getLink(activityRef, taggedItem);
+
+			if (link != null) {
+				Agent agent = getAgentManager().getAgent(userId);
+				Reference ref = getEntityManager().newReference(taggedItem);
+				Id pageDefId = getIdManager().getId(ref.getId());
+				ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(pageDefId);
+				if(UserDirectoryService.getCurrentUser().getId().equals(userId) ||
+						(sCell.isDefaultEvaluators() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
+						(!sCell.isDefaultEvaluators() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
+						(sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getScaffolding().getId())) ||
+						(!sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
+						(getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(sCell.getScaffolding().getReference())))){
+					//SecurityService.pushAdvisor(new MySecurityAdvisor(userId, Arrays.asList(functions), Arrays.asList(itemRefs)));  
+					return new Boolean(true);
+				}
+			}
+		} catch (PermissionException e) {
+			logger.warn("Unable to get the link for activity: " + activityRef + " and tagCriteriaRef: " + taggedItem, e);
 		}
 		return false;
 	}
