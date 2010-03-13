@@ -29,8 +29,8 @@
 		<c:if test="${!status.error}">
 	           <p class="shorttext">
         </c:if>
-            <span class="reqStar">*</span>
             <label for="term-id">
+	            <span class="reqStar">*</span>            	
                 <fmt:message key="label_Term"/> <span class="textPanelFooter"> <fmt:message key="label_Term_hint"/></span>
             </label>
             <input type="text" name="term" id="term-id" 
@@ -51,8 +51,9 @@
 		<c:if test="${!status.error}">
 	           <div class="longtext">
         </c:if>
-            <span class="reqStar">*</span>
+
             <label class="block" for="description-id">
+            	<span class="reqStar">*</span>
                 <fmt:message key="label_shortDesc"/><span class="textPanelFooter"> <fmt:message key="label_desc_hint"/></span>
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
@@ -72,8 +73,9 @@
 			<c:if test="${!status.error}">
 				   <div class="longtext">
 			</c:if>
-            <span class="reqStar">*</span>
+            
             <label class="block">
+            	<span class="reqStar">*</span>
                 <fmt:message key="label_longDesc"/>
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
