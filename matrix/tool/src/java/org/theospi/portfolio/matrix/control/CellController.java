@@ -332,7 +332,7 @@ public class CellController implements FormController, LoadObjectController {
 			}
 			model.put("helperInfoList", getHelperInfo(item));
 			model.put("providers", providers);
-			
+			model.put("criteriaRef", cell.getCell().getWizardPage().getPageDefinition().getReference());
 						
 			model.put("decoWrapper", "ospMatrix_" + siteId + "_" + pageId);
 		}

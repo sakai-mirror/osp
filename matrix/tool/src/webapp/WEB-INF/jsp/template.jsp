@@ -22,7 +22,7 @@
     <script type="text/javascript"  src="/library/js/headscripts.js">
     </script>
     <script type="text/javascript" src="/osp-common-tool/js/eport.js"></script>
-    	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/jquery-1.2.1.js">
+    	<script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery.min.js">
 		</script>
   <%
       String panelId = request.getParameter("panel");

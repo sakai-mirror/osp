@@ -73,9 +73,9 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	List<String> ratingProviderIds;
 
 	public boolean allowGetItems(TaggableActivity activity,
-			TaggingProvider provider, boolean getMyItemsOnly) {
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem) {
 		// FIXME http://bugs.sakaiproject.org/jira/browse/GM-84
-		return !getItems(activity, provider, getMyItemsOnly).isEmpty();
+		return !getItems(activity, provider, getMyItemsOnly, taggedItem).isEmpty();
 	}
 
 	public boolean allowRemoveTags(TaggableActivity activity) {
@@ -202,7 +202,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return WizardActivityProducer.PRODUCER_ID;
 	}
 
-	public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemOnly) {
+	public TaggableItem getItem(String itemRef, TaggingProvider provider, boolean getMyItemOnly, String taggedItem) {
 		TaggableItem item = null;
 		if (checkReference(itemRef)) {
 			// Only return item to a specified rating (evalutation) provider
@@ -239,7 +239,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
-			String userId, TaggingProvider provider, boolean getMyItemsOnly) {
+			String userId, TaggingProvider provider, boolean getMyItemsOnly, String taggedItem) {
 		List<TaggableItem> items = new ArrayList<TaggableItem>();
 		// Return custom list of items to rating providers. This
 		// list should match that seen in the evaluation item list (?)
@@ -272,7 +272,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
-			TaggingProvider provider, boolean getMyItemsOnly) {
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem) {
 		List<TaggableItem> items = new ArrayList<TaggableItem>();
 		// Only return items to a specified rating provider
 		if (ratingProviderIds.contains(provider.getId())) {
@@ -301,14 +301,14 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 	
 	public boolean hasSubmissions(TaggableActivity activity,
-			TaggingProvider provider, boolean getMyItemsOnly) {
-		List<TaggableItem> items = getItems(activity, provider, getMyItemsOnly);
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem) {
+		List<TaggableItem> items = getItems(activity, provider, getMyItemsOnly, taggedItem);
 		return items.size() > 0;
 	}
 	
 	public boolean hasSubmissions(TaggableActivity activity, String userId,
-			TaggingProvider provider, boolean getMyItemsOnly) {
-		List<TaggableItem> items = getItems(activity, userId, provider, getMyItemsOnly);
+			TaggingProvider provider, boolean getMyItemsOnly, String taggedItem) {
+		List<TaggableItem> items = getItems(activity, userId, provider, getMyItemsOnly, taggedItem);
 		return items.size() > 0;
 	}
 	

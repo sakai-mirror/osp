@@ -26,7 +26,7 @@
 		<c:forEach var="activity" items="${pageActivities}">
 			<tr>
 				<td style="white-space: nowrap"><a class="thickbox"
-					href="<c:out value="${activity.activity.activityDetailUrl}" />">
+					href="<c:out value="${activity.activity.activityDetailUrl}" />?tagReference=<c:out value="${criteriaRef}"/>">
 				<c:out value="${activity.activity.title}" /> </a></td>
 				<td style="white-space: nowrap"><c:out
 					value="${activity.activity.typeName}" /></td>

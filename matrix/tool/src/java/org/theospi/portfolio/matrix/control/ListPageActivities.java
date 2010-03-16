@@ -69,6 +69,7 @@ public class ListPageActivities extends AbstractMatrixController
 		Map<String, Object> model = new HashMap<String, Object>();
 		Set<WrappedActivity> activities = new HashSet<WrappedActivity>();
 		
+		model.put("criteriaRef", criteriaRef);
 		
 		WizardPageDefinition wpd = getMatrixManager().getWizardPageDefinition(pageId);
 		model.put("pageTitle", Validator.escapeHtml(wpd.getTitle()));

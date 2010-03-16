@@ -31,7 +31,7 @@
 
 
 <f:verbatim>
-<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/jquery-1.2.1.js"></script>
+<script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery.min.js"></script>
 </f:verbatim>
 
 <sakai:messages/>

@@ -4,7 +4,7 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="org.theospi.portfolio.common.bundle.Messages" />
 
-<script src="/osp-common-tool/js/jquery-1.2.1.js" >
+<script src="/library/js/jquery-ui-latest/js/jquery.min.js" >
 </script>
 <script type="text/javascript">
 	function checkAll(cb, i) {
