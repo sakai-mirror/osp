@@ -53,7 +53,7 @@
 				<span class="matrixCellList indnt2">
 						<c:set var="canReflect" value="true" />
 			
-						<img src='/library/image/silk/application_form.gif' border='0'
+						<img src='/library/image/silk/lightbulb.png' border='0'
 							hspace='0' alt="" />
 						<a
 							href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'

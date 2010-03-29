@@ -36,9 +36,11 @@ public class CellFormBean {
    private String[] selectedArtifacts;
    private Set taggableItems;
 
-   
+   private List reflections;
+   private List reviews;
+   private List evaluations;
 
-/**
+   /**
     * @return
     */
    public List getNodes() {
@@ -101,4 +103,29 @@ public class CellFormBean {
    public void setTaggableItems(Set taggableItems) {
 	   this.taggableItems = taggableItems;
    }
+
+   public List getReflections() {
+       return reflections;
+   }
+
+   public void setReflections(List reflections) {
+       this.reflections = reflections;
+   }
+
+   public List getReviews() {
+       return reviews;
+   }
+
+   public void setReviews(List reviews) {
+       this.reviews = reviews;
+   }
+
+   public List getEvaluations() {
+       return evaluations;
+   }
+
+   public void setEvaluations(List evaluations) {
+       this.evaluations = evaluations;
+   }
+
 }

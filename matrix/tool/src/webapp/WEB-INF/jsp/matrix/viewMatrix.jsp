@@ -234,6 +234,33 @@
 							<img src = '/library/image/silk/page_white_edit.png' border= '0' alt ='' mapType="image" />
 						   </c:forEach>
                         </c:if>
+                        <c:if test="${ !(empty cellBean.reflections)}">
+                            <c:forEach var="review" items="${cellBean.reflections}">
+                               <fmt:formatDate value="${review.reviewContentNode.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
+                               <c:set var="hover" value="Reflection: Name:${review.reviewContentNode.name}; Last Modified:${date}"/>
+                               <img border="0" title="<c:out value="${hover}" />"
+                                alt="<c:out value="${review.reviewContentNode.name}"/>" 
+                                src="/library/image/silk/lightbulb.png"/>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${ !(empty cellBean.reviews)}">
+                            <c:forEach var="review" items="${cellBean.reviews}">
+                               <fmt:formatDate value="${review.reviewContentNode.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
+                               <c:set var="hover" value="Review: Name:${review.reviewContentNode.name}; Last Modified:${date}"/>
+                               <img border="0" title="<c:out value="${hover}" />"
+                                alt="<c:out value="${review.reviewContentNode.name}"/>" 
+                                src="/library/image/silk/comment.gif"/>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${ !(empty cellBean.evaluations)}">
+                            <c:forEach var="review" items="${cellBean.evaluations}">
+                               <fmt:formatDate value="${review.reviewContentNode.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
+                               <c:set var="hover" value="Evaluation: Name:${review.reviewContentNode.name}; Last Modified:${date}"/>
+                               <img border="0" title="<c:out value="${hover}" />"
+                                alt="<c:out value="${review.reviewContentNode.name}"/>" 
+                                src="/library/image/silk/tick.png"/>
+                            </c:forEach>
+                        </c:if>
                      </td>
                  </c:forEach>
               </tr>
