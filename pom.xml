@@ -99,7 +99,6 @@
                 <module>linktool</module>
                 <module>login</module>
                 <module>mailarchive</module>
-                <module>mailtool</module>
                 <module>memory</module>
                 <module>message</module>
                 <module>metaobj</module>
@@ -108,7 +107,6 @@
                 <module>portal</module>
                 <module>postem</module>
                 <module>presence</module>
-                <module>presentation</module>
                 <module>providers</module>
                 <module>reference</module>
                 <module>reports</module>
@@ -159,7 +157,6 @@
                 <module>linktool</module>
                 <module>login</module>
                 <module>mailarchive</module>
-                <module>mailtool</module>
                 <module>memory</module>
                 <module>message</module>
                 <module>metaobj</module>
@@ -168,7 +165,6 @@
                 <module>portal</module>
                 <module>postem</module>
                 <module>presence</module>
-                <module>presentation</module>
                 <module>providers</module>
                 <module>reference</module>
                 <module>reports</module>
@@ -206,6 +202,7 @@
                 <module>archive</module>
                 <module>authz</module>
                 <module>config</module>
+		<module>content/content-bundles</module>
                 <module>content/content-help</module>
                 <module>content/content-tool/tool</module>
                 <module>courier</module>
@@ -230,7 +227,6 @@
                 <module>gradebook/app/ui</module>
                 <module>help/help-tool</module>
                 <!-- <module>jsf/widgets</module> -->
-                <module>mailtool/mailtool</module>
                 <module>metaobj/metaobj-util/tool-lib</module>
                 <module>msgcntr/messageforums-app</module>
                 <module>osp/common/tool-lib</module>
