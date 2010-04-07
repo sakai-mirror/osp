@@ -3661,4 +3661,76 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void setDownloadExternalUri(String downloadExternalUri) {
       this.downloadExternalUri = downloadExternalUri;
    }
+
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.presentation.PresentationManager#copyPresentation(org.sakaiproject.metaobj.shared.model.Id)
+    */
+   @SuppressWarnings("unchecked")
+   public Presentation copyPresentation(Id presentationId) {
+       // http://jira.sakaiproject.org/browse/SAK-17351
+       if (presentationId == null) {
+           throw new IllegalArgumentException("invalid presentation id ("+presentationId+"), must be set");
+       }
+       Presentation original = getPresentation(presentationId);
+       if (original == null) {
+           throw new IllegalArgumentException("invalid presentation id ("+presentationId+") for copy, could not find presentation");
+       }
+
+       // ready to copy
+       logger.info("Ready to copy presentation: "+original.getName());
+       Presentation copy = new Presentation();
+       copy.setNewObject(true);
+       copy.setAdvancedNavigation(original.isAdvancedNavigation());
+       copy.setAllowComments(false); // FORCED
+       copy.setDescription(original.getDescription());
+       copy.setExpiresOn(original.getExpiresOn());
+       copy.setIsCollab(original.getIsCollab());
+       copy.setIsDefault(original.getIsDefault());
+       copy.setIsPublic(false); // FORCED
+       HashSet<PresentationItem> copiedItems = new HashSet<PresentationItem>(original.getItems().size());
+       for (PresentationItem item : (Set<PresentationItem>) original.getItems()) {
+           copiedItems.add(item);
+       }
+       copy.setItems(copiedItems); // list (ref)
+       copy.setLayout(original.getLayout()); // obj (ref)
+       copy.setName("Copy of "+original.getName());
+       copy.setOwner(original.getOwner()); // should we copy this?
+       List<PresentationPage> origPages = getPresentationPagesByPresentation(original.getId());
+       if (origPages != null && ! origPages.isEmpty()) {
+           ArrayList<PresentationPage> copiedPages = new ArrayList<PresentationPage>(origPages.size());
+           for (PresentationPage page : origPages) {
+               PresentationPage cp = new PresentationPage();
+               cp.setNewObject(true);
+               cp.setDescription(page.getDescription());
+               cp.setKeywords(page.getKeywords());
+               cp.setLayout(page.getLayout());
+               cp.setPresentation(copy); // NOTE: this should be set automatically when null -AZ
+               if (page.getRegions() != null) {
+                   HashSet<PresentationPageRegion> copiedRegions = new HashSet<PresentationPageRegion>();
+                   for (PresentationPageRegion region : (Set<PresentationPageRegion>) page.getRegions()) {
+                       copiedRegions.add(region);
+                   }
+                   cp.setRegions(copiedRegions);
+               }
+               cp.setSequence(page.getSequence());
+               cp.setStyle(page.getStyle());
+               cp.setTitle(page.getTitle());
+               copiedPages.add(cp);
+           }
+           copy.setPages(copiedPages); // list (ref)
+       }
+       //copy.set(original.getPresentationItems()); // list
+       copy.setPresentationType(original.getPresentationType());
+       copy.setProperties(original.getProperties()); // obj (ref)
+       copy.setPropertyForm(original.getPropertyForm()); // ref (id)
+       copy.setSecretExportKey(original.getSecretExportKey());
+       copy.setSiteId(original.getSiteId());
+       copy.setStyle(original.getStyle()); // obj (ref)
+       copy.setTemplate(original.getTemplate()); // obj (ref)
+       copy.setToolId(original.getToolId());
+       Presentation savedCopy = storePresentation(copy, true, true);
+       logger.info("Copied presentation from "+original.getId()+" to "+savedCopy.getId());
+       return savedCopy;
+   }
+
 }
