@@ -363,11 +363,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       String formId = contentHosting.resolveUuid(presentation.getPropertyForm().getValue());
       String ref = contentHosting.getReference(formId);
       
+      BufferedReader rdr = null;
       try {
          securityService.pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
          
          ContentResource resource = contentHosting.getResource(formId);
-         BufferedReader rdr = new BufferedReader( new InputStreamReader( resource.streamContent() ) );
+         rdr = new BufferedReader( new InputStreamReader( resource.streamContent() ) );
           
           String line = rdr.readLine();
           while ( line != null )
@@ -380,6 +381,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       {
          logger.warn(e);
          return null;
+      }
+      finally {
+         try {
+            rdr.close();
+         }
+         catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+               logger.debug("Error closing stream reader for resource: " + formId);
+            }
+         }
       }
       
       return options.toString();
