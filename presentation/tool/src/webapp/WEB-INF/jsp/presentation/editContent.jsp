@@ -19,11 +19,6 @@ $(document).ready(function() {
 	osp.bag.formTypes = {};
 	<c:forEach var="itemDefinition" items="${types}" varStatus="loopCounter">
 		osp.bag.formTypes['<c:out value="${itemDefinition.id.value}"/>'] = '<c:out value="${itemDefinition.type}"/>';  
-      <!-- hide edit selected link until check for ownership -->
-   	<c:set var="list2">
-		   edit_items_<c:out value="${loopCounter.index}" />
-		</c:set>
-      $("#<c:out value="${list2}"/>").hide();
 	</c:forEach>
 	$('a.inlineFormEdit').click(function(ev) {
 		ev.preventDefault();
@@ -44,10 +39,14 @@ $(document).ready(function() {
 	 function showEditSelect(listId) {
 		var selectedIndex = document.getElementById(listId).selectedIndex;
 		var selectedOption = document.getElementById(listId).options[selectedIndex];
-		if ( selectedOption.className != 'readOnly' )
+		if ( selectedOption.className != 'readOnly' ) {
+			$("#noedit_"+listId).hide();
 			$("#edit_"+listId).show();
-      else
+		}
+		else {
 			$("#edit_"+listId).hide();
+			$("#noedit_"+listId).show();
+		}
 	 }
     
 	 function updateItems() {
@@ -148,8 +147,11 @@ $(document).ready(function() {
 													<td style="text-align:right">
 														<a href="#<c:out value="${list2}"/>" 
 															id="edit_<c:out value="${list2}"/>"
-															class="inlineFormEdit">
+															class="inlineFormEdit" style="display:none;">
                                          <fmt:message key="edit_selected"/></a>
+														<span id="noedit_<c:out value="${list2}"/>"
+															class="itemAction">
+                                         <fmt:message key="edit_selected"/></span>
 													</td>
 													</c:if>
 												</tr>
@@ -285,10 +287,15 @@ $(document).ready(function() {
 										<span class="itemAction"  style="margin-left:0;padding-left:0;white-space:nowrap;padding-top:4px;display:inline-block;">
 											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;itemDefId=<c:out value="${itemDefinition.id}"/>"
 											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
-											<c:if test="${mine}">
+											<c:choose>
+											<c:when test="${mine}">
 											  <a href="#<c:out value="${selectBox}" />"
 													class="inlineFormEdit"><fmt:message key="edit_selected"/></a>|
-											</c:if>
+											</c:when>
+											<c:otherwise>
+													<fmt:message key="edit_selected"/> |
+											</c:otherwise>
+											</c:choose>
 											<a href="#" onclick="document.wizardform.<c:out value='${selectBox}'/>.selectedIndex=0;updateItems()">
 											   <fmt:message key="remove_selected"/></a>
 										</span>
