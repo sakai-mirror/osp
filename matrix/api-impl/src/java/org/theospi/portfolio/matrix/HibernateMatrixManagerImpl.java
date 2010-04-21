@@ -709,6 +709,25 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return page;
    }
    
+   public WizardPage getWizardPageByPageDefAndOwner(Id pageId, Agent owner) {
+      Object[] params = new Object[]{pageId, owner};
+      List pageList = getHibernateTemplate().find("from WizardPage w where w.pageDefinition.id=? and w.owner=?", params);
+      
+      // check for invalid page (in case wizard/matrix is deleted)
+      if ( pageList == null || pageList.size() < 1 )
+      {
+         logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
+         return null;
+      }
+      
+      WizardPage page = (WizardPage)pageList.get(0); 
+      page.getAttachments().size();
+      page.getPageForms().size();
+
+      removeFromSession(page);
+      return page;
+   }
+   
    protected List getWizardPages() {
       return this.getHibernateTemplate().find("from WizardPage");
    }
