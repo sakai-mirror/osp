@@ -110,10 +110,6 @@
 
 								<h:inputHidden id="layoutFileHidden" value="" required="true"
 									rendered="#{freeForm.currentPage.selectedLayout.base == null}" />
-								<h:inputHidden id="layoutFileHidden"
-									value="#{freeForm.currentPage.selectedLayout}"
-									required="true"
-									rendered="#{freeForm.currentPage.selectedLayout.base != null}" />
 								<h:outputText value=" "/>
 								<h:commandLink action="#{freeForm.currentPage.processActionSelectLayout}"
 											   immediate="true">
