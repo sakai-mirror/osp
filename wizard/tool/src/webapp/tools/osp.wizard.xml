@@ -15,7 +15,9 @@
 
       <configuration name="theospi.toolListenerId"
            value="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard" />
-      <configuration name="functions.require" value="osp.wizard.view|osp.wizard.review|osp.wizard.evaluate|osp.wizard.create" /> 
+<!--
+      <configuration name="functions.require" value="" /> 
+-->
 
 	</tool>
 
