@@ -78,7 +78,11 @@ function mySetMainFrameHeight(id)
 
 </script>
 
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request">
+   <jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/>
+</jsp:useBean>
 
+<%-- remove this once all fmt:message elements have been removed/replaced --%>
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
@@ -104,14 +108,14 @@ function mySetMainFrameHeight(id)
 		   {
 			  e.style.display = 'none';
 			  elabel.src='/library/image/sakai/expand.gif'
-			  elabel.title='<fmt:message key="hideshowdesc_toggle_show"/>'
+			  elabel.title='<c:out value="${msgs.hideshowdesc_toggle_show}"/>'
 			  resizeFrame('shrink');
 			}
 		   else
 		   {
 			  e.style.display = 'block';
 			  elabel.src='/library/image/sakai/collapse.gif'
-			  elabel.title='<fmt:message key="hideshowdesc_toggle_hide"/>'
+			  elabel.title='<c:out value="${msgs.hideshowdesc_toggle_hide}"/>'
 			  resizeFrame();
 			}  
 		}
@@ -139,14 +143,14 @@ function mySetMainFrameHeight(id)
 <c:if test="${!myworkspace && (can.create || isMaintainer)}">
    <div class="navIntraTool">
         <c:if test="${can.create}">
-            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_create"/></a> 
+            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><c:out value="${msgs.action_create}"/></a> 
             <c:if test="${empty matrixContents.scaffolding}">
-             <a href="<osp:url value="importScaffolding.osp"/>" title="<fmt:message key="action_import_title"/>" ><fmt:message key="action_import"/></a> 
+             <a href="<osp:url value="importScaffolding.osp"/>" title="<c:out value="${msgs.action_import_title}"/>" ><c:out value="${msgs.action_import}"/></a> 
             </c:if>     
         </c:if> 
         <c:if test="${isMaintainer}">
         	<a href="<osp:url value="sakai.siteassociation.siteAssoc.helper/showSiteAssocs"></osp:url>"
-               title="<fmt:message key="association_title"/>"><fmt:message key="action_association"/></a>
+               title="<c:out value="${msgs.association_title}"/>"><c:out value="${msgs.action_association}"/></a>
         
         
              <a href="<osp:url value="osp.permissions.helper/editPermissions">
@@ -158,8 +162,8 @@ function mySetMainFrameHeight(id)
                <osp:param name="qualifier" value="${worksite.id}"/>
                <osp:param name="returnView" value="listScaffoldingRedirect"/>
                </osp:url>"
-               title="<fmt:message key="action_permissions_title"/>" >
-            <fmt:message key="action_permissions"/>
+               title="<c:out value="${msgs.action_permissions_title}"/>" >
+            <c:out value="${msgs.action_permissions}"/>
              </a>
          </c:if>
     </div>
@@ -167,17 +171,17 @@ function mySetMainFrameHeight(id)
 
 
 <c:if test="${toolPermissionSaved}">
-	<div class="success"><fmt:message key="changesSaved"/></div>	
+	<div class="success"><c:out value="${msgs.changesSaved}"/></div>	
 </c:if>
 
 
 <div class="navPanel">
 	<div class="viewNav">
 		<c:if test="${can.create}">
-			<h3><fmt:message key="title_matrixManager"/></h3>
+			<h3><c:out value="${msgs.title_matrixManager}"/></h3>
 		</c:if>	
 		<c:if test="${!(can.create)}">
-			<h3><fmt:message key="title_matrixUser"/></h3>
+			<h3><c:out value="${msgs.title_matrixUser}"/></h3>
 		</c:if>
 	</div>
 	<%--//gsilver: if list is less or equal to 10 omit the pager --%>
@@ -191,7 +195,7 @@ function mySetMainFrameHeight(id)
 		value="${(!canPublish.any && !canPublish.own && !canRevise.any && !canRevise.own && !canDelete.any 
 					&& !canDelete.own && !canExport.any && !canExport.own) || myworkspace}" />
 	<div>
-	<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_matrix_summary"/>">
+	<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<c:out value="${msgs.list_matrix_summary}"/>">
 	   <thead>
 		  <tr>
 			 <!-- matrix title -->
@@ -201,7 +205,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="title"/>
 	               			<osp:param name="ascending" value="false"/>
 	               			</osp:url>">
-	               		<fmt:message key="table_header_name"/>
+	               		<c:out value="${msgs.table_header_name}"/>
 	               	</a>
 	               	<img src="img/sortascending.gif"/>
 				</c:if>
@@ -210,7 +214,7 @@ function mySetMainFrameHeight(id)
 	               		<osp:param name="sort" value="title"/>
 	               		<osp:param name="ascending" value="true"/>
 	               		</osp:url>">
-	               		<fmt:message key="table_header_name"/>	             
+	               		<c:out value="${msgs.table_header_name}"/>
 	               	</a>
 	               	<img src="img/sortdescending.gif"/>
 		 		</c:if>
@@ -219,7 +223,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="title"/>
 	               			<osp:param name="ascending" value="true"/>
 	               			</osp:url>">
-	               		<fmt:message key="table_header_name"/>
+	               		<c:out value="${msgs.table_header_name}"/>
 	               	</a>
 		 		</c:if>
 			 </th>
@@ -234,7 +238,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="owner"/>             		
 	               			<osp:param name="ascending" value="false"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_owner"/>            		              			
+	               			<c:out value="${msgs.table_header_owner}"/> 
 	               		</a>
 	               		<img src="img/sortascending.gif"/>
 					</c:if>
@@ -243,7 +247,7 @@ function mySetMainFrameHeight(id)
 		               		<osp:param name="sort" value="owner"/>
 		               		<osp:param name="ascending" value="true"/>
 		               		</osp:url>">
-		               		<fmt:message key="table_header_owner"/>	               		
+		               		<c:out value="${msgs.table_header_owner}"/>
 		               	</a>
 		               	<img src="img/sortdescending.gif"/>
 			 		</c:if> 
@@ -252,7 +256,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="owner"/>             		
 	               			<osp:param name="ascending" value="true"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_owner"/>
+	               			<c:out value="${msgs.table_header_owner}"/>
 	               		</a>
 			 		</c:if>	
 			 	</th>
@@ -264,7 +268,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="published"/>             		
 	               			<osp:param name="ascending" value="false"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_published"/>          		              			
+	               			<c:out value="${msgs.table_header_published}"/> 
 	               		</a>
 	               		<img src="img/sortascending.gif"/>
 					</c:if>
@@ -273,7 +277,7 @@ function mySetMainFrameHeight(id)
 		               		<osp:param name="sort" value="published"/>
 		               		<osp:param name="ascending" value="true"/>
 		               		</osp:url>">
-		               		<fmt:message key="table_header_published"/>               		
+		               		<c:out value="${msgs.table_header_published}"/> 
 		               	</a>
 		               	<img src="img/sortdescending.gif"/>
 			 		</c:if> 
@@ -282,7 +286,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="published"/>             		
 	               			<osp:param name="ascending" value="true"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_published"/>
+	               			<c:out value="${msgs.table_header_published}"/>
 	               		</a>
 			 		</c:if>	
 				</th>
@@ -294,7 +298,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="modified"/>             		
 	               			<osp:param name="ascending" value="false"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_modified"/>          		              			
+	               			<c:out value="${msgs.table_header_modified}"/>
 	               		</a>
 	               		<img src="img/sortascending.gif"/>
 					</c:if>
@@ -303,7 +307,7 @@ function mySetMainFrameHeight(id)
 		               		<osp:param name="sort" value="modified"/>
 		               		<osp:param name="ascending" value="true"/>
 		               		</osp:url>">
-		               		<fmt:message key="table_header_modified"/>              		
+		               		<c:out value="${msgs.table_header_modified}"/> 
 		               	</a>
 		               	<img src="img/sortdescending.gif"/>
 			 		</c:if> 
@@ -312,7 +316,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="modified"/>             		
 	               			<osp:param name="ascending" value="true"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_modified"/>
+	               			<c:out value="${msgs.table_header_modified}"/>
 	               		</a>
 			 		</c:if>			 
 				 </th>
@@ -325,7 +329,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="worksite"/>             		
 	               			<osp:param name="ascending" value="false"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_worksite"/>       		              			
+	               			<c:out value="${msgs.table_header_worksite}"/> 
 	               		</a>
 	               		<img src="img/sortascending.gif"/>
 					</c:if>
@@ -334,7 +338,7 @@ function mySetMainFrameHeight(id)
 		               		<osp:param name="sort" value="worksite"/>
 		               		<osp:param name="ascending" value="true"/>
 		               		</osp:url>">
-		               		<fmt:message key="table_header_worksite"/>              		
+		               		<c:out value="${msgs.table_header_worksite}"/> 
 		               	</a>
 		               	<img src="img/sortdescending.gif"/>
 			 		</c:if> 
@@ -343,7 +347,7 @@ function mySetMainFrameHeight(id)
 	               			<osp:param name="sort" value="worksite"/>             		
 	               			<osp:param name="ascending" value="true"/>
 	               			</osp:url>">
-	               			<fmt:message key="table_header_worksite"/>
+	               			<c:out value="${msgs.table_header_worksite}"/>
 	               		</a>
 			 		</c:if>	
 			   </th>
@@ -360,12 +364,12 @@ function mySetMainFrameHeight(id)
 					<%-- if there is a description and user can create, show a toggle to open description, otherwise not--%>
 					<c:if test="${!(empty dScaffold.scaffolding.description)}">		
 						<a name="viewDesc" id="viewDesc" class="show" href="#" onclick="$(this).next('.hide').toggle();$('div.toggle${dScaffold.scaffolding.id.value}:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
-							<img  id="toggle<c:out value="${dScaffold.scaffolding.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title="<fmt:message key="hideshowdesc_toggle_show"/>">
+							<img  id="toggle<c:out value="${dScaffold.scaffolding.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title="<c:out value="${msgs.hideshowdesc_toggle_show}"/>">
 						</a>
 				
 			
 						<a name="hideDesc" id="hideDesc" class="hide" style="display:none" href="#" onclick="$(this).prev('.show').toggle(); $('div.toggle${dScaffold.scaffolding.id.value}:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
-							<img  id="toggle<c:out value="${dScaffold.scaffolding.id.value}" />"  src="/library/image/sakai/collapse.gif" style="padding-top:4px;width:13px" title="<fmt:message key="hideshowdesc_toggle_hide"/>">
+							<img  id="toggle<c:out value="${dScaffold.scaffolding.id.value}" />"  src="/library/image/sakai/collapse.gif" style="padding-top:4px;width:13px" title="<c:out value="${msgs.hideshowdesc_toggle_hide}"/>">
 						</a>				
 					</c:if>
 					<c:if test="${(empty dScaffold.scaffolding.description)}">						
@@ -401,32 +405,32 @@ function mySetMainFrameHeight(id)
 					<div class="itemAction">
 						<c:if test="${(canPublish.any || (canPublish.own && dScaffold.scaffolding.owner == osp_agent)) && !dScaffold.scaffolding.preview && !dScaffold.scaffolding.published}">
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="previewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<fmt:message key="action_preview"/> <c:out value="${dScaffold.scaffolding.title}" />" ><fmt:message key="action_preview"/></a>
+							<a href="<osp:url value="previewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.action_preview}"/> <c:out value="${dScaffold.scaffolding.title}" />" ><c:out value="${msgs.action_preview}"/></a>
 						</c:if>
 						 <c:if test="${(canPublish.any || (canPublish.own && dScaffold.scaffolding.owner == osp_agent)) && !dScaffold.scaffolding.published && dScaffold.scaffolding.preview}">
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<fmt:message key="action_publish"/> <c:out value="${dScaffold.scaffolding.title}" />"><fmt:message key="action_publish"/></a>
+							<a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<c:out value="${msgs.action_publish}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.action_publish}"/></a>
 						 </c:if>
 						 <c:if test="${(canRevise.any || (canRevise.own && dScaffold.scaffolding.owner == osp_agent)) && !useExperimentalMatrix}">
 							 <c:if test="${hasFirstAction}" > | </c:if>
 							 <c:set var="hasFirstAction" value="true" />
-							 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<fmt:message key="table_action_edit"/> <c:out value="${dScaffold.scaffolding.title}" />"><fmt:message key="table_action_edit"/></a>
+							 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.table_action_edit}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_edit}"/></a>
 						 </c:if>
 						 <c:if test="${(canRevise.any || (canRevise.own && dScaffold.scaffolding.owner == osp_agent)) && useExperimentalMatrix}">
 							 <c:if test="${hasFirstAction}" > | </c:if>
 							 <c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="prettyScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<fmt:message key="table_action_edit"/> <c:out value="${dScaffold.scaffolding.title}" />"><fmt:message key="table_action_edit"/></a>
+							<a href="<osp:url value="prettyScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.table_action_edit}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_edit}"/></a>
 						 </c:if>
 						 <c:if test="${(canDelete.any || (canDelete.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<fmt:message key="table_action_delete"/> <c:out value="${dScaffold.scaffolding.title}" />"><fmt:message key="table_action_delete"/></a>
+							<a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<c:out value="${table_action_delete}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_delete}"/></a>
 						 </c:if>
 				
 						 <c:if test="${(canExport.any || (canExport.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
 							<c:set var="hasFirstAction" value="true" />
-							 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${dScaffold.scaffolding.id.value}"/>/<c:out value="${dScaffold.scaffolding.title}" />.zip" title="<fmt:message key="table_action_export"/> <c:out value="${dScaffold.scaffolding.title}" />"><fmt:message key="table_action_export"/></a>
+							 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${dScaffold.scaffolding.id.value}"/>/<c:out value="${dScaffold.scaffolding.title}" />.zip" title="<c:out value="${msgs.table_action_export}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_export}"/></a>
 						</c:if>
 						<c:if test="${(isMaintainer || canRevise.any || (canRevise.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
@@ -441,15 +445,15 @@ function mySetMainFrameHeight(id)
 				               <osp:param name="qualifier" value="${dScaffold.scaffolding.reference}"/>
 				               <osp:param name="returnView" value="listScaffoldingRedirect"/>
 				               </osp:url>"
-								title="<fmt:message key="action_permissions_title"/>"> <fmt:message
-								key="action_permissions" /> </a>
+								title="<c:out value="${msgs.action_permissions_title}"/>"> <c:out
+								value="${msgs.action_permissions}" /> </a>
 						</c:if>
 						<%--  Hiding this functionality as it hasn't gotten much testing
 								<c:if test="${isMaintainer && empty dScaffold.scaffolding.exposedPageId}">
 									<c:if test="${hasFirstAction}" > | </c:if>
 									<c:set var="hasFirstAction" value="true" />
 									<a href="<osp:url value="exposedScaffolding.osp"/>&expose=true&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}"/>">
-									   <fmt:message key="table_action_expose"/>
+									   <c:out value="${msgs.table_action_expose}"/>
 									</a>
 								</c:if>
 								
@@ -457,7 +461,7 @@ function mySetMainFrameHeight(id)
 									<c:if test="${hasFirstAction}" > | </c:if>
 									<c:set var="hasFirstAction" value="true" />
 									<a href="<osp:url value="exposedScaffolding.osp"/>&expose=false&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}"/>">
-									   <fmt:message key="table_action_unexpose"/>
+									   <c:out value="${msgs.table_action_unexpose}"/>
 									</a>
 								</c:if>
 						   --%>     
@@ -471,13 +475,13 @@ function mySetMainFrameHeight(id)
 				</c:if>
 				  <td>
 					 <c:if test="${dScaffold.scaffolding.published}">
-						<fmt:message key="scaffolding_published_true"/>
+						<c:out value="${msgs.scaffolding_published_true}"/>
 					 </c:if>
 					 <c:if test="${dScaffold.scaffolding.preview}">
-						<fmt:message key="scaffolding_published_preview"/>
+						<c:out value="${msgs.scaffolding_published_preview}"/>
 					 </c:if>
 					 <c:if test="${!dScaffold.scaffolding.published && !dScaffold.scaffolding.preview}">
-						<fmt:message key="scaffolding_published_false"/>
+						<c:out value="${msgs.scaffolding_published_false}"/>
 					 </c:if>
 				 </td>
 				 <c:if test="${!studentView}">
@@ -511,9 +515,9 @@ function mySetMainFrameHeight(id)
 </c:if> 
 <c:if test="${(empty scaffolding)}">
 	<c:if test="${can.create}">
-		<fmt:message key="table_empty_list_message_create" />
+		<c:out value="${msgs.table_empty_list_message_create}" />
 	</c:if>	
 	<c:if test="${!(can.create)}">
-		<fmt:message key="table_empty_list_message" />
+		<c:out value="${msgs.table_empty_list_message}" />
 	</c:if>
 </c:if>
