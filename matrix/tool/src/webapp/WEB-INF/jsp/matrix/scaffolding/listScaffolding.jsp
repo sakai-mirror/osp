@@ -82,10 +82,6 @@ function mySetMainFrameHeight(id)
    <jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/>
 </jsp:useBean>
 
-<%-- remove this once all fmt:message elements have been removed/replaced --%>
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
-
 <c:set var="date_format">
 	<osp:message key="dateFormat_list" />
 </c:set>
@@ -154,10 +150,7 @@ function mySetMainFrameHeight(id)
         
         
              <a href="<osp:url value="osp.permissions.helper/editPermissions">
-               <osp:param name="message"><fmt:message key="action_message_setPermission">
-                <fmt:param><c:out value="${tool.title}"/></fmt:param>
-               <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
-             </osp:param>
+               <osp:param name="message"><c:out value='${msgs.action_message_setPermission}'/></osp:param>
                <osp:param name="name" value="scaffolding"/>
                <osp:param name="qualifier" value="${worksite.id}"/>
                <osp:param name="returnView" value="listScaffoldingRedirect"/>
@@ -376,9 +369,7 @@ function mySetMainFrameHeight(id)
 							<img  src="/library/image/sakai/s.gif" style="width:13px" />					
 					</c:if>	
 					<c:if test="${(dScaffold.scaffolding.published || dScaffold.scaffolding.preview)}">
-						<a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<fmt:message key="scaffolding_link_title">
-							<fmt:param><c:out value="${dScaffold.scaffolding.title}"/></fmt:param>
-							</fmt:message>">
+						<a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.scaffolding_link_title}"/>" >
 					</c:if>
 					<c:out value="${dScaffold.scaffolding.title}" />
 					<c:if test="${(dScaffold.scaffolding.published || dScaffold.scaffolding.preview)}">
@@ -389,10 +380,8 @@ function mySetMainFrameHeight(id)
 				<c:if test="${myworkspace}">
 					<td>
 						<div class="itemAction">
-							<a href="<c:out value="${dScaffold.scaffoldingToolUrl}" />" title="<fmt:message key="scaffolding_goToTool"><fmt:param><c:out value="${dScaffold.scaffolding.worksiteName}"/></fmt:param></fmt:message>" target="_top" >
-							       	<fmt:message key="scaffolding_goToTool">
-							       		<fmt:param><c:out value="${dScaffold.scaffolding.worksiteName}"/></fmt:param>
-							       	</fmt:message>
+							<a href="<c:out value="${dScaffold.scaffoldingToolUrl}" />" title='<c:out value="${msgs.scaffolding_goToTool}"/>' target="_top" >
+							       	<c:out value="${msgs.scaffolding_goToTool}"/>
 						    </a>
 						</div>
 					</td>
@@ -424,7 +413,7 @@ function mySetMainFrameHeight(id)
 						 <c:if test="${(canDelete.any || (canDelete.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<c:out value="${table_action_delete}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_delete}"/></a>
+							<a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<c:out value="${msgs.table_action_delete}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_delete}"/></a>
 						 </c:if>
 				
 						 <c:if test="${(canExport.any || (canExport.own && dScaffold.scaffolding.owner == osp_agent))}">
@@ -437,15 +426,12 @@ function mySetMainFrameHeight(id)
 							<c:set var="hasFirstAction" value="true" />
 							<a
 								href="<osp:url value="osp.permissions.helper/editPermissions_new">
-				               <osp:param name="message"><fmt:message key="action_message_setMatrixPermission">
-				                <fmt:param><c:out value="${dScaffold.scaffolding.title}"/></fmt:param>
-				               <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
-				             </osp:param>
+				               <osp:param name="message"><c:out value='${msgs.action_message_setMatrixPermission}'/></osp:param>
 				               <osp:param name="name" value="scaffoldingSpecific"/>
 				               <osp:param name="qualifier" value="${dScaffold.scaffolding.reference}"/>
 				               <osp:param name="returnView" value="listScaffoldingRedirect"/>
 				               </osp:url>"
-								title="<c:out value="${msgs.action_permissions_title}"/>"> <c:out
+								title="<c:out value="${msgs.action_permissions_title}"/> <c:out value="${dScaffold.scaffolding.title}" />"> <c:out
 								value="${msgs.action_permissions}" /> </a>
 						</c:if>
 						<%--  Hiding this functionality as it hasn't gotten much testing
