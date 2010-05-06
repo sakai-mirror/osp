@@ -26,6 +26,7 @@ public class GlossaryEntry extends GlossaryBase {
    private String term;
    private String description;
    private String worksiteId;
+	private static int MAX_LENGTH = 255;
 
    private GlossaryDescription longDescriptionObject = new GlossaryDescription();
 
@@ -41,7 +42,9 @@ public class GlossaryEntry extends GlossaryBase {
    }
 
    public void setTerm(String term) {
-      this.term = term.trim();
+      // term title limited to 255 characters
+		int maxLength = term.length() > MAX_LENGTH ? MAX_LENGTH : term.length();
+      this.term = term.trim().substring(0,maxLength);
    }
 
    public String getDescription() {
@@ -49,7 +52,9 @@ public class GlossaryEntry extends GlossaryBase {
    }
 
    public void setDescription(String description) {
-      this.description = description;
+      // short description limited to 255 characters
+		int maxLength = description.length() > MAX_LENGTH ? MAX_LENGTH : description.length();
+      this.description = description.substring(0,maxLength);
    }
 
    public String getWorksiteId() {
