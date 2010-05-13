@@ -1122,6 +1122,10 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
    
    public Node getNode(Id artifactId) {
+      return getNode(artifactId, true);
+   }
+
+   public Node getNode(Id artifactId, boolean checkLocks) {
       String id = getContentHosting().resolveUuid(artifactId.getValue());
       if (id == null) {
          return null;
@@ -1135,7 +1139,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentFromId(getIdManager().getId(ownerId));
-         boolean locked = getLockManager().isLocked(artifactId.getValue());
+         boolean locked = checkLocks && getLockManager().isLocked(artifactId.getValue());
 
          return new Node(artifactId, resource, owner, locked);
       }
@@ -1150,9 +1154,13 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
 
    public Node getNode(Reference ref) {
+      return getNode(ref, true);
+   }
+
+   public Node getNode(Reference ref, boolean checkLocks) {
       String nodeId = getContentHosting().getUuid(ref.getId());
 
-      return getNode(getIdManager().getId(nodeId));
+      return getNode(getIdManager().getId(nodeId), checkLocks);
    }
 
    public List getCellsByArtifact(Id artifactId) {
