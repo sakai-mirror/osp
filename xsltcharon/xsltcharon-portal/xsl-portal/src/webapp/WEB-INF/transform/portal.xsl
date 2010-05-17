@@ -567,7 +567,7 @@ your browser doesn't support iframes
             </img>
          </a>
 </xsl:if>
-      <h2><xsl:value-of select="$tool/title"/></h2>
+      <h2><xsl:value-of disable-output-escaping="yes" select="$tool/title"/></h2>
       </div>
       <div class="action">
 <xsl:if test="$tool/@hasHelp='true'">
