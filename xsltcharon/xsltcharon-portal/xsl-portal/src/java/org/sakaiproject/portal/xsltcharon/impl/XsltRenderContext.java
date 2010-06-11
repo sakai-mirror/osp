@@ -331,7 +331,7 @@ public class XsltRenderContext implements PortalRenderContext {
       safeAppendTextNode(doc, pageUrl, page.get("pageRefUrl").toString(), true);
 
       Element popPageUrl = doc.createElement("popUrl");
-      safeAppendTextNode(doc, popPageUrl, page.get("pagePopupUrl").toString(), true);
+      safeAppendTextNode(doc, popPageUrl, page.get("pagePopupUrl").toString() + page.get("pageId").toString(), true);
 
       Element menuClass = doc.createElement("menuClass");
       safeAppendTextNode(doc, menuClass, page.get("menuClass").toString(), true);
