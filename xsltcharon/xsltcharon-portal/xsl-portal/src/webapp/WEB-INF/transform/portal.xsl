@@ -626,8 +626,8 @@ your browser doesn't support iframes
    <xsl:template name="site_tools">
 <div class="divColor" id="toolMenuWrap">
 	<div id="worksiteLogo">
-      <xsl:if test="siteTypes/siteType[@selected='true']/sites/site[@selected='true' and @published='false']">
-         <p id="siteStatus">unpublished site</p>
+      <xsl:if test="/portal/config/@pageNavPublished = 'false'">
+         <p id="siteStatus">unpublished site</p>                                          
       </xsl:if>
 	</div>
 	<a id="toolmenu" class="skip" name="toolmenu"></a>

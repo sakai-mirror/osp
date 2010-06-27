@@ -404,6 +404,7 @@ public class XsltRenderContext implements PortalRenderContext {
          presence.setAttribute("include", new Boolean(showPresence && loggedIn).toString());
          config.appendChild(presence);
          helpUrl = (String) context.get("pageNavHelpUrl");
+         config.setAttribute("pageNavPublished", sitePages.get("pageNavPublished").toString());
       }
 
       Element logo = doc.createElement("logo");
