@@ -1,13 +1,13 @@
 <%@ page import="java.util.Map"%>
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 
 <html>
 
 <head>
-  <title><fmt:message key="title_insertImage"/></title>
+  <title><c:out value="${msgs.title_insertImage}"/></title>
 
 <script type="text/javascript" src="popup.js"></script>
 
@@ -32,7 +32,7 @@ function Init() {
 
 function onOK() {
   var required = {
-    "f_url": "<fmt:message key="instructions_enterTheURL"/>"
+    "f_url": "<c:out value="${msgs.instructions_enterTheURL}"/>"
   };
   for (var i in required) {
     var el = document.getElementById(i);
@@ -64,7 +64,7 @@ function onPreview() {
   var f_url = document.getElementById("f_url");
   var url = f_url.value;
   if (!url) {
-    alert("<fmt:message key="alert_enterURL"/>");
+    alert("<c:out value="${msgs.alert_enterURL}"/>");
     f_url.focus();
     return false;
   }
@@ -106,7 +106,7 @@ form { padding: 0px; margin: 0px; }
 
 <body onload="Init()">
 
-<div class="title"><fmt:message key="instructions_insertImage"/></div>
+<div class="title"><c:out value="${msgs.instructions_insertImage}"/></div>
 <!--- new stuff --->
 <form action="" method="get">
  <osp:form/>
@@ -114,7 +114,7 @@ form { padding: 0px; margin: 0px; }
   <tbody>
 
   <tr>
-    <td style="width: 7em; text-align: right"><fmt:message key="table_row_imageURL"/></td>
+    <td style="width: 7em; text-align: right"><c:out value="${msgs.table_row_imageURL}"/></td>
     <td>
       <c:if test="${!empty images}">
          <select name="url" id="f_url">
@@ -125,16 +125,16 @@ form { padding: 0px; margin: 0px; }
       </c:if>
       <c:if test="${empty images}">
          <input type="text" name="url" id="f_url" style="width:75%"
-            title="<fmt:message key="instructions_enterImageURL"/>" />
+            title='<c:out value="${msgs.instructions_enterImageURL}"/>' />
       </c:if>
       <button name="preview" onclick="return onPreview();"
-      title="<fmt:message key="linktitle_previewImage"/>"><fmt:message key="button_preview"/></button>
+      title='<c:out value="${msgs.linktitle_previewImage"/>'><c:out value="${msgs.button_preview}"/></button>
     </td>
   </tr>
   <tr>
-    <td style="width: 7em; text-align: right"><fmt:message key="table_row_alternateText"/></td>
+    <td style="width: 7em; text-align: right"><c:out value="${msgs.table_row_alternateText}"/></td>
     <td><input type="text" name="alt" id="f_alt" style="width:100%"
-      title="<fmt:message key="linktitle_unsupportingBrowsers"/>" /></td>
+      title='<c:out value="${msgs.linktitle_unsupportingBrowsers}"/>' /></td>
   </tr>
 
   </tbody>
@@ -143,49 +143,49 @@ form { padding: 0px; margin: 0px; }
 <p />
 
 <fieldset style="float: left; margin-left: 5px;">
-<legend><fmt:message key="legend_layout"/></legend>
+<legend><c:out value="${msgs.legend_layout}"/></legend>
 
 <div class="space"></div>
 
-<div class="fl"><fmt:message key="insertImage_alignment"/></div>
+<div class="fl"><c:out value="${msgs.insertImage_alignment}"/></div>
 <select size="1" name="align" id="f_align"
-  title="<fmt:message key="linktitle_positioningImage"/>">
-  <option value=""                             ><fmt:message key="optionInsertImage_alignment_notSet"/></option>
-  <option value="left"                         ><fmt:message key="optionInsertImage_alignment_left"/></option>
-  <option value="right"                        ><fmt:message key="optionInsertImage_alignment_right"/></option>
-  <option value="texttop"                      ><fmt:message key="optionInsertImage_alignment_texttop"/></option>
-  <option value="absmiddle"                    ><fmt:message key="optionInsertImage_alignment_absmiddle"/></option>
-  <option value="baseline" selected="1"        ><fmt:message key="optionInsertImage_alignment_baseline"/></option>
-  <option value="absbottom"                    ><fmt:message key="optionInsertImage_alignment_absbottom"/></option>
-  <option value="bottom"                       ><fmt:message key="optionInsertImage_alignment_bottom"/></option>
-  <option value="middle"                       ><fmt:message key="optionInsertImage_alignment_middle"/></option>
-  <option value="top"                          ><fmt:message key="optionInsertImage_alignment_top"/></option>
+  title='<c:out value="${msgs.linktitle_positioningImage}"/>'>
+  <option value=""                             ><c:out value="${msgs.optionInsertImage_alignment_notSet}"/></option>
+  <option value="left"                         ><c:out value="${msgs.optionInsertImage_alignment_left}"/></option>
+  <option value="right"                        ><c:out value="${msgs.optionInsertImage_alignment_right}"/></option>
+  <option value="texttop"                      ><c:out value="${msgs.optionInsertImage_alignment_texttop}"/></option>
+  <option value="absmiddle"                    ><c:out value="${msgs.optionInsertImage_alignment_absmiddle}"/></option>
+  <option value="baseline" selected="1"        ><c:out value="${msgs.optionInsertImage_alignment_baseline}"/></option>
+  <option value="absbottom"                    ><c:out value="${msgs.optionInsertImage_alignment_absbottom}"/></option>
+  <option value="bottom"                       ><c:out value="${msgs.optionInsertImage_alignment_bottom}"/></option>
+  <option value="middle"                       ><c:out value="${msgs.optionInsertImage_alignment_middle}"/></option>
+  <option value="top"                          ><c:out value="${msgs.optionInsertImage_alignment_top}"/></option>
 </select>
 
 <p />
 
-<div class="fl"><fmt:message key="insertImage_border"/></div>
+<div class="fl"><c:out value="${msgs.insertImage_border}"/></div>
 <input type="text" name="border" id="f_border" size="5"
-title="<fmt:message key="linktitle_noEmptyBorder"/>" />
+title='<c:out value="${msgs.linktitle_noEmptyBorder}"/>' />
 
 <div class="space"></div>
 
 </fieldset>
 
 <fieldset style="float:right; margin-right: 5px;">
-<legend><fmt:message key="legend_spacing"/></legend>
+<legend><c:out value="${msgs.legend_spacing}"/></legend>
 
 <div class="space"></div>
 
-<div class="fr"><fmt:message key="insertImage_horizontal"/></div>
+<div class="fr"><c:out value="${msgs.insertImage_horizontal}"/></div>
 <input type="text" name="horiz" id="f_horiz" size="5"
-title="<fmt:message key="linktitle_horizontalPadding"/>" />
+title='<c:out value="${msgs.linktitle_horizontalPadding}"/>' />
 
 <p />
 
 <div class="fr">Vertical:</div>
 <input type="text" name="vert" id="f_vert" size="5"
-title="<fmt:message key="linktitle_verticalPadding"/>" />
+title='<c:out value="${msgs.linktitle_verticalPadding}"/>' />
 
 <div class="space"></div>
 
@@ -198,8 +198,8 @@ title="<fmt:message key="linktitle_verticalPadding"/>" />
     <iframe name="ipreview" id="ipreview" frameborder="0" style="border : 1px solid gray;" height="200" width="300" src=""></iframe>
   </td>
   <td valign="bottom" style="text-align: right">
-    <button type="button" name="ok" onclick="return onOK();"><fmt:message key="button_OK"/></button><br>
-    <button type="button" name="cancel" onclick="return onCancel();"><fmt:message key="button_cancel"/></button>
+    <button type="button" name="ok" onclick="return onOK();"><c:out value="${msgs.button_OK}"/></button><br>
+    <button type="button" name="cancel" onclick="return onCancel();"><c:out value="${msgs.button_cancel}"/></button>
   </td>
  </tr>
 </table>

@@ -85,8 +85,8 @@
 							 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">
 					       		 <osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       	   </c:if>
-							 </osp:url>" title="<fmt:message key="delete"/>">
-							<fmt:message key="remove"/></a>
+							 </osp:url>" title='<c:out value="${msgs.delete}"/>'>
+							<c:out value="${msgs.remove}"/></a>
 							</span>
 						</c:if>
 			</td>
@@ -97,8 +97,8 @@
 						<c:out value="${reflections[0].reviewContentNode.technicalMetadata.owner.displayName}" />
 					</c:when>
 					<c:otherwise>
-						<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-							<fmt:message key="blind_evaluation_username"></fmt:message>
+						<span title='<c:out value="${msgs.blind_evaluation_tooltip}"/>'>
+							<c:out value="${msgs.blind_evaluation_username}"/>
 						</span>
 					</c:otherwise>
 				</c:choose>		

@@ -141,12 +141,12 @@ function mySetMainFrameHeight(id)
         <c:if test="${can.create}">
             <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><c:out value="${msgs.action_create}"/></a> 
             <c:if test="${empty matrixContents.scaffolding}">
-             <a href="<osp:url value="importScaffolding.osp"/>" title="<c:out value="${msgs.action_import_title}"/>" ><c:out value="${msgs.action_import}"/></a> 
+             <a href="<osp:url value="importScaffolding.osp"/>" title='<c:out value="${msgs.action_import_title}"/>' ><c:out value="${msgs.action_import}"/></a> 
             </c:if>     
         </c:if> 
         <c:if test="${isMaintainer}">
         	<a href="<osp:url value="sakai.siteassociation.siteAssoc.helper/showSiteAssocs"></osp:url>"
-               title="<c:out value="${msgs.association_title}"/>"><c:out value="${msgs.action_association}"/></a>
+               title='<c:out value="${msgs.association_title}"/>'><c:out value="${msgs.action_association}"/></a>
         
         
              <a href="<osp:url value="osp.permissions.helper/editPermissions">
@@ -155,7 +155,7 @@ function mySetMainFrameHeight(id)
                <osp:param name="qualifier" value="${worksite.id}"/>
                <osp:param name="returnView" value="listScaffoldingRedirect"/>
                </osp:url>"
-               title="<c:out value="${msgs.action_permissions_title}"/>" >
+               title='<c:out value="${msgs.action_permissions_title}"/>' >
             <c:out value="${msgs.action_permissions}"/>
              </a>
          </c:if>
@@ -357,19 +357,19 @@ function mySetMainFrameHeight(id)
 					<%-- if there is a description and user can create, show a toggle to open description, otherwise not--%>
 					<c:if test="${!(empty dScaffold.scaffolding.description)}">		
 						<a name="viewDesc" id="viewDesc" class="show" href="#" onclick="$(this).next('.hide').toggle();$('div.toggle${dScaffold.scaffolding.id.value}:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
-							<img  id="toggle<c:out value="${dScaffold.scaffolding.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title="<c:out value="${msgs.hideshowdesc_toggle_show}"/>">
+							<img  id='toggle<c:out value="${dScaffold.scaffolding.id.value}" />'  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title='<c:out value="${msgs.hideshowdesc_toggle_show}"/>'>
 						</a>
 				
 			
 						<a name="hideDesc" id="hideDesc" class="hide" style="display:none" href="#" onclick="$(this).prev('.show').toggle(); $('div.toggle${dScaffold.scaffolding.id.value}:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
-							<img  id="toggle<c:out value="${dScaffold.scaffolding.id.value}" />"  src="/library/image/sakai/collapse.gif" style="padding-top:4px;width:13px" title="<c:out value="${msgs.hideshowdesc_toggle_hide}"/>">
+							<img  id='toggle<c:out value="${dScaffold.scaffolding.id.value}" />'  src="/library/image/sakai/collapse.gif" style="padding-top:4px;width:13px" title='<c:out value="${msgs.hideshowdesc_toggle_hide}"/>'>
 						</a>				
 					</c:if>
 					<c:if test="${(empty dScaffold.scaffolding.description)}">						
 							<img  src="/library/image/sakai/s.gif" style="width:13px" />					
 					</c:if>	
 					<c:if test="${(dScaffold.scaffolding.published || dScaffold.scaffolding.preview)}">
-						<a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.scaffolding_link_title}"/>" >
+						<a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title='<c:out value="${msgs.scaffolding_link_title}"/>' >
 					</c:if>
 					<c:out value="${dScaffold.scaffolding.title}" />
 					<c:if test="${(dScaffold.scaffolding.published || dScaffold.scaffolding.preview)}">
@@ -394,32 +394,32 @@ function mySetMainFrameHeight(id)
 					<div class="itemAction">
 						<c:if test="${(canPublish.any || (canPublish.own && dScaffold.scaffolding.owner == osp_agent)) && !dScaffold.scaffolding.preview && !dScaffold.scaffolding.published}">
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="previewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.action_preview}"/> <c:out value="${dScaffold.scaffolding.title}" />" ><c:out value="${msgs.action_preview}"/></a>
+							<a href="<osp:url value="previewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title='<c:out value="${msgs.action_preview}"/> <c:out value="${dScaffold.scaffolding.title}" />' ><c:out value="${msgs.action_preview}"/></a>
 						</c:if>
 						 <c:if test="${(canPublish.any || (canPublish.own && dScaffold.scaffolding.owner == osp_agent)) && !dScaffold.scaffolding.published && dScaffold.scaffolding.preview}">
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<c:out value="${msgs.action_publish}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.action_publish}"/></a>
+							<a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title='<c:out value="${msgs.action_publish}"/> <c:out value="${dScaffold.scaffolding.title}" />'><c:out value="${msgs.action_publish}"/></a>
 						 </c:if>
 						 <c:if test="${(canRevise.any || (canRevise.own && dScaffold.scaffolding.owner == osp_agent)) && !useExperimentalMatrix}">
 							 <c:if test="${hasFirstAction}" > | </c:if>
 							 <c:set var="hasFirstAction" value="true" />
-							 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.table_action_edit}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_edit}"/></a>
+							 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title='<c:out value="${msgs.table_action_edit}"/> <c:out value="${dScaffold.scaffolding.title}" />'><c:out value="${msgs.table_action_edit}"/></a>
 						 </c:if>
 						 <c:if test="${(canRevise.any || (canRevise.own && dScaffold.scaffolding.owner == osp_agent)) && useExperimentalMatrix}">
 							 <c:if test="${hasFirstAction}" > | </c:if>
 							 <c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="prettyScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title="<c:out value="${msgs.table_action_edit}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_edit}"/></a>
+							<a href="<osp:url value="prettyScaffolding.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />" title='<c:out value="${msgs.table_action_edit}"/> <c:out value="${dScaffold.scaffolding.title}" />'><c:out value="${msgs.table_action_edit}"/></a>
 						 </c:if>
 						 <c:if test="${(canDelete.any || (canDelete.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
 							<c:set var="hasFirstAction" value="true" />
-							<a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title="<c:out value="${msgs.table_action_delete}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_delete}"/></a>
+							<a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${dScaffold.scaffolding.id.value}" />"  title='<c:out value="${msgs.table_action_delete}"/> <c:out value="${dScaffold.scaffolding.title}" />'><c:out value="${msgs.table_action_delete}"/></a>
 						 </c:if>
 				
 						 <c:if test="${(canExport.any || (canExport.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
 							<c:set var="hasFirstAction" value="true" />
-							 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${dScaffold.scaffolding.id.value}"/>/<c:out value="${dScaffold.scaffolding.title}" />.zip" title="<c:out value="${msgs.table_action_export}"/> <c:out value="${dScaffold.scaffolding.title}" />"><c:out value="${msgs.table_action_export}"/></a>
+							 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${dScaffold.scaffolding.id.value}"/>/<c:out value="${dScaffold.scaffolding.title}" />.zip" title='<c:out value="${msgs.table_action_export}"/> <c:out value="${dScaffold.scaffolding.title}" />'><c:out value="${msgs.table_action_export}"/></a>
 						</c:if>
 						<c:if test="${(isMaintainer || canRevise.any || (canRevise.own && dScaffold.scaffolding.owner == osp_agent))}">
 							<c:if test="${hasFirstAction}" > | </c:if>
@@ -431,7 +431,7 @@ function mySetMainFrameHeight(id)
 				               <osp:param name="qualifier" value="${dScaffold.scaffolding.reference}"/>
 				               <osp:param name="returnView" value="listScaffoldingRedirect"/>
 				               </osp:url>"
-								title="<c:out value="${msgs.action_permissions_title}"/> <c:out value="${dScaffold.scaffolding.title}" />"> <c:out
+								title='<c:out value="${msgs.action_permissions_title}"/> <c:out value="${dScaffold.scaffolding.title}" />'> <c:out
 								value="${msgs.action_permissions}" /> </a>
 						</c:if>
 						<%--  Hiding this functionality as it hasn't gotten much testing

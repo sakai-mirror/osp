@@ -2,8 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="matrixStyle.jspf" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+
 
 <c:forEach var="style" items="${styles}">
    <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet" media="all" />
@@ -27,7 +27,7 @@
 		var tblBodyObj = document.getElementById(tblId).tBodies[0];
 		for (var i=0; i<tblBodyObj.rows.length; i++) {
 			var newCell = tblBodyObj.rows[i].insertCell(-1);
-			newCell.innerHTML = "<span class='alertMessage'><fmt:message key='no_view_access'/><br>" + cellName + "</span>";
+			newCell.innerHTML = "<span class='alertMessage'><c:out value='${no_view_access}'/><br>" + cellName + "</span>";
 		}
 	}
 	function deleteColumn(tblId)
@@ -47,37 +47,33 @@
 
 <c:if test="${isExposedPage != true}">
 	<div class="navIntraTool">
-		<a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
+		<a href="<osp:url value="listScaffolding.osp"/>"><c:out value="${msgs.action_list}"/></a>
 	</div>
 </c:if>
 
 
 <h3>
-	<c:set var="readOnly_label"><fmt:message key="matrix_readOnly"/></c:set>
+	<c:set var="readOnly_label"><c:out value="${msgs.matrix_readOnly}"/></c:set>
 	<c:choose>
 		<%-- if size is greater than 0 than that means you can review or evaluate at least one cell --%>
 		<c:when test="${scaffoldingCan.accessUserList}">
-			<fmt:message key="matrix_viewing_title_eval">
-				<fmt:param>
 					<c:if test="${matrixContents.scaffolding.preview}">
 						<span class="highlight">
-							<fmt:message key="matrix_viewing_title_preview"/>
+							<c:out value="${msgs.matrix_viewing_title_preview}"/>
 						</span>
 					</c:if>		  
 					<c:if test="${!matrixContents.scaffolding.preview}">
-						<fmt:message key="matrix_viewing_title_view"/>
+						<c:out value="${msgs.matrix_viewing_title_view}"/>
 					</c:if>
-				</fmt:param>	
-				<fmt:param><c:out value="${matrixContents.scaffolding.title}" /></fmt:param>
-				<fmt:param><c:if test="${readOnlyMatrix}">(<c:out value="${readOnly_label}"/>)</c:if></fmt:param>
-				
-				<fmt:param><c:out value="${matrixOwner.displayName}" /></fmt:param>
-			</fmt:message>
+               
+				"<c:out value="${matrixContents.scaffolding.title}" />"
+				<c:if test="${readOnlyMatrix}">(<c:out value="${readOnly_label}"/>)</c:if>:
+				<c:out value="${matrixOwner.displayName}" />
 		</c:when>
 		<c:otherwise>
 			<c:if test="${matrixContents.scaffolding.preview}">
 				<span class="highlight">
-					<fmt:message key="scaffolding_published_preview"/>
+					<c:out value="${msgs.scaffolding_published_preview}"/>
 				</span>
 			</c:if>		  
 			<c:out value="${matrixContents.scaffolding.title}" />
@@ -87,7 +83,7 @@
    
 <c:if test="${matrixContents.scaffolding.preview}">
 	<div class="information">
-    	<fmt:message key="title_matrixPreview"/>
+    	<c:out value="${msgs.title_matrixPreview}"/>
 	</div>
 </c:if>
 <c:if test="${not empty matrixContents.scaffolding.description}">
@@ -103,20 +99,20 @@
 		<c:if test="${scaffoldingCan.accessUserList}">
 			<c:choose>
 				<c:when test="${hasGroups && empty userGroups}">
-					<p class="instruction"><fmt:message key="matrix_groups_unavailable"></fmt:message></p>
+					<p class="instruction"><c:out value="${msgs.matrix_groups_unavailable}"/></p>
 				</c:when>
 				<c:otherwise>
 					<form method="get" action="<osp:url value="viewMatrix.osp"/>">
 						<osp:form/>
 						<div class="viewNav">
 							<c:if test="${not empty userGroups && userGroupsCount > 1}">
-								<label for="group_filter-id"><fmt:message key="matrix_viewing_select_group" /></label>
+								<label for="group_filter-id"><c:out value="${msgs.matrix_viewing_select_group}" /></label>
 								<select name="group_filter" id="group_filter-id" onchange="this.form.submit()">
 									<option value="">
-										<fmt:message key="matrix_viewing_select_group" />
+										<c:out value="${msgs.matrix_viewing_select_group}" />
 									</option>
 									<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
-									<fmt:message key="matrix_groups_showall"></fmt:message>
+									<c:out value="${msgs.matrix_groups_showall}"/>
 									</option>
 									<c:forEach var="group" items="${userGroups}">
 										<option value="<c:out value="${group.id}"/>" <c:if test="${filteredGroup == group.id}">selected="selected"</c:if>>
@@ -126,10 +122,10 @@
 								</select>
 							</c:if>
 							 &nbsp;&nbsp;&nbsp;
-							<label for="view_user-id"><fmt:message key="matrix_viewing_select_user" /></label>
+							<label for="view_user-id"><c:out value="${msgs.matrix_viewing_select_user}" /></label>
 							<select name="view_user"  id="view_user-id" onchange="if(this.value != ''){this.form.submit()}">
 								<option value="">
-									<fmt:message key="matrix_viewing_select_user" />
+									<c:out value="${msgs.matrix_viewing_select_user}" />
 								</option>
 								<c:forEach var="user" items="${members}">
 									<option value="<c:out value="${user.id}"/>" <c:if test="${matrixOwner.id.value == user.id}"> selected="selected" </c:if>>
@@ -148,7 +144,7 @@
 
 <c:if test="${not empty matrixContents.columnLabels}">
 	<p class="instruction">
-		<fmt:message key="instructions_clickOnaCellToEdit"/>
+		<c:out value="${msgs.instructions_clickOnaCellToEdit}"/>
 	</p>
 	<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
 	
@@ -160,7 +156,7 @@
 			</tr>
 		</table>
 
-        <table class="matrixTable" cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
+        <table class="matrixTable" cellspacing="0" width="100%" summary="<c:out value="${msgs.table_summary_matrixScaffolding}"/>">
             <thead>
             <tr>
                 <th class="matrix-row-heading" id="chead" scope="col">
@@ -213,7 +209,7 @@
                      	style="cursor:pointer">
                         &nbsp;
                         <c:if test="${hasAccess}">
-							<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+							<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><c:out value="${msgs.table_cell_link_title}"/></a>
 						</c:if>
                         <c:forEach var="node" items="${cellBean.nodes}">
                             <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>

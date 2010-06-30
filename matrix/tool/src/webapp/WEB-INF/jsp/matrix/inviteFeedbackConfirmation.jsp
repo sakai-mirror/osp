@@ -1,12 +1,12 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+
 
     <h3><osp:message key="submit_for_review"/></h3>
    
-      <div class="alertMessage"><fmt:message key="submit_for_review_question"/></div>
+      <div class="alertMessage"><c:out value="${msgs.submit_for_review_question}"/></div>
       <h4><c:out value="${page.pageDefinition.title}"/></h4>
 	  <div class="textPanel"><c:out value="${page.pageDefinition.description}" escapeXml="false"/></div>
 <form>

@@ -19,7 +19,7 @@
 			<th><div class="itemActionHeader"><osp:message key="table_header_actions" /></div></th>
 			<th>&nbsp;</th>
 			<th><osp:message key="table_header_createdBy" /></th>
-			<th><fmt:message key="table_header_modified" /></th>
+			<th><c:out value="${msgs.table_header_modified}" /></th>
 		</tr>
 		<tr class="cellItemAddLine">
 			<td colspan="2"><osp:message key="eval_items_section_header" /></td>
@@ -53,7 +53,7 @@
 			<tr>
 				<td colspan="6">						
 					<span class="instruction indnt2">
-						<fmt:message key="evaluation_section_empty" />
+						<c:out value="${msgs.evaluation_section_empty}" />
 					</span> 
 				</td>
 			</tr>
@@ -93,8 +93,8 @@
 							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 							          	</c:if>
 								  </osp:url>"
-							title="<fmt:message key="edit"/>"> 
-									<fmt:message key="edit"/></a>
+							title='<c:out value="${msgs.edit}"/>'> 
+									<c:out value="${msgs.edit}"/></a>
 								|
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -107,8 +107,8 @@
 							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 							          	</c:if>
 									 </osp:url>"
-							title="<fmt:message key="delete"/>">
-									<fmt:message key="remove"/>
+							title='<c:out value="${msgs.delete}"/>'>
+									<c:out value="${msgs.remove}"/>
 						</a>
 					</c:if>
 					</div>

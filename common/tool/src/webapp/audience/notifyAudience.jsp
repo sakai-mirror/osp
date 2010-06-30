@@ -61,7 +61,7 @@
     
     <p class="longtext">
     	<sakai:view_title value="#{common_msgs.label_yourMessage}" />
-        <label class="block"><fmt:message key="label_yourMessage"/></label>
+        <label class="block"><c:out value="${msgs.label_yourMessage}"/></label>
         <h:inputTextarea id="message" rows="5" cols="80" value="#{audience.message}"/>
     </p>
     

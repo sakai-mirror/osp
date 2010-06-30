@@ -1,10 +1,10 @@
 <table class="listHier" cellspacing="0" >
       <thead>
          <tr>
-            <th scope="col"><fmt:message key="table_header_title"/></th>
-            <th scope="col"><fmt:message key="table_header_size"/></th>
-            <th scope="col"><fmt:message key="table_header_createdBy"/></th>
-            <th scope="col"><fmt:message key="table_header_modified"/></th>
+            <th scope="col"><c:out value="${msgs.table_header_title}"/></th>
+            <th scope="col"><c:out value="${msgs.table_header_size}"/></th>
+            <th scope="col"><c:out value="${msgs.table_header_createdBy}"/></th>
+            <th scope="col"><c:out value="${msgs.table_header_modified}"/></th>
          </tr>
       </thead>
       <tbody>
@@ -22,17 +22,17 @@
                               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                               <osp:param name="createFormAction" value="${cellFormDef.id}" />
                               <osp:param name="current_form_id" value="${node.resource.id}" />
-                              </osp:url>"><fmt:message key="edit"/></a>
+                              </osp:url>"><c:out value="${msgs.edit}"/></a>
                       </div>
                   </c:if>
                </td>
                <td>
                   <c:choose>
                      <c:when test="${node.technicalMetadata.size > 1024 * 1024}">
-                        <fmt:formatNumber value="${node.technicalMetadata.size / (1024 * 1024)}" maxFractionDigits="1"/><fmt:message key="text_MB"/>
+                        <fmt:formatNumber value="${node.technicalMetadata.size / (1024 * 1024)}" maxFractionDigits="1"/><c:out value="${msgs.text_MB}"/>
                      </c:when>
                      <c:when test="${node.technicalMetadata.size > 1024}">
-                        <fmt:formatNumber value="${node.technicalMetadata.size / (1024)}"  maxFractionDigits="1"/><fmt:message key="text_KB"/>
+                        <fmt:formatNumber value="${node.technicalMetadata.size / (1024)}"  maxFractionDigits="1"/><c:out value="${msgs.text_KB}"/>
                      </c:when>
                      <c:when test="${node.technicalMetadata.size > 0}">
                         <fmt:formatNumber value="${node.technicalMetadata.size}" />
@@ -49,7 +49,7 @@
             </c:if>
          </c:forEach>
          <c:if test="${canReflect != 'true'}">
-            <tr><td><fmt:message key="text_noResourceItems"/></td></tr>
+            <tr><td><c:out value="${msgs.text_noResourceItems}"/></td></tr>
          </c:if>
       </tbody>
    </table> <!-- End the file list table -->

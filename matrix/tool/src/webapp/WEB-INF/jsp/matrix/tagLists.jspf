@@ -23,16 +23,16 @@
           
           <div class="instruction">
             
-            <fmt:message key="tgble.viewing"/> 
+            <c:out value="${msgs.tgble.viewing}"/> 
             <c:out value="${pager.firstItemNumber}"/> - 
             <c:out value="${pager.lastItemNumber}"/> 
-            <fmt:message key="tgble.of"/> 
+            <c:out value="${msgs.tgble.of}"/> 
             <c:out value="${pager.totalItems}"/> 
-            <fmt:message key="tgble.items"/>
+            <c:out value="${msgs.tgble.items}"/>
           </div>
           <c:choose>
             <c:when test="${pager.canFirst}">
-              <input type="submit" name="page" value="|&lt;" title="<fmt:message key="tgble.first"/>"
+              <input type="submit" name="page" value="|&lt;" title='<c:out value="${msgs.tgble.first}"/>'
                      onclick="document.form.submitAction.value='pageList';
                               document.form.providerId.value='<c:out value="${provider.provider.id}"/>';
                               document.form.submit();" />
@@ -43,7 +43,7 @@
           </c:choose>
           <c:choose>
             <c:when test="${pager.canPrevious}">
-              <input type="submit" name="page" value="&lt;" title="<fmt:message key="tgble.previous"/>"
+              <input type="submit" name="page" value="&lt;" title='<c:out value="${msgs.tgble.previous}"/>'
                      onclick="document.form.submitAction.value='pageList';
                               document.form.providerId.value='<c:out value="${provider.provider.id}"/>';
                               document.form.submit();" />
@@ -59,12 +59,12 @@
               <c:choose>
                 <c:when test="${pager.pageSize == size}">
                   <option value="<c:out value="${size}"/>" selected="selected">
-                    <fmt:message key="tgble.show"/> <c:out value="${size}"/>
+                    <c:out value="${msgs.tgble.show}"/> <c:out value="${size}"/>
                   </option>
                 </c:when>
                 <c:otherwise>
                   <option value="<c:out value="${size}"/>">
-                    <fmt:message key="tgble.show"/> <c:out value="${size}"/>
+                    <c:out value="${msgs.tgble.show}"/> <c:out value="${size}"/>
                   </option>
                 </c:otherwise>
               </c:choose>
@@ -72,7 +72,7 @@
           </select>
           <c:choose>
             <c:when test="${pager.canNext}">
-              <input type="submit" name="page" value="&gt;" title="<fmt:message key="tgble.next"/>"
+              <input type="submit" name="page" value="&gt;" title='<c:out value="${msgs.tgble.next}"/>'
                      onclick="document.form.submitAction.value='pageList';
                               document.form.providerId.value='<c:out value="${provider.provider.id}"/>';
                               document.form.submit();" />
@@ -83,7 +83,7 @@
           </c:choose>
           <c:choose>
             <c:when test="${pager.canLast}">
-              <input type="submit" name="page" value="&gt;|" title="<fmt:message key="tgble.last"/>"
+              <input type="submit" name="page" value="&gt;|" title='<c:out value="${msgs.tgble.last}"/>'
                      onclick="document.form.submitAction.value='pageList';
                               document.form.providerId.value='<c:out value="${provider.provider.id}"/>';
                               document.form.submit();" />
@@ -101,7 +101,7 @@
               <c:choose>
                 <c:when test="${column.sortable}">
                   <th>
-                    <a title="<c:out value="${column.description}"/>"
+                    <a title='<c:out value="${column.description}"/>'
                        href="javascript:document.form.submitAction.value='sortList';
                                         document.form.providerId.value='<c:out value="${provider.provider.id}"/>';
                                         document.form.criteria.value='<c:out value="${column.name}"/>';
@@ -111,11 +111,11 @@
                         <c:choose>
                           <c:when test="${provider.sort.ascending}">                    
                             <img src="/library/image/sakai/sortascending.gif" 
-                                 alt="<fmt:message key="eval_sortbytypeasc"/>"/>
+                                 alt='<c:out value="${msgs.eval_sortbytypeasc}"/>'/>
                           </c:when>
                           <c:otherwise>
                             <img src="/library/image/sakai/sortdescending.gif" 
-                                 alt="<fmt:message key="eval_sortbytypedesc"/>"/>                    
+                                 alt='<c:out value="${msgs.eval_sortbytypedesc}"/>'/>                    
                           </c:otherwise>
                         </c:choose>
                       </c:if>
@@ -139,7 +139,7 @@
       </c:when>
       <c:otherwise>
       	</div>
-        <div class="information"><fmt:message key="tgble.tags_empty"/></div>
+        <div class="information"><c:out value="${msgs.tgble.tags_empty}"/></div>
       </c:otherwise>
     </c:choose>
   </c:if>

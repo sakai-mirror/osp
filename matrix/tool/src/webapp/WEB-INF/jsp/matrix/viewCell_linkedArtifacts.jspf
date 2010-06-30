@@ -28,8 +28,8 @@
 						<c:out value="${taggableItem.owner}" />
 					</c:when>
 					<c:otherwise>
-						<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-							<fmt:message key="blind_evaluation_username"></fmt:message>
+						<span title='<c:out value="${msgs.blind_evaluation_tooltip}"/>'>
+							<c:out value="${msgs.blind_evaluation_username}"/>
 						</span>
 					</c:otherwise>
 				</c:choose>	

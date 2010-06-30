@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 
 
 <table width="100%">
@@ -9,10 +9,10 @@
 <tr><td align="center">
 <c:choose>
 <c:when test="${noPagesFound}">
-<fmt:message key="presentation_no_pages_founc"/>
+<c:out value="${msgs.presentation_no_pages_founc}"/>
 </c:when>
 <c:otherwise>
-<fmt:message key="presentation_not_found"/>
+<c:out value="${msgs.presentation_not_found}"/>
 </c:otherwise>
 </c:choose>
 </td></tr></table>

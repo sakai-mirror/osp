@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 <form method="get" action="<c:choose><c:when test="${empty returnView}">listPresentation.osp</c:when><c:otherwise><c:out value="${returnView}"/></c:otherwise></c:choose>" name="backtolist">
 <input type="hidden" name="id" value="<c:out value="${id}"/>" />
 
@@ -17,14 +17,14 @@
 		<li class="firstItem">
 			<span>
 				<a target="_blank" href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${comment.presentation.id.value}" />#comment<c:out value="${comment.id.value}" />"
-					title="<fmt:message key="table_comments_link_hint"/>">
-					<fmt:message key="table_comments_link"/>
+					title='<c:out value="${msgs.table_comments_link_hint}"/>'>
+					<c:out value="${msgs.table_comments_link}"/>
 				</a>
 			</span>
 		</li>
 		<li>
 			<span>
-				<a href="#" onclick="document.backtolist.submit()"><c:choose><c:when test="${empty returnText}"><fmt:message key="table_comments_back"/></c:when><c:otherwise><fmt:message key="${returnText}"/></c:otherwise></c:choose></a>
+				<a href="#" onclick="document.backtolist.submit()"><c:choose><c:when test="${empty returnText}"><c:out value="${msgs.table_comments_back}"/></c:when><c:otherwise><c:out value="${msgs.${returnText}"/></c:otherwise></c:choose></a>
 			</span>	
 		</li>
 	</ul>	
@@ -40,18 +40,18 @@
 					- <c:out value="${comment.creator.displayName}" />
 					<span class="textPanelFooter">
 						<c:set var="dateFormat">
-							<fmt:message key="dateFormat_Middle"/>
+							<c:out value="${msgs.dateFormat_Middle}"/>
 						</c:set>
 						(<fmt:formatDate value="${comment.created}" pattern="${dateFormat}"/>)
 						- <strong class="highlight">
 						<c:if test="${comment.visibility == 1}">
-							<fmt:message key="comments_private"/>
+							<c:out value="${msgs.comments_private}"/>
 						</c:if>
 						<c:if test="${comment.visibility == 2}">
-							<fmt:message key="comments_shared"/>
+							<c:out value="${msgs.comments_shared}"/>
 						</c:if>
 						<c:if test="${comment.visibility == 3}">
-							<fmt:message key="comments_public"/>
+							<c:out value="${msgs.comments_public}"/>
 						</c:if>
 						</strong>
 					</span>
@@ -62,7 +62,7 @@
 	</ul>
 </c:if>
 	<p class="act">
-	   <input type="submit" name="_cancel" value="<fmt:message key="button_back"/>" accesskey="x" class="active" />
+	   <input type="submit" name="_cancel" value="<c:out value="${msgs.button_back}"/>" accesskey="x" class="active" />
 	 </p>  
 </form>
 

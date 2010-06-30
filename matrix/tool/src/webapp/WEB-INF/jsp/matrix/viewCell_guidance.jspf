@@ -22,7 +22,7 @@
 						<ul class="attachList indnt1">
 							<c:forEach var="guidanceItemAtt"
 								items="${guidanceItem.attachments}">
-								<li><img border="0" title="<c:out value="${hover}" />"
+								<li><img border="0" title='<c:out value="${hover}" />'
 									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
 									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
 								<a
@@ -62,8 +62,8 @@
 						<ul class="attachList indnt1">
 							<c:forEach var="guidanceItemAtt"
 								items="${guidanceItem.attachments}">
-								<li><img border="0" title="<c:out value="${hover}" />"
-									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+								<li><img border="0" title='<c:out value="${hover}" />'
+									alt='<c:out value="${guidanceItemAtt.displayName}"/>'
 									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
 								<a
 									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"

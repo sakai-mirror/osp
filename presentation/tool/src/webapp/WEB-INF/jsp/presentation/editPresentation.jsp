@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 
 <c:set var="pres_active_page" value="summary" />
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
@@ -69,13 +69,13 @@ $(document).ready(function() {
 <tbody>
 <tr>
 <th  class="presentation_menu_header">
-	<fmt:message key="pres_status" />
+	<c:out value="${msgs.pres_status}" />
 </th>
 <th class="presentation_menu_header">
-			<fmt:message key="quick_start" />
+			<c:out value="${msgs.quick_start}" />
 </th>
 <th  class="presentation_menu_header" >
-	<fmt:message key="pres_comments_heading" />
+	<c:out value="${msgs.pres_comments_heading}" />
 </th>
 <tr>
 <td class="presentation_menu_body">
@@ -87,10 +87,10 @@ $(document).ready(function() {
 					       id="btnActive"
 					       name="active" value="true"
 					       <c:if test="${active}">checked="checked"</c:if> />
-					<label for="btnActive"><fmt:message key="button_active" /></label>
+					<label for="btnActive"><c:out value="${msgs.button_active}" /></label>
 				</p>
 				<p class="quickLinkInfo">
-					<fmt:message key="active_caption" />
+					<c:out value="${msgs.active_caption}" />
 				</p>
 				
 				<p class="quickLink">
@@ -98,10 +98,10 @@ $(document).ready(function() {
 					       id="btnInactive"
 					       name="active" value="false"
 					       <c:if test="${not active}">checked="checked"</c:if> />
-					<label for="btnInactive"><fmt:message key="button_inactive" /></label>
+					<label for="btnInactive"><c:out value="${msgs.button_inactive}" /></label>
 				</p>
 				<p class="quickLinkInfo">
-					<fmt:message key="inactive_caption" />
+					<c:out value="${msgs.inactive_caption}" />
 				</p>
 			</div>
 		</div>
@@ -111,30 +111,30 @@ $(document).ready(function() {
 	<div class="presentation_menu_block">
 		<div>
 			<c:if test="${not empty presentation.template.propertyFormType && !disableOptions}">
-				<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
-				<p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
+				<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.pres_options}"/></a></p>
+				<p class="quickLinkInfo"><c:out value="${msgs.pres_options_caption}"/></p>
 			</c:if>
 
 			<c:choose>			 
 				<c:when test="${presentation.isFreeFormType}">
-					<p class="quickLink"><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><fmt:message key="pres_content"/></a></p>
+					<p class="quickLink"><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><c:out value="${msgs.pres_content}"/></a></p>
 				</c:when>
 				<c:otherwise> <%-- templated portfolio --%>
-					<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
+					<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.pres_content}"/></a></p>
 				</c:otherwise>
 			</c:choose>
          
-			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
+			<p class="quickLinkInfo"><c:out value="${msgs.pres_content_caption}"/></p>
 			<c:if test="${!disableShare}">
 			<div <c:if test="${optionsAreNull}">class="quickLinkDisabled"</c:if>>			
 			  <c:choose>
 				 <c:when test="${optionsAreNull}">
-					<p class="quickLink"><fmt:message key="pres_share"/></p>
-					<p class="quickLinkInfo"><fmt:message key="inactive_hint"/></p>
+					<p class="quickLink"><c:out value="${msgs.pres_share}"/></p>
+					<p class="quickLinkInfo"><c:out value="${msgs.inactive_hint}"/></p>
 				 </c:when>
 				 <c:otherwise>
-					<p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
-					<p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
+					<p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.pres_share}"/></a></p>
+					<p class="quickLinkInfo"><c:out value="${msgs.pres_share_caption}"/></p>
 				 </c:otherwise>
 			  </c:choose>
 			</div>
@@ -151,33 +151,33 @@ $(document).ready(function() {
 					       id="btnAllow"
 					       name="allowComments" value="true"
 					       <c:if test="${presentation.allowComments}">checked="checked"</c:if> />
-					<label for="btnAllow"><fmt:message key="button_allow" /></label>
+					<label for="btnAllow"><c:out value="${msgs.button_allow}" /></label>
 				</p>
 				<p class="quickLinkInfo">
-					<fmt:message key="allowed_caption" />
+					<c:out value="${msgs.allowed_caption}" />
 				</p>
 				<p class="quickLink">
 					<input class="autoPost" type="radio"
 					       id="btnDisallow"
 					       name="allowComments" value="false"
 					       <c:if test="${not presentation.allowComments}">checked="checked"</c:if> />
-					<label for="btnDisallow"><fmt:message key="button_disallow" /></label>
+					<label for="btnDisallow"><c:out value="${msgs.button_disallow}" /></label>
 				</p>
 				<p class="quickLinkInfo">
-					<fmt:message key="disallowed_caption" />
+					<c:out value="${msgs.disallowed_caption}" />
 				</p>
 			</div>
 			<c:if test="${numComments > 0}">
 				<hr style="border: 1px solid #CCCCCC; width: 90%; "/>
 				<p class="quickLinkInfo">
 					<c:choose>
-						<c:when test="${numComments == 1}"><fmt:message key="comments_hint"/></c:when>
-						<c:otherwise><fmt:message key="comments_hint_plural"/></c:otherwise>
+						<c:when test="${numComments == 1}"><c:out value="${msgs.comments_hint}"/></c:when>
+						<c:otherwise><c:out value="${msgs.comments_hint_plural}"/></c:otherwise>
 					</c:choose>
 					<a href="<osp:url value="listComments.osp"/>&id=<c:out value="${presentation.id.value}"/>&returnView=editPresentation.osp&returnText=back_to_presentation"><c:out value="${numComments}" />
 						<c:choose>
-							<c:when test="${numComments == 1}"><fmt:message key="comments_hint2"/></c:when>
-							<c:otherwise><fmt:message key="comments_hint2_plural"/></c:otherwise>
+							<c:when test="${numComments == 1}"><c:out value="${msgs.comments_hint2}"/></c:when>
+							<c:otherwise><c:out value="${msgs.comments_hint2_plural}"/></c:otherwise>
 						</c:choose>
 					</a>
 				</p>
@@ -189,7 +189,7 @@ $(document).ready(function() {
 </table>
 
 <h3>
-   <fmt:message key="pres_details"/>
+   <c:out value="${msgs.pres_details}"/>
 </h3>
 
 <table class="itemSummary">
@@ -197,21 +197,21 @@ $(document).ready(function() {
 
 <spring:bind path="template.name">
 	<tr>
-		<th><fmt:message key="table_row_type"/></th>
+		<th><c:out value="${msgs.table_row_type}"/></th>
 		<td><c:out value="${status.value}" /></td>
 	</tr>
 </spring:bind>
 <%-- Created On: --%>
 <spring:bind path="created">
 	<tr>
-		<th><fmt:message key="table_row_created"/></th>
+		<th><c:out value="${msgs.table_row_created}"/></th>
 		<td><c:out value="${status.value}" /></td>
 	</tr>
 </spring:bind>
 <%-- Modified On: --%>
 <spring:bind path="modified">
 	<tr>
-		<th><fmt:message key="table_row_modified"/></th>
+		<th><c:out value="${msgs.table_row_modified}"/></th>
 		<td><c:out value="${status.value}" /></td>
 	</tr>
 </spring:bind>

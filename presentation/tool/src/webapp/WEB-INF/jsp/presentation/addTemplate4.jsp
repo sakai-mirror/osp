@@ -2,10 +2,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <c:set var="targetPrevious" value="_target2" />
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<h3><fmt:message key="title_addTemplate4"/></h3>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
+
+<h3><c:out value="${msgs.title_addTemplate4}"/></h3>
 
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 
@@ -21,7 +21,7 @@
     </spring:bind>
 
     <div class="instruction">
-        <fmt:message key="instructions_template_new4"/>
+        <c:out value="${msgs.instructions_template_new4}"/>
     </div>
 	<div class="highlightPanel actionitem">
 		<spring:bind path="template.fileRef.usage">
@@ -32,7 +32,7 @@
 				<p class="shorttext" style="border:none">
 			</c:if>
 			<span class="reqStar">*</span>
-			<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_nameUsedInXpath"/></label>
+			<label for="<c:out value="${status.expression}"/>-id"><c:out value="${msgs.label_nameUsedInXpath}"/></label>
 			<input type="text"
 				name="<c:out value="${status.expression}"/>"
 				id="<c:out value="${status.expression}"/>-id"
@@ -53,7 +53,7 @@
 			</c:if>
 		</spring:bind>
 			<span class="reqStar">*</span>
-			<label><fmt:message key="label_chooseFile"/></label>
+			<label><c:out value="${msgs.label_chooseFile}"/></label>
 			<spring:bind path="template.fileRef.artifactName">
 				<input type="text" id="fileName" disabled="disabled"
 					value="<c:out value="${status.value}" />" />
@@ -67,7 +67,7 @@
 				<input type="hidden" name="returnPage" id="returnPage"
 					value="<c:out value="${currentPage-1}"/>" />
 				<a href="javascript:callPicker('<c:out value="${TEMPLATE_SUPPORTFILE}"/>');">
-				<fmt:message key="action_pickFile"/> </a>
+				<c:out value="${msgs.action_pickFile}"/> </a>
 	
 				<script type="text/javascript">
 					function callPicker(pickerField) {
@@ -92,11 +92,11 @@
     <p class="act" style="margin:0;padding:.5em 0">
         <c:choose>
             <c:when test="${param.editFile}">
-                <input type="submit" name="_target3" value="<fmt:message key="button_saveEdit"/>"
+                <input type="submit" name="_target3" value="<c:out value="${msgs.button_saveEdit}"/>"
                     onclick="setElementValue(<spring:bind path="template.fileRef.action">'<c:out value="${status.expression}"/>'</spring:bind>,'addFile');return true;"  class="active" />
             </c:when>
             <c:otherwise>
-                <input type="submit" name="_target3" value="<fmt:message key="button_addToList"/>"
+                <input type="submit" name="_target3" value="<c:out value="${msgs.button_addToList}"/>"
                     onclick="setElementValue(<spring:bind path="template.fileRef.action">'<c:out value="${status.expression}"/>'</spring:bind>,'addFile');return true;" />
             </c:otherwise>
         </c:choose>
@@ -105,15 +105,15 @@
 
     <c:choose>
     	<c:when test="${template.files['empty']}">
-		<p class="instruction"><fmt:message key="addTemplate_thereAreNoSupportingFiles"/></p>
+		<p class="instruction"><c:out value="${msgs.addTemplate_thereAreNoSupportingFiles}"/></p>
 	</c:when>
 	<c:otherwise>
-		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" style="width:auto" summary="<fmt:message key="table_addTemplate3_summary"/>">
+		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" style="width:auto" summary="<c:out value="${msgs.table_addTemplate3_summary}"/>">
 		<thead>
 		    <tr>
-			<th scope="col"><fmt:message key="table_header_fileName"/></th>
+			<th scope="col"><c:out value="${msgs.table_header_fileName}"/></th>
 			<th scope="col"></th>
-			<th scope="col"><fmt:message key="table_header_fullXpath"/></th>
+			<th scope="col"><c:out value="${msgs.table_header_fullXpath}"/></th>
 		    </tr>
 		</thead>
 		<tbody>
@@ -122,9 +122,9 @@
 			    <tr>
 				<td><c:out value="${file.artifactName}" /></td>
 				<td class="itemAction">
-					<a href="<osp:url value="editTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />"><fmt:message key="action_edit"/></a>
+					<a href="<osp:url value="editTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />"><c:out value="${msgs.action_edit}"/></a>
 					|
-					<a href="<osp:url value="deleteTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />"><fmt:message key="action_delete"/></a>
+					<a href="<osp:url value="deleteTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />"><c:out value="${msgs.action_delete}"/></a>
 				</td>
 				<td>/ospiPresentation/presentationFiles/<c:out
 				    value="${file.usage}" /></td>

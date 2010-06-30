@@ -2,8 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="../matrixStyle.jspf" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+
 
 <c:forEach var="style" items="${styles}">
    <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet"
@@ -22,35 +22,34 @@ function hrefViewCell(cellId) {
 <osp-c:authZMap prefix="osp.matrix.scaffolding.revise." var="canRevise" qualifier="${matrixContents.scaffolding.worksiteId}"/>
 		<div class="navIntraTool">
 			<c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
-				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_edit"/></a>
+				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><c:out value="${msgs.action_edit}"/></a>
 			</c:if>
 			<c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
 				<a
 					href="<osp:url value="osp.permissions.helper/editPermissions_new">
-	               <osp:param name="message"><fmt:message key="action_message_setMatrixPermission">
-	                <fmt:param><c:out value="${matrixContents.scaffolding.title}"/></fmt:param>
-	               <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
-	             </osp:param>
+	               <osp:param name="message"><c:out value="${msgs.action_message_setMatrixPermission}"/>
+                  </osp:param>
 	               <osp:param name="name" value="scaffoldingSpecific"/>
 	               <osp:param name="qualifier" value="${matrixContents.scaffolding.reference}"/>
 	               <osp:param name="returnView" value="viewScaffoldingRedirect"/>
 	               <osp:param name="returnKey" value="scaffolding_id"/>
 	               <osp:param name="returnKeyValue" value="${matrixContents.scaffolding.id}"/>
 	               </osp:url>"
-					title="<fmt:message key="action_permissions_title"/>"> <fmt:message
-					key="action_permissions" /> </a>
+					title='<c:out value="${msgs.action_permissions_title}"/>'> 
+					<c:out value="${msgs.action_permissions}"/>
+					</a>
 			</c:if>
 			
-         	<a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
+         	<a href="<osp:url value="listScaffolding.osp"/>"><c:out value="${msgs.action_list}"/></a>
          	
 		</div>
 		
 
 	<c:if test="${toolPermissionSaved}">
-		<div class="success"><fmt:message key="changesSaved"/></div>	
+		<div class="success"><c:out value="${msgs.changesSaved}"/></div>	
 	</c:if>
 	
-	<h3><fmt:message key="title_matrixScaffolding"/></h3>
+	<h3><c:out value="${msgs.title_matrixScaffolding}"/></h3>
    
    <c:if test="${not empty matrixContents.scaffolding.description}">
       <p class="instruction">
@@ -61,13 +60,13 @@ function hrefViewCell(cellId) {
    </c:if>
   
 	<c:if test="${empty matrixContents.columnLabels}">
-		<p class="instruction"><fmt:message key="instructions_clickEdittosetup"/></p>
+		<p class="instruction"><c:out value="${msgs.instructions_clickEdittosetup}"/></p>
 	</c:if>
 	<c:if test="${not empty matrixContents.columnLabels}">
-		<p class="instruction"><fmt:message key="instructions_clickOnaCelltoEdit"/></p>  
+		<p class="instruction"><c:out value="${msgs.instructions_clickOnaCelltoEdit}"/></p>  
 
 		<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
-		<table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
+		<table cellspacing="0" width="100%" summary="<c:out value="${msgs.table_summary_matrixScaffolding}"/>">
 			<tr>
 				<th class="matrix-row-heading" scope="col">
                <osp-h:glossary link="true" hover="true">
@@ -99,7 +98,7 @@ function hrefViewCell(cellId) {
 							</c:if>
 							 style="cursor:pointer">
 							 <c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
-							 	<a href="#" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+							 	<a href="#" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " class="skip"><c:out value="${msgs.table_cell_link_title}"/></a>
 									&nbsp;
 							</c:if>
 						</td>
