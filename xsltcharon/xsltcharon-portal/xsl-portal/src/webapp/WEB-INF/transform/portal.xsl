@@ -446,6 +446,7 @@ your browser doesn't support iframes
    =========================================================
    -->
    <xsl:template match="page">
+		<xsl:variable name="apostrophe" disable-output-escaping="yes">'</xsl:variable>
       <xsl:param name="content"/>
       <xsl:if test="$content='true'">
          <!-- do nothing -->
@@ -462,7 +463,9 @@ your browser doesn't support iframes
                   <xsl:attribute name="href">#</xsl:attribute>
                   <xsl:attribute name="onclick">
                      window.open('<xsl:value-of select="popUrl"/>',
-                        '<xsl:value-of disable-output-escaping="yes" select="title"/>',
+                        '<xsl:value-of
+                        	disable-output-escaping="yes"
+                        	select="translate(translate(title, ' ', '_'), $apostrophe, '_')"/>',
                         'resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                   </xsl:attribute>
                </xsl:if>
