@@ -76,7 +76,7 @@ public class SharePresentationController extends AbstractPresentationController 
    public final static String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
    public final static String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
    public final static String SHARE_COLLAB_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.collab";
-   
+
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Map model = new HashMap();
       Presentation presentation = (Presentation) requestModel;
@@ -93,16 +93,16 @@ public class SharePresentationController extends AbstractPresentationController 
       {
          presentation = getPresentationManager().getPresentation(presentation.getId());
       }
-
-      // Check if request to edit free-form content
-      if ( presentation.getIsFreeFormType() && 
-           request.get("freeFormContent")!= null && 
-           request.get("freeFormContent").equals("true") )
+      
+      if ( presentation.getIsFreeFormType() )
       {
-         ToolSession toolSession = SessionManager.getCurrentToolSession();
-         toolSession.setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
-         return new ModelAndView("freeFormPresentationRedirect");
+         session.put(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
+         
+         // Check if request to edit free-form content
+         if ( request.get("freeFormContent")!= null && request.get("freeFormContent").equals("true") )
+            return new ModelAndView("freeFormPresentationRedirect");
       }
+           
       
       // determine share status
       String isPublic = getIsPublic(request, presentation);
