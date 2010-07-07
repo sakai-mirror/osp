@@ -155,7 +155,19 @@
 					 </c:if>
 			  </td>
 			  <td><c:out value="${layout.owner.displayName}" /></td>
-			  <td><c:out value="$${layout.globalState}"/></td>
+			  <td>
+				  <c:choose>
+				  <c:when test="${layout.globalState eq '0'}">
+					  <c:out value="${msgs.layout_published_status0}"/>
+				  </c:when>
+				  <c:when test="${layout.globalState eq '1'}">
+					  <c:out value="${msgs.layout_published_status1}"/>
+				  </c:when>
+				  <c:when test="${layout.globalState eq '2'}">
+					  <c:out value="${msgs.layout_published_status2}"/>
+				  </c:when>
+				  </c:choose>
+			  </td>
 			</tr>
 			<c:if test="${!(empty layout.description)}">
 				<tr class="exclude">
