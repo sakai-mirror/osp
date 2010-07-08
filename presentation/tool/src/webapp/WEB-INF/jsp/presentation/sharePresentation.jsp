@@ -139,10 +139,8 @@ $(document).ready(function() {
 	
    <input type="hidden" name="notify" />
    <p>
-      <c:out value="${msgs.notify_msg}"/>
-      &nbsp;&nbsp;&nbsp;
-      <a href="javascript:document.mainForm.notify.value='true'; document.mainForm.submit();"><c:out value="${msgs.send_email}"/></a>
-   </p>
+      <a class="shareEmail" href="javascript:document.mainForm.notify.value='true'; document.mainForm.submit();"><c:out value="${msgs.send_email}"/></a>
+   </p><br/>
    
    <h3>
       <c:out value="${msgs.pres_share_collab}"/>
