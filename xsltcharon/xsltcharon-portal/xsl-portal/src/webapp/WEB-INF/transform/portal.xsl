@@ -461,7 +461,7 @@ your browser doesn't support iframes
                <xsl:if test="@popUp='true'">
                   <xsl:attribute name="href">#</xsl:attribute>
                   <xsl:attribute name="onclick">
-                     window.open('<xsl:value-of select="columns/column/tools/tool/url"/>',
+                     window.open('<xsl:value-of select="popUrl"/>',
                         '<xsl:value-of disable-output-escaping="yes" select="title"/>',
                         'resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                   </xsl:attribute>
