@@ -16,12 +16,10 @@
     <c:if test="${empty style.id}">
         <h3><c:out value="${msgs.title_addStyle}"/></h3>
         <p class="instruction">
-        <c:out value="${msgs.instructions_addStyle}"/>
     </c:if>
     <c:if test="${not empty style.id}">
         <h3><c:out value="${msgs.title_editStyle}"/></h3>
         <p class="instruction">
-        <c:out value="${msgs.instructions_editStyle}"/>
     </c:if>
         <c:out value="${msgs.instructions_requiredFields}"/>
     </p>
