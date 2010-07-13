@@ -12,7 +12,7 @@
 <c:if test="${can.create || isMaintainer}">
     <div class="navIntraTool">
        <c:if test="${can.create}">
-          <a href="<osp:url value="addStyle.osp"/>" title='<c:out value="${msgs.action_new_title}"/>' >
+          <a href="<osp:url value="addStyle.osp"/>" title='<c:out value="${msgs.action_new}"/>' >
           <c:out value="${msgs.action_new}"/>
           </a>
        </c:if>
