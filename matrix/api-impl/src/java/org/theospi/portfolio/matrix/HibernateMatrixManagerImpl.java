@@ -3469,7 +3469,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
 				Authorization az = (Authorization) iter.next();
 				Agent agent = az.getAgent();
-				String userId = az.getAgent().getEid().getValue();
+				if (agent == null || agent.getEid() == null)
+					continue;
+				String userId = agent.getEid().getValue();
 				if (agent.isRole()) {
 					returnList.add(MessageFormat.format(messages
 							.getString("decorated_role_format"),
