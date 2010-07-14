@@ -3243,7 +3243,8 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 							agent.getDisplayName()) == 0)
 						return true;
 				}
-			} else {
+			} 
+			else if (agent.getId() != null) {
 				// see if the user matches with the evaluator user
 				if (getAuthnManager().getAgent().getId().getValue().compareTo(
 						agent.getId().toString()) == 0)
