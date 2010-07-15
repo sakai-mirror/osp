@@ -26,7 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
-import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
@@ -38,6 +39,9 @@ public class WorksiteAuthorizer implements ApplicationAuthorizer {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    protected List functions;
+   
+   private SecurityService securityService = null;
+   private AuthzGroupService authzGroupService = null;
 
    /**
     * This method will ask the application specific functional authorizer to determine authorization.
@@ -52,7 +56,7 @@ public class WorksiteAuthorizer implements ApplicationAuthorizer {
 
       try {
          if (function.equals(WorksiteManager.WORKSITE_MAINTAIN)) {
-            return checkRoleAccess(agent, function, id);
+            return checkRoleAccess(agent, function, id) || hasSiteUpdPerm(agent, id);
          }
          else {
             return null;
@@ -64,12 +68,16 @@ public class WorksiteAuthorizer implements ApplicationAuthorizer {
    }
 
    protected Boolean checkRoleAccess(Agent agent, String function, Id worksiteId) throws GroupNotDefinedException {
-      AuthzGroup authzgroup = AuthzGroupService.getInstance()
+      AuthzGroup authzgroup = getAuthzGroupService()
 								.getAuthzGroup("/site/" + worksiteId.getValue());
       
       String maintain = authzgroup.getMaintainRole();
       
       return new Boolean(authzgroup.hasRole(agent.getId().getValue(), maintain));
+   }
+   
+   protected Boolean hasSiteUpdPerm(Agent agent, Id worksiteId) {
+	   return getSecurityService().unlock(agent.getId().getValue(), "site.upd", "/site/" + worksiteId.getValue());
    }
 
    public List getFunctions() {
@@ -78,6 +86,22 @@ public class WorksiteAuthorizer implements ApplicationAuthorizer {
 
    public void setFunctions(List functions) {
       this.functions = functions;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+	   this.securityService = securityService;
+   }
+
+   public SecurityService getSecurityService() {
+	   return securityService;
+   }
+
+   public void setAuthzGroupService(AuthzGroupService authzGroupService) {
+	   this.authzGroupService = authzGroupService;
+   }
+
+   public AuthzGroupService getAuthzGroupService() {
+	   return authzGroupService;
    }
 
 }

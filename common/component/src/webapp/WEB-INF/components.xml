@@ -102,6 +102,9 @@
             <property name="ospiIdManager"><ref bean="idManager"/></property>
          </bean>
       </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
+      </property>
    </bean>
 
    <bean id="worksiteAuthz" class="org.theospi.portfolio.security.impl.sakai.WorksiteAuthorizer">
@@ -112,6 +115,12 @@
                <property name="staticField"><value>org.sakaiproject.metaobj.worksite.mgt.WorksiteManager.WORKSITE_MAINTAIN</value></property>
             </bean>
          </list>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
+      </property>
+      <property name="authzGroupService">
+         <ref bean="org.sakaiproject.authz.api.AuthzGroupService"/>
       </property>
    </bean>
 
