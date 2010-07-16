@@ -397,7 +397,15 @@ public class XsltRenderContext implements PortalRenderContext {
       if ((Boolean)tool.get("hasRenderResult")) {
          toolElement.setAttribute("renderResult", "true");
          RenderResult result = (RenderResult) tool.get("toolRenderResult");
-         Document content = Xml.readDocumentFromString(result.getContent());
+
+         //SAK-18793 - readDocumentFromString returns null on error; this check prevents NPEs
+         String contentStr = result.getContent();
+         if (contentStr == null)
+         {
+             throw new ToolRenderException ("tool xml failed to render and is null");
+         }
+
+         Document content = Xml.readDocumentFromString(contentStr);
          Element contentRoot = (Element) doc.importNode(content.getDocumentElement(), true);
          Element contentElement = doc.createElement("content");
          contentElement.appendChild(contentRoot);
