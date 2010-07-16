@@ -13,6 +13,16 @@
     <spring:bind path="template.id">
         <c:set var="templateId" value="${status.value}" />
     </spring:bind>
+    
+    <script>
+    	function addHiddenFormField(fieldName) {
+    		var newElem = document.createElement('input');
+    		newElem.setAttribute('type', 'hidden');
+    		newElem.setAttribute('name', fieldName);
+    		document.forms[0].appendChild(newElem);
+    	}
+    
+    </script>
 
     <h3><fmt:message key="title_addTemplate2"/></h3>
     <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
@@ -34,10 +44,9 @@
                 value="<c:out value="${rendererName}"/>" />
             <input type="hidden" name="renderer" id="renderer"
                 value="<c:out value="${status.value}"/>" />
-            <input type="hidden" name="_target4" id="_target4" value="" />
             <input type="hidden" name="returnPage" id="returnPage"
                 value="<c:out value="${currentPage-1}"/>" />
-            <a href="javascript:document.forms[0].pickerField.value='<c:out value="${TEMPLATE_RENDERER}"/>';javascript:document.forms[0]._target4.value='picker';document.forms[0].validate.value='false';document.forms[0].submit();">
+            <a href="javascript:addHiddenFormField('_target4');javascript:document.forms[0].pickerField.value='<c:out value="${TEMPLATE_RENDERER}"/>';javascript:document.forms[0]._target4.value='picker';document.forms[0].validate.value='false';document.forms[0].submit();">
             <fmt:message key="action_pickFile"/> </a>
 			<c:if test="${status.error}">
 	            <span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}" /></span>
