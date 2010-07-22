@@ -122,12 +122,11 @@
 						 <c:set var="hasFirstAction" value="true" />
 						 <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />">
 							<c:if test="${globalTool}">
-							   <c:out value="${msgs.table_action_PublishGlobal}"/>
+								<c:out value="${msgs.table_action_PublishGlobal}"/></a>
 							</c:if>
 							<c:if test="${not globalTool}">
-								<c:out value="${msgs.table_action_publish}"/>
+								<c:out value="${msgs.table_action_publish}"/></a>
 							</c:if>
-						 </a>
 					 </c:if>
 					 
 					 <c:if test="${isAuthorizedTo.edit}">
