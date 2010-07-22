@@ -27,7 +27,7 @@
        </tr>
        <tr>
           <td><h:outputText value="#{freeForm.currentPage.base.title}"/></td>
-          <td><h:outputText value="#{freeForm.currentPage.base.description}" escape="false"/></td>
+          <td><h:outputText value="#{freeForm.currentPage.base.description}"/></td>
        </tr>
     </table>
 
