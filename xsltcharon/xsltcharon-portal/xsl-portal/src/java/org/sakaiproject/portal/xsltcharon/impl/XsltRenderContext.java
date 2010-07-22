@@ -21,6 +21,7 @@
 
 package org.sakaiproject.portal.xsltcharon.impl;
 
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.portal.api.PortalRenderContext;
 import org.sakaiproject.portal.api.PortalRenderEngine;
 import org.sakaiproject.portal.render.api.RenderResult;
@@ -275,7 +276,8 @@ public class XsltRenderContext implements PortalRenderContext {
          Map page = i.next();
          Map pageProps = (Map)page.get("pageProps");
          String currentCategory = (String) pageProps.get("sitePage.pageCategory");  //todo put the static final here
-         if (currentCategory == null) {
+
+         if (currentCategory == null || !isDisplayToolCategories()) {
             lastCategory = null;
             lastCategoryElement = null;
             categories.appendChild(createUncategorizedPage(doc, page, index));
@@ -665,4 +667,7 @@ public class XsltRenderContext implements PortalRenderContext {
       return null;
    }
 
+   public boolean isDisplayToolCategories() {
+      return ServerConfigurationService.getBoolean("xslPortal.displayToolCategories", true);
+   }
 }
