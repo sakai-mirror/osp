@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -147,6 +149,10 @@ public class DecoratedPage implements Comparable {
 
    public void setLayoutName(String name) {
       this.layoutName = name;
+   }
+
+   public String getSafeTitle() {
+      return StringEscapeUtils.escapeHtml( base.getTitle() );
    }
 
    public PresentationPage getBase() {
