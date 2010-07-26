@@ -52,5 +52,7 @@ webservices https://source.sakaiproject.org/svn/webservices/trunk
 formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
 
 core-deploy https://source.sakaiproject.org/svn/sakai/trunk/core-deploy
+framework-shared-deploy https://source.sakaiproject.org/svn/sakai/trunk/framework-shared-deploy
+jstl-shared-deplot https://source.sakaiproject.org/svn/sakai/trunk/jstl-shared-deploy
 kernel-deploy https://source.sakaiproject.org/svn/sakai/trunk/kernel-deploy
 pack-demo https://source.sakaiproject.org/svn/sakai/trunk/pack-demo
