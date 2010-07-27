@@ -115,7 +115,22 @@ function mySetMainFrameHeight(id)
 	</c:if>
 	
 
-	<h3><c:out value="${pageTitleKey}" /> - 
+	<h3>
+		<c:choose>
+		  <c:when test="${pageTitleKey == 'view_cell'}">
+			 <c:out value="${msgs.view_cell}" /> 
+		  </c:when>
+		  <c:when test="${pageTitleKey == 'title_editCell'}">
+			 <c:out value="${msgs.title_editCell}" /> 
+		  </c:when>
+		  <c:when test="${pageTitleKey == 'view_wizardPage'}">
+			 <c:out value="${msgs.view_wizardPage}" /> 
+		  </c:when>
+		  <c:when test="${pageTitleKey == 'title_editWizardPage'}">
+			 <c:out value="${msgs.title_editWizardPage}" /> 
+		  </c:when>
+		</c:choose>
+		- 
 		<c:if test="${!isWizard}">
 			<c:out value="${msgs.matrix_name}"/>
 		</c:if>
@@ -129,9 +144,19 @@ function mySetMainFrameHeight(id)
 		(<c:out value="${scaffoldingCell.title}"/>) 
 		</c:if>
 	<fieldset class="fieldsetVis">
-		<legend><c:out value="${pageInstructionsKey}"/></legend>
+		<legend>
+		<c:choose>
+		  <c:when test="${pageInstructionsKey == 'instructions_cellSettings'}">
+			 <c:out value="${msgs.instructions_cellSettings}" /> 
+		  </c:when>
+		  <c:when test="${pageInstructionsKey == 'instructions_wizardPageSettings'}">
+			 <c:out value="${msgs.instructions_wizardPageSettings}" /> 
+		  </c:when>
+		</c:choose>
+		</legend>
+	
 		<div class="instruction"> 
-			<c:out value="${msgs.instructions_requiredFields}"/> 
+			<c:out value="${msgs.instructions_requiredFields}" escapeXml="false"/> 
 			<c:if test="${scaffoldingCell.scaffolding.published}">
 				<c:if test="${isCellUsed}">
 					<c:out value="${msgs.instructions_hasBeenUsed}"/>

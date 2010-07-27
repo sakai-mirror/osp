@@ -19,13 +19,13 @@
 	<c:if test="${empty scaffolding.title}">
 		<h3><c:out value="${msgs.title_scaffoldingAdd}"/></h3>
 		<div class="instruction">
-		  <c:out value="${msgs.instructions_scaffoldingAdd}"/>
+		  <c:out value="${msgs.instructions_scaffoldingAdd}" escapeXml="false"/>
 		</div>
 	</c:if>
 	<c:if test="${not empty scaffolding.title}">
 		<h3><c:out value="${msgs.title_scaffoldingReviseProp}"/></h3>
 		<div class="instruction">
-		  <c:out value="${msgs.instructions_scaffoldingEdit}"/>
+		  <c:out value="${msgs.instructions_scaffoldingEdit}" escapeXml="false"/>
 		</div>
 	</c:if>
 	

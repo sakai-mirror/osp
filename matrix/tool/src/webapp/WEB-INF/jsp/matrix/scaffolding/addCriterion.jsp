@@ -10,7 +10,7 @@
 	
 	<div class="instructions">
 		<c:out value="${msgs.instructions_scaffRow}"/>
-		<c:out value="${msgs.instructions_requiredFields}"/>
+		<c:out value="${msgs.instructions_requiredFields}" escapeXml="false"/>
 	</div>
 	
 <form method="post">
