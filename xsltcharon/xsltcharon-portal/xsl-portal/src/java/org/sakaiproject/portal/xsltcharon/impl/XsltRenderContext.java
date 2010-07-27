@@ -585,7 +585,7 @@ public class XsltRenderContext implements PortalRenderContext {
    protected Element createLoginXml(Document doc, HttpServletRequest req) {
       Element login = doc.createElement("loginInfo");
 
-      appendTextElementNodeFromProp(doc, "topLogin", "siteNavLoggedIn", login);
+      appendTextElementNodeFromProp(doc, "topLogin", "siteNavTopLogin", login);
       appendTextElementNodeFromProp(doc, "logInOutUrl", "loginLogInOutUrl", login);
       appendTextElementNodeFromProp(doc, "loginText", "loginMessage", login);
       appendTextElementNodeFromProp(doc, "logoutText", "loginMessage", login);
