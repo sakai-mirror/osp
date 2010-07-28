@@ -257,7 +257,7 @@ your browser doesn't support iframes
               </a>
            </div>
         </xsl:when>
-        <!--xsl:when test="loginInfo/topLogin != 'true'">
+        <xsl:when test="loginInfo/topLogin != 'true'">
         		<div id="loginLinks">
 			<a target="_parent">
 				<xsl:attribute name="href">
@@ -304,7 +304,7 @@ your browser doesn't support iframes
 					</a>
 			</xsl:if>
 			</div>
-        </xsl:when-->
+        </xsl:when>
         <xsl:otherwise>
 <form method="post" action="{config/extra/loginPortalPath}/xlogin" 
       enctype="application/x-www-form-urlencoded" target="_parent">
