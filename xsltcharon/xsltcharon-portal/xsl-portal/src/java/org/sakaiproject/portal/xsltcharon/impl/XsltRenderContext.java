@@ -225,9 +225,32 @@ public class XsltRenderContext implements PortalRenderContext {
       appendTextElementNode(doc, "url", (String) siteMap.get("siteUrl"), site);
       appendTextElementNode(doc, "title", (String) siteMap.get("siteTitle"), site);
       appendTextElementNode(doc, "description", (String) siteMap.get("siteDescription"), site);
+      appendTextElementNode(doc, "shortDescription", (String) siteMap.get("shortDescription"), site);
       appendTextElementNode(doc, "parent", (String) siteMap.get("parentSite"), site);
+      appendTextElementNode(doc, "type", (String) siteMap.get("siteType"), site);
+      appendTextElementNode(doc, "siteId", (String) siteMap.get("siteId"), site);
 
       site.setAttribute("selected", siteMap.get("isCurrentSite").toString());
+      if (((Boolean)siteMap.get("isCurrentSite")).booleanValue()){
+        if (context.get("viewAsStudentLink") != null &&
+                ((Boolean)context.get("viewAsStudentLink")).booleanValue() ) {
+            Element viewAsStudentLink = doc.createElement("viewAsStudentLink");
+            site.appendChild(viewAsStudentLink);
+            if (context.get("roleSwitchState") != null) {
+                appendTextElementNode(doc, "roleSwitchState", context.get("roleSwitchState").toString(), viewAsStudentLink);
+            }
+            appendTextElementNode(doc, "roleUrlValue", (String) context.get("roleUrlValue"), viewAsStudentLink);
+            if (context.get("roleswapdropdown") != null) {
+                appendTextElementNode(doc, "roleswapdropdown", context.get("roleswapdropdown").toString(), viewAsStudentLink);
+            }
+            appendTextElementNode(doc, "switchRoleUrl", (String) context.get("switchRoleUrl"), viewAsStudentLink);
+            appendTextElementNode(doc, "panelString", (String) context.get("panelString"), viewAsStudentLink);
+            if (context.get("siteRoles") != null) {
+                List roles = (List)context.get("siteRoles");
+                appendTextElementNodes(doc, (String[])roles.toArray(new String[roles.size()]), viewAsStudentLink, "siteRoles", "role");
+            }
+        }
+      }
       site.setAttribute("myWorkspace", siteMap.get("isMyWorkspace").toString());
       site.setAttribute("depth", siteMap.get("depth").toString());
       site.setAttribute("order", "" + index);
