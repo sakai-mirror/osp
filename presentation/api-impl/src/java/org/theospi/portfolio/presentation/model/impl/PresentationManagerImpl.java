@@ -2980,13 +2980,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void updateLayout(PresentationLayoutWrapper wrapper, PresentationLayout layout) {
-      if (layout.getPreviewImageId() != null) {
-         deleteResource(layout.getId(), layout.getPreviewImageId());
-      }
-      if (layout.getXhtmlFileId() != null) {
-         deleteResource(layout.getId(), layout.getXhtmlFileId());
-      }
-
+      getContentHosting().removeAllLocks(wrapper.getIdValue());
+      getLockManager().removeAllLocks(wrapper.getIdValue());
+		
       layout.setPreviewImageId(createResource(wrapper.getPreviewFileLocation(),
          wrapper.getPreviewFileName(), wrapper.getIdValue() + " layout preview", wrapper.getPreviewFileType()));
       layout.setXhtmlFileId(createResource(wrapper.getLayoutFileLocation(),
@@ -3078,8 +3074,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          return resourceId;
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.warn("updateResource: "+e);
       }
+		
+      return null;
    }
 
    protected ByteArrayOutputStream loadResource(String name) {
@@ -3113,7 +3111,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected Id createResource(String resourceLocation,
                                String name, String description, String type) {
       ByteArrayOutputStream bos = loadResource(resourceLocation);
-      ContentResource resource;
+      ContentResource resource = null;
       ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
       resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
@@ -3136,7 +3134,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
           } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.warn("createResource(PortfolioAdmin): "+e);
       }
 
       try {
@@ -3152,26 +3150,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.warn("createResource(system): "+e);
       }
 
+      // If resource exists, just update it
+      String resourceId = folder + name;
       try {
-         String id = folder + name;
-         getContentHosting().removeResource(id);
-      }
-      catch (TypeException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         } 
+         resource = getContentHosting().updateResource( resourceId, type, bos.toByteArray() );
       }
       catch (IdUnusedException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         } 
-      }
-      catch (PermissionException e) {
          // ignore, must be new
          if (logger.isDebugEnabled()) {
              logger.debug(e);
@@ -3183,15 +3170,30 @@ public class PresentationManagerImpl extends HibernateDaoSupport
              logger.debug(e);
          } 
       }
-
-      try {
-         resource = getContentHosting().addResource(name, folder, 100, type,
-                     bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+      catch (PermissionException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         // unexpected error: unable to update existing resource
+         logger.warn("createResource(updateResource): " + e);
       }
-      String uuid = getContentHosting().getUuid(resource.getId());
+
+      // Otherwise, resource doesn't exist, so create it
+      if ( resource == null ) {
+         try {
+            resource = getContentHosting().addResource(name, folder, 1, type,
+                                                       bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+         }
+         catch (Exception e) {
+            // unexpected error: tried to add new resource and failed
+            logger.warn("createResource(addResource): "+e);
+         }
+      }
+      
+      String uuid = getContentHosting().getUuid(resourceId);
       return getIdManager().getId(uuid);
    }
    
