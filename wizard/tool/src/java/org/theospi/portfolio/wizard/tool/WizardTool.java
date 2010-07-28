@@ -25,7 +25,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
-import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -37,21 +36,24 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.tool.api.*;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
-import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
@@ -67,7 +69,6 @@ import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.tool.BuilderTool;
@@ -84,7 +85,6 @@ import org.theospi.portfolio.assignment.AssignmentHelper;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import java.io.IOException;
@@ -102,13 +102,18 @@ public class WizardTool extends BuilderTool {
    private GuidanceManager guidanceManager;
    private AuthenticationManager authManager;
    private AuthorizationFacade authzManager;
+   private AgentManager agentManager;
    private MatrixManager matrixManager;
    private WorkflowManager workflowManager;
    private ContentHostingService contentHosting;
    private ReviewManager reviewManager;
    private TaggingManager taggingManager;
    private WizardActivityProducer wizardActivityProducer;
-
+   private SessionManager sessionManager;
+   private ToolManager toolManager;
+   private SiteService siteService;
+   private UserDirectoryService userDirectoryService;
+   
    private IdManager idManager;
    private DecoratedWizard current = null;
    private DecoratedWizardPage currentPage = null;
@@ -212,12 +217,12 @@ public class WizardTool extends BuilderTool {
       String readOnly = "";
       try {
          if (currentUserId == null) 
-            setCurrentUserId(SessionManager.getCurrentSessionUserId());
+            setCurrentUserId(getSessionManager().getCurrentSessionUserId());
             
-         if (!currentUserId.equalsIgnoreCase(SessionManager.getCurrentSessionUserId())) {
+         if (!currentUserId.equalsIgnoreCase(getSessionManager().getCurrentSessionUserId())) {
             readOnly = getMessageFromBundle("read_only");
          }
-         User user = UserDirectoryService.getUser(currentUserId);
+         User user = getUserDirectoryService().getUser(currentUserId);
          message = getMessageFromBundle("wizard_owner_message", new Object[]{
                readOnly, user.getDisplayName()});
       } catch (UserNotDefinedException e) {
@@ -229,7 +234,7 @@ public class WizardTool extends BuilderTool {
    
    public boolean isFromEvaluation()
    {
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
       
       if(session.getAttribute("is_eval_page_id") != null) {
          return true;
@@ -239,7 +244,7 @@ public class WizardTool extends BuilderTool {
    }
 
    public DecoratedWizard getCurrent() {
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
 
       //WIZARD_RESET_CURRENT gets set in the WizardListGenerator
       String resetCurrent = (String)session.getAttribute("WIZARD_RESET_CURRENT");
@@ -257,11 +262,11 @@ public class WizardTool extends BuilderTool {
             this.setCurrentUserId(userId);
          }
          else {
-            Placement placement = ToolManager.getCurrentPlacement();
+            Placement placement = getToolManager().getCurrentPlacement();
 
             id = placement.getPlacementConfig().getProperty(
                   WizardManager.EXPOSED_WIZARD_KEY);
-            userId = SessionManager.getCurrentSessionUserId();
+            userId = getSessionManager().getCurrentSessionUserId();
             this.setCurrentUserId(userId);
          }
          if(id == null)
@@ -308,12 +313,12 @@ public class WizardTool extends BuilderTool {
    }
 
    public List getWizards() {
-      Placement placement = ToolManager.getCurrentPlacement();
+      Placement placement = getToolManager().getCurrentPlacement();
       String currentSiteId = placement.getContext();
       List returned = new ArrayList();
 
       String user = currentUserId!=null ?
-            currentUserId : SessionManager.getCurrentSessionUserId();
+            currentUserId : getSessionManager().getCurrentSessionUserId();
       setCurrentUserId(user);
 
       List wizards = getWizardManager().listAllWizardsByOwner(user, currentSiteId);
@@ -419,7 +424,7 @@ public class WizardTool extends BuilderTool {
     * @return String next page, this is null
     */
    public String processActionCancelRun() {
-	  this.setCurrentUserId(SessionManager.getCurrentSessionUserId());
+	  this.setCurrentUserId(getSessionManager().getCurrentSessionUserId());
       processActionCancel();
       return returnToCaller();
    }
@@ -520,7 +525,7 @@ public class WizardTool extends BuilderTool {
 
    public String processActionNew() {
       clearInterface();
-      Session session = SessionManager.getCurrentSession();
+      Session session = getSessionManager().getCurrentSession();
       Wizard newWizard = getWizardManager().createNew();
       newWizard.setSequence(getNextWizard());
 
@@ -547,7 +552,7 @@ public class WizardTool extends BuilderTool {
 
    public String processActionRemoveGuidance() {
       clearInterface();
-      //Placement placement = ToolManager.getCurrentPlacement();
+      //Placement placement = getToolManager().getCurrentPlacement();
       //String currentSite = placement.getContext();
       Wizard wizard = getCurrent().getBase();
       getGuidanceManager().deleteGuidance(wizard.getGuidance());
@@ -573,10 +578,10 @@ public class WizardTool extends BuilderTool {
 
    protected void showGuidance(Wizard wizard, String view, boolean instructions, boolean rationale, boolean examples, boolean rubric, boolean expectations) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      //Tool tool = ToolManager.getCurrentTool();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      //Tool tool = getToolManager().getCurrentTool();
+      ToolSession session = getSessionManager().getCurrentToolSession();
 
-      Placement placement = ToolManager.getCurrentPlacement();
+      Placement placement = getToolManager().getCurrentPlacement();
       String currentSite = placement.getContext();
       //session.setAttribute(tool.getId() + Tool.HELPER_DONE_URL, "");
       //session.setAttribute(WizardManager.CURRENT_WIZARD_ID, getCurrent().getBase().getId());
@@ -609,12 +614,11 @@ public class WizardTool extends BuilderTool {
    public String processExecPage(WizardPageSequence pageSeq) {
       clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
       
-      String currentUser = getCurrentUserId();
-      Agent currentAgent = getAuthManager().getAgent();
- 
-      WizardPage page = getMatrixManager().getWizardPageByPageDefAndOwner(pageSeq.getWizardPageDefinition().getId(), currentAgent);
+      Agent currentUser = getAgentManager().getAgent(getCurrentUserId());
+      
+      WizardPage page = getMatrixManager().getWizardPageByPageDefAndOwner(pageSeq.getWizardPageDefinition().getId(), currentUser);
       
       if (page == null)
          throw new NullPointerException("Failed to find the requested page");
@@ -625,7 +629,7 @@ public class WizardTool extends BuilderTool {
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
       String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
       
-      if (!getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
+      if (!getCurrentUserId().equalsIgnoreCase(getSessionManager().getCurrentSessionUserId()))
          session.setAttribute("readOnlyMatrix", "true");
       session.setAttribute(WizardPageHelper.WIZARD_OWNER, getCurrent().getRunningWizard().getBase().getOwner());
 
@@ -647,7 +651,7 @@ public class WizardTool extends BuilderTool {
    public String processExecPages() {
       clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
       
       CompletedWizard cwiz = current.getRunningWizard().getBase();
       
@@ -666,7 +670,7 @@ public class WizardTool extends BuilderTool {
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, pages);
       String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
       
-      if (!getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
+      if (!getCurrentUserId().equalsIgnoreCase(getSessionManager().getCurrentSessionUserId()))
          session.setAttribute("readOnlyMatrix", "true");
       session.setAttribute(WizardPageHelper.WIZARD_OWNER, getCurrent().getRunningWizard().getBase().getOwner());
 
@@ -708,7 +712,7 @@ public class WizardTool extends BuilderTool {
 
    public void processEditReflection() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
 
       //CWM use a constant for the below values
       session.setAttribute("process_type_key", CompletedWizard.PROCESS_TYPE_KEY);
@@ -756,7 +760,7 @@ public class WizardTool extends BuilderTool {
 
    protected void processActionReviewHelper(int type) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
 
       //CWM use a constant for the below values
       session.setAttribute("process_type_key", CompletedWizard.PROCESS_TYPE_KEY);
@@ -783,7 +787,7 @@ public class WizardTool extends BuilderTool {
 
    public void processActionAudienceHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
 
       Wizard wizard = getCurrent().getBase();
 
@@ -807,7 +811,7 @@ public class WizardTool extends BuilderTool {
 
    public boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-         getIdManager().getId(ToolManager.getCurrentPlacement().getContext()))).booleanValue();
+         getIdManager().getId(getToolManager().getCurrentPlacement().getContext()))).booleanValue();
    }
 
    public String processPermissions()
@@ -821,7 +825,7 @@ public class WizardTool extends BuilderTool {
            context.redirect("osp.permissions.helper/editPermissions?" +
                  "message=" + getPermissionsMessage() +
                  "&name=wizard" +
-                 "&qualifier=" + ToolManager.getCurrentPlacement().getContext() +
+                 "&qualifier=" + getToolManager().getCurrentPlacement().getContext() +
                  "&returnView=matrixRedirect");
        }
        catch (IOException e) {
@@ -836,12 +840,12 @@ public class WizardTool extends BuilderTool {
    }
 
    public Tool getTool() {
-      return ToolManager.getCurrentTool();
+      return getToolManager().getCurrentTool();
    }
 
    public Site getWorksite() {
       try {
-         return SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
+         return getSiteService().getSite(getToolManager().getCurrentPlacement().getContext());
       }
       catch (IdUnusedException e) {
          throw new OspException(e);
@@ -857,7 +861,7 @@ public class WizardTool extends BuilderTool {
    {
       clearInterface();
 	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-	      ToolSession session = SessionManager.getCurrentToolSession();
+	      ToolSession session = getSessionManager().getCurrentToolSession();
 	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
 	      /*
 	      List wsItemRefs = EntityManager.newReferenceList();
@@ -887,7 +891,7 @@ public class WizardTool extends BuilderTool {
     */
    public String getImportFilesString()
    {
-		ToolSession session = SessionManager.getCurrentToolSession();
+		ToolSession session = getSessionManager().getCurrentToolSession();
 		if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null
 				&& session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
 
@@ -1013,7 +1017,7 @@ public class WizardTool extends BuilderTool {
    public String processActionSelectStyle() {      
       clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
       session.removeAttribute(StyleHelper.CURRENT_STYLE);
       session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
       
@@ -1050,12 +1054,12 @@ public class WizardTool extends BuilderTool {
    
    public boolean getCanCreate() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.CREATE_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+            getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
    }
    
    public boolean getCanView() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+            getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
    }
 
    /**
@@ -1085,7 +1089,7 @@ public class WizardTool extends BuilderTool {
     */
    public boolean getCanReviewTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+            getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
    }
 
    /**
@@ -1095,7 +1099,7 @@ public class WizardTool extends BuilderTool {
     */
    public boolean getCanEvaluateTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+            getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
    }
 
    /**
@@ -1137,26 +1141,26 @@ public class WizardTool extends BuilderTool {
    public boolean getCanDelete(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
       return (getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
-            wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+            wizard.getId()) || getSessionManager().getCurrentSessionUserId().equalsIgnoreCase(
                   wizard.getOwner().getId().getValue()));
    }
    
    public boolean getCanEdit(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EDIT_WIZARD, 
-            wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+            wizard.getId()) || getSessionManager().getCurrentSessionUserId().equalsIgnoreCase(
                   wizard.getOwner().getId().getValue());
    }
    
    public boolean getCanExport(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EXPORT_WIZARD, 
-            wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+            wizard.getId()) || getSessionManager().getCurrentSessionUserId().equalsIgnoreCase(
                   wizard.getOwner().getId().getValue());
    }
    
    protected Collection getFormsForSelect(String type) {
-      Placement placement = ToolManager.getCurrentPlacement();
+      Placement placement = getToolManager().getCurrentPlacement();
       String currentSiteId = placement.getContext();
       Collection forms = 
                getWizardManager().getAvailableForms(currentSiteId, type);
@@ -1185,10 +1189,10 @@ public class WizardTool extends BuilderTool {
    protected Collection getWizardsForSelect(String type) {
       //TODO is only here just in case we decide to give wizards types
       // The type isn't being used yet
-      Placement placement = ToolManager.getCurrentPlacement();
+      Placement placement = getToolManager().getCurrentPlacement();
       String currentSiteId = placement.getContext();
       List wizards = getWizardManager().listWizardsByType(
-            SessionManager.getCurrentSessionUserId(), currentSiteId, type);
+            getSessionManager().getCurrentSessionUserId(), currentSiteId, type);
       
       List retWizards = new ArrayList();
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
@@ -1402,9 +1406,17 @@ public class WizardTool extends BuilderTool {
       authManager = manager;
    }
 
+   public void setAgentManager(AgentManager agentManager) {
+	   this.agentManager = agentManager;
+   }
+
+   public AgentManager getAgentManager() {
+	   return agentManager;
+   }
+
    public TaggingManager getTaggingManager() {
-		return taggingManager;
-	}
+	   return taggingManager;
+   }
 
 	public void setTaggingManager(TaggingManager taggingManager) {
 		this.taggingManager = taggingManager;
@@ -1419,8 +1431,40 @@ public class WizardTool extends BuilderTool {
 		this.wizardActivityProducer = wizardActivityProducer;
 	}
 	
+   public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+   }
+
+   public SessionManager getSessionManager() {
+	   return sessionManager;
+   }
+
+   public void setToolManager(ToolManager toolManager) {
+	   this.toolManager = toolManager;
+   }
+
+   public ToolManager getToolManager() {
+	   return toolManager;
+   }
+
+   public void setSiteService(SiteService siteService) {
+	   this.siteService = siteService;
+   }
+
+   public SiteService getSiteService() {
+	   return siteService;
+   }
+
+   public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
+	   this.userDirectoryService = userDirectoryService;
+   }
+
+   public UserDirectoryService getUserDirectoryService() {
+	   return userDirectoryService;
+   }
+
    public String getLastSaveWizard() {
-      return lastSaveWizard;
+	   return lastSaveWizard;
    }
 
    public void setLastSaveWizard(String lastSaveWizard) {
@@ -1429,7 +1473,7 @@ public class WizardTool extends BuilderTool {
 
    protected void checkSubmittedPage()
    {
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
       if(session.getAttribute("submittedPage") != null) {
          WizardPage page = (WizardPage)session.getAttribute("submittedPage");
          session.removeAttribute("submittedPage");
@@ -1439,7 +1483,7 @@ public class WizardTool extends BuilderTool {
    }
    protected void checkSavedPage()
    {
-      ToolSession session = SessionManager.getCurrentToolSession();
+      ToolSession session = getSessionManager().getCurrentToolSession();
       if(session.getAttribute("savedPage") != null) {
          session.removeAttribute("savedPage");
          
