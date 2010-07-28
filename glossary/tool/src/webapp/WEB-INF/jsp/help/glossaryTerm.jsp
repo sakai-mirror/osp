@@ -13,7 +13,7 @@
 	<h3><c:out value="${entry.term}" /></h3>
 	<div class="textPanel"><c:out value="${entry.longDescription}" escapeXml="false" /></div>
 	<p class="act">
-		<input type="button" name="Close" value='<c:out value="${msgs.button.close}"/>'
+		<input type="button" name="Close" value='<c:out value="${msgs.button_close}"/>'
 			onclick="window.close()">
 	</p>
 </body>
