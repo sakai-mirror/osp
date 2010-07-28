@@ -130,7 +130,14 @@ $(document).ready(function() {
 														<td style="text-align:right">
 															<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;itemDefId=<c:out value="${itemDefinition.id}"/>"
 												   class="inlineCreate"><fmt:message key="create_new"/></a>
-												   &nbsp;
+													|
+														<a href="#<c:out value="${list1}"/>" 
+															id="edit_<c:out value="${list1}"/>"
+															class="inlineFormEdit" style="display:none;">
+													  <fmt:message key="edit_selected"/></a>
+														<span id="noedit_<c:out value="${list1}"/>"
+															class="itemAction">
+													  <fmt:message key="edit_selected"/></span>
 														</td>
 													</c:if>
 												</tr>
@@ -161,8 +168,10 @@ $(document).ready(function() {
 									<tr>
 										<td style="width:40%">
 											<select multiple="multiple"
+												class="artifactPicker"
 												style="width:100%"
 												size="10"
+												onclick="showEditSelect('<c:out value="${list1}"/>');"
 												id="<c:out value="${list1}"/>"
 												name="<c:out value="${list1}"/>">
                                     
