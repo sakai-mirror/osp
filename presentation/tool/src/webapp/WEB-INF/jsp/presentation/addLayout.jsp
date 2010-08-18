@@ -22,7 +22,7 @@
 </c:choose>
     <p class="instruction">
         <c:out value="${msgs.instructions_addLayout}"/>
-        <c:out value="${msgs.instructions_requiredFields}"/>
+        <c:out value="${msgs.instructions_requiredFields}" escapeXml="false"/>
     </p>
     
     

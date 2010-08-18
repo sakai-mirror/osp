@@ -21,7 +21,7 @@
         <h3><c:out value="${msgs.title_editStyle}"/></h3>
         <p class="instruction">
     </c:if>
-        <c:out value="${msgs.instructions_requiredFields}"/>
+        <c:out value="${msgs.instructions_requiredFields}" escapeXml="false"/>
     </p>
     
     

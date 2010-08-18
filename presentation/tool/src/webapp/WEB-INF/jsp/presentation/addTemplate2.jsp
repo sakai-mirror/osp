@@ -18,7 +18,7 @@
     <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
     <p class="instruction">
         <c:out value="${msgs.instructions_template_new2}"/>
-        <c:out value="${msgs.instructions_requiredFields}"/>
+        <c:out value="${msgs.instructions_requiredFields}" escapeXml="false"/>
     </p>
 
     <spring:bind path="template.renderer">

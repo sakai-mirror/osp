@@ -11,7 +11,7 @@
    
 
     <p class="instructions">
-        <c:out value="${msgs.instructions_addGlossaryTerm}"/>
+        <c:out value="${msgs.instructions_addGlossaryTerm}" escapeXml="false" />
     </p>
     <spring:hasBindErrors name="entry">
         <div class="validation"><c:out value="${msgs.error_add}"/></div>
