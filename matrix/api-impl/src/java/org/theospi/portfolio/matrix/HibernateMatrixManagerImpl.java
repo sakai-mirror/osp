@@ -73,10 +73,15 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.LockManager;
+import org.sakaiproject.email.cover.DigestService;
 import org.sakaiproject.email.cover.EmailService;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -125,8 +130,11 @@ import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.Preferences;
+import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.api.UserNotificationPreferencesRegistration;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -200,7 +208,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private StyleManager styleManager;
    private LinkManager linkManager = null;
    private TaggingManager taggingManager;
-   
+
+   private PreferencesService preferencesService = null;
+   private EntityManager entityManager = null;
+   private UserNotificationPreferencesRegistration matrixPreferencesConfig = null;
+   private UserNotificationPreferencesRegistration wizardPreferencesConfig = null;
 
 private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
@@ -3501,6 +3513,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	String pageType = isMatrix ? messages.getString("email_matrixCell") : messages.getString("email_wizardPage");
     	String pageTool = isMatrix ? messages.getString("email_matrix") : messages.getString("email_wizard");
     	boolean evaluation = MatrixFunctionConstants.EVALUATE_MATRIX.equals(function);
+    	String notificationId = "";
     	
     	String id = wizPage.getId()!=null ? wizPage.getId().getValue() : wizPage.getNewId().getValue();
     	
@@ -3524,9 +3537,11 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     		if(isMatrix){
     			toolConfig = wpSite.getToolForCommonId("osp.matrix");
     			placement = toolConfig.getId();
+    			notificationId = getMatrixPreferencesConfig().getType();
     		}else{
     			toolConfig = wpSite.getToolForCommonId("osp.wizard");
     			placement = toolConfig.getId();
+    			notificationId = getWizardPreferencesConfig().getType();
     		}
     		url =	ServerConfigurationService.getServerUrl() + 
     		"/direct/matrixcell/" + wizPage.getId().getValue() + "/" + placement + "/viewCell.osp";
@@ -3593,7 +3608,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     			}
     			
     			//send the emails
-    			sendEmailNotifications(emails, isMatrix, from, subject, emailBody, subjectAnon, emailBodyAnon, scaffoldRef, isOwner, evaluation);
+    			sendEmailNotifications(emails, isMatrix, from, subject, emailBody, subjectAnon, emailBodyAnon, scaffoldRef, isOwner, evaluation, wpSite.getId(), notificationId);
     			
     		} catch (Exception e) {
     			e.printStackTrace();
@@ -3603,7 +3618,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	}
 	}
 	
-	public void sendEmailNotifications(HashMap<String, String> emails, boolean isMatrix, String from, String subject, String emailBody, String subjectAnon, String emailBodyAnon, String scaffoldRef, boolean isOwner, boolean isEvaluation){
+	public void sendEmailNotifications(HashMap<String, String> emails, boolean isMatrix, 
+			String from, String subject, String emailBody, String subjectAnon, String emailBodyAnon, 
+			String scaffoldRef, boolean isOwner, boolean isEvaluation, String siteId, String notificationId){
 		Id scaffoldId = getIdManager().getId(scaffoldRef);
 		//Send the emails
 		if(emails != null && emails.keySet() != null){
@@ -3615,16 +3632,65 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 						//check if the reviewer/evaluator has privilage to view the uses name 
 						canViewUsername = getAuthzManager().isAuthorized(getAgentManager().getAgent(userId), MatrixFunctionConstants.ACCESS_USERLIST, scaffoldId);
 					}
-					if(canViewUsername){
-						EmailService.send(from, email,
-							subject, emailBody, null, null, null);
-					}else{
-						EmailService.send(from, email,
-								subjectAnon, emailBodyAnon, null, null, null);
+					int userPref = getNotificationOption(userId, notificationId, siteId);
+					
+					if (userPref == NotificationService.PREF_DIGEST) {
+						logger.debug("sendEmailNotifications() - Sending digest to " + email);
+						if(canViewUsername){
+							DigestService.digest(userId, subject, emailBody);
+						}else{
+							DigestService.digest(userId, subjectAnon, emailBodyAnon);
+						}
+					}
+					else if (userPref == NotificationService.PREF_IMMEDIATE) {
+						logger.debug("sendEmailNotifications() - Sending message to " + email);
+						if(canViewUsername){
+							EmailService.send(from, email,
+									subject, emailBody, null, null, null);
+						}else{
+							EmailService.send(from, email,
+									subjectAnon, emailBodyAnon, null, null, null);
+						}
+					}
+					else {
+						logger.debug("sendEmailNotifications() - Sending nothing to " + email);
 					}
 				}
 			}
 		}		
+	}
+	
+
+	public int getNotificationOption(String userId, String notificationId, String siteId)
+	{
+		String priStr = Integer.toString(NotificationService.NOTI_OPTIONAL);
+
+		Preferences prefs = getPreferencesService().getPreferences(userId);
+
+		// get the user's site override preference for this notification
+		ResourceProperties props = prefs.getProperties(NotificationService.PREFS_TYPE + notificationId + NotificationService.NOTI_OVERRIDE_EXTENSION);
+		try
+		{
+			int option = (int) props.getLongProperty(siteId);
+			if (option != NotificationService.PREF_NONE) return option;
+		}
+		catch (Throwable ignore)
+		{
+		}
+
+		// get the user's preference for this notification
+		props = prefs.getProperties(NotificationService.PREFS_TYPE + notificationId);
+		try
+		{
+			int option = (int) props.getLongProperty(priStr);
+			if (option != NotificationService.PREF_NONE) return option;
+		}
+		catch (Throwable ignore)
+		{
+		}
+		
+		// nothing defined...
+		return NotificationService.PREF_IMMEDIATE;
 	}
 	
 	/**
@@ -3678,43 +3744,44 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		}
 
 
-		User user;
+		User user = null;
 		for (Iterator iterator = evaluators.iterator(); iterator.hasNext();) {
 			Authorization az = (Authorization) iterator.next();
 			Agent agent = az.getAgent();
-			try {
-				if (agent.isRole()) {
-					for (Iterator j = site.getMembers().iterator(); j.hasNext();) {
-						Member member = (Member) j.next();
-						
-						if (member.getRole().getId().equals(az.getAgent().getDisplayName())){
-							user = UserDirectoryService.getUserByEid(
-									member.getUserEid().toString());
-							
-							if(!groupAware || (groupAware && usersInGroup.contains(user))) {
-								String email;
-								
-								email = user.getEmail();
-								if (validateEmail(email)
-										&& !returnMap.containsValue(email)) {
-									returnMap.put(user.getId(), email);
-								}
+
+			if (agent.isRole()) {
+				for (String userId : (Set<String>)site.getUsersHasRole(agent.getDisplayName())) {
+					try {
+						user = UserDirectoryService.getUser(userId);
+
+						if(!groupAware || (groupAware && usersInGroup.contains(user))) {
+							String email;
+
+							email = user.getEmail();
+							if (validateEmail(email)
+									&& !returnMap.containsValue(email)) {
+								returnMap.put(user.getId(), email);
 							}
 						}
+					} catch (UserNotDefinedException e) {
+						e.printStackTrace();
+
 					}
-				} else {
+				}
+			} else {
+				try {
 					user = UserDirectoryService.getUserByEid(
 							agent.getEid().toString());
-					
+
 					if(!groupAware || (groupAware && usersInGroup.contains(user))){
 						String email = user.getEmail();
 						if (validateEmail(email) && !returnMap.containsValue(email)) {
 							returnMap.put(user.getId(), email);
 						}
 					}
+				} catch (UserNotDefinedException e) {
+					e.printStackTrace();
 				}
-			}catch (UserNotDefinedException e) {
-				e.printStackTrace();
 			}
 		}
 		
@@ -4012,6 +4079,38 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		}
 		
 		return canAccessCell && isPageLinked;
+	}
+
+	public PreferencesService getPreferencesService() {
+		return preferencesService;
+	}
+
+	public void setPreferencesService(PreferencesService preferencesService) {
+		this.preferencesService = preferencesService;
+	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
+	public void setMatrixPreferencesConfig(UserNotificationPreferencesRegistration matrixPreferencesConfig) {
+		this.matrixPreferencesConfig = matrixPreferencesConfig;
+	}
+
+	public UserNotificationPreferencesRegistration getMatrixPreferencesConfig() {
+		return matrixPreferencesConfig;
+	}
+
+	public void setWizardPreferencesConfig(UserNotificationPreferencesRegistration wizardPreferencesConfig) {
+		this.wizardPreferencesConfig = wizardPreferencesConfig;
+	}
+
+	public UserNotificationPreferencesRegistration getWizardPreferencesConfig() {
+		return wizardPreferencesConfig;
 	}
 
 }

@@ -45,6 +45,9 @@
             <property name="siteService">
                <ref bean="org.sakaiproject.site.api.SiteService" />
             </property>
+            <property name="matrixPreferencesConfig">
+               <ref bean="org.sakaiproject.user.api.UserNotificationPreferencesRegistration.matrix" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -574,6 +577,12 @@
             </property>
             <property name="workflowManager">
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
+            <property name="matrixPreferencesConfig">
+               <ref bean="org.sakaiproject.user.api.UserNotificationPreferencesRegistration.matrix" />
+            </property>
+            <property name="wizardPreferencesConfig">
+               <ref bean="org.sakaiproject.user.api.UserNotificationPreferencesRegistration.wizard" />
             </property>
          </bean>
       </property>

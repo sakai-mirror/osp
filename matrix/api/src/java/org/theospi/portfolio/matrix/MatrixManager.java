@@ -414,4 +414,16 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 * @return
 	 */
 	public boolean canUserAccessWizardPageAndLinkedArtifcact(String siteId, String pageId, String linkedArtifactId);
+	
+	/**
+	 * Get the user's notification option for this... one of the NotificationService's PREF_
+	 * settings.
+	 * If the user has no prefs set, the default of NotificationService.PREF_IMMEDIATE will be used.
+	 * 
+	 * @param userId
+	 * @param notificationId
+	 * @param siteId
+	 * @return
+	 */
+	public int getNotificationOption(String userId, String notificationId, String siteId);
 }
