@@ -2031,6 +2031,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Element description = new Element("description");
       description.setText(presentation.getDescription());
       root.addContent(description);
+      
+      Element site = new Element("siteId");
+      site.setText(presentation.getSiteId());
+      root.addContent(site);
 
       for (Iterator i = items.iterator(); i.hasNext();) {
          PresentationItem item = (PresentationItem) i.next();
@@ -2060,7 +2064,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Node propNode = getNode(presentation.getPropertyForm());
       if (presentation.getPropertyForm() != null && propNode != null) {
          Element presProperties = new Element("presentationProperties");
-         
+         if (propNode.getResource() != null) {
+	         String ref = propNode.getResource().getReference();
+	         String uuid = presentation.getPropertyForm().getValue();
+	         String id = propNode.getResource().getId();
+	         presProperties.setAttribute("formRef", ref);
+	         presProperties.setAttribute("formId", id);
+	         presProperties.setAttribute("formUuid", uuid);
+         }
+                  
          Document doc = new Document();
          SAXBuilder saxBuilder = new SAXBuilder();
          try {
@@ -2201,6 +2213,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
       
+      if (presentation.getPropertyForm() != null) {
+    	  String propform_uuid = presentation.getPropertyForm().getValue();
+    	  String propform_id = getContentHosting().resolveUuid(propform_uuid);
+    	  readableFiles.add(getContentHosting().getReference(propform_id));
+      }
 
       getSecurityService().pushAdvisor(
          new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, readableFiles));

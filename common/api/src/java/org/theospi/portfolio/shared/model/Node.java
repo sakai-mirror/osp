@@ -25,6 +25,7 @@ import java.io.InputStream;
 
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
@@ -50,6 +51,21 @@ public class Node {
       createNode( id, resource, owner );
       this.locked = locked;
    }
+   
+   /**
+    * This constructor will override the "normal" externalUri by appending with a decorator
+    * 	<code>FormHelper.URL_DECORATION + "=" + decoration</code>
+    * @param id
+    * @param resource
+    * @param owner
+    * @param locked
+    * @param decoration
+    */
+   public Node(Id id, ContentResource resource, Agent owner, boolean locked, String decoration) {
+	      createNode( id, resource, owner );
+	      this.locked = locked;
+	      externalUri = externalUri + "?" + FormHelper.URL_DECORATION + "=" + decoration;
+	   }
    
    private void createNode(Id id, ContentResource resource, Agent owner) {
       this.resource = resource;
