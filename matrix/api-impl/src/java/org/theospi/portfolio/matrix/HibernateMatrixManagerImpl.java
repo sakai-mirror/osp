@@ -1175,23 +1175,55 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
-      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+      String[] paramNames;
+      
+      boolean rolesNotEmpty = (roles != null && roles.size() > 0);
+      boolean sitesNotEmpty = (worksiteIds != null && worksiteIds.size() > 0);
+      Object[] params;
+      if(rolesNotEmpty && sitesNotEmpty){
+    	  paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+    	  params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
                                       MatrixFunctionConstants.PENDING_STATUS,
                                       agent, roles, worksiteIds};
-	
-      List matrixCells = this.getHibernateTemplate().findByNamedParam("select distinct new " +
-            "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
-            "wp.id, " +
-            "wp.pageDefinition.title, c.matrix.owner, " +
-            "c.wizardPage.modified, wp.pageDefinition.siteId) " +
-            "from WizardPage wp, Authorization auth, Cell c " +
-            "where wp.pageDefinition.id = auth.qualifier " +
-            "and wp.id = c.wizardPage.id " +
-            "and auth.function = :evaluate and wp.status = :pendingStatus and " +
-            "(auth.agent=:user or auth.agent in ( :roles )) " +
-            "and wp.pageDefinition.siteId in ( :siteIds )", 
-             paramNames, params );
+      }else{
+    	  if(!rolesNotEmpty){
+    		  if(!sitesNotEmpty){
+    			  paramNames = new String[] {"evaluate", "pendingStatus", "user"};
+    			  params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+                          MatrixFunctionConstants.PENDING_STATUS,
+                          agent};
+    		  }else{
+    			  paramNames = new String[] {"evaluate", "pendingStatus", "user", "siteIds"};
+    			  params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+                          MatrixFunctionConstants.PENDING_STATUS,
+                          agent, worksiteIds};
+    		  }
+    	  }else{
+    		  paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles"};
+    		  params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+                      MatrixFunctionConstants.PENDING_STATUS,
+                      agent, roles};
+    	  }
+      }
+
+      String evaluatableQuery = "select distinct new " +
+      "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
+      "wp.id, " +
+      "wp.pageDefinition.title, c.matrix.owner, " +
+      "c.wizardPage.modified, wp.pageDefinition.siteId) " +
+      "from WizardPage wp, Authorization auth, Cell c " +
+      "where wp.pageDefinition.id = auth.qualifier " +
+      "and wp.id = c.wizardPage.id " +
+      "and auth.function = :evaluate and wp.status = :pendingStatus and " +
+      "(auth.agent=:user";      		
+      if(rolesNotEmpty)
+    	  evaluatableQuery += " or auth.agent in ( :roles )";
+      evaluatableQuery += ") ";
+      if(sitesNotEmpty)
+    	  evaluatableQuery += "and wp.pageDefinition.siteId in ( :siteIds )";
+
+      List matrixCells = this.getHibernateTemplate().findByNamedParam(evaluatableQuery, 
+    		  paramNames, params );
 
       // filter out group-restricted users
       List filteredMatrixCells = new ArrayList();

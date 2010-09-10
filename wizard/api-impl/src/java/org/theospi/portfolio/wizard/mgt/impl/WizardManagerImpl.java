@@ -2443,24 +2443,56 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    protected List getEvaluatableWizardPages(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
-      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-                                      MatrixFunctionConstants.PENDING_STATUS,
-                                      agent, roles, worksiteIds};
-	
-      List wizardPages = this.getHibernateTemplate().findByNamedParam("select distinct new " +
-            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
-            "cwp.wizardPage.id, " +
-            "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
-            "cwp.wizardPage.modified, " +
-            "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
-            "from CompletedWizardPage cwp, " +
-            "Authorization auth " +
-            "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
-            "and auth.function = :evaluate and cwp.wizardPage.status = :pendingStatus and " +
-            "(auth.agent=:user or auth.agent in ( :roles )) " +
-            " and cwp.wizardPage.pageDefinition.siteId in ( :siteIds )",
-             paramNames, params );
+	   String[] paramNames;
+	   Object[] params;
+
+	   boolean rolesNotEmpty = (roles != null && roles.size() > 0);
+	   boolean sitesNotEmpty = (worksiteIds != null && worksiteIds.size() > 0);
+	   if(rolesNotEmpty && sitesNotEmpty){
+		   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+		   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+				   MatrixFunctionConstants.PENDING_STATUS,
+				   agent, roles, worksiteIds};
+	   }else{
+		   if(!rolesNotEmpty){
+			   if(!sitesNotEmpty){
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user"};
+				   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent};
+			   }else{
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user", "siteIds"};
+				   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent, worksiteIds};
+			   }
+		   }else{
+			   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles"};
+			   params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+					   MatrixFunctionConstants.PENDING_STATUS,
+					   agent, roles};
+		   }
+	   }
+
+
+	   String evaulatableSQL = "select distinct new " +
+	   "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
+	   "cwp.wizardPage.id, " +
+	   "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
+	   "cwp.wizardPage.modified, " +
+	   "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
+	   "from CompletedWizardPage cwp, " +
+	   "Authorization auth " +
+	   "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
+	   "and auth.function = :evaluate and cwp.wizardPage.status = :pendingStatus and " +
+	   "(auth.agent=:user";
+	   if(rolesNotEmpty)
+		   evaulatableSQL += " or auth.agent in ( :roles )";
+	   evaulatableSQL += ") ";
+	   if(sitesNotEmpty)
+		   evaulatableSQL += " and cwp.wizardPage.pageDefinition.siteId in ( :siteIds )";
+
+	   List wizardPages = this.getHibernateTemplate().findByNamedParam(evaulatableSQL, paramNames, params );
       
       // filter out group-restricted users
       List filteredWizardPages = new ArrayList();
@@ -2485,26 +2517,61 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    protected List getEvaluatableWizards(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
-     
-      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
-                                      MatrixFunctionConstants.PENDING_STATUS,
-                                      agent, roles, worksiteIds};
-	
-      List wizards = this.getHibernateTemplate().findByNamedParam("select distinct new " +
-            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
-            "cw.wizard.id, " +
-            "cw.wizard.name, cw.owner, " +
-            "cw.created, cw.wizard.siteId) " +
-            "from CompletedWizard cw, " +
-            "Authorization auth " +
-            "where cw.wizard.id = auth.qualifier " +
-            "and auth.function = :evaluate and cw.status = :pendingStatus and " +
-				"(auth.agent=:user or auth.agent in ( :roles )) " +
-            " and cw.wizard.siteId in ( :siteIds )",
-             paramNames, params );
-				
-      // filter out group-restricted users
+	   
+	   String[] paramNames;
+	   Object[] params;
+
+	   boolean rolesNotEmpty = (roles != null && roles.size() > 0);
+	   boolean sitesNotEmpty = (worksiteIds != null && worksiteIds.size() > 0);
+	   if(rolesNotEmpty && sitesNotEmpty){
+		   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+		   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+				   MatrixFunctionConstants.PENDING_STATUS,
+				   agent, roles, worksiteIds};
+	   }else{
+		   if(!rolesNotEmpty){
+			   if(!sitesNotEmpty){
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user"};
+				   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent};
+			   }else{
+				   paramNames = new String[] {"evaluate", "pendingStatus", "user", "siteIds"};
+				   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+						   MatrixFunctionConstants.PENDING_STATUS,
+						   agent, worksiteIds};
+			   }
+		   }else{
+			   paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles"};
+			   params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+					   MatrixFunctionConstants.PENDING_STATUS,
+					   agent, roles};
+		   }
+	   }
+
+
+	   String evaluatableSQL = "select distinct new " +
+	   "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
+	   "cw.wizard.id, " +
+	   "cw.wizard.name, cw.owner, " +
+	   "cw.created, cw.wizard.siteId) " +
+	   "from CompletedWizard cw, " +
+	   "Authorization auth " +
+	   "where cw.wizard.id = auth.qualifier " +
+	   "and auth.function = :evaluate and cw.status = :pendingStatus and " +
+	   "(auth.agent=:user";
+	   
+	   if(rolesNotEmpty)
+		   evaluatableSQL += " or auth.agent in ( :roles )";
+	   
+	   evaluatableSQL += ") ";
+	   
+	   if(sitesNotEmpty)
+		   evaluatableSQL += " and cw.wizard.siteId in ( :siteIds )";
+	   
+	   List wizards = this.getHibernateTemplate().findByNamedParam(evaluatableSQL, paramNames, params );
+
+	   // filter out group-restricted users
       List filteredWizards = new ArrayList();
       for ( Iterator it=wizards.iterator(); it.hasNext(); ) {
          EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
