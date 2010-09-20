@@ -30,7 +30,7 @@
    
    <sakai:instruction_message value="#{msgs.wizard_instructions}" />
       
-   <sakai:instruction_message value="#{msgs.instructions_requiredFields}" escapeXml="false"/>
+   <sakai:instruction_message value="#{msgs.instructions_requiredFields}"/>
    
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
