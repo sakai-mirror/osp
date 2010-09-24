@@ -85,7 +85,7 @@
             <props>
                <prop key="/editPermissions.osp">editPermissionsController</prop>
                <prop key="/editPermissions_new.osp">editPermissionsNewController</prop>
-               
+               <prop key="/prefs.osp">preferencesController</prop>
                <!-- Style -->
                <prop key="/listAssignment.osp">listAssignmentController</prop>
                <prop key="/listStyle.osp">listStyleController</prop>
@@ -162,4 +162,21 @@
       -->
    </bean>
    
+   <bean id="preferencesController" class="org.theospi.portfolio.prefs.control.PreferencesController">
+      <property name="preferencesService"
+         ref="org.sakaiproject.user.api.PreferencesService" />
+      <property name="authManager" ref="authManager"/>
+      <property name="toolManager">
+         <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
+      </property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="successView" value="prefsRedirect"/>
+      <property name="commandName" value="pref" />
+      <property name="commandClass" value="org.theospi.portfolio.prefs.control.NotificationPreferenceBean" />
+      <property name="formView" value="prefs"/>
+      <property name="bindOnNewForm" value="true"/>      
+   </bean>
+
 </beans>

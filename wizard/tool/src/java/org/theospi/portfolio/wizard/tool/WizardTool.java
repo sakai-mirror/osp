@@ -54,7 +54,9 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.api.UserNotificationPreferencesRegistration;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.util.Validator;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -117,6 +119,7 @@ public class WizardTool extends BuilderTool {
    private IdManager idManager;
    private DecoratedWizard current = null;
    private DecoratedWizardPage currentPage = null;
+   private UserNotificationPreferencesRegistration wizardPreferencesConfig;
 
    private String expandedGuidanceSection = "false";
    private List wizardTypes = null;
@@ -1539,6 +1542,31 @@ public class WizardTool extends BuilderTool {
    public String getStatusMessage(){
 	   return this.getMessageFromBundle("status_warning", 
 			   new Object[]{this.getCurrent().getRunningWizard().getBase().getStatus()});
+   }
+   
+   public void setWizardPreferencesConfig(UserNotificationPreferencesRegistration wizardPreferencesConfig) {
+	   this.wizardPreferencesConfig = wizardPreferencesConfig;
+   }
+
+   public UserNotificationPreferencesRegistration getWizardPreferencesConfig() {
+	   return wizardPreferencesConfig;
+   }
+
+   public String getTypeKey() {
+	   String typeKey = getWizardPreferencesConfig().getType();
+	   return typeKey;
+   }
+   
+   public String getActionPrefsText() {
+	   return myResources.getString("action_prefs");
+   }
+   
+   public String getPrefsQualifierText() {
+	   return myResources.getString("prefs_qualifier");
+   }
+   
+   public String getPanelId() {
+	   return Validator.escapeJavascript("Main" + getToolManager().getCurrentPlacement().getId());
    }
 
 }

@@ -4,6 +4,8 @@
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
 <%@ taglib uri="http://www.theospi.org/help/jsf" prefix="help" %>
 <%@ taglib uri="http://myfaces.apache.org/tomahawk" prefix="t" %>
+<%@ taglib prefix="osp" uri="http://www.theospi.org" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 
 <%
       response.setContentType("text/html; charset=UTF-8");
@@ -15,13 +17,33 @@
 
 <f:view>
 <sakai:view>
+<f:verbatim>
+	<script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery.min.js"></script>	
+	<script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/dialog.js"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="/osp-common-tool/css/dialog.css" />
+
+<script type="text/javascript" language="JavaScript">
+	<!--
+	
+   function resetHeight() {
+	   setMainFrameHeight('</f:verbatim><h:outputText value="#{wizard.panelId}"/><f:verbatim>');
+   }
+
+	iframeId = '</f:verbatim><h:outputText value="#{wizard.panelId}"/><f:verbatim>';
+
+    -->
+  </script>
+
+</f:verbatim>
+
 <h:form>
 
 <t:aliasBeansScope>
 <t:aliasBean alias="#{wizardCreate}" value="#{wizard.canCreate}" />
 <t:aliasBean alias="#{wizardMaintainer}" value="#{wizard.maintainer}" />
 
-<sakai:tool_bar rendered="#{wizardCreate ||  wizardMaintainer}">
+<sakai:tool_bar>
       <sakai:tool_bar_item rendered="#{wizardCreate}"
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
@@ -33,8 +55,29 @@
       <sakai:tool_bar_item rendered="#{wizardMaintainer}"
           action="#{wizard.processPermissions}"
           value="#{msgs.permissions_link}" />
-
+      <f:subview id="prefsView">
+      <f:verbatim>
+      <a href="#"
+         	onclick="dialogutil.openDialog('#dialogDiv', '#dialogFrame', '<osp:url value="osp.prefs.helper/prefs">
+         		<osp:param name="dialogDivId" value="#dialogDiv" />
+         		<osp:param name="typeKey" value="${wizard.typeKey}" />
+         		<osp:param name="qualifier_text" value="${wizard.prefsQualifierText}"/>
+         		<osp:param name="prefsSiteSavedDiv" value="#prefsSiteSavedDiv" />
+         		<osp:param name="prefsAllSavedDiv" value="#prefsAllSavedDiv" />
+         		<osp:param name="toolId" value="osp.wizard" />
+         		<osp:param name="frameId" value="#dialogFrame" />
+         		</osp:url>');"
+               title="${wizard.actionPrefsText}"></f:verbatim><h:outputText value="#{msgs.action_prefs}"/><f:verbatim></a></f:verbatim> 
+		</f:subview>
    </sakai:tool_bar>
+   
+   <f:verbatim>
+	  <div id="dialogDiv" style="display:none">
+         <iframe id="dialogFrame" width="100%" height="100%" frameborder="0">
+         </iframe>
+      </div>
+   </f:verbatim>
+   
    <sakai:view_title value="#{msgs.wizard_title}" rendered="#{wizardCreate ||  wizardMaintainer}"/>
    <sakai:view_title value="#{msgs.wizard_title_user}" rendered="#{not (wizardCreate ||  wizardMaintainer)}"/>
    
@@ -45,6 +88,9 @@
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
+   	<t:div styleClass="success" forceId="true" id="prefsSiteSavedDiv" style="display:none"><h:outputText value="#{msgs.prefs_saved_site}" /></t:div>	
+	<t:div styleClass="success" forceId="true" id="prefsAllSavedDiv" style="display:none"><h:outputText value="#{msgs.prefs_saved_all}" /></t:div>	
+   
    
    <h:outputText value="#{wizard.lastSaveWizard} #{msgs.wizard_was_submitted}" styleClass="success" rendered="#{wizard.lastSaveWizard != ''}" />
    <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />

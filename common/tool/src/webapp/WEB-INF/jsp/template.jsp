@@ -19,8 +19,7 @@
           media="all" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <title><%= org.sakaiproject.tool.cover.ToolManager.getCurrentTool().getTitle()%></title>
-    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
-    </script>
+    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
     <script type="text/javascript" src="/osp-common-tool/js/eport.js"></script>
   <%
       String panelId = request.getParameter("panel");
@@ -42,6 +41,10 @@
          parent.resetHeight();
       }
    }
+
+   iframeId = '<%= org.sakaiproject.util.Validator.escapeJavascript(panelId)%>';
+
+   
   </script>
   </head>
 

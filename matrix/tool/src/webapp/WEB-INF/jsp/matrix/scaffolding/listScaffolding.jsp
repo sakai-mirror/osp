@@ -8,6 +8,12 @@
     	thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
  		 }
 %>
+
+<script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery-ui.min.js"></script>
+<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/dialog.js"></script>
+
+<link rel="stylesheet" type="text/css" media="all" href="/osp-common-tool/css/dialog.css" />
+
 <script type="text/javascript">
 	function resize(){
 		mySetMainFrameHeight('<%= org.sakaiproject.util.Web.escapeJavascript(thisId)%>');
@@ -135,9 +141,9 @@ function mySetMainFrameHeight(id)
 
 </script>
 
-
+<div class="navIntraTool">
 <c:if test="${!myworkspace && (can.create || isMaintainer)}">
-   <div class="navIntraTool">
+   
         <c:if test="${can.create}">
             <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><c:out value="${msgs.action_create}"/></a> 
             <c:if test="${empty matrixContents.scaffolding}">
@@ -159,13 +165,30 @@ function mySetMainFrameHeight(id)
             <c:out value="${msgs.action_permissions}"/>
              </a>
          </c:if>
-    </div>
 </c:if>
-
+    <div id="dialogDiv" style="display:none">
+       <iframe id="dialogFrame" width="100%" height="100%" frameborder="0"></iframe>
+    </div>
+         <a href="#"
+         	onclick="dialogutil.openDialog('#dialogDiv', '#dialogFrame', '<osp:url value="osp.prefs.helper/prefs">
+         		<osp:param name="dialogDivId" value="#dialogDiv" />
+         		<osp:param name="typeKey" value="${typeKey}" />
+         		<osp:param name="qualifier_text"><fmt:message key="prefs_qualifier"/></osp:param>
+         		<osp:param name="prefsSiteSavedDiv" value="#prefsSiteSavedDiv" />
+         		<osp:param name="prefsAllSavedDiv" value="#prefsAllSavedDiv" />
+         		<osp:param name="toolId" value="osp.matrix" />
+         		<osp:param name="frameId" value="#dialogFrame" />
+         		</osp:url>')"
+               title="<fmt:message key="action_prefs"/>"><fmt:message key="action_prefs"/></a>
+         
+    </div>
 
 <c:if test="${toolPermissionSaved}">
 	<div class="success"><c:out value="${msgs.changesSaved}"/></div>	
 </c:if>
+
+	<div class="success" id="prefsSiteSavedDiv" style="display:none"><fmt:message key="prefs_saved_site"/></div>	
+	<div class="success" id="prefsAllSavedDiv" style="display:none"><fmt:message key="prefs_saved_all"/></div>	
 
 
 <div class="navPanel">

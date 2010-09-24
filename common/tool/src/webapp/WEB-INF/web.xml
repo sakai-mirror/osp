@@ -123,6 +123,14 @@
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>osp.prefs</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
 
    <filter-mapping>
        <filter-name>sakai.request</filter-name>
@@ -304,7 +312,26 @@
            <param-value>true</param-value>
        </init-param>
      <load-on-startup>2</load-on-startup>
-  </servlet>
+   </servlet>
+    
+    <servlet>
+        <servlet-name>osp.prefs</servlet-name>
+        <servlet-class>org.theospi.portfolio.spring.util.SpringToolNoStack</servlet-class>
+        <init-param>
+            <param-name>default</param-name>
+            <param-value>prefs</param-value>
+        </init-param>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value></param-value>
+        </init-param>
+        <init-param>
+            <param-name>default.last.view</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    
 
    <servlet>
       <servlet-name>springapp</servlet-name>
