@@ -36,43 +36,44 @@ import org.sakaiproject.util.FormattedText;
 public class GlossaryEntryValidator extends ValidatorBase {
 
 
-   public boolean supports(Class clazz) {
-      if (GlossaryEntry.class.isAssignableFrom(clazz)) return true;
-      else return false;
-   }
+	public boolean supports(Class clazz) {
+		if (GlossaryEntry.class.isAssignableFrom(clazz)) return true;
+		else return false;
+	}
 
-   /* (non-Javadoc)
-    * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
-    */
-   public void validate(Object obj, Errors errors) {
-      GlossaryEntry entry = (GlossaryEntry)obj;
-      if (entry.getTerm() == null || entry.getTerm().equals("")) {
+	/* (non-Javadoc)
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+	 */
+	public void validate(Object obj, Errors errors) {
+		GlossaryEntry entry = (GlossaryEntry)obj;
+		if (entry.getTerm() == null || entry.getTerm().equals("")) {
          errors.rejectValue("term", "error.required", "required");
-      }
-      if (entry.getTerm() != null && entry.getTerm().length() > 255) {
+		}
+		if (entry.getTerm() != null && entry.getTerm().length() > 255) {
          errors.rejectValue("description", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters");
-      }
-      if (entry.getDescription() == null || entry.getDescription().equals("")) {
+		}
+		if (entry.getDescription() == null || entry.getDescription().equals("")) {
          errors.rejectValue("description", "error.required", "required");
-      }
-      if (entry.getDescription() != null && entry.getDescription().length() > 255) {
+		}
+		if (entry.getDescription() != null && entry.getDescription().length() > 255) {
          errors.rejectValue("description", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters");
-      }
-      if (entry.getLongDescription() == null || entry.getLongDescription().equals("")) {
+		}
+      if (entry.getLongDescription() == null || entry.getLongDescription().equals("")
+			|| entry.getLongDescription().equals("<br />")) {
          errors.rejectValue("longDescription", "error.required", "required");
-      }
-      
-      StringBuilder sbError = new StringBuilder();
-      String testLongDesc = FormattedText.processFormattedText(entry.getLongDescription(), sbError);
-      if (sbError.length() > 0) {
+		}
+
+		StringBuilder sbError = new StringBuilder();
+		String testLongDesc = FormattedText.processFormattedText(entry.getLongDescription(), sbError);
+		if (sbError.length() > 0) {
          errors.rejectValue("longDescription", "error.html.format", sbError.toString());
-      }
-      else {
-         entry.setLongDescription(testLongDesc);
-      }
-      
-     //TODO Should there be a length check on the long description?
-      
-   }
+		}
+		else {
+			entry.setLongDescription(testLongDesc);
+		}
+
+		//TODO Should there be a length check on the long description?
+		
+	}
 
 }
