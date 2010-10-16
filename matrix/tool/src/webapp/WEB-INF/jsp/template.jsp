@@ -49,6 +49,8 @@
    urlPrefix = '/tool/<%=org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId()%>';
    
   </script>
+  <%= request.getAttribute("editorHeadScript") %>
+  
   </head>
   <body onload="loaded();">
       <div class="portletBody">
