@@ -67,9 +67,12 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
@@ -88,6 +91,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 	
    private ToolManager toolManager;
    private StyleManager styleManager;
+   private ReviewManager reviewManager;
    
    private WizardActivityProducer wizardActivityProducer;
    
@@ -159,16 +163,15 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             if (scaffolding.isPublished() || scaffolding.isPreview()) {
                matrix = getMatrixManager().createMatrix(currentAgent, scaffolding);
             }
-            else {
-               grid.setScaffolding(scaffolding);
-               return incomingModel;
-            }
          }
       }
       
-      //not really sure why this is here, but making sure matrix isn't null
-      if (matrix != null)
-    	  scaffolding = matrix.getScaffolding();
+      if (matrix == null) {
+         grid.setScaffolding(scaffolding);
+         return incomingModel;
+      }
+
+      scaffolding = matrix.getScaffolding();
       
       if (createAuthz) {
          getAuthzManager().createAuthorization(getAuthManager().getAgent(), 
@@ -206,7 +209,13 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
             cellBean.setAssignments(getAssignments(cell.getWizardPage(), matrix.getOwner()));
-            
+
+            String pageId = cell.getWizardPage().getId().getValue();
+            String siteId = cell.getWizardPage().getPageDefinition().getSiteId();
+            cellBean.setReflections( getReviewManager().getReviewsByParentAndType( pageId, Review.REFLECTION_TYPE, siteId, MatrixContentEntityProducer.MATRIX_PRODUCER ) );
+            cellBean.setReviews( getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, MatrixContentEntityProducer.MATRIX_PRODUCER ) );
+            cellBean.setEvaluations( getReviewManager().getReviewsByParentAndType( pageId, Review.EVALUATION_TYPE, siteId, MatrixContentEntityProducer.MATRIX_PRODUCER ) );
+
             if (getMatrixManager().getTaggingManager().isTaggable()) {
     			TaggableItem item = wizardActivityProducer.getItem(cell.getWizardPage());
     			
@@ -433,4 +442,11 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 			WizardActivityProducer wizardActivityProducer) {
 		this.wizardActivityProducer = wizardActivityProducer;
 	}
+
+	public ReviewManager getReviewManager() {
+        return reviewManager;
+    }
+    public void setReviewManager(ReviewManager reviewManager) {
+        this.reviewManager = reviewManager;
+    }
 }

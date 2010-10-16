@@ -1,8 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<fmt:setLocale value="${locale}" />
-<fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
 
 
 <osp-c:authZMap	prefix="osp.wizard." var="wizardCan" qualifier="${siteId}" />
@@ -151,13 +150,13 @@ function mySetMainFrameHeightViewCell(id)
 		key="manage_cell_status" /></a>
 </c:if> <c:if test="${taggable && !(empty helperInfoList)}">
 	<c:forEach var="helperInfo" items="${helperInfoList}">
-		<a title="<c:out value="${helperInfo.description}"/>"
+		<a title='<c:out value="${helperInfo.description}"/>'
 			href="javascript:document.form.submitAction.value='tagItem';document.form.providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.form.submit();">
 		<c:out value="${helperInfo.name}" /> </a>
 	</c:forEach>
 </c:if></div>
 <c:if test="${cell.scaffoldingCell.scaffolding.preview}">
-	<div class="validation"><fmt:message key="title_cellPreview" /></div>
+	<div class="validation"><c:out value="${msgs.title_cellPreview}" /></div>
 </c:if>
 
 <c:if test="${(isWizard != 'true' && (scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser)) || (isWizard == 'true')}">
@@ -174,17 +173,11 @@ function mySetMainFrameHeightViewCell(id)
 	</osp-h:glossary>
 
 	<c:if test="${sequential == 'true'}">
-		<p class="step"><fmt:message key="seq_pages_step">
-			<fmt:param>
-				<c:out value="${currentStep}" />
-			</fmt:param>
-			<fmt:param>
-				<c:out value="${totalSteps}" />
-			</fmt:param>
-			<fmt:param>
+		<p class="step"><c:out value="${msgs.seq_pages_step}"/>
+				<c:out value="${currentStep}" /> / 
+				<c:out value="${totalSteps}" /> :
 				<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
-			</fmt:param>
-		</fmt:message></p>
+		</p>
 	</c:if>
 
 </c:if> <osp-h:glossary link="true" hover="true">
@@ -217,14 +210,11 @@ function mySetMainFrameHeightViewCell(id)
 		
 		
 </osp-h:glossary> <c:if test="${(cell.status != 'READY' && cell.status != 'RETURNED')}">
-	<div class="information"><fmt:message key="status_warning">
-		<fmt:param>
-			<fmt:message key="${cell.status}" />
-		</fmt:param>
-	</fmt:message></div>
+	<div class="information"><c:out value="${msgs.status_warning}"/> <c:out value="${cell.status}" />
+	</div>
 </c:if> 
 <c:if test="${feedbackSent}">
-	<div class="information"><fmt:message key="feedbackSentMessage"/></div>
+	<div class="information"><c:out value="${msgs.feedbackSentMessage}"/></div>
 </c:if>
 
 	<c:if test="${not empty cell.scaffoldingCell.guidance || not empty cell.scaffoldingCell.wizardPageDefinition.description}">
@@ -294,19 +284,19 @@ function mySetMainFrameHeightViewCell(id)
 	<c:if test="${currentStep < (totalSteps)}">
 		<!-- this is included because evaluating a seq wizard the user can browse all the pages -->
 		<input type="submit" name="_next" class="TB_hideControl"
-			value="<fmt:message key="button_continue"/>" accesskey="s" />
+			value="<c:out value="${msgs.button_continue}"/>" accesskey="s" />
 	</c:if>
 
 	<c:if test="${isEvaluation != 'true'}">
 		<c:if test="${currentStep != 1}">
 			<input type="submit" name="_back" class="TB_hideControl"
-				value="<fmt:message key="button_back"/>" accesskey="b" />
+				value="<c:out value="${msgs.button_back}"/>" accesskey="b" />
 		</c:if>
 		<input type="submit" name="matrix" class="TB_hideControl"
-			value="<fmt:message key="button_finish"/>" />
+			value="<c:out value="${msgs.button_finish}"/>" />
 			
 		<!-- 
-	   <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>"/>
+	   <input type="submit" name="cancel" value="<c:out value="${msgs.button_cancel}"/>"/>
 	   -->
 	</c:if>
 </c:if> 
@@ -368,7 +358,7 @@ function mySetMainFrameHeightViewCell(id)
 												((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
 												|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
 		<input type="submit" name="inviteFeedback" class="active TB_hideControl"
-				value="<fmt:message key="share_collection"/>"/>
+				value="<c:out value="${msgs.share_collection}"/>"/>
 	</c:if> 
 <c:if test="${hasAnyReviewers}">
 	<c:if test="${isMatrix == 'true' and (!cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
@@ -377,18 +367,18 @@ function mySetMainFrameHeightViewCell(id)
 											((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
 											|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
 		<input type="submit" name="submitForReview" class="active TB_hideControl"
-			value="<fmt:message key="share_collection"/>" />
+			value="<c:out value="${msgs.share_collection}"/>" />
 	</c:if>
 </c:if>
 
 <c:if test="${isEvaluation == 'true'}">
 	<input type="submit" name="matrix" class="active TB_hideControl"
-		value="<fmt:message key="button_back_to_evaluation"/>" accesskey="x" />
+		value="<c:out value="${msgs.button_back_to_evaluation}"/>" accesskey="x" />
 </c:if> 
 <c:if test="${sequential != 'true' && isEvaluation != 'true'}">
 	<c:if test="${isWizard == 'true'}">
 		<input type="submit" name="matrix" class="active TB_hideControl"
-			value="<fmt:message key="button_back_to_wizard"/>" accesskey="x" />
+			value="<c:out value="${msgs.button_back_to_wizard}"/>" accesskey="x" />
 	</c:if>
 	<!-- Display back button only if this is the users matrix, or the user has accessUserList permission
 		This extra check is based on review access through a link and not through the matrix.  This avoids
@@ -396,7 +386,7 @@ function mySetMainFrameHeightViewCell(id)
 	 -->
 	<c:if test="${isMatrix == 'true' && (scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser)}">
 		<input type="submit" name="matrix" class="active TB_hideControl"
-			value="<fmt:message key="button_back_to_matrix"/>" accesskey="x" />
+			value="<c:out value="${msgs.button_back_to_matrix}"/>" accesskey="x" />
 	</c:if>
 </c:if>
 
@@ -411,10 +401,10 @@ function mySetMainFrameHeightViewCell(id)
 <c:if test="${!matrixCanViewCell}">
 	<c:if test="${isMatrix == 'true'}">
 		<br>
-		<fmt:message key="no_permission"/>	
+		<c:out value="${msgs.no_permission}"/>	
 	</c:if>
 	<c:if test="${(isWizard == 'true' && !(isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
 		<br>
-		<fmt:message key="no_permission"/>
+		<c:out value="${msgs.no_permission}"/>
 	</c:if>
 </c:if>

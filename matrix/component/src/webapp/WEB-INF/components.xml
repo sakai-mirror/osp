@@ -515,6 +515,15 @@
     <property name="siteAssocManager">
       <ref bean="org.sakaiproject.siteassociation.api.SiteAssocManager" />
     </property>
+    <property name="idManager"><ref bean="idManager"/></property>
+    <property name="agentManager"><ref bean="agentManager" /></property>
+	<property name="entityManager">
+       <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+    </property>
+    <property name="matrixManager">
+       <ref bean="matrixManager"/>
+    </property>
+    <property name="authzManager"><ref bean="authzManager"/></property>
   </bean>
 
 </beans>

@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 <c:set var="pres_active_page" value="share" />
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
  
@@ -77,27 +77,27 @@ $(document).ready(function() {
 
 <c:if test="${actionNotify}">
        <div class="messageInformation" id="messageHolder" style="width:20em">
-       <fmt:message key="confirm_notify"/>
+       <c:out value="${msgs.confirm_notify}"/>
        </div>
 </c:if>
 
 <form method="post" name="mainForm">
 
-<p><fmt:message key="share_when_active"/></p>
+<p><c:out value="${msgs.share_when_active}"/></p>
 		
    <c:choose>
      <c:when test="${empty shareList}">
-       <h3 style="padding:0;margin:0"><fmt:message key="pres_share_none"/></h3>
-         <p><a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><fmt:message key="pres_share_add"/></span></a></p>
+       <h3 style="padding:0;margin:0"><c:out value="${msgs.pres_share_none}"/></h3>
+         <p><a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><c:out value="${msgs.pres_share_add}"/></span></a></p>
      </c:when>
      
      <c:otherwise>
          <table width="80%"   style="margin-top:1em">
          <thead>
          <tr>
-         <td><h3 style="padding:0;margin:0"><fmt:message key="pres_share_list"/></h3></td>
+         <td><h3 style="padding:0;margin:0"><c:out value="${msgs.pres_share_list}"/></h3></td>
          <td align="right" class="specialLink">
-         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><fmt:message key="pres_share_more"/></span></a>
+         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><c:out value="${msgs.pres_share_more}"/></span></a>
          </td>
          </tr>
          </thead>
@@ -129,7 +129,7 @@ $(document).ready(function() {
          <tfoot>
          <tr>
          <td colspan="2" align="right" class="specialLink">
-            <a href="javascript:document.mainForm.submit();"  class="removeSmall"><span><fmt:message key="pres_share_rem"/></span></a> 
+            <a href="javascript:document.mainForm.submit();"  class="removeSmall"><span><c:out value="${msgs.pres_share_rem}"/></span></a> 
          </td>
          </tr>
          </tfoot>
@@ -139,13 +139,11 @@ $(document).ready(function() {
 	
    <input type="hidden" name="notify" />
    <p>
-      <fmt:message key="notify_msg"/>
-      &nbsp;&nbsp;&nbsp;
-      <a href="javascript:document.mainForm.notify.value='true'; document.mainForm.submit();"><fmt:message key="send_email"/></a>
-   </p>
+      <a class="shareEmail" href="javascript:document.mainForm.notify.value='true'; document.mainForm.submit();"><c:out value="${msgs.send_email}"/></a>
+   </p><br/>
    
    <h3>
-      <fmt:message key="pres_share_collab"/>
+      <c:out value="${msgs.pres_share_collab}"/>
    </h3>
 
    <div class="checkbox">
@@ -156,12 +154,12 @@ $(document).ready(function() {
          onclick="document.mainForm.pres_share_collab.value=(document.mainForm.collab_checkbox.checked) ? 'true' :'false'; document.mainForm.submit();"
       />
       <label for="pres_share_collab">
-         <fmt:message key="pres_share_collab_edit"/>
+         <c:out value="${msgs.pres_share_collab_edit}"/>
       </label>
    </div>	
 	
    <h3>
-      <fmt:message key="pres_share_this"/>
+      <c:out value="${msgs.pres_share_this}"/>
    </h3>
 
    <div class="checkbox">
@@ -172,10 +170,10 @@ $(document).ready(function() {
          onclick="document.mainForm.pres_share_public.value=(document.mainForm.public_checkbox.checked) ? 'true' :'false'; document.mainForm.submit();"
       />
       <label for="pres_share_public">
-         <fmt:message key="pres_share_public"/>
+         <c:out value="${msgs.pres_share_public}"/>
       </label>
-       <a id="showUrl" href="#" onclick="$('#hideUrl').show(); $('#showUrl').hide(); $('#urlText').show();"><fmt:message key="pres_share_showurl"/></a>
-       <a id="hideUrl" href="#" onclick="$('#showUrl').show(); $('#hideUrl').hide(); $('#urlText').hide();"><fmt:message key="pres_share_hideurl"/></a>
+       <a id="showUrl" href="#" onclick="$('#hideUrl').show(); $('#showUrl').hide(); $('#urlText').show();"><c:out value="${msgs.pres_share_showurl}"/></a>
+       <a id="hideUrl" href="#" onclick="$('#showUrl').show(); $('#hideUrl').hide(); $('#urlText').hide();"><c:out value="${msgs.pres_share_hideurl}"/></a>
        <input id="urlText" type="text" readonly="true" name="publicUrl" value="${publicUrl}" size="120"/>
    </div>	
 	

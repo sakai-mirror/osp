@@ -1,9 +1,9 @@
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
-        <th scope="col"><fmt:message key="table_header_title"/></th>
-        <th scope="col"><fmt:message key="table_header_createdBy"/></th>
-        <th scope="col"><fmt:message key="table_header_creationDate"/></th>
+        <th scope="col"><c:out value="${msgs.table_header_title}"/></th>
+        <th scope="col"><c:out value="${msgs.table_header_createdBy}"/></th>
+        <th scope="col"><c:out value="${msgs.table_header_creationDate}"/></th>
       </tr>
    </thead>
    <tbody>

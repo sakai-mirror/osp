@@ -10,13 +10,13 @@
 				</td>
 			</tr>
 		</c:if>
-		<c:forEach var="taggableItem" items="${taggableItemType.taggableItems}">
+		<c:forEach var="taggableItem" items="${taggableItemType.sortedTaggableItems}">
 		<tr>
 			<td colspan="2">
 				<span class="indnt2">
 				<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
 				<a class="thickbox"
-					href="<c:if test="${scaffoldingCan.accessUserList}"><c:out value="${taggableItem.itemDetailUrl}"/></c:if><c:if test="${!scaffoldingCan.accessUserList}"><c:out value="${taggableItem.itemDetailPrivateUrl}"/></c:if><c:if test="${taggableItem.useDecoration}"><c:out value="/${decoWrapper}" /></c:if><c:out value="${taggableItem.itemDetailUrlParams}"/>">
+					href="<c:if test="${scaffoldingCan.accessUserList}"><c:out value="${taggableItem.itemDetailUrl}"/></c:if><c:if test="${!scaffoldingCan.accessUserList}"><c:out value="${taggableItem.itemDetailPrivateUrl}"/></c:if><c:if test="${taggableItem.useDecoration}"><c:out value="/${decoWrapper}" /></c:if><c:out value="${taggableItem.itemDetailUrlParams}"/>tagReference=<c:out value="${criteriaRef}"/>">
 					<c:out value="${taggableItem.activity.title}" /> 
 				</a></span>
 			</td>
@@ -28,8 +28,8 @@
 						<c:out value="${taggableItem.owner}" />
 					</c:when>
 					<c:otherwise>
-						<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-							<fmt:message key="blind_evaluation_username"></fmt:message>
+						<span title='<c:out value="${msgs.blind_evaluation_tooltip}"/>'>
+							<c:out value="${msgs.blind_evaluation_username}"/>
 						</span>
 					</c:otherwise>
 				</c:choose>	

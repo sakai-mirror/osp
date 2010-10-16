@@ -1,15 +1,14 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages" var="msgs" />
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
 
 <form method="POST" action="<osp:url value="reviewPostProcessor.osp"/>">
    <osp:form/>
    
-   <h3><osp:message key="title_pogression" bundle="${msgs}" /></h3>
+   <h3><c:out value="${msgs.title_pogression}" /></h3>
    <fieldset>
-      <legend class="radio"><osp:message key="legend_workflowOptions" bundle="${msgs}" /></legend>
+      <legend class="radio"><c:out value="${msgs.legend_workflowOptions}" /></legend>
       <c:forEach var="option" items="${workflows}" varStatus="loopStatus">
          <div class="checkbox indnt1">
             <input type="radio" id="workflow_option_<c:out value="${loopStatus.index}" />" 
@@ -18,16 +17,16 @@
                   value="<c:out value="${option.id}" />" />
             <label for="workflow_option_<c:out value="${loopStatus.index}" />">
                <c:if test="${option.title == 'Complete Workflow'}">
-                  <osp:message key="workflow_complete" bundle="${msgs}" />
+                  <c:out value="${msgs.workflow_complete}" />
                </c:if>
                <c:if test="${option.title == 'No Workflow'}">
-                  <osp:message key="workflow_none" bundle="${msgs}" />
+                  <c:out value="${msgs.workflow_none}" />
                </c:if>
                <c:if test="${option.title == 'Return Workflow'}">
-                  <osp:message key="workflow_return" bundle="${msgs}" />
+                  <c:out value="${msgs.workflow_return}" />
                </c:if>
                <c:if test="${option.title == 'Returned Workflow'}">
-                  <osp:message key="workflow_returned" bundle="${msgs}" />
+                  <c:out value="${msgs.workflow_returned}" />
                </c:if>
             </label>
          </div>
@@ -35,7 +34,7 @@
    </fieldset>
    
    <p class="act">      
-      <input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />" accesskey="s" />
+      <input type="submit" name="submit" class="active" value="<c:out value="${msgs.submit}" />" accesskey="s" />
       <input type="hidden" name="objId" value="<c:out value="${obj_id}"/>"/>
       <input type="hidden" name="manager" value="<c:out value="${manager}"/>"/>
    </p>

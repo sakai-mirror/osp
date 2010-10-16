@@ -1,20 +1,20 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.glossary.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.glossary.bundle.Messages"/></jsp:useBean>
 
     <h3>
-        <c:if test="${not empty entry.id}"><fmt:message key="title_editGlossaryTerm"/></c:if>
-        <c:if test="${empty entry.id}"><fmt:message key="title_addGlossaryTerm"/></c:if>
+        <c:if test="${not empty entry.id}"><c:out value="${msgs.title_editGlossaryTerm}"/></c:if>
+        <c:if test="${empty entry.id}"><c:out value="${msgs.title_addGlossaryTerm}"/></c:if>
     </h3>
    
 
     <p class="instructions">
-        <fmt:message key="instructions_addGlossaryTerm"/>
+        <c:out value="${msgs.instructions_addGlossaryTerm}" escapeXml="false" />
     </p>
     <spring:hasBindErrors name="entry">
-        <div class="validation"><fmt:message key="error_add"/></div>
+        <div class="validation"><c:out value="${msgs.error_add}"/></div>
     </spring:hasBindErrors>
 
 
@@ -29,9 +29,9 @@
 		<c:if test="${!status.error}">
 	           <p class="shorttext">
         </c:if>
-            <span class="reqStar">*</span>
             <label for="term-id">
-                <fmt:message key="label_Term"/> <span class="textPanelFooter"> <fmt:message key="label_Term_hint"/></span>
+	            <span class="reqStar">*</span>            	
+                <c:out value="${msgs.label_Term}"/> <span class="textPanelFooter"> <c:out value="${msgs.label_Term_hint}"/></span>
             </label>
             <input type="text" name="term" id="term-id" 
                    value="<c:out value="${status.value}"/>" 
@@ -51,9 +51,10 @@
 		<c:if test="${!status.error}">
 	           <div class="longtext">
         </c:if>
-            <span class="reqStar">*</span>
+
             <label class="block" for="description-id">
-                <fmt:message key="label_shortDesc"/><span class="textPanelFooter"> <fmt:message key="label_desc_hint"/></span>
+            	<span class="reqStar">*</span>
+                <c:out value="${msgs.label_shortDesc}"/><span class="textPanelFooter"> <c:out value="${msgs.label_desc_hint}"/></span>
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 				</c:if>	
@@ -72,9 +73,10 @@
 			<c:if test="${!status.error}">
 				   <div class="longtext">
 			</c:if>
-            <span class="reqStar">*</span>
+            
             <label class="block">
-                <fmt:message key="label_longDesc"/>
+            	<span class="reqStar">*</span>
+                <c:out value="${msgs.label_longDesc}"/>
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 				</c:if>	
@@ -94,13 +96,13 @@
     
     <div class="act">
         <c:if test="${not empty entry.id}">
-            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitEdit"/>"  accesskey="s" />
+            <input type="submit" name="submitButton" class="active" value="<c:out value="${msgs.button_submitEdit}"/>"  accesskey="s" />
         </c:if>
         <c:if test="${empty entry.id}">
-            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitAdd"/>"  accesskey="s"  />
+            <input type="submit" name="submitButton" class="active" value="<c:out value="${msgs.button_submitAdd}"/>"  accesskey="s"  />
         </c:if>
 
-        <input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'"  accesskey="x" />
+        <input type="button" value="<c:out value="${msgs.button_cancel}"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'"  accesskey="x" />
     </div>
 <script type="text/javascript"><!--
 	document.editTermForm.term.focus();

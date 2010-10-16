@@ -632,4 +632,9 @@ em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
 .removeSmall{
 	background:url(../img/user_delete.png) no-repeat;
 }
+.shareEmail{
+	display:inline-block;
+	padding-left:18px;
+	background:url(/library/image/silk/email_go.png) no-repeat;
+}
 

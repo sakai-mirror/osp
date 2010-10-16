@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 
 <!--[if gt IE 5.0]><![if lt IE 7]>
 <style type="text/css">
@@ -77,7 +77,7 @@ $(document).ready(function() {
 <div class="tabNavPanel">
 
 <h3>
-   <fmt:message key="title_share_add"/>
+   <c:out value="${msgs.title_share_add}"/>
 </h3>
 
 <c:if test="${not empty errMsg}">
@@ -93,22 +93,22 @@ $(document).ready(function() {
 <tr>
   <td>
    <ul class=" inlineMenu" style="margin:0;display:block;border:none;">
-   	<li id="0" class="menuOpen"><fmt:message key="share_by"/>
+   	<li id="0" class="menuOpen"><c:out value="${msgs.share_by}"/>
 		<ul id="menu-0" class="makeMenuChild" style="display:none">
 	   <c:if test="${!myWorkspace}">
-	   <li><a href="javascript:document.mainForm.shareBy.value='share_browse';document.mainForm.submit();"><fmt:message key="share_browse"/></a> </li>
+	   <li><a href="javascript:document.mainForm.shareBy.value='share_browse';document.mainForm.submit();"><c:out value="${msgs.share_browse}"/></a> </li>
       </c:if>
 	   <c:if test="${hasGroups}">
-		  <li><a href="javascript:document.mainForm.shareBy.value='share_group';document.mainForm.submit();"><fmt:message key="share_group"/></a> </li>
+		  <li><a href="javascript:document.mainForm.shareBy.value='share_group';document.mainForm.submit();"><c:out value="${msgs.share_group}"/></a> </li>
 	   </c:if>
-	   <li><a href="javascript:document.mainForm.shareBy.value='share_search';document.mainForm.submit();"><fmt:message key="share_search"/></a> </li>
+	   <li><a href="javascript:document.mainForm.shareBy.value='share_search';document.mainForm.submit();"><c:out value="${msgs.share_search}"/></a> </li>
 	   <c:if test="${guestEnabled}">
-		  <li><a href="javascript:document.mainForm.shareBy.value='share_email';document.mainForm.submit();"><fmt:message key="share_email"/></a> </li>
+		  <li><a href="javascript:document.mainForm.shareBy.value='share_email';document.mainForm.submit();"><c:out value="${msgs.share_email}"/></a> </li>
 	   </c:if>
 	   <c:if test="${!myWorkspace}">
-	   <li><a href="javascript:document.mainForm.shareBy.value='share_role';document.mainForm.submit();"><fmt:message key="share_role"/></a> </li>
+	   <li><a href="javascript:document.mainForm.shareBy.value='share_role';document.mainForm.submit();"><c:out value="${msgs.share_role}"/></a> </li>
       </c:if>
-	   <li><a href="javascript:document.mainForm.shareBy.value='share_allrole';document.mainForm.submit();"><fmt:message key="share_allrole"/></a> </li>
+	   <li><a href="javascript:document.mainForm.shareBy.value='share_allrole';document.mainForm.submit();"><c:out value="${msgs.share_allrole}"/></a> </li>
    </ul>
    </li>
       </ul>
@@ -124,7 +124,7 @@ $(document).ready(function() {
    
    <tr>
    <td>
-      <span class="messageInstruction"><fmt:message key="share_group_filter"/></span>
+      <span class="messageInstruction"><c:out value="${msgs.share_group_filter}"/></span>
    </td>
    </thead>
          
@@ -155,13 +155,13 @@ $(document).ready(function() {
    <c:if test="${empty availList}">
       <span class="messageInstruction">
       <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
-      <fmt:message key="share_no_users"/> 
+      <c:out value="${msgs.share_no_users}"/> 
       </c:if>
       <c:if test="${shareBy=='share_role'}">
-      <fmt:message key="share_no_roles"/> 
+      <c:out value="${msgs.share_no_roles}"/> 
       </c:if>
       <c:if test="${shareBy=='share_allrole'}">
-      <fmt:message key="share_no_allroles"/> 
+      <c:out value="${msgs.share_no_allroles}"/> 
       </c:if>
       </span>
    </c:if>
@@ -173,19 +173,19 @@ $(document).ready(function() {
    <td>
       <span class="messageInstruction">
       <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
-      <fmt:message key="share_user_list"/> 
+      <c:out value="${msgs.share_user_list}"/> 
       </c:if>
       <c:if test="${shareBy=='share_role' || shareBy=='share_allrole'}">
-      <fmt:message key="share_role_list"/> 
+      <c:out value="${msgs.share_role_list}"/> 
       </c:if>
       </span>
    </td>
    <td style="text-align:right;padding-left:2em;white-space:nowrap" class="specialLink">
       <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
-      	<a href="javascript:document.mainForm.submit();" class="addSmall"><span><fmt:message key="share_add_users"/></span></a>
+      	<a href="javascript:document.mainForm.submit();" class="addSmall"><span><c:out value="${msgs.share_add_users}"/></span></a>
       </c:if>
       <c:if test="${shareBy=='share_role' || shareBy=='share_allrole'}">
-         <a href="javascript:document.mainForm.submit();" class="addSmall"><span><fmt:message key="share_add_roles"/></span></a>
+         <a href="javascript:document.mainForm.submit();" class="addSmall"><span><c:out value="${msgs.share_add_roles}"/></span></a>
       </c:if>
    </td>
    </tr>
@@ -220,7 +220,7 @@ $(document).ready(function() {
    <tfoot>
    <tr>
    <td colspan="2">
-      <span class="messageInstruction"><fmt:message key="share_hint"/></span>
+      <span class="messageInstruction"><c:out value="${msgs.share_hint}"/></span>
    </td>
    </tr>
    </tfoot>
@@ -236,15 +236,15 @@ $(document).ready(function() {
   <td>
     <label for="share_enter_userid" style="display:block;padding:.3em">
       <c:if test="${shareBy=='share_search'}">
-      <fmt:message key="share_enter_userid"/>
+      <c:out value="${msgs.share_enter_userid}"/>
       </c:if>
       <c:if test="${shareBy=='share_email'}"> 
-      <fmt:message key="share_enter_email"/>
+      <c:out value="${msgs.share_enter_email}"/>
       </c:if>
     </label> 
   </td>
   <td style="text-align:right;padding-left:2em;white-space:nowrap" class="specialLink">
-     <a href="javascript:document.mainForm.submit();"  class="addSmall"><span><fmt:message key="share_submit"/></span></a>
+     <a href="javascript:document.mainForm.submit();"  class="addSmall"><span><c:out value="${msgs.share_submit}"/></span></a>
   </td>
   </tr>
   <tr><td colspan="2">
@@ -260,11 +260,11 @@ $(document).ready(function() {
    <c:choose>
       <c:when test="${shareBy=='share_browse' || shareBy=='share_group' || shareBy=='share_role' || shareBy=='share_allrole'}">
 
-         <input id="back_add" name="back_add" type="submit" value="<fmt:message key="button_add_return" />" class="active" accesskey="b" />
-         <input id="back"     name="back" type="submit" value="<fmt:message key="button_return" />" class="active" accesskey="b" />
+         <input id="back_add" name="back_add" type="submit" value="<c:out value="${msgs.button_add_return}" />" class="active" accesskey="b" />
+         <input id="back"     name="back" type="submit" value="<c:out value="${msgs.button_return}" />" class="active" accesskey="b" />
       </c:when>
       <c:otherwise>
-         <input id="back" name="back" type="submit" value="<fmt:message key="button_add_return" />" class="active" accesskey="b" />
+         <input id="back" name="back" type="submit" value="<c:out value="${msgs.button_add_return}" />" class="active" accesskey="b" />
       </c:otherwise>
     </c:choose>
     </div>

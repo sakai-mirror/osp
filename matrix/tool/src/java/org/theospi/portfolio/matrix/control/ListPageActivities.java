@@ -20,6 +20,9 @@
  **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +41,7 @@ import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
@@ -65,9 +69,10 @@ public class ListPageActivities extends AbstractMatrixController
 		Map<String, Object> model = new HashMap<String, Object>();
 		Set<WrappedActivity> activities = new HashSet<WrappedActivity>();
 		
+		model.put("criteriaRef", criteriaRef);
 		
 		WizardPageDefinition wpd = getMatrixManager().getWizardPageDefinition(pageId);
-		model.put("pageTitle", wpd.getTitle());
+		model.put("pageTitle", Validator.escapeHtml(wpd.getTitle()));
 		
 		Map<String, String> siteNames = new HashMap<String, String>();
 		
@@ -90,7 +95,9 @@ public class ListPageActivities extends AbstractMatrixController
 			logger.warn("unable to get links for criteriaRef " + criteriaRef, e);
 		}
 		
-		model.put("pageActivities", activities);
+		List<WrappedActivity> activityList = new ArrayList<WrappedActivity>(activities);
+		Collections.sort(activityList, activityComparator);
+		model.put("pageActivities", activityList);
 		return new ModelAndView("success", model);
 	}
 	
@@ -189,5 +196,15 @@ public class ListPageActivities extends AbstractMatrixController
 		
 		
 	}
+	
+	public static Comparator<WrappedActivity> activityComparator;
+	   static {
+		   activityComparator = new Comparator<WrappedActivity>() {
+	         public int compare(WrappedActivity o1, WrappedActivity o2) {
+	                return o1.getActivity().getTitle().toLowerCase().compareTo(
+	                      o2.getActivity().getTitle().toLowerCase());
+	         }
+	        };
+	   }
 
 }

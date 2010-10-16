@@ -3,14 +3,14 @@
 <c:set var="targetPrevious" value="_target1"/>
 <c:set var="targetNext" value="_target3"/>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<h3><fmt:message key="title_addTemplate3"/></h3>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
+
+<h3><c:out value="${msgs.title_addTemplate3}"/></h3>
 
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc" %>
 <div class="instruction">
-   <fmt:message key="instructions_template_new3"/>
+   <c:out value="${msgs.instructions_template_new3}"/>
 </div>
 
 <form  method="post" action="addTemplate.osp">
@@ -22,14 +22,14 @@
 
 <c:choose>
 	<c:when test="${template.itemDefinitions['empty']}">
-		<p class="instruction"><fmt:message key="addTemplate_thereIsNoContentYet"/></p>
+		<p class="instruction"><c:out value="${msgs.addTemplate_thereIsNoContentYet}"/></p>
 	</c:when>
 	<c:otherwise>	
-		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" style="width:auto" summary="<fmt:message key="table_addTemplate3_summary"/>">
+		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" style="width:auto" summary="<c:out value="${msgs.table_addTemplate3_summary}"/>">
 					<thead>
 					   <tr>
-						  <th scope="col" ><fmt:message key="table_header_sequence"/></th>
-						  <th scope="col"><fmt:message key="table_header_title"/></th>
+						  <th scope="col" ><c:out value="${msgs.table_header_sequence}"/></th>
+						  <th scope="col"><c:out value="${msgs.table_header_title}"/></th>
 						  <th scope="col"></th>
 					   </tr>
 					</thead>
@@ -38,7 +38,7 @@
 					   <c:forEach var="itemDef" items="${template.sortedItems}">
 						 <tr>
 						   <td>
-						   	<label for="id-<c:out value="${itemDef.sequence}"/>" class="skip"><fmt:message key="table_addTemplate3_input_label"/></label>
+						   	<label for="id-<c:out value="${itemDef.sequence}"/>" class="skip"><c:out value="${msgs.table_addTemplate3_input_label}"/></label>
 							  <input type="text" name="itemSequence" value="<c:out value="${itemDef.sequence}"/>"
 								 size="4" maxlength="4"
 								  id="id-<c:out value="${itemDef.sequence}"/>"	
@@ -48,9 +48,9 @@
 						   	<c:out value="${itemDef.title}" />
 							</td>
 						   <td class="itemAction" style="white-space:nowrap">
-								<a href="<osp:url value="editItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_edit"/></a>
+								<a href="<osp:url value="editItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><c:out value="${msgs.action_edit}"/></a>
 								|
-								<a href="<osp:url value="deleteItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_delete"/></a>
+								<a href="<osp:url value="deleteItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><c:out value="${msgs.action_delete}"/></a>
 						   </td>
 			
 						 </tr>

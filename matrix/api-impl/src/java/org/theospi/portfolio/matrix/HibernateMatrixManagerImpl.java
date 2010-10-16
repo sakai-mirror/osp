@@ -96,6 +96,7 @@ import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.FormConsumer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -709,6 +710,25 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return page;
    }
    
+   public WizardPage getWizardPageByPageDefAndOwner(Id pageId, Agent owner) {
+      Object[] params = new Object[]{pageId, owner};
+      List pageList = getHibernateTemplate().find("from WizardPage w where w.pageDefinition.id=? and w.owner=?", params);
+      
+      // check for invalid page (in case wizard/matrix is deleted)
+      if ( pageList == null || pageList.size() < 1 )
+      {
+         logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
+         return null;
+      }
+      
+      WizardPage page = (WizardPage)pageList.get(0); 
+      page.getAttachments().size();
+      page.getPageForms().size();
+
+      removeFromSession(page);
+      return page;
+   }
+   
    protected List getWizardPages() {
       return this.getHibernateTemplate().find("from WizardPage");
    }
@@ -1034,7 +1054,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       if (page.getPageForms() != null) {
          for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
             WizardPageForm wpf = (WizardPageForm) iter.next();
-            Node node = getNode(wpf.getArtifactId(), page);
+            Node node = getNode(wpf.getArtifactId(), page, true);
             if (node != null) {
                result.add(node);
             }
@@ -1057,7 +1077,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       if (page.getAttachments() != null) {
          for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
             Attachment attachment = (Attachment) iter.next();
-            Node node = getNode(attachment.getArtifactId(), page);
+            Node node = getNode(attachment.getArtifactId(), page, false);
             if (node != null) {
                result.add(node);
             }
@@ -1074,7 +1094,14 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return result;
    }
 
-   protected Node getNode(Id artifactId, WizardPage page) {
+   /**
+    * 
+    * @param artifactId
+    * @param page
+    * @param isForm Flag indication that the artifact in question is a form or not
+    * @return
+    */
+   protected Node getNode(Id artifactId, WizardPage page, boolean isForm) {
       Node node = getNode(artifactId);
       if (node == null) {
          return null;
@@ -1083,7 +1110,12 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, page.getId().getValue(), node.getResource()));
 
-      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
+      if (!isForm)
+    	  return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
+      else 
+    	  return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked(), 
+    			  buildRefDecorator(siteId, page.getId().getValue(), MatrixContentEntityProducer.MATRIX_PRODUCER) + 
+    			  buildRefDecorator(siteId, artifactId.getValue(), MetaobjEntityManager.METAOBJ_CONTENT_ENTITY_PREFIX));
    }
 
    private boolean isNodeHidden( Id artifactId ) {
@@ -1103,6 +1135,10 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
    
    public Node getNode(Id artifactId) {
+      return getNode(artifactId, true);
+   }
+
+   public Node getNode(Id artifactId, boolean checkLocks) {
       String id = getContentHosting().resolveUuid(artifactId.getValue());
       if (id == null) {
          return null;
@@ -1116,7 +1152,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentFromId(getIdManager().getId(ownerId));
-         boolean locked = getLockManager().isLocked(artifactId.getValue());
+         boolean locked = checkLocks && getLockManager().isLocked(artifactId.getValue());
 
          return new Node(artifactId, resource, owner, locked);
       }
@@ -1131,9 +1167,13 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
 
    public Node getNode(Reference ref) {
+      return getNode(ref, true);
+   }
+
+   public Node getNode(Reference ref, boolean checkLocks) {
       String nodeId = getContentHosting().getUuid(ref.getId());
 
-      return getNode(getIdManager().getId(nodeId));
+      return getNode(getIdManager().getId(nodeId), checkLocks);
    }
 
    public List getCellsByArtifact(Id artifactId) {
@@ -2746,6 +2786,18 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return ContentEntityUtil.getInstance().buildRef(
             MatrixContentEntityProducer.MATRIX_PRODUCER, siteId, contextId, resource.getReference());
    }
+   
+   /**
+    * Build a new reference with the given params
+    * @param siteId
+    * @param contextId
+    * @param producer
+    * @return A String reference like so: "/&lt;producer&gt;/&lt;siteId&gt;/&lt;contextId&gt;"
+    */
+   protected String buildRefDecorator(String siteId, String contextId, String producer) {
+	   return ContentEntityUtil.getInstance().buildRef(
+		         producer, siteId, contextId, "");
+   }
 
    public DefaultScaffoldingBean getDefaultScaffoldingBean() {
       return defaultScaffoldingBean;
@@ -3216,7 +3268,8 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 							agent.getDisplayName()) == 0)
 						return true;
 				}
-			} else {
+			} 
+			else if (agent.getId() != null) {
 				// see if the user matches with the evaluator user
 				if (getAuthnManager().getAgent().getId().getValue().compareTo(
 						agent.getId().toString()) == 0)
@@ -3442,7 +3495,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
 				Authorization az = (Authorization) iter.next();
 				Agent agent = az.getAgent();
-				String userId = az.getAgent().getEid().getValue();
+				if (agent == null || agent.getEid() == null)
+					continue;
+				String userId = agent.getEid().getValue();
 				if (agent.isRole()) {
 					returnList.add(MessageFormat.format(messages
 							.getString("decorated_role_format"),
@@ -3768,7 +3823,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 									SessionManager.getCurrentSessionUserId(), 
 									producer.getItemPermissionOverride()));
 						}
-						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true);
+						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true, criteriaRef);
 						
 						for (TaggableItem tagItem : items) {
 							DecoratedTaggableItem curItem = decoTaggableItems.get(tagItem.getTypeName());

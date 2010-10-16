@@ -137,8 +137,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       if (sortDirection == null)
          sortDirection = getSortDirection(evalPrefs);
          
-      if (evalType == null)
-         evalType = getUserEvalProperty(evalPrefs);
+      evalType = getUserEvalProperty(evalPrefs);
       
       // Get list of reviewer items
       if (ALL_EVALS.equals(evalType)) {

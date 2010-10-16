@@ -1,10 +1,10 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="org.theospi.portfolio.common.bundle.Messages" />
 
-<script src="/osp-common-tool/js/jquery-1.2.1.js" >
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.common.bundle.Messages"/></jsp:useBean>
+
+<script src="/library/js/jquery-ui-latest/js/jquery.min.js" >
 </script>
 <script type="text/javascript">
 	function checkAll(cb, i) {
@@ -24,7 +24,7 @@
 
 <div class ="portletBody">
 
-<h3><fmt:message key="perm.page.title"/></h3>
+<h3><c:out value="${msgs.perm_page_title}"/></h3>
 <div class="instruction">
    <c:out value="${message}" escapeXml="false" />
 </div>
@@ -41,10 +41,10 @@
 
 <input type="hidden" name="<c:out value="${status.expression}"/>" value="" />
 
-   <table class="listHier lines" cellspacing="0" summary ="<fmt:message key="perm.list.summary"/>" border="0">
+   <table class="listHier lines" cellspacing="0" summary ="<c:out value="${msgs.perm_list_summary}"/>" border="0">
       <tr class="nolines">
          <td id="role" style="text-align: right; font-weight: bold;">
-            <fmt:message key="perm.hdr.roles"/>
+            <c:out value="${msgs.perm_hdr_roles}"/>
          </td>
          <c:forEach var="role" items="${roles}">
          <td headers="role"><c:out value="${role.id}" /></td>
@@ -52,7 +52,7 @@
       </tr>
       <tr class="headCheck">
          <th id="role" style="font-weight: bold;">
-            <fmt:message key="perm.hdr.general"/>
+            <c:out value="${msgs.perm_hdr_general}"/>
          </th>
          <c:forEach var="role" items="${roles}" varStatus="checkIndex">
          <th id="<spring:message code="${role.id}" text="${role.id}" />"><input type="checkbox" name="role-${role.id}" value="checkAll" onclick="checkAll(this, ${checkIndex.index});" /></th>
@@ -61,7 +61,7 @@
 
       <c:forEach var="function" items="${toolFunctions}">
          <tr>
-            <td headers="function"><fmt:message key="${function}" /></td>
+            <td headers="function"><c:out value="${function}" /></td>
 
             <c:forEach var="role" items="${roles}">
             <c:set var="checkValue"><c:out value="${role.id}" />~<c:out value="${function}" /></c:set>
@@ -99,8 +99,8 @@
 
    <div class="act">
    	  <input type="hidden" id="toolPermissionsSaved" name="toolPermissionsSaved" value="false"/>
-      <input type="submit" value="<fmt:message key="button_save"/>" accesskey="s" class="active" onclick="javascript:document.getElementById('toolPermissionsSaved').value=true"/>
-      <input name="_cancel" type="submit" value="<fmt:message key="button_cancel"/>" accesskey="x"/>
+      <input type="submit" value="<c:out value="${msgs.button_save}"/>" accesskey="s" class="active" onclick="javascript:document.getElementById('toolPermissionsSaved').value=true"/>
+      <input name="_cancel" type="submit" value="<c:out value="${msgs.button_cancel}"/>" accesskey="x"/>
    </div>
 
 </form>

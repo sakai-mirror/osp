@@ -59,6 +59,7 @@ public class EditPresentationFormController extends AbstractCalloutController {
 				clearItemsByType(itemDef, items);
 			}
 			items.add(pi);
+			presentationService.savePresentation(presentation, false, true);
 		}
 		return;
 	}

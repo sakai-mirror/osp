@@ -3,7 +3,7 @@
 	<c:if test="${!cell.scaffoldingCell.suppressItems}">
 
 		<tr class="cellItemAddLine">
-			<td colspan="2"><h4><fmt:message key="attachments" /></h4></td>
+			<td colspan="2"><h4><c:out value="${msgs.attachments}" /></h4></td>
 			<td>
 			<c:choose>
 				<c:when
@@ -15,7 +15,7 @@
 								href="<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
 							<osp:param name="page_id" value="${cell.wizardPage.id}"/></osp:url>"
 								onClick="javascript:stopEvents(event); document.form.method='GET';">
-							<fmt:message key="action_addItems" /> </a>
+							<c:out value="${msgs.action_addItems}" /> </a>
 						</c:when>
 						<c:otherwise>
 							<a
@@ -23,7 +23,7 @@
 							 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 							 </osp:url>"
 								onclick="javascript:stopEvents(event); document.form.method='GET';">
-							<fmt:message key="action_manageItems" /> </a>
+							<c:out value="${msgs.action_manageItems}" /> </a>
 						</c:otherwise>
 					</c:choose></div>
 				</c:when>
@@ -60,12 +60,12 @@
 					<fmt:formatNumber
 						value="${node.technicalMetadata.size / (1024 * 1024)}"
 						maxFractionDigits="1" />
-					<fmt:message key="text_MB" />
+					<c:out value="${msgs.text_MB}" />
 				</c:when>
 				<c:when test="${node.technicalMetadata.size > 1024}">
 					<fmt:formatNumber value="${node.technicalMetadata.size / (1024)}"
 						maxFractionDigits="1" />
-					<fmt:message key="text_KB" />
+					<c:out value="${msgs.text_KB}" />
 				</c:when>
 				<c:when test="${node.technicalMetadata.size > 0}">
 					<fmt:formatNumber value="${node.technicalMetadata.size}" />
@@ -82,8 +82,8 @@
 						   <osp:param name="submit" value="delete"/>
 						   </osp:url>"
 					onclick="javascript:stopEvents(event)"
-					title="<fmt:message key="remove"/>"> 
-					<fmt:message key="remove"/></a>
+					title='<c:out value="${msgs.remove}"/>'> 
+					<c:out value="${msgs.remove}"/></a>
 					<c:set var="hasFirstAction" value="true"/>
 			</c:if> 
 			<c:set var="aggIndex" value="${loopStatus.index+numCellForms}"/>
@@ -118,8 +118,8 @@
 						<c:out value="${node.technicalMetadata.owner.displayName}" />
 					</c:when>
 					<c:otherwise>
-						<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-							<fmt:message key="blind_evaluation_username"></fmt:message>
+						<span title='<c:out value="${msgs.blind_evaluation_tooltip}"/>'>
+							<c:out value="${msgs.blind_evaluation_username}"/>
 						</span>
 					</c:otherwise>
 				</c:choose>	
@@ -165,8 +165,8 @@
 							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 							          	</c:if>
 										</osp:url>"
-								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/></a>
+								title='<c:out value="${msgs.edit}"/>'> 
+										<c:out value="${msgs.edit}"/></a>
 										 |
 								 <a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -179,8 +179,8 @@
 							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 							          	</c:if>
 										</osp:url>"
-								title="<fmt:message key="delete"/>">
-										<fmt:message key="remove"/>
+								title='<c:out value="${msgs.delete}"/>'>
+										<c:out value="${msgs.remove}"/>
 								 </a>
 							 </c:if>
 					</td>

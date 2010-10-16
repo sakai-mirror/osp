@@ -174,6 +174,10 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Node getNode(Reference ref);
 
+   Node getNode(Id artifactId, boolean checkLocks);
+
+   Node getNode(Reference ref, boolean checkLocks);
+
    Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile,
                                  String toContext) throws IOException;
 
@@ -190,6 +194,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public List getMatrices(Id scaffoldingId, Id agentId);
 
    WizardPage getWizardPage(Id pageId);
+   WizardPage getWizardPageByPageDefAndOwner(Id pageId, Agent owner);
+   
    List getWizardPagesForWarehousing();
    
    Matrix getMatrixByPage(Id pageId);

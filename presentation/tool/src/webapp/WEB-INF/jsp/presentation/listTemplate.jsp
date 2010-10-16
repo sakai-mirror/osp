@@ -5,8 +5,8 @@
 
 <osp-c:authZMap prefix="osp.presentation.template." useSite="true" var="can" />
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 
 
 <script type="text/javascript">
@@ -18,14 +18,14 @@
 		   {
 			  e.style.display = 'none';
 			  elabel.src='/library/image/sakai/expand.gif'
-			  elabel.title='<fmt:message key="hideshowdesc_toggle_show"/>'
+			  elabel.title='<c:out value="${msgs.hideshowdesc_toggle_show}"/>'
 			  resizeFrame('shrink');
 			}
 		   else
 		   {
 			  e.style.display = 'block';
 			  elabel.src='/library/image/sakai/collapse.gif'
-			  elabel.title='<fmt:message key="hideshowdesc_toggle_hide"/>'
+			  elabel.title='<c:out value="${msgs.hideshowdesc_toggle_hide}"/>'
 			  resizeFrame();
 			}  
 		}
@@ -52,24 +52,23 @@
 <c:if test="${can.create || isMaintainer}">
     <div class="navIntraTool">
        <c:if test="${can.create}">
-          <a href="<osp:url value="addTemplate.osp"/>" title="<fmt:message key="action_add"/>" >
-          <fmt:message key="action_add"/>
+          <a href="<osp:url value="addTemplate.osp"/>" title='<c:out value="${msgs.action_add}"/>' >
+          <c:out value="${msgs.action_add}"/>
           </a>
-          <a href="<osp:url value="importTemplate.osp"/>" title="<fmt:message key="action_import_title"/>" >
-          <fmt:message key="action_import"/>
+          <a href="<osp:url value="importTemplate.osp"/>" title='<c:out value="${msgs.action_import_title}"/>' >
+          <c:out value="${msgs.action_import}"/>
           </a>
        </c:if>
        <c:if test="${isMaintainer}">
           <a href="<osp:url value="osp.permissions.helper/editPermissions">
-                <osp:param name="message"><fmt:message key="message_permissionsEdit">
-	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
-		  <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message></osp:param>
+                <osp:param name="message"><c:out value="${msgs.message_permissionsEdit}"/>
+                </osp:param>
                 <osp:param name="name" value="presentationTemplate"/>
                 <osp:param name="qualifier" value="${worksite.id}"/>
                 <osp:param name="returnView" value="listTemplateRedirect"/>
                 </osp:url>"
-                title="<fmt:message key="action_permissions_title"/>" >
-          <fmt:message key="action_permissions"/>
+                title='<c:out value="${msgs.action_permissions_title}"/>' >
+          <c:out value="${msgs.action_permissions}"/>
           </a>
        </c:if>
     </div>
@@ -77,29 +76,29 @@
 
 <div class="navPanel">
 	<div class="viewNav">
-		<h3><fmt:message key="title_listTemplate"/></h3>
+		<h3><c:out value="${msgs.title_listTemplate}"/></h3>
 	</div>	
 	<osp:url var="listUrl" value="listTemplate.osp"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>	
 
 <c:if test="${not empty presentationTemplateError}">
-   <div class="alertMessage"><fmt:message key="${presentationTemplateError}"/></div>
+   <div class="alertMessage"><c:out value="${presentationTemplateError}"/></div>
 </c:if>
 
 
 <c:choose>
 	<c:when test="${empty templates}">
-		<p class="instruction"><fmt:message key="template_table_empty"/></p>
+		<p class="instruction"><c:out value="${msgs.template_table_empty}"/></p>
 	</c:when>
 	<c:otherwise>
-		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" summary="<fmt:message key="template_table_summary"/>">
+		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" summary="<c:out value="${msgs.template_table_summary}"/>">
 		   <thead>
 			  <tr>
-				 <th scope="col"><fmt:message key="table_header_name"/></th>
+				 <th scope="col"><c:out value="${msgs.table_header_name}"/></th>
 				 <th scope="col"></th>
-				 <th scope="col"><fmt:message key="table_header_includeHeader"/></th>
-				 <th scope="col"><fmt:message key="table_header_owner"/></th>
+				 <th scope="col"><c:out value="${msgs.table_header_includeHeader}"/></th>
+				 <th scope="col"><c:out value="${msgs.table_header_owner}"/></th>
 			  </tr>
 		   </thead>
 		   <tbody>
@@ -108,7 +107,7 @@
 			<tr>
 			  <td>
 			  		<c:if test="${!(empty template.description)}">
-							<a href="#"  onclick="toggle_visibility('<c:out value="${template.id.value}" />')"><img  id="toggle<c:out value="${template.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title="<fmt:message key="hideshowdesc_toggle_show"/>" /></a>
+							<a href="#"  onclick="toggle_visibility('<c:out value="${template.id.value}" />')"><img  id="toggle<c:out value="${template.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title='<c:out value="${msgs.hideshowdesc_toggle_show}"/>' /></a>
 					</c:if>
 					<c:if test="${(empty template.description)}">
 						<img  src="/library/image/sakai/s.gif" style="width:13px" />
@@ -123,37 +122,36 @@
 						 <c:set var="hasFirstAction" value="true" />
 						 <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />">
 							<c:if test="${globalTool}">
-							   <fmt:message key="table_action_PublishGlobal"/>
+								<c:out value="${msgs.table_action_PublishGlobal}"/></a>
 							</c:if>
 							<c:if test="${not globalTool}">
-								<fmt:message key="table_action_publish"/>
+								<c:out value="${msgs.table_action_publish}"/></a>
 							</c:if>
-						 </a>
 					 </c:if>
 					 
 					 <c:if test="${isAuthorizedTo.edit}">
 						 <c:if test="${hasFirstAction}" > | </c:if>
 						 <c:set var="hasFirstAction" value="true" />
-						 <a href="<osp:url value="editTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_edit"/></a>
+						 <a href="<osp:url value="editTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><c:out value="${msgs.table_action_edit}"/></a>
 					 </c:if>
 			
 					 <c:if test="${isAuthorizedTo.delete}">
 						 <c:if test="${hasFirstAction}" > | </c:if>
 						 <c:set var="hasFirstAction" value="true" />
 						 <a onclick="return confirmDeletion();"
-						   href="<osp:url value="deleteTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_delete"/></a>
+						   href="<osp:url value="deleteTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><c:out value="${msgs.table_action_delete}"/></a>
 					 </c:if>
 			
 					 <c:if test="${isAuthorizedTo.copy}">
 						 <c:if test="${hasFirstAction}" > | </c:if>
 						 <c:set var="hasFirstAction" value="true" />
-						 <a href="<osp:url value="copyTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_copy"/></a>
+						 <a href="<osp:url value="copyTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><c:out value="${msgs.table_action_copy}"/></a>
 					 </c:if>
 					 
 					 <c:if test="${isAuthorizedTo.export}">
 						 <c:if test="${hasFirstAction}" > | </c:if>
 						 <c:set var="hasFirstAction" value="true" />
-						 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&templateId=<c:out value="${template.id.value}"/>/<c:out value="${template.name}" />.zip"><fmt:message key="table_action_export"/></a>
+						 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&templateId=<c:out value="${template.id.value}"/>/<c:out value="${template.name}" />.zip"><c:out value="${msgs.table_action_export}"/></a>
 					 </c:if>
 			  </td>
 			  <td><c:out value="${template.includeHeaderAndFooter}" /></td>

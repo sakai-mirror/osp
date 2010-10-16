@@ -103,6 +103,13 @@ public class Workflow extends IdentifiableObject {
       
    }
 
+   public int hashCode() {
+      if (this.getId() == null && this.getTitle() == null) return 370404079;
+      if (this.getTitle() == null) return this.getId().hashCode();
+      if (this.getId() == null) return 13 * this.getTitle().hashCode();
+      return this.getId().hashCode() + 13 * this.getTitle().hashCode();
+   }
+
    /**
     * @return Returns the parentObject.
     */

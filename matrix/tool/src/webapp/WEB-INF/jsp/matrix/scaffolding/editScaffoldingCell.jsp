@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+
 
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
@@ -97,8 +97,8 @@ function mySetMainFrameHeight(id)
 			</c:if>
 			<c:if test="${!isWizard}">
 				<a href="javascript:document.forms[0].submitAction.value='listPageActivities';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
-					title="<fmt:message key="link_page_activities"/>">
-					<fmt:message key="link_page_activities"/>
+					title='<c:out value="${msgs.link_page_activities}"/>'>
+					<c:out value="${msgs.link_page_activities}"/>
 				</a>
 			</c:if>
 		</div>
@@ -115,12 +115,27 @@ function mySetMainFrameHeight(id)
 	</c:if>
 	
 
-	<h3><fmt:message key="${pageTitleKey}" /> - 
+	<h3>
+		<c:choose>
+		  <c:when test="${pageTitleKey == 'view_cell'}">
+			 <c:out value="${msgs.view_cell}" /> 
+		  </c:when>
+		  <c:when test="${pageTitleKey == 'title_editCell'}">
+			 <c:out value="${msgs.title_editCell}" /> 
+		  </c:when>
+		  <c:when test="${pageTitleKey == 'view_wizardPage'}">
+			 <c:out value="${msgs.view_wizardPage}" /> 
+		  </c:when>
+		  <c:when test="${pageTitleKey == 'title_editWizardPage'}">
+			 <c:out value="${msgs.title_editWizardPage}" /> 
+		  </c:when>
+		</c:choose>
+		- 
 		<c:if test="${!isWizard}">
-			<fmt:message key="matrix_name"/>
+			<c:out value="${msgs.matrix_name}"/>
 		</c:if>
 		<c:if test="${isWizard}">
-			<fmt:message key="wizard_name"/>
+			<c:out value="${msgs.wizard_name}"/>
 		</c:if>
 		<span class="highlight"><c:out value="${scaffoldingCell.scaffolding.title}"/></span>
 	</h3>
@@ -129,21 +144,31 @@ function mySetMainFrameHeight(id)
 		(<c:out value="${scaffoldingCell.title}"/>) 
 		</c:if>
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="${pageInstructionsKey}"/></legend>
+		<legend>
+		<c:choose>
+		  <c:when test="${pageInstructionsKey == 'instructions_cellSettings'}">
+			 <c:out value="${msgs.instructions_cellSettings}" /> 
+		  </c:when>
+		  <c:when test="${pageInstructionsKey == 'instructions_wizardPageSettings'}">
+			 <c:out value="${msgs.instructions_wizardPageSettings}" /> 
+		  </c:when>
+		</c:choose>
+		</legend>
+	
 		<div class="instruction"> 
-			<fmt:message key="instructions_requiredFields"/> 
+			<c:out value="${msgs.instructions_requiredFields}" escapeXml="false"/> 
 			<c:if test="${scaffoldingCell.scaffolding.published}">
 				<c:if test="${isCellUsed}">
-					<fmt:message key="instructions_hasBeenUsed"/>
+					<c:out value="${msgs.instructions_hasBeenUsed}"/>
 					<c:set var="localDisabledText" value="disabled=\"disabled\""/>
 				</c:if>
 				<c:if test="${!isCellUsed}">
-					<fmt:message key="instructions_hasBeenPublished"/>
+					<c:out value="${msgs.instructions_hasBeenPublished}"/>
 				</c:if>
 			</c:if>
 			<c:if test="${wizardPublished}">
 				<c:if test="${isPageUsed}">
-					<fmt:message key="instructions_hasBeenUsed"/>
+					<c:out value="${msgs.instructions_hasBeenUsed}"/>
 					
 					<!-- Since wizard doesn't have anything to check these, assume the isUsed booleans are all true --->
 					<c:set var="evaluationFormUsed" value="true"/>
@@ -154,7 +179,7 @@ function mySetMainFrameHeight(id)
 					<c:set var="localDisabledText" value="disabled=\"disabled\""/>
 				</c:if>
 				<c:if test="${!isPageUsed}">
-					<fmt:message key="instructions_wizardHasBeenPublished"/>
+					<c:out value="${msgs.instructions_wizardHasBeenPublished}"/>
 				</c:if>
 			</c:if>
 		</div>
@@ -177,7 +202,7 @@ function mySetMainFrameHeight(id)
 			<c:if test="${!status.error}">
 				<p class="shorttext">
 			</c:if>	
-				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_cellTitle"/></label>
+				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><c:out value="${msgs.label_cellTitle}"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
 				value="<c:out value="${status.displayValue}"/>" size="40" id="<c:out value="${status.expression}"/>-id" />
 				<c:if test="${status.error}">
@@ -188,7 +213,7 @@ function mySetMainFrameHeight(id)
 
 		
 		<div class="longtext">
-			<label class="block"><fmt:message key="label_cellDescription"/></label>
+			<label class="block"><c:out value="${msgs.label_cellDescription}"/></label>
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.description">
 				<table><tr>
 				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80">
@@ -206,10 +231,10 @@ function mySetMainFrameHeight(id)
 					<div class="validation"><c:out value="${status.errorMessage}"/></div>
 				</c:if>
 				<p class="shorttext">
-					<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_initialStatus"/></label>     
+					<label for="<c:out value="${status.expression}"/>-id"><c:out value="${msgs.label_initialStatus}"/></label>     
 					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id">
-						<option value="READY" <c:if test="${status.value=='READY'}"> selected="selected"</c:if>><fmt:message key="matrix_legend_ready"/></option>
-						<option value="LOCKED" <c:if test="${status.value=='LOCKED'}">selected="selected"</c:if>><fmt:message key="matrix_legend_locked"/></option>
+						<option value="READY" <c:if test="${status.value=='READY'}"> selected="selected"</c:if>><c:out value="${msgs.matrix_legend_ready}"/></option>
+						<option value="LOCKED" <c:if test="${status.value=='LOCKED'}">selected="selected"</c:if>><c:out value="${msgs.matrix_legend_locked}"/></option>
 					</select>
 				</p>
 			</spring:bind>
@@ -224,7 +249,7 @@ function mySetMainFrameHeight(id)
 		<!-- ************* Style Area Start ************* -->
 	
 		<p class="shorttext">
-			<label for="styleName"><fmt:message key="style_section_header"/></label>    
+			<label for="styleName"><c:out value="${msgs.style_section_header}"/></label>    
 			<c:if test="${empty scaffoldingCell.wizardPageDefinition.style}">
 				<input name="styleName" value="<c:out value="" />" id="styleName" type="text" />
 				<a href="javascript:document.forms[0].dest.value='stylePickerAction';
@@ -248,7 +273,7 @@ function mySetMainFrameHeight(id)
 		
 		<p class="shorttext">
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.suppressItems">  
-				<label for="suppressItems" ><fmt:message key="suppressSelectItems_header"/></label>    
+				<label for="suppressItems" ><c:out value="${msgs.suppressSelectItems_header}"/></label>    
 				<input type="checkbox" name="suppressItems" value="true"  id="suppressItems" 
 				<c:if test="${status.value}">checked</c:if> />
 			</spring:bind>
@@ -522,12 +547,12 @@ function mySetMainFrameHeight(id)
 	
 	<!-- *************  User Forms Area  Start ************* -->
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
+		<legend><c:out value="${msgs.legend_additional_user_Forms}"/></legend>
 		
 	<div>
 
 		
-		<h5><fmt:message key="title_additionalForms"/></h5>
+		<h5><c:out value="${msgs.title_additionalForms}"/></h5>
 		
 		<!-- default case is currently only needed for matrices -->
 		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}" >
@@ -543,7 +568,7 @@ function mySetMainFrameHeight(id)
 					    <c:out value="${localDisabledText}"/> 
 					</c:if>
 					onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultCustomForm.value=this.checked;"/>
-				<label for="defaultCustomForm" ><fmt:message key="defaultCustomFormText"/></label>    
+				<label for="defaultCustomForm" ><c:out value="${msgs.defaultCustomFormText}"/></label>    
 			</spring:bind>		
 			<!-- ************* Default Matrix Checkbox End *********** -->
 			
@@ -556,11 +581,11 @@ function mySetMainFrameHeight(id)
 			
 				<c:if test="${ empty defaultSelectedAdditionalFormDevices}">
 					<p class="indnt1"> 
-						<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
+						<span class="highlight"><c:out value="${msgs.addForms_instructions_noforms}" /></span>
 					</p>
 				</c:if>
 				<c:if test="${not empty defaultSelectedAdditionalFormDevices}">
-					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<c:out value="${msgs.table_forms_summary}"/>" style="width:50%">
 						<c:forEach var="chosenForm" items="${defaultSelectedAdditionalFormDevices}">
 							<tr>
 								<td>
@@ -585,29 +610,29 @@ function mySetMainFrameHeight(id)
 			<div name="cellCustomFormSpan" id="cellCustomFormSpan"  class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultCustomForm}">style='display:none' </c:if>>
 				
 				<p class="indnt1"> 
-					<fmt:message key="addForms_instructions" />
+					<c:out value="${msgs.addForms_instructions}" />
 					
 				</p>
 				
 				
 				<p class="shorttext">
-					<label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
+					<label for="selectAdditionalFormId" ><c:out value="${msgs.label_selectForm}"/></label>    
 					<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
-						<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
+						<option value="" selected="selected"><c:out value="${msgs.select_form_text}" /></option>
 						<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
 							<option value="<c:out value="${addtlForm.id}"/>">
 						<c:out value="${addtlForm.name}"/></option>
 						</c:forEach>
 					</select>
 					<span class="act">
-						<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
+						<input type="submit" id="addForm-id" name="addForm" value="<c:out value="${msgs.button_add}"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 					</span>
 				</p>
 				<c:if test="${ empty selectedAdditionalFormDevices}">
-					<span class="indnt2 instruction"><fmt:message key="addForms_instructions_noforms" /></span>
+					<span class="indnt2 instruction"><c:out value="${msgs.addForms_instructions_noforms}" /></span>
 				</c:if>
 				<c:if test="${not empty selectedAdditionalFormDevices}">
-					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<c:out value="${msgs.table_forms_summary}"/>" style="width:50%">
 						<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
 							<tr>
 								<td>
@@ -709,7 +734,7 @@ function mySetMainFrameHeight(id)
 				    <c:if test="${reflectionFormUsed}"><c:out value="${localDisabledText}"/></c:if>
 				onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultReflectionForm.value=this.checked;"/>
 
-				<label for="defaultReflectionForm" ><fmt:message key="defaultReflectionFormText"/></label>    
+				<label for="defaultReflectionForm" ><c:out value="${msgs.defaultReflectionFormText}"/></label>    
 			</spring:bind>		
 			<!-- ************* Default Matrix Checkbox End *********** -->
 			
@@ -722,11 +747,11 @@ function mySetMainFrameHeight(id)
 				<spring:bind path="scaffoldingCell.scaffolding.reflectionDevice">
 					<c:if test="${status.value == null}">
 						<p class="indnt1"> 
-							<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
+							<span class="highlight"><c:out value="${msgs.addForms_instructions_noforms}" /></span>
 						</p>
 					</c:if>
 						
-					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<c:out value="${msgs.table_forms_summary}"/>" style="width:50%">
 						<c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
 							<c:if test="${status.value==refDev.id}">
 								<tr>
@@ -765,13 +790,13 @@ function mySetMainFrameHeight(id)
 					<div class="validation"><c:out value="${status.errorMessage}"/></div>
 				</c:if>
 				<p class="indnt1">
-					<fmt:message key="reflection_select_instructions"/>
+					<c:out value="${msgs.reflection_select_instructions}"/>
 				</p>	
 				<p class="shorttext"> 
-					<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReflectionDevice"/></label>    
+					<label for="<c:out value="${status.expression}-id"/>"><c:out value="${msgs.label_selectReflectionDevice}"/></label>    
 					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>" 
 						<c:if test="${not empty status.value}"> <c:if test="${reflectionFormUsed}"><c:out value="${localDisabledText}"/></c:if> </c:if>>
-						<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
+						<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><c:out value="${msgs.select_item_text}" /></option>
 						<c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
 							<option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
 							value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected="selected"</c:if>><c:out value="${refDev.name}"/></option>
@@ -793,7 +818,7 @@ function mySetMainFrameHeight(id)
 
 	<c:if test="${not feedbackOpts.itemFeedbackNone or not feedbackOpts.generalFeedbackNone}">
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_feedback"/></legend>
+		<legend><c:out value="${msgs.legend_feedback}"/></legend>
 		
 		<div>
 		<h5><osp:message key="label_selectReviewDevice"/></h5>		
@@ -810,7 +835,7 @@ function mySetMainFrameHeight(id)
 				<c:if test="${status.value}">checked</c:if> 
 				onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultFeedbackForm.value=this.checked;"
 				<c:if test="${feedbackFormUsed}"><c:out value="${localDisabledText}"/></c:if> />
-				<label for="defaultFeedbackForm" ><fmt:message key="defaultFeedbackFormText"/></label> 
+				<label for="defaultFeedbackForm" ><c:out value="${msgs.defaultFeedbackFormText}"/></label> 
 			</spring:bind>
 			
 			<!-- ************* Default Matrix Checkbox Start *********** -->
@@ -823,11 +848,11 @@ function mySetMainFrameHeight(id)
 				<spring:bind path="scaffoldingCell.scaffolding.reviewDevice">
 					<c:if test="${status.value == null}">
 						<p class="indnt1"> 
-							<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
+							<span class="highlight"><c:out value="${msgs.addForms_instructions_noforms}" /></span>
 						</p>
 					</c:if>
 						
-					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<c:out value="${msgs.table_forms_summary}"/>" style="width:50%">
 						<c:forEach var="revDev" items="${reviewDevices}" varStatus="loopCount">
 							<c:if test="${status.value==revDev.id}">
 								<tr>
@@ -863,13 +888,13 @@ function mySetMainFrameHeight(id)
 				</c:if>
 
 				<p class="indnt1">
-					<fmt:message key="feedback_select_instructions"/>
+					<c:out value="${msgs.feedback_select_instructions}"/>
 				</p>	
 				<p class="shorttext">
-					<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReviewDevice"/></label>    
+					<label for="<c:out value="${status.expression}-id"/>"><c:out value="${msgs.label_selectReviewDevice}"/></label>    
 					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
 						<c:if test="${not empty status.value}"> <c:if test="${feedbackFormUsed}"><c:out value="${localDisabledText}"/></c:if> </c:if>>
-						<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
+						<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><c:out value="${msgs.select_item_text}" /></option>
 						<c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
 							<option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
 							value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected="selected"</c:if>><c:out value="${reviewDev.name}"/></option>
@@ -900,7 +925,7 @@ function mySetMainFrameHeight(id)
 					<c:if test="${status.value}">checked</c:if> 
 					onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);"
 					
-					<label for="defaultReviewers" ><fmt:message key="defaultReviewersText"/></label> 
+					<label for="defaultReviewers" ><c:out value="${msgs.defaultReviewersText}"/></label> 
 				</spring:bind>
 				
 				<!-- ************* Default Matrix Checkbox Start *********** -->
@@ -912,7 +937,7 @@ function mySetMainFrameHeight(id)
 					<p class="indnt1">
 						<input type="checkbox" name="diabledCheckbox" value="true"  id="disabledCheckbox" 
 							<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultReviewersSpan', 'cellReviewersSpan');" disabled/>
-						<label for="diabledCheckbox" ><fmt:message key="allowRequestFeedback"/></label> 
+						<label for="diabledCheckbox" ><c:out value="${msgs.allowRequestFeedback}"/></label> 
 					</p>
 	
 	
@@ -928,7 +953,7 @@ function mySetMainFrameHeight(id)
 					</c:if>	
 					<c:if test="${empty defaultReviewers}">
 						<p class="indnt1">
-							<span class="instruction"><fmt:message key="info_reviewersNone"/></span>
+							<span class="instruction"><c:out value="${msgs.info_reviewersNone}"/></span>
 						</p>			
 					</c:if>
 					
@@ -954,7 +979,7 @@ function mySetMainFrameHeight(id)
 				</c:if>	
 				
 				<c:if test="${empty reviewers}">
-					<div class="indnt1 instruction"><fmt:message key="info_reviewersNone"/></div>
+					<div class="indnt1 instruction"><c:out value="${msgs.info_reviewersNone}"/></div>
 				</c:if>
 				<div class="indnt1">
 					<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
@@ -968,7 +993,7 @@ function mySetMainFrameHeight(id)
 							checked
 						</c:if> 
 					 />
-					<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>    
+					<label for="allowRequestFeedback" ><c:out value="${msgs.allowRequestFeedback}"/></label>    
 				</spring:bind>	
 				</p>
 			</div>
@@ -981,9 +1006,9 @@ function mySetMainFrameHeight(id)
 		
 	<!--  ********** Evaluation start ************* -->
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_evaluation"/></legend>
+		<legend><c:out value="${msgs.legend_evaluation}"/></legend>
 
-		<h5><fmt:message key="header_Evaluators"/></h5>
+		<h5><c:out value="${msgs.header_Evaluators}"/></h5>
 		<div>
 		<!-- this case is currently only needed for matrices -->
 		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}">
@@ -997,7 +1022,7 @@ function mySetMainFrameHeight(id)
 					onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultEvaluationForm.value=this.checked;"
 					<c:if test="${evaluationFormUsed}"><c:out value="${localDisabledText}"/></c:if>  
 				/>
-				<label for="defaultEvaluationForm" ><fmt:message key="defaultEvaluationFormText"/></label> 
+				<label for="defaultEvaluationForm" ><c:out value="${msgs.defaultEvaluationFormText}"/></label> 
 			</spring:bind>
 		
 		
@@ -1009,16 +1034,16 @@ function mySetMainFrameHeight(id)
 					<p class="indnt1">
 						<input type="checkbox" name="diabledCheckbox2" value="true"  id="disabledCheckbox" 
 							<c:if test="${scaffoldingCell.scaffolding.hideEvaluations}">checked</c:if> disabled/>
-						<label for="diabledCheckbox2" ><fmt:message key="hideEvaluations"/></label> 
+						<label for="diabledCheckbox2" ><c:out value="${msgs.hideEvaluations}"/></label> 
 					</p>
 					
 					<c:if test="${status.value == null}">
 						<p class="indnt1"> 
-							<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
+							<span class="highlight"><c:out value="${msgs.addForms_instructions_noforms}" /></span>
 						</p>
 					</c:if>
 						
-					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<c:out value="${msgs.table_forms_summary}"/>" style="width:50%">
 						<c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
 							<c:if test="${status.value==evalDev.id}">
 								<tr>
@@ -1045,17 +1070,17 @@ function mySetMainFrameHeight(id)
 		<div name="cellEvaluationFormSpan" id="cellEvaluationFormSpan" class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">style='display:none' </c:if>>
 			<div id="evaluatorsDiv">  
 				<p class="indnt1">
-					<fmt:message key="evaluation_select_instructions"/>
+					<c:out value="${msgs.evaluation_select_instructions}"/>
 				</p>
 				<spring:bind path="scaffoldingCell.evaluationDevice">  
 					<c:if test="${status.error}">
 				<div class="validation"><c:out value="${status.errorMessage}"/></div>
 				</c:if>
 					<p class="shorttext">
-						<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectEvaluationDevice"/></label>    
+						<label for="<c:out value="${status.expression}-id"/>"><c:out value="${msgs.label_selectEvaluationDevice}"/></label>    
 						<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
 							<c:if test="${not empty status.value}"> <c:if test="${evaluationFormUsed}"><c:out value="${localDisabledText}"/></c:if> </c:if>>
-							<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
+							<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><c:out value="${msgs.select_item_text}" /></option>
 							<c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
 								<option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
 								value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected="selected"</c:if>><c:out value="${evalDev.name}"/></option>
@@ -1072,7 +1097,7 @@ function mySetMainFrameHeight(id)
 									checked
 								</c:if> 
 							 />
-							<label for="hideEvaluations" ><fmt:message key="hideEvaluations"/></label>    
+							<label for="hideEvaluations" ><c:out value="${msgs.hideEvaluations}"/></label>    
 						</spring:bind>	
 					</p>
 				</c:if>
@@ -1085,7 +1110,7 @@ function mySetMainFrameHeight(id)
 				
 				
 		<!--  Evaluator List Area Start --->
-		<h5><fmt:message key="label_evaluators"/></h5>
+		<h5><c:out value="${msgs.label_evaluators}"/></h5>
 		<div>
 		
 		<!-- this case is currently only needed for matrices -->
@@ -1097,7 +1122,7 @@ function mySetMainFrameHeight(id)
 				<input type="checkbox" name="defaultEvaluators" value="true"  id="defaultEvaluators" 
 				<c:if test="${status.value}">checked</c:if>
 				onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);" />
-				<label for="defaultEvaluators" ><fmt:message key="defaultEvaluatorsText"/></label> 
+				<label for="defaultEvaluators" ><c:out value="${msgs.defaultEvaluatorsText}"/></label> 
 			</spring:bind>
 			
 			<!-- Evaluator List Default Area Start-->
@@ -1111,7 +1136,7 @@ function mySetMainFrameHeight(id)
 				</c:if>	
 				<c:if test="${empty defaultEvaluators}">
 					<p class="indnt1">
-						<span class="instruction"><fmt:message key="no_evaluators"/></span>
+						<span class="instruction"><c:out value="${msgs.no_evaluators}"/></span>
 					</p>			
 				</c:if>
 			
@@ -1133,7 +1158,7 @@ function mySetMainFrameHeight(id)
 			</c:if>	
 			
 			<c:if test="${empty evaluators}">
-				<div class="instruction indnt1"><fmt:message key="no_evaluators"/></div>
+				<div class="instruction indnt1"><c:out value="${msgs.no_evaluators}"/></div>
 			</c:if>
 			<div class="indnt1">
 				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >

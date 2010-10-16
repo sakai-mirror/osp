@@ -232,7 +232,14 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    }
    
    protected Boolean isWizardAuthForEval(AuthorizationFacade facade, Agent agent, Id id) {
-      return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, id));
+	   String siteId = getWizardManager().getWizardIdSiteId(id);
+	   if (siteId == null)
+		   return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, id));
+	   else {
+		   facade.pushAuthzGroups(siteId);
+		   return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, getIdManager().getId(siteId)));
+	   }
+	   
    }
 
    public WizardManager getWizardManager() {

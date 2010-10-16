@@ -138,24 +138,32 @@ public class PresentationExport extends Crawler implements LinkListener {
       for (int i=0;i<files.length;i++) {
          String fileName = URLDecoder.decode( parentPrefix + files[i].getName() );
          logger.debug("Adding " + fileName);
-         InputStream in = new FileInputStream(files[i]);
+         InputStream in = null;
+         try {
+            in = new FileInputStream(files[i]);
 
-         if (in == null)
-            throw new NullPointerException();
+            if (in == null)
+               throw new NullPointerException();
 
-         origin = new BufferedInputStream(in, BUFFER);
+            origin = new BufferedInputStream(in, BUFFER);
 
-         if (fileName == null)
-            throw new NullPointerException();
+            if (fileName == null)
+               throw new NullPointerException();
 
-         ZipEntry entry = new ZipEntry(fileName);
-         out.putNextEntry(entry);
-         int count;
-         while ((count = origin.read(data, 0, BUFFER)) != -1) {
-            out.write(data, 0, count);
+            ZipEntry entry = new ZipEntry(fileName);
+            out.putNextEntry(entry);
+            int count;
+            while ((count = origin.read(data, 0, BUFFER)) != -1) {
+               out.write(data, 0, count);
+            }
+            out.closeEntry();
+         } finally {
+            try {
+               in.close();
+            } catch (Exception e) {
+               logger.warn("Error cleaning up resource: ", e);
+            }
          }
-         out.closeEntry();
-         in.close();
       }
    }
 

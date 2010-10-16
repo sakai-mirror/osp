@@ -60,7 +60,7 @@ public class WizardPageDefinitionEntityImpl implements WizardPageDefinitionEntit
 		
 		String server = ServerConfigurationService.getServerUrl();
 		
-		String foo = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"" + server + "/osp-common-tool/js/jquery-1.2.1.js\"></script>" +
+		String foo = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"" + server + "/library/js/jquery-ui-latest/js/jquery.min.js\"></script>" +
 			"<script type=\"text/javascript\" language=\"JavaScript\"" +
 			"src=\"" + server + "/osp-common-tool/js/thickbox.js\"></script>" +
 			"<link href=\"" + server + "/osp-common-tool/css/thickbox.css\" type=\"text/css\"" +

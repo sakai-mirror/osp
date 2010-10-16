@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -52,6 +54,7 @@ import org.springframework.context.ApplicationContextException;
  * To change this template use File | Settings | File Templates.
  */
 public class XmlElementView extends TemplateJstlView {
+   protected final transient Log logger = LogFactory.getLog(getClass());
 
    private String templateName = "";
    private VelocityEngine velocityEngine;
@@ -141,11 +144,20 @@ public class XmlElementView extends TemplateJstlView {
 
       context.put("instruction", home.getInstruction());
 
-      FileWriter output = new FileWriter(jspFile);
+      FileWriter output = null;
+      
+      try {
+         output = new FileWriter(jspFile);
 
-      getVelocityTemplate().merge(context, output);
+         getVelocityTemplate().merge(context, output);
 
-      output.close();
+      } finally {
+         try {
+            output.close();
+         } catch (Exception e) {
+            logger.warn("Could not clean up resource", e);
+         }
+      }
 
       return resultFile;
    }

@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+
 
 <osp-c:authZMap prefix="osp.matrix." var="can" />
 <osp-c:authZMap prefix="osp.portfolio.evaluation." var="canPort" />
@@ -11,32 +11,31 @@
     <c:if test="${isMaintainer && !isUserSite}">
       <c:set var="hasFirstAction" value="true" />
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
-        <osp:param name="message"><fmt:message key="action_message_setPermission">
-         <fmt:param><c:out value="${tool.title}"/></fmt:param>
-               <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
+        <osp:param name="message">
+        	<c:out value="${msgs.action_message_setPermission}"/>
          </osp:param>
 
              <osp:param name="name" value="review"/>
              <osp:param name="qualifier" value="${worksite.id}"/>
              <osp:param name="returnView" value="listEvaluationItemsRedirect"/>
              </osp:url>"
-            title="<fmt:message key="action_permissions_title"/>" >
-            <fmt:message key="action_permissions"/>
+            title='<c:out value="${msgs.action_permissions_title}"/>' >
+            <c:out value="${msgs.action_permissions}"/>
         </a>
     </c:if>
     <c:if test="${!isUserSite}" >
        <c:if test="${hasFirstAction}" > | </c:if>
        <c:if test="${currentSiteEvalsKey == evalType}">
-          <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${allEvalsKey}" />"><fmt:message key="show_all_evals"/></a>
+          <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${allEvalsKey}" />"><c:out value="${msgs.show_all_evals}"/></a>
       </c:if>
       <c:if test="${allEvalsKey == evalType}">
-         <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${currentSiteEvalsKey}" />"><fmt:message key="show_site_evals"/></a>
+         <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${currentSiteEvalsKey}" />"><c:out value="${msgs.show_site_evals}"/></a>
        </c:if>
     </c:if>
 </div>
 
 <c:if test="${!canPort.use}">
-	<div class="alertMessage"><fmt:message key="eval_message_notAllowed"/></div>
+	<div class="alertMessage"><c:out value="${msgs.eval_message_notAllowed}"/></div>
 </c:if>
 
 <c:if test="${not empty errorMessage}">
@@ -46,12 +45,12 @@
 <div class="navPanel">
 	<div class="viewNav">
 	    <h3>
-			<fmt:message key="title_evaluationManager"/>
+			<c:out value="${msgs.title_evaluationManager}"/>
 			<c:if test="${allEvalsKey == evalType}">
-				<span class="highlight"> <fmt:message key="eval_all_evals_suffix"/></span>
+				<span class="highlight"> <c:out value="${msgs.eval_all_evals_suffix}"/></span>
 			</c:if>
 			<c:if test="${currentSiteEvalsKey == evalType}">
-				<span class="highlight"> <fmt:message key="eval_site_evals_suffix"/></span> 
+				<span class="highlight"> <c:out value="${msgs.eval_site_evals_suffix}"/></span> 
 			</c:if>
 		</h3>
 	</div>
@@ -69,25 +68,25 @@
 	<div class="navPanel">
 			<c:choose>
 				<c:when test="${hasGroups && empty userGroups}">
-					<p class="instruction"><fmt:message key="matrix_groups_unavailable"></fmt:message></p>
+					<p class="instruction"><c:out value="${msgs.matrix_groups_unavailable}"/></p>
 				</c:when>
 				<c:otherwise>
 					<form method="get" action="<osp:url value="listEvaluationItems.osp"/>">
 						<osp:form/>
 						<div class="viewNav">
 							<c:if test="${not empty userGroups && userGroupsCount > 0}">
-								<label for="group_filter-id"><fmt:message key="matrix_viewing_select_group" /></label>
+								<label for="group_filter-id"><c:out value="${msgs.matrix_viewing_select_group}" /></label>
 								<select name="group_filter" id="group_filter-id">
 									<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
-									<fmt:message key="matrix_groups_showall"></fmt:message>
+									<c:out value="${msgs.matrix_groups_showall}"/>
 									</option>
 									<c:forEach var="group" items="${userGroups}">
 										<option value="<c:out value="${group.id}"/>" <c:if test="${filteredGroup == group.id}">selected="selected"</c:if>>
-											<c:out value="${group.title}"></c:out>
+											<c:out value="${group.title}"/>
 										</option>
 									</c:forEach>
 								</select>
-								<input type="submit" name="filter" value="<fmt:message key="button_filter"></fmt:message>"/>
+								<input type="submit" name="filter" value="<c:out value="${msgs.button_filter}"/>"/>
 							</c:if>					
 						</div>
 					</form>
@@ -108,14 +107,14 @@
     
     <c:choose>
       <c:when test="${empty reviewerItems}">
-      <p class="instruction"><fmt:message key="eval_list_empty_message"/></p>
+      <p class="instruction"><c:out value="${msgs.eval_list_empty_message}"/></p>
    </c:when>
    <c:otherwise>
     
-    <table class="listHier lines nolines" cellspacing="0" summary="<fmt:message key="eval_list_summary"/>">
+    <table class="listHier lines nolines" cellspacing="0" summary="<c:out value="${msgs.eval_list_summary}"/>">
         <thead>
             <tr>
-                <th title='<fmt:message key="eval_sortbytitle"/>' scope="col">
+                <th title='<c:out value="${msgs.eval_sortbytitle}"/>' scope="col">
                    <c:if test="${sortByColumn == 'title'}">
                      <c:if test="${direction == 'asc'}">
                         <c:set var="sortDir" value="desc" />
@@ -123,20 +122,20 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=title&direction=<c:out value="${sortDir}" />">
-                     <fmt:message key="eval_title"/>
+                     <c:out value="${msgs.eval_title}"/>
                      <c:if test="${sortByColumn == 'title'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
-                                alt ='<fmt:message key="eval_sortbytitleasc"/>'
+                                alt ='<c:out value="${msgs.eval_sortbytitleasc}"/>'
                              </c:if>
                              <c:if test="${sortDirectionText == 'descending'}">
-                                alt ='<fmt:message key="eval_sortbytitledesc"/>'
+                                alt ='<c:out value="${msgs.eval_sortbytitledesc}"/>'
                              </c:if>
                              />
                      </c:if>
                   </a>
                </th>
-               <th title='<fmt:message key="eval_sortbyowner"/>' scope="col">	                  
+               <th title='<c:out value="${msgs.eval_sortbyowner}"/>' scope="col">	                  
                     <c:if test="${sortByColumn == 'owner'}">
                        <c:if test="${direction == 'asc'}">
                           <c:set var="sortDir" value="desc" />
@@ -144,20 +143,20 @@
                        </c:if>
                     </c:if>
                     <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=owner&direction=<c:out value="${sortDir}" />">
-                       <fmt:message key="eval_owner"/>
+                       <c:out value="${msgs.eval_owner}"/>
                        <c:if test="${sortByColumn == 'owner'}">
                        <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                            <c:if test="${sortDirectionText == 'ascending'}">
-                               alt ='<fmt:message key="eval_sortbyownerasc"/>'
+                               alt ='<c:out value="${msgs.eval_sortbyownerasc}"/>'
                             </c:if>
                             <c:if test="${sortDirectionText == 'descending'}">
-                               alt ='<fmt:message key="eval_sortbyownerdesc"/>'
+                               alt ='<c:out value="${msgs.eval_sortbyownerdesc}"/>'
                             </c:if>
                           />
                        </c:if>
                     </a>
                 </th>
-                <th title='<fmt:message key="eval_sortbydateReceived"/>' scope="col">
+                <th title='<c:out value="${msgs.eval_sortbydateReceived}"/>' scope="col">
                   <c:if test="${sortByColumn == 'date'}">
                      <c:if test="${direction == 'asc'}">
                         <c:set var="sortDir" value="desc" />
@@ -165,21 +164,21 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=date&direction=<c:out value="${sortDir}" />">
-                     <fmt:message key="eval_dateReceived"/>
+                     <c:out value="${msgs.eval_dateReceived}"/>
                      <c:if test="${sortByColumn == 'date'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
-                                alt ='<fmt:message key="eval_sortbydateReceivedasc"/>'
+                                alt ='<c:out value="${msgs.eval_sortbydateReceivedasc}"/>'
                              </c:if>
                              <c:if test="${sortDirectionText == 'descending'}">
-                                alt ='<fmt:message key="eval_sortbydateReceiveddesc"/>'
+                                alt ='<c:out value="${msgs.eval_sortbydateReceiveddesc}"/>'
                              </c:if>
                          />
                      </c:if>
                   </a>
                 </th>
             <c:if test="${allEvalsKey == evalType}">
-               <th title='<fmt:message key="eval_sortbysite"/>' scope="col">
+               <th title='<c:out value="${msgs.eval_sortbysite}"/>' scope="col">
                  <c:if test="${sortByColumn == 'site'}">
                    <c:if test="${direction == 'asc'}">
                      <c:set var="sortDir" value="desc" />
@@ -187,21 +186,21 @@
                    </c:if>
                  </c:if>
                  <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=site&direction=<c:out value="${sortDir}" />">
-                   <fmt:message key="eval_site"/>
+                   <c:out value="${msgs.eval_site}"/>
                    <c:if test="${sortByColumn == 'site'}">
                    <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                          <c:if test="${sortDirectionText == 'ascending'}">
-                           alt ='<fmt:message key="eval_sortbysiteasc"/>'
+                           alt ='<c:out value="${msgs.eval_sortbysiteasc}"/>'
                          </c:if>
                          <c:if test="${sortDirectionText == 'descending'}">
-                           alt ='<fmt:message key="eval_sortbysitedesc"/>'
+                           alt ='<c:out value="${msgs.eval_sortbysitedesc}"/>'
                          </c:if>
                        />
                    </c:if>
                  </a>
                </th>
             </c:if>  
-                <th title='<fmt:message key="eval_sortbytype"/>' scope="col"> 
+                <th title='<c:out value="${msgs.eval_sortbytype}"/>' scope="col"> 
                   <c:if test="${sortByColumn == 'type'}">
                      <c:if test="${direction == 'asc'}">
                         <c:set var="sortDir" value="desc" />
@@ -209,14 +208,14 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=type&direction=<c:out value="${sortDir}" />">
-                     <fmt:message key="eval_type"/>
+                     <c:out value="${msgs.eval_type}"/>
                      <c:if test="${sortByColumn == 'type'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
-                                alt ='<fmt:message key="eval_sortbytypeasc"/>'
+                                alt ='<c:out value="${msgs.eval_sortbytypeasc}"/>'
                              </c:if>
                              <c:if test="${sortDirectionText == 'descending'}">
-                                alt ='<fmt:message key="eval_sortbytypedesc"/>'
+                                alt ='<c:out value="${msgs.eval_sortbytypedesc}"/>'
                              </c:if>
                           />
                      </c:if>
@@ -247,7 +246,7 @@
                      <c:choose>
                        <c:when test="${permCheck}">
                           <a href="#" onClick="document.getElementById('action').value='open';document.getElementById('eval_id').value='<c:out value="${item.id.value}" />_<c:out value="${item.owner.id}" />';document.getElementById('evalList').submit();"
-                          title="<fmt:message key="eval_link_title"/>">
+                          title='<c:out value="${msgs.eval_link_title}"/>'>
                              <c:out value="${item.title}" />
                           </a>
                        </c:when>
@@ -263,15 +262,15 @@
                            <c:out value="${item.owner.sortName}" />
                        </c:when>
                        <c:otherwise>
-                           <span title="<fmt:message key="blind_evaluation_tooltip"/>">
-                           <fmt:message key="blind_evaluation_username"></fmt:message>
+                           <span title='<c:out value="${msgs.blind_evaluation_tooltip}"/>'>
+                           <c:out value="${msgs.blind_evaluation_username}"/>
                            </span>
                        </c:otherwise>
                      </c:choose>
                   </td>	
                   <td>
                         <c:if test="${item.submittedDate==null}"> &nbsp; </c:if>
-                        <c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${item.submittedDate}" pattern="${dateFormat}"/>
+                        <c:set var="dateFormat"><c:out value="${msgs.dateFormat_Middle}"/></c:set><fmt:formatDate value="${item.submittedDate}" pattern="${dateFormat}"/>
                   </td>
                <c:if test="${allEvalsKey == evalType}">
                   <td>
@@ -281,13 +280,13 @@
                     <td>
                <c:choose>
                   <c:when test="${item.evalType == 'matrix_cell_type'}">
-                     <fmt:message key='eval_type_nice_matrixcell'/>
+                     <c:out value="${msgs.eval_type_nice_matrixcell}"/>
                   </c:when>
                   <c:when test="${item.evalType == 'wizard_type'}">
-                     <fmt:message key='eval_type_nice_wizard'/>
+                     <c:out value="${msgs.eval_type_nice_wizard}"/>
                   </c:when>
                   <c:when test="${item.evalType == 'wizard_page_type'}">
-                     <fmt:message key='eval_type_nice_wizard_page'/>
+                     <c:out value="${msgs.eval_type_nice_wizard_page}"/>
                   </c:when>
                </c:choose>
                     </td>

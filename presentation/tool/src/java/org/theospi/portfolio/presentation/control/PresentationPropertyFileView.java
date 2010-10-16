@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.VelocityContext;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
@@ -42,6 +44,7 @@ import org.theospi.portfolio.shared.model.TechnicalMetadata;
  * To change this template use File | Settings | File Templates.
  */
 public class PresentationPropertyFileView extends XmlElementView {
+   protected final transient Log logger = LogFactory.getLog(getClass());
 
    /**
     * Prepare for rendering, and determine the request dispatcher path
@@ -91,11 +94,22 @@ public class PresentationPropertyFileView extends XmlElementView {
       context.put("schema",
          new SchemaBean(schema, presentation.getTemplate().getDocumentRoot(), null, presentation.getTemplate().getDescription()));
 
-      FileWriter output = new FileWriter(jspFile);
+      FileWriter output = null;
 
-      getVelocityTemplate().merge(context, output);
+      try {
+         output = new FileWriter(jspFile);
 
-      output.close();
+         getVelocityTemplate().merge(context, output);
+
+      } finally {
+         try {
+            output.close();
+         }
+         catch (Exception e) {
+            logger.warn("Error cleaning up resources: ", e);
+            throw e;
+         }
+      }
 
       return resultFile;
    }

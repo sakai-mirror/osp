@@ -168,7 +168,12 @@ public class PermissionManagerImpl implements PermissionManager {
 	    				  azg = AuthzGroupService.getInstance().addAuthzGroup(
 	    						  edit.getQualifier().getValue());
 	    			  }
-	    			  azg.removeMembers();
+	    			  if (azg == null) {
+	    				  logger.warn("azg is still null after trying to create it.");
+	    			  }
+	    			  else {
+	    				  azg.removeMembers();
+	    			  }
 	    			  return azg;
 	    		  } catch (GroupIdInvalidException giie) {
 	    			  logger.warn("group id invalid", giie);

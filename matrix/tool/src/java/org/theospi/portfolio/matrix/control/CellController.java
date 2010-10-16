@@ -23,10 +23,12 @@ package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -84,6 +86,7 @@ import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.tagging.api.DTaggingPager;
 import org.theospi.portfolio.tagging.api.DTaggingSort;
+import org.theospi.portfolio.tagging.api.DecoratedTaggableItem;
 import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
@@ -153,8 +156,10 @@ public class CellController implements FormController, LoadObjectController {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 		
 		CellFormBean cell = (CellFormBean) command;
+		if (cell == null || cell.getCell() == null)
+			logger.warn("Cell backing bean or cell.getCell() is null -- NPE imminent.");
 				
-		if((cell != null || cell.getCell() == null) && request.get("feedbackReturn") != null){
+		if(request.get("feedbackReturn") != null){
 			//feedbackReturn is returned from FeedbackHelperController and is the Id of the wizardPage of the cell.
 			cell.setCell(matrixManager.getCellFromPage(idManager.getId(request.get("feedbackReturn").toString())));
 			if(request.get("feedbackAction") != null && request.get("feedbackAction").toString().equals("save")){
@@ -309,7 +314,11 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("taggable", "true");
 
 			//getMatrixManager().getTaggableItems will put the providers into the session
-			model.put("taggableItems", getMatrixManager().getDecoratedTaggableItems(item, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
+			Set<DecoratedTaggableItem> decoTaggableItems = getMatrixManager().getDecoratedTaggableItems(item, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue());
+			List<DecoratedTaggableItem> decoTaggableItemList = new ArrayList<DecoratedTaggableItem>(decoTaggableItems);
+			
+			Collections.sort(decoTaggableItemList, decoTaggableItemComparator);
+			model.put("taggableItems", decoTaggableItemList);
 
 			
 			ToolSession toolSession = getSessionManager()
@@ -323,7 +332,7 @@ public class CellController implements FormController, LoadObjectController {
 			}
 			model.put("helperInfoList", getHelperInfo(item));
 			model.put("providers", providers);
-			
+			model.put("criteriaRef", cell.getCell().getWizardPage().getPageDefinition().getReference());
 						
 			model.put("decoWrapper", "ospMatrix_" + siteId + "_" + pageId);
 		}
@@ -331,7 +340,17 @@ public class CellController implements FormController, LoadObjectController {
 		clearSession(session);
 		return model;
 	}
-
+	
+	public static Comparator<DecoratedTaggableItem> decoTaggableItemComparator;
+	static {
+		decoTaggableItemComparator = new Comparator<DecoratedTaggableItem>() {
+			public int compare(DecoratedTaggableItem o1, DecoratedTaggableItem o2) {
+				return o1.getTypeName().toLowerCase().compareTo(
+						o2.getTypeName().toLowerCase());
+			}
+		};
+	}
+	
 	/**
 	 ** Return true if general feedback is allowed based on feedback options
 	 **/

@@ -39,6 +39,7 @@ import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.authz.api.SecurityService;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.Authorization;
@@ -57,6 +58,7 @@ import org.theospi.portfolio.shared.model.OspException;
 public class SimpleAuthorizationFacade extends HibernateDaoSupport implements AuthorizationFacade {
 
    private AuthenticationManager authManager = null;
+   private SecurityService securityService = null;
    private org.sakaiproject.metaobj.security.AuthorizationFacade shim;
 	
    // OSP 2.5 Users should enable in sakai.properties (osp.upgrade25 = true)
@@ -176,7 +178,10 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
     * @return
     */
    public boolean isAuthorized(Agent agent, String function, Id id) {
-
+	  boolean isSuperUser = getSecurityService().isSuperUser(agent.getId().getValue());
+ 	  if (isSuperUser)
+ 		  return isSuperUser;
+ 	  
       return (getAuthorization(agent, function, id) != null);
 
    }
@@ -404,6 +409,14 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
 
    public void setAuthManager(AuthenticationManager authManager) {
       this.authManager = authManager;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+	   this.securityService = securityService;
+   }
+
+   public SecurityService getSecurityService() {
+	   return securityService;
    }
 
    public org.sakaiproject.metaobj.security.AuthorizationFacade getShim() {

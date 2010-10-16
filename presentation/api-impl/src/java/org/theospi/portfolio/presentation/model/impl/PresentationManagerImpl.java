@@ -363,11 +363,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       String formId = contentHosting.resolveUuid(presentation.getPropertyForm().getValue());
       String ref = contentHosting.getReference(formId);
       
+      BufferedReader rdr = null;
       try {
          securityService.pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
          
          ContentResource resource = contentHosting.getResource(formId);
-         BufferedReader rdr = new BufferedReader( new InputStreamReader( resource.streamContent() ) );
+         rdr = new BufferedReader( new InputStreamReader( resource.streamContent() ) );
           
           String line = rdr.readLine();
           while ( line != null )
@@ -380,6 +381,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       {
          logger.warn(e);
          return null;
+      }
+      finally {
+         try {
+            rdr.close();
+         }
+         catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+               logger.debug("Error closing stream reader for resource: " + formId);
+            }
+         }
       }
       
       return options.toString();
@@ -2020,6 +2031,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Element description = new Element("description");
       description.setText(presentation.getDescription());
       root.addContent(description);
+      
+      Element site = new Element("siteId");
+      site.setText(presentation.getSiteId());
+      root.addContent(site);
 
       for (Iterator i = items.iterator(); i.hasNext();) {
          PresentationItem item = (PresentationItem) i.next();
@@ -2049,7 +2064,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Node propNode = getNode(presentation.getPropertyForm());
       if (presentation.getPropertyForm() != null && propNode != null) {
          Element presProperties = new Element("presentationProperties");
-         
+         if (propNode.getResource() != null) {
+	         String ref = propNode.getResource().getReference();
+	         String uuid = presentation.getPropertyForm().getValue();
+	         String id = propNode.getResource().getId();
+	         presProperties.setAttribute("formRef", ref);
+	         presProperties.setAttribute("formId", id);
+	         presProperties.setAttribute("formUuid", uuid);
+         }
+                  
          Document doc = new Document();
          SAXBuilder saxBuilder = new SAXBuilder();
          try {
@@ -2190,6 +2213,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
       
+      if (presentation.getPropertyForm() != null) {
+    	  String propform_uuid = presentation.getPropertyForm().getValue();
+    	  String propform_id = getContentHosting().resolveUuid(propform_uuid);
+    	  readableFiles.add(getContentHosting().getReference(propform_id));
+      }
 
       getSecurityService().pushAdvisor(
          new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, readableFiles));
@@ -3040,13 +3068,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void updateLayout(PresentationLayoutWrapper wrapper, PresentationLayout layout) {
-      if (layout.getPreviewImageId() != null) {
-         deleteResource(layout.getId(), layout.getPreviewImageId());
-      }
-      if (layout.getXhtmlFileId() != null) {
-         deleteResource(layout.getId(), layout.getXhtmlFileId());
-      }
-
+      getContentHosting().removeAllLocks(wrapper.getIdValue());
+      getLockManager().removeAllLocks(wrapper.getIdValue());
+		
       layout.setPreviewImageId(createResource(wrapper.getPreviewFileLocation(),
          wrapper.getPreviewFileName(), wrapper.getIdValue() + " layout preview", wrapper.getPreviewFileType()));
       layout.setXhtmlFileId(createResource(wrapper.getLayoutFileLocation(),
@@ -3138,8 +3162,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          return resourceId;
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.warn("updateResource: "+e);
       }
+		
+      return null;
    }
 
    protected ByteArrayOutputStream loadResource(String name) {
@@ -3173,7 +3199,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected Id createResource(String resourceLocation,
                                String name, String description, String type) {
       ByteArrayOutputStream bos = loadResource(resourceLocation);
-      ContentResource resource;
+      ContentResource resource = null;
       ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
       resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
@@ -3196,7 +3222,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
           } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.warn("createResource(PortfolioAdmin): "+e);
       }
 
       try {
@@ -3212,26 +3238,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         logger.warn("createResource(system): "+e);
       }
 
+      // If resource exists, just update it
+      String resourceId = folder + name;
       try {
-         String id = folder + name;
-         getContentHosting().removeResource(id);
-      }
-      catch (TypeException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         } 
+         resource = getContentHosting().updateResource( resourceId, type, bos.toByteArray() );
       }
       catch (IdUnusedException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         } 
-      }
-      catch (PermissionException e) {
          // ignore, must be new
          if (logger.isDebugEnabled()) {
              logger.debug(e);
@@ -3243,15 +3258,30 @@ public class PresentationManagerImpl extends HibernateDaoSupport
              logger.debug(e);
          } 
       }
-
-      try {
-         resource = getContentHosting().addResource(name, folder, 100, type,
-                     bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+      catch (PermissionException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
       catch (Exception e) {
-         throw new RuntimeException(e);
+         // unexpected error: unable to update existing resource
+         logger.warn("createResource(updateResource): " + e);
       }
-      String uuid = getContentHosting().getUuid(resource.getId());
+
+      // Otherwise, resource doesn't exist, so create it
+      if ( resource == null ) {
+         try {
+            resource = getContentHosting().addResource(name, folder, 1, type,
+                                                       bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+         }
+         catch (Exception e) {
+            // unexpected error: tried to add new resource and failed
+            logger.warn("createResource(addResource): "+e);
+         }
+      }
+      
+      String uuid = getContentHosting().getUuid(resourceId);
       return getIdManager().getId(uuid);
    }
    
@@ -3351,11 +3381,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                }
             }
             //make sure it is not null
-            if (tempFormDef != null)
-            	template.setPropertyFormType(tempFormDef.getId());
+            if (tempFormDef != null) {
+               template.setPropertyFormType(tempFormDef.getId());
+               logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " is being updated to use form with id " + tempFormDef.getId().getValue());
+            }
             
             storeTemplate(template, false);
-            logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " is being updated to use form with id " + tempFormDef.getId().getValue());
          }
       } catch (Exception e) {
          logger.warn("Unexpected error occurred in PresentationManagerImpl.convertPortfolioTemplates()", e);
@@ -3660,4 +3691,76 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void setDownloadExternalUri(String downloadExternalUri) {
       this.downloadExternalUri = downloadExternalUri;
    }
+
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.presentation.PresentationManager#copyPresentation(org.sakaiproject.metaobj.shared.model.Id)
+    */
+   @SuppressWarnings("unchecked")
+   public Presentation copyPresentation(Id presentationId) {
+       // http://jira.sakaiproject.org/browse/SAK-17351
+       if (presentationId == null) {
+           throw new IllegalArgumentException("invalid presentation id ("+presentationId+"), must be set");
+       }
+       Presentation original = getPresentation(presentationId);
+       if (original == null) {
+           throw new IllegalArgumentException("invalid presentation id ("+presentationId+") for copy, could not find presentation");
+       }
+
+       // ready to copy
+       logger.info("Ready to copy presentation: "+original.getName());
+       Presentation copy = new Presentation();
+       copy.setNewObject(true);
+       copy.setAdvancedNavigation(original.isAdvancedNavigation());
+       copy.setAllowComments(false); // FORCED
+       copy.setDescription(original.getDescription());
+       copy.setExpiresOn(original.getExpiresOn());
+       copy.setIsCollab(original.getIsCollab());
+       copy.setIsDefault(original.getIsDefault());
+       copy.setIsPublic(false); // FORCED
+       HashSet<PresentationItem> copiedItems = new HashSet<PresentationItem>(original.getItems().size());
+       for (PresentationItem item : (Set<PresentationItem>) original.getItems()) {
+           copiedItems.add(item);
+       }
+       copy.setItems(copiedItems); // list (ref)
+       copy.setLayout(original.getLayout()); // obj (ref)
+       copy.setName("Copy of "+original.getName());
+       copy.setOwner(original.getOwner()); // should we copy this?
+       List<PresentationPage> origPages = getPresentationPagesByPresentation(original.getId());
+       if (origPages != null && ! origPages.isEmpty()) {
+           ArrayList<PresentationPage> copiedPages = new ArrayList<PresentationPage>(origPages.size());
+           for (PresentationPage page : origPages) {
+               PresentationPage cp = new PresentationPage();
+               cp.setNewObject(true);
+               cp.setDescription(page.getDescription());
+               cp.setKeywords(page.getKeywords());
+               cp.setLayout(page.getLayout());
+               cp.setPresentation(copy); // NOTE: this should be set automatically when null -AZ
+               if (page.getRegions() != null) {
+                   HashSet<PresentationPageRegion> copiedRegions = new HashSet<PresentationPageRegion>();
+                   for (PresentationPageRegion region : (Set<PresentationPageRegion>) page.getRegions()) {
+                       copiedRegions.add(region);
+                   }
+                   cp.setRegions(copiedRegions);
+               }
+               cp.setSequence(page.getSequence());
+               cp.setStyle(page.getStyle());
+               cp.setTitle(page.getTitle());
+               copiedPages.add(cp);
+           }
+           copy.setPages(copiedPages); // list (ref)
+       }
+       //copy.set(original.getPresentationItems()); // list
+       copy.setPresentationType(original.getPresentationType());
+       copy.setProperties(original.getProperties()); // obj (ref)
+       copy.setPropertyForm(original.getPropertyForm()); // ref (id)
+       copy.setSecretExportKey(original.getSecretExportKey());
+       copy.setSiteId(original.getSiteId());
+       copy.setStyle(original.getStyle()); // obj (ref)
+       copy.setTemplate(original.getTemplate()); // obj (ref)
+       copy.setToolId(original.getToolId());
+       Presentation savedCopy = storePresentation(copy, true, true);
+       logger.info("Copied presentation from "+original.getId()+" to "+savedCopy.getId());
+       return savedCopy;
+   }
+
 }

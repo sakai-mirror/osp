@@ -22,9 +22,11 @@ package org.theospi.portfolio.security.impl.sakai;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +35,9 @@ import org.sakaiproject.metaobj.security.impl.sakai.SecurityBase;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.OspRole;
 import org.sakaiproject.thread_local.api.ThreadLocalManager;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.site.api.SiteService.SelectionType;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
@@ -84,21 +88,53 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
    }
 
    protected Authorization getAuthorization(Agent agent, String function, Id id, boolean includeRoles) {
-      if (includeRoles){
-         Set roles = getAgentRoles(agent);
+      // Try the direct user check first
+      Authorization userAuthz = super.getAuthorization(agent, function, id);
+      if (userAuthz == null && includeRoles) {
 
-         for (Iterator i=roles.iterator();i.hasNext();) {
-            Agent roleAgent = (Agent)i.next();
-            if (roleAgent != null) {
-               Authorization authz = super.getAuthorization(roleAgent, function, id);
-               if (authz != null) {
-                  return authz;
+         if (logger.isDebugEnabled())
+            logger.debug("userAuthz was null, so checking roles, agent, function, id: " + agent.getDisplayName() + "(" + agent.getId().getValue() + "), " + function + ", " + id.getValue());
+
+         // Retrieve the set of object-level grants for this object and function.
+         // Multiple roles in a realm may be permitted, so we use a realm->roles hash.
+         HashMap<String, List<String>> azgs = new HashMap<String, List<String>>();
+         for (Authorization authz : (List<Authorization>) findByFunctionId(function, id)) {
+            Agent a = authz.getAgent();
+            if (a instanceof OspRole) {
+               OspRole role = (OspRole) a;
+               String realmId = role.getSakaiRealm().getId();
+               if (!azgs.containsKey(realmId)) {
+                  azgs.put(realmId, new ArrayList<String>());
+               }
+               
+               if (logger.isDebugEnabled())
+                  logger.debug("Building object grant list, adding role for azg: " + role + ", " + realmId);
+
+               azgs.get(realmId).add(role.getRoleName());
+            }
+         }
+
+         // Compare the permitted roles against the ones granted to this user.
+         if (azgs.size() > 0) {
+            Map<String, String> grants = AuthzGroupService.getUserRoles(agent.getId().getValue(), azgs.keySet());
+            for (String realmId : grants.keySet()) {
+               if (azgs.containsKey(realmId)) {
+                  // Grab the list of permitted roles for this realm, since the user is a member, and compare.
+                  List<String> needed = azgs.get(realmId);
+                  String granted = grants.get(realmId);
+                  if (needed.contains(granted)) {
+                     if (logger.isDebugEnabled())
+                        logger.debug("Generating realmRole authz - (realmId, role), function, id: (" + realmId + ", " + granted + "), " + function + ", " + id);
+                     
+                     return new Authorization(agentManager.getRealmRole(granted, realmId), function, id);
+                  }
                }
             }
          }
       }
-      return super.getAuthorization(agent, function, id);
 
+      // If we've fallen through, return whatever the result of the user check
+      return userAuthz;
    }
 
    protected Authorization getAuthorization(Agent agent, String function, Id id) {
@@ -165,19 +201,27 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
          agentRoles.addAll(agent.getWorksiteRoles(site));
       }
 
-      // aggregate roles from all member sites
-      List allSites = SiteService.getSites(SelectionType.ACCESS, null, null,
-                                           null, null, null);
-      allSites.addAll ( SiteService.getSites(SelectionType.UPDATE, null, null,
-                                             null, null, null) );
-      for (Iterator it = allSites.iterator();it.hasNext();) {
-         Site site = (Site)it.next();
-         agentRoles.addAll(agent.getWorksiteRoles( site.getId() ));
+      // If this is a user's My Workspace, aggregate roles from all member sites
+      if ( ToolManager.getCurrentPlacement() != null && SiteService.isUserSite(ToolManager.getCurrentPlacement().getContext()) ) {
+         List allSites = SiteService.getSites(SelectionType.ACCESS, null, null,
+                                            null, null, null);
+         allSites.addAll ( SiteService.getSites(SelectionType.UPDATE, null, null,
+                                            null, null, null) );
+         
+         Set<Site> siteSet = new HashSet<Site>(allSites);
+         for (Site site : siteSet) {
+       	  agentRoles.addAll(agent.getWorksiteRoles( site.getId() ));
+         }
+         
+         // finally, add user agent for user-based aurhorizations
+         agentRoles.add(agent);
       }
-      
-      // finally, add user agent for user-based aurhorizations
-      agentRoles.add(agent);
-      
+
+      // Otherwise just get roles from current worksite
+      else  {
+         agentRoles.addAll(agent.getWorksiteRoles());
+      }
+         
       return agentRoles;
    }
 

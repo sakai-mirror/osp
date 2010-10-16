@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.presentation.bundle.Messages"/></jsp:useBean>
 
 <c:set var="pres_active_page" value="content"/>
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
@@ -19,11 +19,6 @@ $(document).ready(function() {
 	osp.bag.formTypes = {};
 	<c:forEach var="itemDefinition" items="${types}" varStatus="loopCounter">
 		osp.bag.formTypes['<c:out value="${itemDefinition.id.value}"/>'] = '<c:out value="${itemDefinition.type}"/>';  
-      <!-- hide edit selected link until check for ownership -->
-   	<c:set var="list2">
-		   edit_items_<c:out value="${loopCounter.index}" />
-		</c:set>
-      $("#<c:out value="${list2}"/>").hide();
 	</c:forEach>
 	$('a.inlineFormEdit').click(function(ev) {
 		ev.preventDefault();
@@ -44,10 +39,14 @@ $(document).ready(function() {
 	 function showEditSelect(listId) {
 		var selectedIndex = document.getElementById(listId).selectedIndex;
 		var selectedOption = document.getElementById(listId).options[selectedIndex];
-		if ( selectedOption.className != 'readOnly' )
+		if ( selectedOption.className != 'readOnly' ) {
+			$("#noedit_"+listId).hide();
 			$("#edit_"+listId).show();
-      else
+		}
+		else {
 			$("#edit_"+listId).hide();
+			$("#noedit_"+listId).show();
+		}
 	 }
     
 	 function updateItems() {
@@ -78,7 +77,7 @@ $(document).ready(function() {
 <div class="tabNavPanel">
 
 <h3>
-   <p class="instructionMessage"><fmt:message key="instructions_addPresentation2"/></p>
+   <p class="instructionMessage"><c:out value="${msgs.instructions_addPresentation2}"/></p>
 </h3>
 
 <form method="post" name="wizardform" action="editContent.osp"> 
@@ -119,19 +118,26 @@ $(document).ready(function() {
 								</c:set>
 								<h3><c:out value="${itemDefinition.title}" /></h3>
 								<div class="textPanel"><c:out value="${itemDefinition.description}" /></div>
-								<table width="100%" class="sidebyside" border="0" summary="<fmt:message key="item_selection_table_summary_step2"/>">
+								<table width="100%" class="sidebyside" border="0" summary="<c:out value="${msgs.item_selection_table_summary_step2}"/>">
 									<tr>
 										<th style="padding:0">
 											<table width="100%" style="margin:0">
 												<tr>
 													<td>
-														<fmt:message key="label_availableItems_step2"/>
+														<c:out value="${msgs.label_availableItems_step2}"/>
 													</td>
 													<c:if test="${itemDefinition.isFormType}">
 														<td style="text-align:right">
 															<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;itemDefId=<c:out value="${itemDefinition.id}"/>"
-												   class="inlineCreate"><fmt:message key="create_new"/></a>
-												   &nbsp;
+												   class="inlineCreate"><c:out value="${msgs.create_new}"/></a>
+													|
+														<a href="#<c:out value="${list1}"/>" 
+															id="edit_<c:out value="${list1}"/>"
+															class="inlineFormEdit" style="display:none;">
+													  <c:out value="${msgs.edit_selected}"/></a>
+														<span id="noedit_<c:out value="${list1}"/>"
+															class="itemAction">
+													  <c:out value="${msgs.edit_selected}"/></span>
 														</td>
 													</c:if>
 												</tr>
@@ -142,14 +148,17 @@ $(document).ready(function() {
 											<table width="100%" style="margin:0">
 												<tr>
 													<td>
-														<fmt:message key="label_selectedItems_step2"/>
+														<c:out value="${msgs.label_selectedItems_step2}"/>
 													</td>
 													<c:if test="${itemDefinition.isFormType}">
 													<td style="text-align:right">
 														<a href="#<c:out value="${list2}"/>" 
 															id="edit_<c:out value="${list2}"/>"
-															class="inlineFormEdit">
-                                         <fmt:message key="edit_selected"/></a>
+															class="inlineFormEdit" style="display:none;">
+                                         <c:out value="${msgs.edit_selected}"/></a>
+														<span id="noedit_<c:out value="${list2}"/>"
+															class="itemAction">
+                                         <c:out value="${msgs.edit_selected}"/></span>
 													</td>
 													</c:if>
 												</tr>
@@ -159,8 +168,10 @@ $(document).ready(function() {
 									<tr>
 										<td style="width:40%">
 											<select multiple="multiple"
+												class="artifactPicker"
 												style="width:100%"
 												size="10"
+												onclick="showEditSelect('<c:out value="${list1}"/>');"
 												id="<c:out value="${list1}"/>"
 												name="<c:out value="${list1}"/>">
                                     
@@ -181,22 +192,22 @@ $(document).ready(function() {
 										<td style="text-align:center">
 											<input name="add"  type="button"
 												onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',false); updateItems();"
-												value="<fmt:message key="button_add"/> &gt;" 
+												value="<c:out value="${msgs.button_add}"/> &gt;" 
 											/> 
 											<br />
 											<input name="add all" type="button" 
 												onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true); updateItems();" 
-												value="<fmt:message key="button_addAll"/> &gt;&gt;" 
+												value="<c:out value="${msgs.button_addAll}"/> &gt;&gt;" 
 											/>
 											<hr class="itemSeparator" />
 											<input name="remove" type="button"
 												onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',false); updateItems();"
-												value="<fmt:message key="button_remove"/> &lt;"
+												value="<c:out value="${msgs.button_remove}"/> &lt;"
 											/>
 											<br />
 											<input name="remove all" type="button" 
 												onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true); updateItems();" 
-												value="<fmt:message key="button_removeAll"/> &lt;&lt;"
+												value="<c:out value="${msgs.button_removeAll}"/> &lt;&lt;"
 											/>
 										</td>
 										<td style="width:40%">
@@ -248,13 +259,13 @@ $(document).ready(function() {
 
 									</div>
 									<div class="listNav">
-										<label  for="<c:out value="${selectBox}"/>" class="itemAction" style="margin-left:0;padding-left:0;display:block"><span><fmt:message key="label_availableItems"/></span></label>
+										<label  for="<c:out value="${selectBox}"/>" class="itemAction" style="margin-left:0;padding-left:0;display:block"><span><c:out value="${msgs.label_availableItems}"/></span></label>
 										<select
 											onchange="updateItems()"
 											class="artifactPicker"
 											id="<c:out value="${selectBox}"/>"
 											name="<c:out value="${status.expression}"/>">
-											<option value=""><fmt:message key="addPresentation2_selectItem"/>
+											<option value=""><c:out value="${msgs.addPresentation2_selectItem}"/>
 											   </option>
 											<option value="">- - - - - - - - - -
 											- - - - - - - - - - -</option>
@@ -284,13 +295,18 @@ $(document).ready(function() {
 									<c:if test="${itemDefinition.isFormType}">
 										<span class="itemAction"  style="margin-left:0;padding-left:0;white-space:nowrap;padding-top:4px;display:inline-block;">
 											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;itemDefId=<c:out value="${itemDefinition.id}"/>"
-											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
-											<c:if test="${mine}">
+											   class="inlineCreate""><c:out value="${msgs.create_new}" /></a>| 
+											<c:choose>
+											<c:when test="${mine}">
 											  <a href="#<c:out value="${selectBox}" />"
-													class="inlineFormEdit"><fmt:message key="edit_selected"/></a>|
-											</c:if>
+													class="inlineFormEdit"><c:out value="${msgs.edit_selected}"/></a>|
+											</c:when>
+											<c:otherwise>
+													<c:out value="${msgs.edit_selected}"/> |
+											</c:otherwise>
+											</c:choose>
 											<a href="#" onclick="document.wizardform.<c:out value='${selectBox}'/>.selectedIndex=0;updateItems()">
-											   <fmt:message key="remove_selected"/></a>
+											   <c:out value="${msgs.remove_selected}"/></a>
 										</span>
 									</c:if>
 								</div>

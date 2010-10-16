@@ -55,10 +55,10 @@ public class ListAssignmentController extends AbstractFormController implements 
       String doCancel = (String)request.get("_cancel");
       
       String selectAssignments = (String)session.get(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
-      session.remove(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
       
       if ( doCancel != null )
       {
+         session.remove(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
          return new ModelAndView("done");
       }
       else if ( doSave != null )
@@ -77,14 +77,18 @@ public class ListAssignmentController extends AbstractFormController implements 
       else
       {
          ArrayList assignBeans = new ArrayList();
-         ArrayList selectAssignList = AssignmentHelper.splitAssignmentIdList( selectAssignments );
+         ArrayList selectAssignList = new ArrayList();
+         if (selectAssignments != null && selectAssignments.length() > 0){
+            selectAssignList = AssignmentHelper.splitAssignmentIdList( selectAssignments );
+         }
          
          for ( Iterator it=allAssignments.iterator(); it.hasNext(); ) 
          {
             Assignment assign = (Assignment)it.next();
             boolean selected = false;
-            if ( selectAssignList.contains(assign.getId()) )
+            if ( selectAssignList.size() > 0 && selectAssignList.contains(assign.getId()) ) {
                selected = true;
+            }
             assignBeans.add( new AssignmentBean( assign, selected ) );
          }
          

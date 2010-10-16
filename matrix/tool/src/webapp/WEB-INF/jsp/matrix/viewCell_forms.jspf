@@ -4,11 +4,7 @@
 		<tr class="cellItemAddLine">
 			<td colspan="2">
 				<h4>
-					<fmt:message key="title_form_with_name">
-						<fmt:param>
-							<c:out value="${cellFormDef.name}" />
-						</fmt:param>
-					</fmt:message>
+					<c:out value="${msgs.title_form_with_name}"/> <c:out value="${cellFormDef.name}" />
 				</h4>
 			</td>
 			<td nowrap="nowrap">
@@ -71,8 +67,8 @@
                             <osp:param name="createFormAction" value="${cellFormDef.id}" />
                             <osp:param name="current_form_id" value="${node.resource.id}" />
                             </osp:url>"
-							title="<fmt:message key="edit"/>">
-							<fmt:message key="edit"/></a>
+							title='<c:out value="${msgs.edit}"/>'>
+							<c:out value="${msgs.edit}"/></a>
                         |
                         <a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -81,8 +77,8 @@
                             <osp:param name="current_form_id" value="${node.id}" />
                             <osp:param name="submit" value="delete" />
                             </osp:url>"
-							title="<fmt:message key="remove"/>">
-							<fmt:message key="remove"/></a>
+							title='<c:out value="${msgs.remove}"/>'>
+							<c:out value="${msgs.remove}"/></a>
                         <c:set var="hasFirstAction" value="true"/>
 					</c:if> <c:if
 						test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && allowItemFeedback[loopStatus.index] &&
@@ -105,7 +101,7 @@
 				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       	  </c:if>
                           </osp:url>"
-							title="<fmt:message key="item_review"/>"> <fmt:message key="item_review"/></a>
+							title='<c:out value="${msgs.item_review}"/>'> <c:out value="${msgs.item_review}"/></a>
 					</c:if></div>
 					</td>
 					<td></td>
@@ -115,8 +111,8 @@
 								<c:out value="${node.technicalMetadata.owner.displayName}" />
 							</c:when>
 							<c:otherwise>
-								<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-									<fmt:message key="blind_evaluation_username"></fmt:message>
+								<span title='<c:out value="${msgs.blind_evaluation_tooltip}"/>'>
+									<c:out value="${msgs.blind_evaluation_username}"/>
 								</span>
 							</c:otherwise>	
 						</c:choose>					
@@ -162,8 +158,8 @@
 							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 							          	</c:if>
 											  </osp:url>"
-										title="<fmt:message key="edit"/>"> 
-												<fmt:message key="edit"/></a>
+										title='<c:out value="${msgs.edit}"/>'> 
+												<c:out value="${msgs.edit}"/></a>
 											|
 									<a
 										href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -176,8 +172,8 @@
 							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 							          	</c:if>
 												 </osp:url>"
-										title="<fmt:message key="delete"/>">
-												<fmt:message key="remove"/>
+										title='<c:out value="${msgs.delete}"/>'>
+												<c:out value="${msgs.remove}"/>
 									</a>
 								</c:if>
 								</div>
@@ -199,12 +195,8 @@
 		<c:if test="${empty cellForms || isThisFormEmpty == 'true'}">
 			<tr>
 				<td colspan="6">
-				<p class="instruction indnt2"><fmt:message
-					key="form_section_empty">
-					<fmt:param>
-						<c:out value="${cellFormDef.name}" />
-					</fmt:param>
-				</fmt:message>
+				<p class="instruction indnt2">
+				<c:out value="${msgs.form_section_empty}"/> <c:out value="${cellFormDef.name}" />
 				</td>
 			</tr>
 		</c:if>

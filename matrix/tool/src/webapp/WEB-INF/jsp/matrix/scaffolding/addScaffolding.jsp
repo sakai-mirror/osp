@@ -2,8 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+
 
 <form method="post">
     <%--<form method="POST" name="wizardform" onsubmit="return true;"> --%>
@@ -17,15 +17,15 @@
     <input type="hidden" name="displayText" value="" />
     <input type="hidden" name="validate" value="false" />
 	<c:if test="${empty scaffolding.title}">
-		<h3><fmt:message key="title_scaffoldingAdd"/></h3>
+		<h3><c:out value="${msgs.title_scaffoldingAdd}"/></h3>
 		<div class="instruction">
-		  <fmt:message key="instructions_scaffoldingAdd"/>
+		  <c:out value="${msgs.instructions_scaffoldingAdd}" escapeXml="false"/>
 		</div>
 	</c:if>
 	<c:if test="${not empty scaffolding.title}">
-		<h3><fmt:message key="title_scaffoldingReviseProp"/></h3>
+		<h3><c:out value="${msgs.title_scaffoldingReviseProp}"/></h3>
 		<div class="instruction">
-		  <fmt:message key="instructions_scaffoldingEdit"/>
+		  <c:out value="${msgs.instructions_scaffoldingEdit}" escapeXml="false"/>
 		</div>
 	</c:if>
 	
@@ -33,23 +33,23 @@
 	<c:if test="${scaffolding.published}">
 	<c:if test="${isMatrixUsed}" >
 		<span  class="instruction">
-	  		<fmt:message key="instructions_hasBeenUsed"/>
+	  		<c:out value="${msgs.instructions_hasBeenUsed}"/>
 	  	</span>
 	</c:if>
 	<c:if test="${!isMatrixUsed}" >
 		<span  class="instruction">
-	  		<fmt:message key="instructions_hasBeenPublished"/>
+	  		<c:out value="${msgs.instructions_hasBeenPublished}"/>
 	  	</span>
 	</c:if>
 	  <c:set var="disabledText" value="disabled=\"disabled\""/>
 	</c:if>
 
 	<spring:hasBindErrors name="entry">
-	  <div class="validation"><fmt:message key="error_problemWithSubmission"/></div>
+	  <div class="validation"><c:out value="${msgs.error_problemWithSubmission}"/></div>
 	</spring:hasBindErrors>
 	<!-- ************* Matrix Info  Area Start ************* -->
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="title_generalScaffoldInfo"/></legend>
+		<legend><c:out value="${msgs.title_generalScaffoldInfo}"/></legend>
 		<spring:bind path="scaffolding.title">
 			<c:if test="${status.error}">
 				<p class="shorttext validFail">
@@ -57,7 +57,7 @@
 			<c:if test="${!status.error}">
 				<p class="shorttext">
 			</c:if>
-			<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_title"/></label>
+			<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><c:out value="${msgs.label_title}"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
 					   value="<c:out value="${status.value}"/>"
 					   size="25" maxlength="25" />
@@ -68,7 +68,7 @@
 		</spring:bind>
 
 		<p class="longtext">
-			<label class="block"><fmt:message key="label_description"/></label>
+			<label class="block"><c:out value="${msgs.label_description}"/></label>
 			<spring:bind path="scaffolding.description">
 				<table><tr>
 				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80"><c:out value="${status.value}"/></textarea></td>
@@ -83,9 +83,9 @@
 	
 	<!-- ************* Color and Style Area Start ************* -->
 	<fieldset class="fieldsetVis">
-	  	<legend><fmt:message key="matrix_colors_and_style"/></legend>
+	  	<legend><c:out value="${msgs.matrix_colors_and_style}"/></legend>
 		 <p class="shorttext">
-			<label for="styleName-id"><fmt:message key="style_section_header"/></label>
+			<label for="styleName-id"><c:out value="${msgs.style_section_header}"/></label>
 
 
 			 <c:if test="${empty scaffolding.style}">
@@ -108,7 +108,7 @@
 				<osp:message key="change_style" /></a>
 			 </c:if>
 		 </p>
-		  <h4><fmt:message key="title_matrixStatusColors"/></h4>
+		  <h4><c:out value="${msgs.title_matrixStatusColors}"/></h4>
 		  <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor,scaffolding.returnedColor"
 						delims=",">
 			<spring:bind path="${token}">
@@ -149,8 +149,8 @@
 					  Make it the link calling picker popup.
 					  Specify input object reference as first parameter to the function and palete selection as second.
 				   -->
-				   <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])" title="<fmt:message key="color_picker_linktitle_status"/>">
-				   <img width="15" height="13" border="0" alt="<fmt:message key="color_picker_linktitle"/>" src="<osp:url value="/js/colorPicker/img/sel.gif"/>" /></a>
+				   <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])" title='<c:out value="${msgs.color_picker_linktitle_status}"/>'>
+				   <img width="15" height="13" border="0" alt='<c:out value="${msgs.color_picker_linktitle}"/>' src="<osp:url value="/js/colorPicker/img/sel.gif"/>" /></a>
 				</p>
 			   </spring:bind>
 		  </c:forTokens>
@@ -160,8 +160,8 @@
 
    <!-- ************* Structure Area Start ************* -->   
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="matrix_structure"/></legend>
-		<h4><fmt:message key="title_columns"/>
+		<legend><c:out value="${msgs.matrix_structure}"/></legend>
+		<h4><c:out value="${msgs.title_columns}"/>
 	  </h4>
 	  <spring:bind path="scaffolding.columnLabel">
 		<c:if test="${status.error}">
@@ -170,7 +170,7 @@
 		<c:if test="${!status.error}">
 			<p class="shorttext">
 		</c:if>
-			<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_columnLabel"/></label>
+			<label for="<c:out value="${status.expression}"/>-id"><c:out value="${msgs.label_columnLabel}"/></label>
 			<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
 					 value="<c:out value="${status.value}"/>"
 				  size="25" maxlength="25" />
@@ -190,10 +190,10 @@
 				<div class="instruction indnt1">
 			</c:if>
 				<span class="reqStarInline">*</span>
-					<fmt:message key="no_cols_created_message"/>&nbsp;&nbsp;
+					<c:out value="${msgs.no_cols_created_message}"/>&nbsp;&nbsp;
 				
 						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-							<fmt:message key="action_first_addColumn"/>
+							<c:out value="${msgs.action_first_addColumn}"/>
 						</a>
 				&nbsp;&nbsp;
 					
@@ -205,15 +205,15 @@
 			<c:if test="${!(empty scaffolding.levels)}">
 				<span class="itemAction">
 					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-						<fmt:message key="action_addColumn"/>
+						<c:out value="${msgs.action_addColumn}"/>
 					</a>
 				</span>
-				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_cols"/>">
+				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<c:out value="${msgs.table_summary_cols}"/>">
 					<thead>
 						<tr>
-							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
+							<th scope="col" colspan="2"><c:out value="${msgs.table_header_name}"/></th>
 							<th scope="col">
-								<fmt:message key="actions"/>
+								<c:out value="${msgs.actions}"/>
 							</th>
 						</tr>
 					</thead>
@@ -228,10 +228,10 @@
 							</td>
 							<td>
 									<c:if test="${not empty level.color}">
-										<div class="colorBox"  style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>"><fmt:message key="swatch_text"/></div>
+										<div class="colorBox"  style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>"><c:out value="${msgs.swatch_text}"/></div>
 									</c:if>
 									<c:if test="${ empty level.color}">
-										<div class="colorBox"><fmt:message key="swatch_text_none"/></div>
+										<div class="colorBox"><c:out value="${msgs.swatch_text_none}"/></div>
 									</c:if>				
 							</td>
 							<td style="white-space:nowrap">
@@ -241,7 +241,7 @@
 									  document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>';
 									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
-										 <fmt:message key="table_action_edit"/>
+										 <c:out value="${msgs.table_action_edit}"/>
 								   </a>
 								 <c:if test="${!isMatrixUsed}" >
 									 | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
@@ -252,7 +252,7 @@
 									  document.forms[0].params.value='level_id=<c:out value="${level.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
 									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
-										 <fmt:message key="table_action_remove"/>
+										 <c:out value="${msgs.table_action_remove}"/>
 								   </a>
 								 </c:if>
 									 | <a href="javascript:document.forms[0].dest.value='moveLevel';
@@ -260,14 +260,14 @@
 									  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
 									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
-										 <fmt:message key="table_action_up"/>
+										 <c:out value="${msgs.table_action_up}"/>
 								   </a>
 									 | <a href="javascript:document.forms[0].dest.value='moveLevel';
 									  document.forms[0].submitAction.value='forward';
 									  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
 									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
-										 <fmt:message key="table_action_down"/>
+										 <c:out value="${msgs.table_action_down}"/>
 								   </a>
 								</span>
 							</td>
@@ -279,7 +279,7 @@
 	   </spring:bind>
 	
 	
-		<h4><fmt:message key="title_rows"/></h4>
+		<h4><c:out value="${msgs.title_rows}"/></h4>
 	  <spring:bind path="scaffolding.rowLabel">
 			<c:if test="${status.error}">
 				<p class="shorttext validFail">
@@ -287,7 +287,7 @@
 			<c:if test="${!status.error}">
 				<p class="shorttext">
 			</c:if>
-				<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_rowLabel"/></label>
+				<label for="<c:out value="${status.expression}"/>-id"><c:out value="${msgs.label_rowLabel}"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id"
 						 value="<c:out value="${status.value}"/>"
 					  size="25" maxlength="25" />
@@ -307,10 +307,10 @@
 				<div class="instruction indnt1">
 			</c:if>
 				<span class="reqStarInline">*</span>
-					<fmt:message key="no_rows_created_message"/>&nbsp;&nbsp;
+					<c:out value="${msgs.no_rows_created_message}"/>&nbsp;&nbsp;
 					
 					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-						<fmt:message key="action_first_addRow"/></a>&nbsp;&nbsp;
+						<c:out value="${msgs.action_first_addRow}"/></a>&nbsp;&nbsp;
 			
 					<c:if test="${status.error}">
 						<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
@@ -321,14 +321,14 @@
 			<c:if test="${!(empty scaffolding.criteria)}">
 				<span class="itemAction"> 
 					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-						<fmt:message key="action_addRow"/></a>
+						<c:out value="${msgs.action_addRow}"/></a>
 				</span>
-				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_rows"/>">
+				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<c:out value="${msgs.table_summary_rows}"/>">
 					<thead>
 						<tr>
-							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
+							<th scope="col" colspan="2"><c:out value="${msgs.table_header_name}"/></th>
 							<th>
-								<fmt:message key="actions"/>
+								<c:out value="${msgs.actions}"/>
 							</th>
 						</tr>
 					</thead>
@@ -346,10 +346,10 @@
 													style="background-color: <c:out value="${criterion.color}"/>;
 													color: <c:if test="${not empty criterion.textColor}" >
 														<c:out value="${criterion.textColor}"/>
-													</c:if>"><fmt:message key="swatch_text"/></div>
+													</c:if>"><c:out value="${msgs.swatch_text}"/></div>
 										</c:if>
 										<c:if test="${ empty criterion.color}">
-											<div class="colorBox"><fmt:message key="swatch_text_none"/></div>
+											<div class="colorBox"><c:out value="${msgs.swatch_text_none}"/></div>
 										</c:if>
 	
 										</td>
@@ -360,7 +360,7 @@
 										  document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>:path=';
 										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
-											  <fmt:message key="table_action_edit"/>
+											  <c:out value="${msgs.table_action_edit}"/>
 										  </a>
 					
 										 <c:if test="${!isMatrixUsed}" >
@@ -372,7 +372,7 @@
 										  document.forms[0].params.value='criterion_id=<c:out value="${criterion.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
 										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
-											  <fmt:message key="table_action_remove"/>
+											  <c:out value="${msgs.table_action_remove}"/>
 										  </a>
 										 </c:if>
 										  | <a href="javascript:document.forms[0].dest.value='moveCriterion';
@@ -380,14 +380,14 @@
 										  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
 										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
-											  <fmt:message key="table_action_up"/>
+											  <c:out value="${msgs.table_action_up}"/>
 										  </a>
 										  | <a href="javascript:document.forms[0].dest.value='moveCriterion';
 										  document.forms[0].submitAction.value='forward';
 										  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
 										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
-											  <fmt:message key="table_action_down"/>
+											  <c:out value="${msgs.table_action_down}"/>
 										  </a>
 										</span>
 									</td>
@@ -430,36 +430,36 @@
 	<!-- *************  User Forms Area  Start ************* -->
 <c:if test="${enableDafaultMatrixOptions == 'true'}">
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
+		<legend><c:out value="${msgs.legend_additional_user_Forms}"/></legend>
 		<p>
-			<fmt:message key="info_defaultForms" />
+			<c:out value="${msgs.info_defaultForms}" />
 		</p>
 		<!-- ************* Additional Forms Area Start ************* -->   
-		<h5><fmt:message key="title_additionalForms"/></h5>
+		<h5><c:out value="${msgs.title_additionalForms}"/></h5>
 		<p class="indnt1"> 
-			<fmt:message key="addForms_instructions" />
+			<c:out value="${msgs.addForms_instructions}" />
 		</p>
 
 		<p class="shorttext">
-			<label for="selectAdditionalFormId" ><fmt:message key="label_selectCustomForm"/></label>    
+			<label for="selectAdditionalFormId" ><c:out value="${msgs.label_selectCustomForm}"/></label>    
 			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
-				<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
+				<option value="" selected="selected"><c:out value="${msgs.select_form_text}" /></option>
 				<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
 					<option value="<c:out value="${addtlForm.id}"/>">
 				<c:out value="${addtlForm.name}"/></option>
 				</c:forEach>
 			</select>
 			<span class="act">
-				<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
+				<input type="submit" id="addForm-id" name="addForm" value="<c:out value="${msgs.button_add}"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 			</span>
 		</p>
 		<c:if test="${ empty selectedAdditionalFormDevices}">
 			<div class="instruction indnt2">
-				<fmt:message key="addForms_instructions_noforms" />
+				<c:out value="${msgs.addForms_instructions_noforms}" />
 			</div>
 		</c:if>
 		<c:if test="${not empty selectedAdditionalFormDevices}">
-			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<c:out value="${msgs.table_forms_summary}"/>" style="width:50%">
 				<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
 					<tr>
 						<td>
@@ -501,13 +501,13 @@
 			</c:if>
 			<h5><osp:message key="label_selectReflectionDevice"/></h5>
 			<p class="indnt1">
-				<fmt:message key="reflection_select_instructions"/>
+				<c:out value="${msgs.reflection_select_instructions}"/>
 			</p>	
 			<p class="shorttext"> 
-				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReflectionDevice"/></label>    
+				<label for="<c:out value="${status.expression}-id"/>"><c:out value="${msgs.label_selectReflectionDevice}"/></label>    
 				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>" 
 					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-					<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
+					<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><c:out value="${msgs.select_form_text}" /></option>
 					<c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
 						<option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
 						value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected="selected"</c:if>><c:out value="${refDev.name}"/></option>
@@ -531,15 +531,15 @@
 
 	<!--  ********** Feedback start ************* -->
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_feedback"/></legend>
+		<legend><c:out value="${msgs.legend_feedback}"/></legend>
 		
 		
 		<!--  ********** Feedback Options Start ************-->
-		<table cellspacing="0" border="0" summary="<fmt:message key="feedback_options"/>">
+		<table cellspacing="0" border="0" summary="<c:out value="${msgs.feedback_options}"/>">
 		<thead>
 		<tr>
-		<th><h4><fmt:message key="feedback_options_gen"/></h4></th>
-		<th><h4><fmt:message key="feedback_options_item"/></h4></th>
+		<th><h4><c:out value="${msgs.feedback_options_gen}"/></h4></th>
+		<th><h4><c:out value="${msgs.feedback_options_item}"/></h4></th>
 		</tr>
 		</thead>
 		<tbody><tr>
@@ -581,7 +581,7 @@
 		
 		<hr color="#CCCCCC" size="1px" width="70%" />
 		<p>
-			<fmt:message key="info_defaultForms" />
+			<c:out value="${msgs.info_defaultForms}" />
 		</p>
 		<!-- ************* Feedback Area Start ************* -->   
 		<spring:bind path="scaffolding.reviewDeviceType">  
@@ -594,13 +594,13 @@
 			</c:if>
 			<h5> <osp:message key="label_selectReviewDevice"/></h5>
 			<p class="indnt1">
-				<fmt:message key="feedback_select_instructions"/>
+				<c:out value="${msgs.feedback_select_instructions}"/>
 			</p>	
 			<p class="shorttext">
-				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReviewDevice"/></label>    
+				<label for="<c:out value="${status.expression}-id"/>"><c:out value="${msgs.label_selectReviewDevice}"/></label>    
 				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
 					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
+					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><c:out value="${msgs.select_form_text}" /></option>
 					<c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
 						<option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
 						value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected="selected"</c:if>><c:out value="${reviewDev.name}"/></option>
@@ -618,7 +618,7 @@
 		
 		<!-- ************* Reviewers List Start ************* -->            
 	
-		<h5 style="display:inline"><fmt:message key="label_reviwers"/></h5>
+		<h5 style="display:inline"><c:out value="${msgs.label_reviwers}"/></h5>
 		<c:if test="${empty reviewers}">
 			<span class="indnt1">
 				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
@@ -640,7 +640,7 @@
 		</c:if>	
 		<c:if test="${empty reviewers}">
 			<div class="instruction indnt1">
-				<fmt:message key="info_reviewersNone"/>
+				<c:out value="${msgs.info_reviewersNone}"/>
 			</div>
 		</c:if>
 		<p class="indnt1">
@@ -651,7 +651,7 @@
 							checked
 						</c:if> 
 					 />				
-					<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>
+					<label for="allowRequestFeedback" ><c:out value="${msgs.allowRequestFeedback}"/></label>
 				</span>    
 			</spring:bind>	
 			</p>
@@ -668,29 +668,29 @@
 	<!--  ********** Evaluation start ************* -->
 <c:if test="${enableDafaultMatrixOptions == 'true'}">
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_evaluation"/></legend>
+		<legend><c:out value="${msgs.legend_evaluation}"/></legend>
 		<p>
-			<fmt:message key="info_defaultForms" />
+			<c:out value="${msgs.info_defaultForms}" />
 		</p>
 		
 		
 		
 		<!-- ************* Review and Evaluation Area Start ************* -->            
 		
-		<h5><fmt:message key="header_Evaluators"/></h5>
+		<h5><c:out value="${msgs.header_Evaluators}"/></h5>
 		<div id="evaluatorsDiv">  
 			<p class="indnt1">
-				<fmt:message key="evaluation_select_instructions"/>
+				<c:out value="${msgs.evaluation_select_instructions}"/>
 			</p>
 			<spring:bind path="scaffolding.evaluationDevice">  
 				<c:if test="${status.error}">
 			<div class="validation"><c:out value="${status.errorMessage}"/></div>
 			</c:if>
 				<p class="shorttext">
-					<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectEvaluationDevice"/></label>    
+					<label for="<c:out value="${status.expression}-id"/>"><c:out value="${msgs.label_selectEvaluationDevice}"/></label>    
 					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
 						<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-						<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
+						<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><c:out value="${msgs.select_form_text}" /></option>
 						<c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
 							<option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
 							value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected="selected"</c:if>><c:out value="${evalDev.name}"/></option>
@@ -707,7 +707,7 @@
 							checked
 						</c:if> 
 					 />				
-					<label for="hideEvaluations" ><fmt:message key="hideEvaluations"/></label>
+					<label for="hideEvaluations" ><c:out value="${msgs.hideEvaluations}"/></label>
 				</span>    
 			</spring:bind>	
 			</p>
@@ -719,7 +719,7 @@
 		
 		<!-- ************* Evaluators List Start ************* -->            
 	
-		<h5  style="display:inline"><fmt:message key="label_evaluators"/></h5>
+		<h5  style="display:inline"><c:out value="${msgs.label_evaluators}"/></h5>
 		<c:if test="${empty evaluators}">
 			<span class="indnt1">
 				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
@@ -741,7 +741,7 @@
 		</c:if>	
 		<c:if test="${empty evaluators}">
 			<div class="instruction indnt1">
-				<fmt:message key="no_evaluators"/>
+				<c:out value="${msgs.no_evaluators}"/>
 			</div>
 		</c:if>
 		

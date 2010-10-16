@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL:$
- * $Id:$
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2008 The Sakai Foundation
@@ -21,6 +21,7 @@
 
 package org.sakaiproject.portal.xsltcharon.impl;
 
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.portal.api.PortalRenderContext;
 import org.sakaiproject.portal.api.PortalRenderEngine;
 import org.sakaiproject.portal.render.api.RenderResult;
@@ -225,13 +226,42 @@ public class XsltRenderContext implements PortalRenderContext {
       appendTextElementNode(doc, "url", (String) siteMap.get("siteUrl"), site);
       appendTextElementNode(doc, "title", (String) siteMap.get("siteTitle"), site);
       appendTextElementNode(doc, "description", (String) siteMap.get("siteDescription"), site);
+      appendTextElementNode(doc, "shortDescription", (String) siteMap.get("shortDescription"), site);
       appendTextElementNode(doc, "parent", (String) siteMap.get("parentSite"), site);
+      appendTextElementNode(doc, "type", (String) siteMap.get("siteType"), site);
+      appendTextElementNode(doc, "siteId", (String) siteMap.get("siteId"), site);
 
       site.setAttribute("selected", siteMap.get("isCurrentSite").toString());
+      if (((Boolean)siteMap.get("isCurrentSite")).booleanValue()){
+        if (context.get("viewAsStudentLink") != null &&
+                ((Boolean)context.get("viewAsStudentLink")).booleanValue() ) {
+            Element viewAsStudentLink = doc.createElement("viewAsStudentLink");
+            site.appendChild(viewAsStudentLink);
+            if (context.get("roleSwitchState") != null) {
+                appendTextElementNode(doc, "roleSwitchState", context.get("roleSwitchState").toString(), viewAsStudentLink);
+            }
+            appendTextElementNode(doc, "roleUrlValue", (String) context.get("roleUrlValue"), viewAsStudentLink);
+            if (context.get("roleswapdropdown") != null) {
+                appendTextElementNode(doc, "roleswapdropdown", context.get("roleswapdropdown").toString(), viewAsStudentLink);
+            }
+            appendTextElementNode(doc, "switchRoleUrl", (String) context.get("switchRoleUrl"), viewAsStudentLink);
+            appendTextElementNode(doc, "panelString", (String) context.get("panelString"), viewAsStudentLink);
+            if (context.get("siteRoles") != null) {
+                List roles = (List)context.get("siteRoles");
+                appendTextElementNodes(doc, (String[])roles.toArray(new String[roles.size()]), viewAsStudentLink, "siteRoles", "role");
+            }
+        }
+      }
       site.setAttribute("myWorkspace", siteMap.get("isMyWorkspace").toString());
       site.setAttribute("depth", siteMap.get("depth").toString());
-      site.setAttribute("child", siteMap.get("isChild").toString());
       site.setAttribute("order", "" + index);
+      
+      if ( siteMap.get("isChild") != null )
+         site.setAttribute("child", siteMap.get("isChild").toString());
+      else if ( siteMap.get("parentSite") != null )
+         site.setAttribute("child", Boolean.TRUE.toString());
+      else
+         site.setAttribute("child", Boolean.FALSE.toString());
 
       return site;
    }
@@ -246,7 +276,8 @@ public class XsltRenderContext implements PortalRenderContext {
          Map page = i.next();
          Map pageProps = (Map)page.get("pageProps");
          String currentCategory = (String) pageProps.get("sitePage.pageCategory");  //todo put the static final here
-         if (currentCategory == null) {
+
+         if (currentCategory == null || !isDisplayToolCategories()) {
             lastCategory = null;
             lastCategoryElement = null;
             categories.appendChild(createUncategorizedPage(doc, page, index));
@@ -325,7 +356,7 @@ public class XsltRenderContext implements PortalRenderContext {
       safeAppendTextNode(doc, pageUrl, page.get("pageRefUrl").toString(), true);
 
       Element popPageUrl = doc.createElement("popUrl");
-      safeAppendTextNode(doc, popPageUrl, page.get("pagePopupUrl").toString(), true);
+      safeAppendTextNode(doc, popPageUrl, page.get("pagePopupUrl").toString() + page.get("pageId").toString(), true);
 
       Element menuClass = doc.createElement("menuClass");
       safeAppendTextNode(doc, menuClass, page.get("menuClass").toString(), true);
@@ -391,7 +422,15 @@ public class XsltRenderContext implements PortalRenderContext {
       if ((Boolean)tool.get("hasRenderResult")) {
          toolElement.setAttribute("renderResult", "true");
          RenderResult result = (RenderResult) tool.get("toolRenderResult");
-         Document content = Xml.readDocumentFromString(result.getContent());
+
+         //SAK-18793 - readDocumentFromString returns null on error; this check prevents NPEs
+         String contentStr = result.getContent();
+         if (contentStr == null)
+         {
+             throw new ToolRenderException ("tool xml failed to render and is null");
+         }
+
+         Document content = Xml.readDocumentFromString(contentStr);
          Element contentRoot = (Element) doc.importNode(content.getDocumentElement(), true);
          Element contentElement = doc.createElement("content");
          contentElement.appendChild(contentRoot);
@@ -546,7 +585,7 @@ public class XsltRenderContext implements PortalRenderContext {
    protected Element createLoginXml(Document doc, HttpServletRequest req) {
       Element login = doc.createElement("loginInfo");
 
-      appendTextElementNodeFromProp(doc, "topLogin", "siteNavLoggedIn", login);
+      appendTextElementNodeFromProp(doc, "topLogin", "siteNavTopLogin", login);
       appendTextElementNodeFromProp(doc, "logInOutUrl", "loginLogInOutUrl", login);
       appendTextElementNodeFromProp(doc, "loginText", "loginMessage", login);
       appendTextElementNodeFromProp(doc, "logoutText", "loginMessage", login);
@@ -628,4 +667,7 @@ public class XsltRenderContext implements PortalRenderContext {
       return null;
    }
 
+   public boolean isDisplayToolCategories() {
+      return ServerConfigurationService.getBoolean("xslPortal.displayToolCategories", true);
+   }
 }

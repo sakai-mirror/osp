@@ -58,6 +58,11 @@
          <value>#{Components["authManager"]}</value>
       </managed-property>
       <managed-property>
+         <description>Service Dependency: agentManager</description>
+         <property-name>agentManager</property-name>
+         <value>#{Components["agentManager"]}</value>
+      </managed-property>
+      <managed-property>
          <description>Service Dependency: workflowManager</description>
          <property-name>workflowManager</property-name>
          <value>#{Components["org.theospi.portfolio.workflow.mgt.WorkflowManager"]}</value>
@@ -81,6 +86,26 @@
          <description>Service Dependency: wizardActivityProducer</description>
          <property-name>wizardActivityProducer</property-name>
          <value>#{Components["org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: sessionManager</description>
+         <property-name>sessionManager</property-name>
+         <value>#{Components["org.sakaiproject.tool.api.SessionManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: toolManager</description>
+         <property-name>toolManager</property-name>
+         <value>#{Components["org.sakaiproject.tool.api.ActiveToolManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: siteService</description>
+         <property-name>siteService</property-name>
+         <value>#{Components["org.sakaiproject.site.api.SiteService"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: userDirectoryService</description>
+         <property-name>userDirectoryService</property-name>
+         <value>#{Components["org.sakaiproject.user.api.UserDirectoryService"]}</value>
       </managed-property>
    </managed-bean>
 

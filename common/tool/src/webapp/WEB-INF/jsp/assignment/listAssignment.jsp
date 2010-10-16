@@ -1,13 +1,13 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="org.theospi.portfolio.common.bundle.Messages" />
+
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.common.bundle.Messages"/></jsp:useBean>
 
 <div class="navPanel">
 	<div class="viewNav">
-		<h3><fmt:message key="assign.title.manage"/></h3>
-		<p class="instruction"><fmt:message key="edit.addAssign.instructions"/></p>
+		<h3><c:out value="${msgs.assign_title_manage}"/></h3>
+		<p class="instruction"><c:out value="${msgs.edit_addAssign_instructions}"/></p>
 	</div>	
 	<osp:url var="listUrl" value="listAssignment.osp"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
@@ -20,10 +20,10 @@
    <thead>
       <tr>
          <th scope="col" class="attach"></th>
-         <th scope="col"><fmt:message key="assign.title"/></th>
-         <th scope="col"><fmt:message key="assign.status"/></th>
-         <th scope="col"><fmt:message key="assign.open"/></th>
-         <th scope="col"><fmt:message key="assign.due"/></th>
+         <th scope="col"><c:out value="${msgs.assign_title}"/></th>
+         <th scope="col"><c:out value="${msgs.assign_status}"/></th>
+         <th scope="col"><c:out value="${msgs.assign_open}"/></th>
+         <th scope="col"><c:out value="${msgs.assign_due}"/></th>
       </tr>
    </thead>
    <tbody>
@@ -46,8 +46,8 @@
 </table>
 
 <div class="act">
-      <input type="submit" name="_save" value="<fmt:message key="button_save"/>" accesskey="s" class="active"/>
-      <input type="submit" name="_cancel" value="<fmt:message key="button_cancel"/>" accesskey="x" />
+      <input type="submit" name="_save" value="<c:out value="${msgs.button_save}"/>" accesskey="s" class="active"/>
+      <input type="submit" name="_cancel" value="<c:out value="${msgs.button_cancel}"/>" accesskey="x" />
 
 </div>
 

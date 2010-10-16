@@ -18,7 +18,7 @@
 	<t:stylesheet path="/../../osp-common-tool/css/thickbox.css" />
 	<t:stylesheet path="/../../osp-common-tool/css/eport.css" />
 <f:verbatim>
-<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/jquery-1.2.1.js"></script>
+<script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery.min.js"></script>
 	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
 	
 	

@@ -303,7 +303,7 @@ public class FreeFormTool extends HelperToolBase {
          DecoratedPage decoratedPage = (DecoratedPage) i.next();
          PresentationPage page = decoratedPage.getBase();
          SelectItem si = (SelectItem)createSelect(page.getUrl(),
-                 page.getTitle());
+                 decoratedPage.getSafeTitle());
          
          boolean present = false;
          for (Iterator j=attachableItems.iterator();j.hasNext();) {
@@ -347,7 +347,7 @@ public class FreeFormTool extends HelperToolBase {
       List returned = new ArrayList();
       for (Iterator i=base.iterator();i.hasNext();) {
          DecoratedPage page = (DecoratedPage)i.next();
-         returned.add(createSelect(page.getBase().getId().getValue(), page.getBase().getTitle()));
+         returned.add(createSelect(page.getBase().getId().getValue(), page.getSafeTitle()));
       }
       return returned;
    }

@@ -77,6 +77,13 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
       return (this.getId().equals(((ScaffoldingCell) other).getId()));
 
    }
+
+   public int hashCode() {
+      if (this.getId() == null)
+         return 212397825;
+      else
+         return this.getId().hashCode();
+   }
    
    /**
     * @return String Returns the title.
