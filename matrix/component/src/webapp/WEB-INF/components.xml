@@ -557,7 +557,7 @@
          </map>
       </property>
      <property name="overrideBySite"><value>true</value></property>
-     <property name="expandByDefault"><value>false</value></property>
+     <property name="expandByDefault"><value>true</value></property>
    </bean>
 
 </beans>
