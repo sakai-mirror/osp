@@ -39,8 +39,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.UserNotificationPreferencesRegistration;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Scaffolding;
@@ -51,6 +51,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
    private ListScrollIndexer listScrollIndexer;
    private SiteService siteService;
 	private IdManager idManager;
+	private UserNotificationPreferencesRegistration matrixPreferencesConfig;
 	// Sort strings
 	static final String SORT = "sort", ASCENDING = "ascending",  TITLE = "title", OWNER = "owner",
 						PUBLISHED = "published", MODIFIED = "modified", WORKSITE = "worksite";
@@ -109,6 +110,10 @@ public class ListScaffoldingController extends AbstractMatrixController {
       
       if(request.get("toolPermissionSaved") != null)
     	  model.put("toolPermissionSaved", request.get("toolPermissionSaved"));
+
+      String typeKey = getMatrixPreferencesConfig().getType();
+      model.put("typeKey", typeKey);
+     
       
       return new ModelAndView("success", model);
    }
@@ -142,6 +147,14 @@ public class ListScaffoldingController extends AbstractMatrixController {
       this.idManager = idManager;
    }
 	
+   public void setMatrixPreferencesConfig(UserNotificationPreferencesRegistration matrixPreferencesConfig) {
+	   this.matrixPreferencesConfig = matrixPreferencesConfig;
+   }
+
+   public UserNotificationPreferencesRegistration getMatrixPreferencesConfig() {
+	   return matrixPreferencesConfig;
+   }
+
    /**
     * See if the current tab is the workspace tab.
     * @return true if we are currently on the "My Workspace" tab.

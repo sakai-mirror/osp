@@ -107,6 +107,11 @@
          <property-name>userDirectoryService</property-name>
          <value>#{Components["org.sakaiproject.user.api.UserDirectoryService"]}</value>
       </managed-property>
+      <managed-property>
+      	<description>Service Dependency: wizardPreferencesConfig</description>
+      	<property-name>wizardPreferencesConfig</property-name>
+      	<value>#{Components["org.sakaiproject.user.api.UserNotificationPreferencesRegistration.wizard"]}</value>
+      </managed-property>
    </managed-bean>
 
   <navigation-rule>
