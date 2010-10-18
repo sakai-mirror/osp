@@ -93,7 +93,6 @@
 				<a href="javascript:document.forms[0].dest.value='scaffoldingStylePickerAction';
 				document.forms[0].submitAction.value='forward';
 				document.forms[0].params.value='stylePickerAction=true:scaffolding_id=<c:out value="${scaffolding.id}" />';
-				document.forms[0].onsubmit();
 				document.forms[0].submit();">
 				<osp:message key="select_style" /></a>
 			 </c:if>
@@ -103,7 +102,6 @@
 				<a href="javascript:document.forms[0].dest.value='scaffoldingStylePickerAction';
 				document.forms[0].submitAction.value='forward';
 				document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:scaffolding_id=<c:out value="${scaffolding.id}" />';
-				document.forms[0].onsubmit();
 				document.forms[0].submit();">
 				<osp:message key="change_style" /></a>
 			 </c:if>
@@ -192,7 +190,7 @@
 				<span class="reqStarInline">*</span>
 					<c:out value="${msgs.no_cols_created_message}"/>&nbsp;&nbsp;
 				
-						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 							<c:out value="${msgs.action_first_addColumn}"/>
 						</a>
 				&nbsp;&nbsp;
@@ -204,7 +202,7 @@
 			</c:if>	
 			<c:if test="${!(empty scaffolding.levels)}">
 				<span class="itemAction">
-					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 						<c:out value="${msgs.action_addColumn}"/>
 					</a>
 				</span>
@@ -239,7 +237,6 @@
 									 <a href="javascript:document.forms[0].dest.value='addLevel';
 									  document.forms[0].submitAction.value='forward';
 									  document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>';
-									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
 										 <c:out value="${msgs.table_action_edit}"/>
 								   </a>
@@ -250,7 +247,6 @@
 									  document.forms[0].displayText.value='<c:out value="${level.description}"/>';
 									  document.forms[0].submitAction.value='forward';
 									  document.forms[0].params.value='level_id=<c:out value="${level.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
-									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
 										 <c:out value="${msgs.table_action_remove}"/>
 								   </a>
@@ -258,14 +254,12 @@
 									 | <a href="javascript:document.forms[0].dest.value='moveLevel';
 									  document.forms[0].submitAction.value='forward';
 									  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
-									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
 										 <c:out value="${msgs.table_action_up}"/>
 								   </a>
 									 | <a href="javascript:document.forms[0].dest.value='moveLevel';
 									  document.forms[0].submitAction.value='forward';
 									  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
-									document.forms[0].onsubmit();
 									  document.forms[0].submit();">
 										 <c:out value="${msgs.table_action_down}"/>
 								   </a>
@@ -309,7 +303,7 @@
 				<span class="reqStarInline">*</span>
 					<c:out value="${msgs.no_rows_created_message}"/>&nbsp;&nbsp;
 					
-					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].submit();">
 						<c:out value="${msgs.action_first_addRow}"/></a>&nbsp;&nbsp;
 			
 					<c:if test="${status.error}">
@@ -320,7 +314,7 @@
 			</c:if>
 			<c:if test="${!(empty scaffolding.criteria)}">
 				<span class="itemAction"> 
-					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].submit();">
 						<c:out value="${msgs.action_addRow}"/></a>
 				</span>
 				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<c:out value="${msgs.table_summary_rows}"/>">
@@ -358,7 +352,6 @@
 										  <a href="javascript:document.forms[0].dest.value='addCriterion';
 										  document.forms[0].submitAction.value='forward';
 										  document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>:path=';
-										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
 											  <c:out value="${msgs.table_action_edit}"/>
 										  </a>
@@ -370,7 +363,6 @@
 										  document.forms[0].displayText.value='<c:out value="${criterion.description}"/>';
 										  document.forms[0].submitAction.value='forward';
 										  document.forms[0].params.value='criterion_id=<c:out value="${criterion.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
-										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
 											  <c:out value="${msgs.table_action_remove}"/>
 										  </a>
@@ -378,14 +370,12 @@
 										  | <a href="javascript:document.forms[0].dest.value='moveCriterion';
 										  document.forms[0].submitAction.value='forward';
 										  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
-										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
 											  <c:out value="${msgs.table_action_up}"/>
 										  </a>
 										  | <a href="javascript:document.forms[0].dest.value='moveCriterion';
 										  document.forms[0].submitAction.value='forward';
 										  document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
-										  document.forms[0].onsubmit();
 										  document.forms[0].submit();">
 											  <c:out value="${msgs.table_action_down}"/>
 										  </a>
@@ -474,7 +464,6 @@
 								<span class="itemAction">
 									<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
 										document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-										document.forms[0].onsubmit();
 										document.forms[0].submit();">
 										<osp:message key="remove"/>
 									</a>
@@ -621,7 +610,7 @@
 		<h5 style="display:inline"><c:out value="${msgs.label_reviwers}"/></h5>
 		<c:if test="${empty reviewers}">
 			<span class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 						<osp:message key="add_reviewers"/>
 				</a>
 			</span>
@@ -633,7 +622,7 @@
 				</c:forEach>
 			</ol>
 			<p class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 					<osp:message key="select_reviewers"/>
 				</a>	
 			</p>
@@ -722,7 +711,7 @@
 		<h5  style="display:inline"><c:out value="${msgs.label_evaluators}"/></h5>
 		<c:if test="${empty evaluators}">
 			<span class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 					<osp:message key="add_evaluators"/>
 				</a>
 			</span>
@@ -734,7 +723,7 @@
 				</c:forEach>
 			</ol>
 			<p class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 					<osp:message key="select_evaluators"/>
 				</a>	 
 			</p>
