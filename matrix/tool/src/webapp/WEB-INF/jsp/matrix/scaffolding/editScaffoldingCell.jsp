@@ -89,14 +89,14 @@ function mySetMainFrameHeight(id)
 		<div class="navIntraTool">
 			<c:if test="${!(empty helperInfoList)}">
 			<c:forEach var="helperInfo" items="${helperInfoList}">
-				<a href="javascript:document.forms[0].submitAction.value='tagActivity';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
+				<a href="javascript:document.forms[0].submitAction.value='tagActivity';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].submit();"
 					title="<c:out value="${helperInfo.description}"/>">
 					<c:out value="${helperInfo.name}"/>
 				</a>
 			</c:forEach>
 			</c:if>
 			<c:if test="${!isWizard}">
-				<a href="javascript:document.forms[0].submitAction.value='listPageActivities';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
+				<a href="javascript:document.forms[0].submitAction.value='listPageActivities';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].submit();"
 					title='<c:out value="${msgs.link_page_activities}"/>'>
 					<c:out value="${msgs.link_page_activities}"/>
 				</a>
@@ -255,7 +255,6 @@ function mySetMainFrameHeight(id)
 				<a href="javascript:document.forms[0].dest.value='stylePickerAction';
 				document.forms[0].submitAction.value='forward';
 				document.forms[0].params.value='stylePickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${returnView}" />';
-				document.forms[0].onsubmit();
 				document.forms[0].submit();">
 				<osp:message key="select_style" /></a>
 			</c:if>
@@ -265,7 +264,6 @@ function mySetMainFrameHeight(id)
 				<a href="javascript:document.forms[0].dest.value='stylePickerAction';
 				document.forms[0].submitAction.value='forward';
 				document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${returnView}" />';
-				document.forms[0].onsubmit();
 				document.forms[0].submit();">
 				<osp:message key="change_style" /></a>
 			</c:if>
@@ -287,7 +285,7 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${empty scaffoldingCell.guidance.instruction.limitedText && empty scaffoldingCell.guidance.instruction.attachments}">
 			<h5 style="display:inline"><osp:message key="instructions"/></h5>
 			<span class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 						<osp:message key="add_first_instructions"/></a>
 			</span>
 			<p class="indnt1 instruction">			
@@ -303,7 +301,7 @@ function mySetMainFrameHeight(id)
 					<th style="border-right-style:none"><h5><osp:message key="instructions"/></h5></th>                     
 					<th style="text-align:right;border-left-style:none;"  class="specialLink itemAction">
 						<a href="#" 
-							onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+							onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 							<osp:message key="reviseInstructions"/>
 						</a>	
 					</th>
@@ -338,7 +336,7 @@ function mySetMainFrameHeight(id)
 			<h5 style="display:inline"><osp:message key="rationale"/></h5>
 			<span clas="indnt1">
 				&nbsp;&nbsp;
-				<a href="#" onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+				<a href="#" onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 					<osp:message key="add_first_rationale"/></a>
 			</span>
 			<p class="indnt1 instruction">		
@@ -354,7 +352,7 @@ function mySetMainFrameHeight(id)
 					<th style="border-right-style:none"><h5><osp:message key="rationale"/></h5></th>
 					<th style="text-align:right;border-left-style:none;" class="specialLink itemAction">
 						<a href="#" 
-							onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+							onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 							<osp:message key="reviseRationale"/>
 						</a>
 					</th>
@@ -390,7 +388,7 @@ function mySetMainFrameHeight(id)
 			<h5 style="display:inline"><osp:message key="examples"/></h5>
 			<span clas="indnt1">
 				&nbsp;&nbsp;
-				<a href="#" onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+				<a href="#" onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 					<osp:message key="add_first_examples"/></a>
 			</span>
 			<p class="indnt1 instruction">
@@ -405,7 +403,7 @@ function mySetMainFrameHeight(id)
 				<tr>
 					<th style="border-right-style:none"><h5><osp:message key="examples"/></h5></th>
 					<th style="text-align:right;border-left-style:none;" class="itemAction specialLink">
-						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 							<osp:message key="reviseExamples"/>
 						</a>	
 					</th>
@@ -441,7 +439,7 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${empty scaffoldingCell.guidance.rubric.limitedText && empty scaffoldingCell.guidance.rubric.attachments}">
 			<h5 style="display:inline"><osp:message key="rubrics"/></h5>
 			<span class="indnt1">
-				<a href="#" onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+				<a href="#" onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 					<osp:message key="add_first_rubrics"/></a>
 			</span>
 			<p class="indnt1 instruction">
@@ -456,7 +454,7 @@ function mySetMainFrameHeight(id)
 				<tr>
 					<th style="border-right-style:none"><h5><osp:message key="rubrics"/></h5></th>
 					<th style="text-align:right;border-left-style:none;" class="itemAction specialLink">
-						<a href="#"  onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<a href="#"  onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 							<osp:message key="reviseRubrics"/>
 						</a>	
 					</th>
@@ -492,7 +490,7 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${empty scaffoldingCell.guidance.expectations.limitedText && empty scaffoldingCell.guidance.expectations.attachments}">
 			<h5 style="display:inline"><osp:message key="expectations"/></h5>
 			<span class="indnt1">
-				<a href="#" onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+				<a href="#" onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
 					<osp:message key="add_first_expectations"/></a>
 			</span>
 			<p class="indnt1 instruction">
@@ -507,7 +505,7 @@ function mySetMainFrameHeight(id)
 				<tr>
 					<th style="border-right-style:none"><h5><osp:message key="expectations"/></h5></th>
 					<th style="text-align:right;border-left-style:none;" class="itemAction specialLink">
-						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 							<osp:message key="reviseExpectations"/>
 						</a>	
 					</th>
@@ -651,7 +649,6 @@ function mySetMainFrameHeight(id)
 										<span class="itemAction indnt1">
 											<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
 												document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-												document.forms[0].onsubmit();
 												document.forms[0].submit();">
 												<osp:message key="remove"/>
 											</a>
@@ -678,7 +675,6 @@ function mySetMainFrameHeight(id)
 						<a href="#"	onclick="javascript:document.forms[0].dest.value='assignPickerAction';
 							document.forms[0].submitAction.value='forward';
 							document.forms[0].params.value='assignPickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:assignReturnView=<c:out value="${returnView}" />';
-							document.forms[0].onsubmit();
 							document.forms[0].submit();">
 							<osp:message key="add_first_assignment"/>
 						</a>
@@ -693,7 +689,6 @@ function mySetMainFrameHeight(id)
 								<a href="#"	onclick="javascript:document.forms[0].dest.value='assignPickerAction';
 									document.forms[0].submitAction.value='forward';
 									document.forms[0].params.value='assignPickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:assignReturnView=<c:out value="${returnView}" />';
-									document.forms[0].onsubmit();
 									document.forms[0].submit();">
 									<osp:message key="edit.addAssign"/>
 								</a>
@@ -982,7 +977,7 @@ function mySetMainFrameHeight(id)
 					<div class="indnt1 instruction"><c:out value="${msgs.info_reviewersNone}"/></div>
 				</c:if>
 				<div class="indnt1">
-					<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 						<osp:message key="select_reviewers"/>
 					</a>	 					
 				</div>
@@ -1161,7 +1156,7 @@ function mySetMainFrameHeight(id)
 				<div class="instruction indnt1"><c:out value="${msgs.no_evaluators}"/></div>
 			</c:if>
 			<div class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();" >
 					<osp:message key="select_evaluators"/>
 				</a>	 
 			</div>
