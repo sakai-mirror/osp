@@ -3281,7 +3281,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
       
-      String uuid = getContentHosting().getUuid(resourceId);
+      String uuid = getContentHosting().getUuid(resource.getId());
       return getIdManager().getId(uuid);
    }
    
