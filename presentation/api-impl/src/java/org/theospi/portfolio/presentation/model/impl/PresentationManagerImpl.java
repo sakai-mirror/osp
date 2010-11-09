@@ -2877,10 +2877,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          PresentationTemplate template = getPresentationTemplate(getFreeFormTemplateId());
          if (template == null) {
             template = createFreeFormTemplate(createResource(resourceLocation,
-               "freeFormRenderer", "used for rendering the free form template", "text/xml"));
+               "freeFormRenderer.xml", "used for rendering the free form template", "text/xml"));
          }
          else {
-            updateResource(template.getId(), template.getRenderer(), resourceLocation);
+            Id rendererId = updateResource(template.getId(), template.getRenderer(), resourceLocation, 
+            		"freeFormRenderer.xml", "used for rendering the free form template", "text/xml");
+            //There have been issues where the renderer referenced in the template doesn't exist so the
+            // update may need to create a new one (or use a different uuid)
+            // So, if they are different, set to use the one returned from the update.
+            if (!rendererId.getValue().equals(template.getRenderer().getValue())) {
+            	template.setRenderer(rendererId);
+            }
             if (template.getItemDefinitions().size() == 0) {
                template.getItemDefinitions().add(createFreeFormItemDef(template));
             }
@@ -2915,7 +2922,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return def;
    }
 
-   protected Id updateResource(Id qualifierId, Id resourceId, String resourceLocation) {
+   protected Id updateResource(Id qualifierId, Id resourceId, String resourceLocation, String name, String description, String type) {
       ByteArrayOutputStream bos = loadResource(resourceLocation);
 
       try {
@@ -2925,6 +2932,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          resourceEdit.setContent(bos.toByteArray());
          getContentHosting().commitResource(resourceEdit, NotificationService.NOTI_NONE);
          return resourceId;
+      }
+      catch (IdUnusedException iue) {
+    	  //couldn't find resource...better create another one.
+    	  logger.warn("Couldn't find resource with uuid: "+resourceId.getValue() + ".  Creating a new one for " + resourceLocation);
+    	  Id newId = createResource(resourceLocation, name, description, type);
+    	  return newId;
       }
       catch (Exception e) {
          logger.warn("updateResource: "+e);
