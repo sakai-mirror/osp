@@ -158,6 +158,9 @@ public class PresentationExport extends Crawler implements LinkListener {
             }
             out.closeEntry();
          } finally {
+        	if (origin != null) {
+        		origin.close();
+        	}
             try {
                in.close();
             } catch (Exception e) {
