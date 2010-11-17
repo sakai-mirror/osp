@@ -403,7 +403,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       }
 
       //TODO move this into a callback
-      getHibernateTemplate().setCacheQueries(true);
 
       List list = getHibernateTemplate().find(query, params);
 
@@ -420,7 +419,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
    
    public List getCells(Matrix matrix) {
-      getHibernateTemplate().setCacheQueries(true);
       return getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
             matrix.getId());
       
@@ -431,7 +429,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       
       Object[] params = new Object[]{matrix.getId(),
                                      rootCriterion.getId(), level.getId()};
-      getHibernateTemplate().setCacheQueries(true);
       List list = getHibernateTemplate()
             .find("from Cell cell where cell.matrix.id=? and cell.scaffoldingCell.rootCriterion.id=? and cell.scaffoldingCell.level.id=?",
                   params);
