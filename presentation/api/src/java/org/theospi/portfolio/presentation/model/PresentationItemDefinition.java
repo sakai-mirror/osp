@@ -53,10 +53,10 @@ public class PresentationItemDefinition extends IdentifiableObject implements Se
    }
 	
    public Boolean getIsFormType() {
-      return new Boolean(type != null 
+      return Boolean.valueOf(type != null 
                          && ! type.equals("fileArtifact")
                          && ! type.equals("completedWizard")
-                         && ! type.equals("matrix") );
+                         && ! type.equals("matrix"));
    }
 
    public PresentationTemplate getPresentationTemplate() {
@@ -187,6 +187,6 @@ public class PresentationItemDefinition extends IdentifiableObject implements Se
    }
 
    public void setNewSequence(int newSequence) {
-      this.newSequence = new Integer(newSequence);
+      this.newSequence = Integer.valueOf(newSequence);
    }
 }

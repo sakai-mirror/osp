@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.Adler32;
@@ -267,8 +268,8 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     *  {@inheritDoc}
     */
    public List findAvailableScaffolding(String siteIdStr, Agent user, boolean showUnpublished) {
-	   Object[] params = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true), new Boolean(true)};
-	   Object[] params2 = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true)};
+	   Object[] params = new Object[]{getIdManager().getId(siteIdStr), user, Boolean.valueOf(true), Boolean.valueOf(true)};
+	   Object[] params2 = new Object[]{getIdManager().getId(siteIdStr), user, Boolean.valueOf(true)};
 
 	   //if showUnpublished, then you can see unpublisehd matrix's, otherwise you can
 	   //only see you own matrix's or published ones
@@ -289,7 +290,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          return new ArrayList();
       
       String[] paramNames = new String[] {"siteIds", "owner", "true"};
-      Object[] params = new Object[]{sites, user, new Boolean(true)};
+      Object[] params = new Object[]{sites, user, Boolean.valueOf(true)};
       
       //if showUnpublished, then you can see unpublisehd matrix's, otherwise you can
       //only see you own matrix's or published ones
@@ -307,7 +308,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     * @return List of Scaffolding
     */
    public List<Scaffolding> findPublishedScaffolding(String siteId) {
-      Object[] params = new Object[]{getIdManager().getId(siteId), new Boolean(true)};
+      Object[] params = new Object[]{getIdManager().getId(siteId), Boolean.valueOf(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
             "and s.published=?",
             params);
@@ -320,7 +321,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     */
    public List findPublishedScaffolding(List sites) {
       String[] paramNames = new String[] {"siteIds", "published"};
-      Object[] params = new Object[]{sites, new Boolean(true)};
+      Object[] params = new Object[]{sites, Boolean.valueOf(true)};
       return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) " +
             "and s.published=:published",
             paramNames, params);
@@ -1382,7 +1383,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       Object[] params;
       if(rolesNotEmpty && sitesNotEmpty){
     	  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "roles", "siteIds"};
-    	  params =  new Object[]{new Boolean(false), new Boolean(true),
+    	  params =  new Object[]{Boolean.valueOf(false), Boolean.valueOf(true),
     		  						  MatrixFunctionConstants.EVALUATE_MATRIX,
                                       MatrixFunctionConstants.PENDING_STATUS,
                                       agent, roles, worksiteIds};
@@ -1390,20 +1391,20 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	  if(!rolesNotEmpty){
     		  if(!sitesNotEmpty){
     			  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user"};
-    			  params =  new Object[]{new Boolean(false), new Boolean(true),
+    			  params =  new Object[]{Boolean.valueOf(false), Boolean.valueOf(true),
   						  MatrixFunctionConstants.EVALUATE_MATRIX,
                           MatrixFunctionConstants.PENDING_STATUS,
                           agent};
     		  }else{
     			  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "siteIds"};
-    			  params =  new Object[]{new Boolean(false), new Boolean(true),
+    			  params =  new Object[]{Boolean.valueOf(false), Boolean.valueOf(true),
   						  MatrixFunctionConstants.EVALUATE_MATRIX,
                           MatrixFunctionConstants.PENDING_STATUS,
                           agent, worksiteIds};
     		  }
     	  }else{
     		  paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "roles"};
-    		  params =  new Object[]{new Boolean(false), new Boolean(true),
+    		  params =  new Object[]{Boolean.valueOf(false), Boolean.valueOf(true),
 						  MatrixFunctionConstants.EVALUATE_MATRIX,
                       MatrixFunctionConstants.PENDING_STATUS,
                       agent, roles};
@@ -1788,7 +1789,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    protected Scaffolding uploadScaffolding(String siteId, ZipInputStream zis)  throws IOException {
       
       ZipEntry currentEntry = zis.getNextEntry();
-      Hashtable fileMap = new Hashtable();
       Scaffolding scaffolding = null;
 
       String tempDirName = getIdManager().createId().getValue();
@@ -3020,8 +3020,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     */
    public Collection<FormConsumptionDetail> getFormConsumptionDetails(Id formId) {
       Collection results = new ArrayList();
-      Map<String, String> siteMap = new HashMap<String, String>();
-      Map<String, String> scaffoldingMap = new HashMap<String, String>();
 
       String refl_type = messages.getString("reflection_device");
       String eval_type = messages.getString("evaluation_device");
@@ -3537,7 +3535,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	boolean evaluation = MatrixFunctionConstants.EVALUATE_MATRIX.equals(function);
     	String notificationId = "";
     	
-    	String id = wizPage.getId()!=null ? wizPage.getId().getValue() : wizPage.getNewId().getValue();
+    	//String id = wizPage.getId()!=null ? wizPage.getId().getValue() : wizPage.getNewId().getValue();
     	
     	String userNameHeader = user.getDisplayName();
     	String userNameHeaderAnon = messages.getString("anon_user_header");
@@ -3614,11 +3612,11 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     			
     			//add any extra email addresses:
     			if(sendExtraEmails != null && sendExtraEmails.keySet() != null){
-    				if(emails != null && emails.keySet() != null){
-    					for (Iterator iterator = sendExtraEmails.keySet().iterator(); iterator.hasNext();) {    						
-    						String userId = (String) iterator.next();
-    						if(!emails.containsValue(sendExtraEmails.get(userId)))
-    							emails.put(userId, sendExtraEmails.get(userId));
+    				if(emails != null && emails.entrySet() != null){
+    					for (Iterator iterator = sendExtraEmails.entrySet().iterator(); iterator.hasNext();) {    						
+    						Entry entry = (Entry) iterator.next();
+    						if(!emails.containsValue(entry.getValue()))
+    							emails.put(entry.getKey().toString(), entry.getValue().toString());
     					}
     				}
     			}
@@ -3989,8 +3987,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	}
 	
 	public boolean canAccessAllMatrixCellsHelper(Scaffolding scaffold){
-		Id worksiteId = scaffold.getWorksiteId();
-
 		if(scaffold.getOwner().getId().getValue().equals(UserDirectoryService.getCurrentUser().getId()))
         	return true;
 

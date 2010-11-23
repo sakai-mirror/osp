@@ -156,8 +156,12 @@ public class CellController implements FormController, LoadObjectController {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 		
 		CellFormBean cell = (CellFormBean) command;
-		if (cell == null || cell.getCell() == null)
-			logger.warn("Cell backing bean or cell.getCell() is null -- NPE imminent.");
+		if (cell == null || cell.getCell() == null){
+			logger.error("Cell backing bean or cell.getCell() is null");
+			clearSession(session);
+			model.put("nullCellError", true);
+			return model;
+		}
 				
 		if(request.get("feedbackReturn") != null){
 			//feedbackReturn is returned from FeedbackHelperController and is the Id of the wizardPage of the cell.
@@ -248,7 +252,7 @@ public class CellController implements FormController, LoadObjectController {
 		model.put("pageTitleKey", "view_cell");
 
 		// Check for cell being deleted while user was attempting to view
-		if (cell == null || cell.getCell() == null) {
+		if (cell.getCell() == null) {
 			clearSession(session);
 			return model;
 		}
@@ -279,7 +283,7 @@ public class CellController implements FormController, LoadObjectController {
 		model.put("cellForms", cellForms );
 		model.put("numCellForms", cellForms.size() );		
 
-		Boolean readOnly = new Boolean(false);
+		Boolean readOnly = Boolean.valueOf(false);
 				
 		// Matrix-only initializations
 		if (cell.getCell().getMatrix() != null) {
@@ -374,7 +378,7 @@ public class CellController implements FormController, LoadObjectController {
 			allowGeneralFeedback = false;
 		}
 		
-		return new Boolean(allowGeneralFeedback);
+		return Boolean.valueOf(allowGeneralFeedback);
 	}
 	
 	/**
@@ -483,9 +487,9 @@ public class CellController implements FormController, LoadObjectController {
       if ((owner != null && owner.equals(getAuthManager().getAgent()))
          && (id == null || getAuthzManager().isAuthorized(
          MatrixFunctionConstants.CAN_USE_SCAFFOLDING, id))) {
-         return new Boolean(false);
+         return Boolean.valueOf(false);
       }
-		return new Boolean(true);
+		return Boolean.valueOf(true);
 	}
 	
    protected String getStyleUrl(Style style) {

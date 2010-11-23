@@ -141,7 +141,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	}
 
 	public void setExposeAsTool(boolean exposeAsTool) {
-		base.setExposeAsTool(new Boolean(exposeAsTool));
+		base.setExposeAsTool(Boolean.valueOf(exposeAsTool));
 	}
 
 	public boolean getCanPublish() {

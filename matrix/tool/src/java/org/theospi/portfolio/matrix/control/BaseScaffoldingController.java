@@ -210,7 +210,7 @@ public class BaseScaffoldingController {
             String status = page.getStatus();
             String initialStatus = cell.getScaffoldingCell().getInitialStatus();
             
-            if ( status != initialStatus )
+            if (!status.equals(initialStatus))
             {
                page.setStatus( initialStatus );
                getMatrixManager().storePage( page );
@@ -293,10 +293,10 @@ public class BaseScaffoldingController {
    
    protected String getDefaultTitle(Scaffolding scaffolding, Criterion criterion, Level level) {
       String title = "";
-      if(scaffolding.getRowLabel() != null && scaffolding.getRowLabel() != "")
+      if(scaffolding.getRowLabel() != null && !"".equals(scaffolding.getRowLabel()))
     	  title = title + scaffolding.getRowLabel() + ": ";
       title = title + criterion.getDescription() + "; ";
-      if(scaffolding.getColumnLabel() != null && scaffolding.getColumnLabel() != "")
+      if(scaffolding.getColumnLabel() != null && !"".equals(scaffolding.getColumnLabel()))
     	  title = title + scaffolding.getColumnLabel() + ": ";
       title = title + level.getDescription();
 

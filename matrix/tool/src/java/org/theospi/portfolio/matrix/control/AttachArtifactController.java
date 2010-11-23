@@ -158,7 +158,7 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
 
       Map model = new Hashtable();
       model.put("page_id", form.getPage_id());
-      model.put("readOnlyMatrix", new Boolean("false"));
+      model.put("readOnlyMatrix", Boolean.valueOf("false"));
 
       return new ModelAndView("cancel", model);
    }

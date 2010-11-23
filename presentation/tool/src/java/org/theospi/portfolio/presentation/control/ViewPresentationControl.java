@@ -23,6 +23,7 @@ package org.theospi.portfolio.presentation.control;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -81,7 +82,7 @@ import net.sf.ehcache.Element;
  */
 public class ViewPresentationControl extends AbstractPresentationController implements LoadObjectController {
 
-   protected static Log logger = LogFactory.getLog(ViewPresentationControl.class);
+   protected static final Log logger = LogFactory.getLog(ViewPresentationControl.class);
    private HomeFactory homeFactory = null;
    private ArtifactFinder artifactFinder = null;
    private AuthorizationFacade authzManager = null;
@@ -338,9 +339,9 @@ public class ViewPresentationControl extends AbstractPresentationController impl
       wrapper.transformer.clearParameters();
 
       //send request params in as transform params
-      for(Iterator i=request.keySet().iterator();i.hasNext();){
-         String paramName = (String) i.next();
-         wrapper.transformer.setParameter(paramName,request.get(paramName));
+      for(Iterator i=request.entrySet().iterator();i.hasNext();){
+         Entry entry = (Entry) i.next();
+         wrapper.transformer.setParameter(entry.getKey().toString(),entry.getValue().toString());
       }
 
       presentationTemplateCache.put(renderer,wrapper);

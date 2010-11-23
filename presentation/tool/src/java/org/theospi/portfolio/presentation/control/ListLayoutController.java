@@ -84,7 +84,7 @@ public class ListLayoutController extends AbstractPresentationController {
       if (session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID) != null)
          model.put("selectedLayout", session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID));
 
-      model.put("isGlobal", new Boolean(global));
+      model.put("isGlobal", Boolean.valueOf(global));
       
       return new ModelAndView("success", model);
    }

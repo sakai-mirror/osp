@@ -57,13 +57,13 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(PresentationFunctionConstants.COMMENT_PRESENTATION)) {
          return isPresentationCommentAuth(facade, agent, id);
       } else if (function.equals(PresentationFunctionConstants.CREATE_TEMPLATE)) {
-         return new Boolean(facade.isAuthorized(agent,function,id));
+         return Boolean.valueOf(facade.isAuthorized(agent,function,id));
       } else if (function.equals(PresentationFunctionConstants.EDIT_TEMPLATE)) {
          return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.EDIT_TEMPLATE);
       } else if (function.equals(PresentationFunctionConstants.PUBLISH_TEMPLATE)) {
          PresentationTemplate template = getPresentationManager().getPresentationTemplate(id);
          Id siteId = getIdManager().getId(template.getSiteId());
-         return new Boolean(facade.isAuthorized(agent,function,siteId));
+         return Boolean.valueOf(facade.isAuthorized(agent,function,siteId));
       } else if (function.equals(PresentationFunctionConstants.DELETE_TEMPLATE)) {
          return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.DELETE_TEMPLATE);
       } else if (function.equals(PresentationFunctionConstants.COPY_TEMPLATE)) {
@@ -71,7 +71,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(PresentationFunctionConstants.EXPORT_TEMPLATE)) {
          return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.EXPORT_TEMPLATE);
       } else if (function.equals(PresentationFunctionConstants.CREATE_PRESENTATION)) {
-         return new Boolean(facade.isAuthorized(agent,function,id));
+         return Boolean.valueOf(facade.isAuthorized(agent,function,id));
       } else if (function.equals(PresentationFunctionConstants.EDIT_PRESENTATION)) {
          return isPresentationAuth(facade, id, agent, PresentationFunctionConstants.EDIT_PRESENTATION);
       } else if (function.equals(PresentationFunctionConstants.DELETE_PRESENTATION)) {
@@ -79,7 +79,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(ContentHostingService.EVENT_RESOURCE_READ)) {
          return isFileAuth(facade, agent, id);
       } else if (function.equals(PresentationFunctionConstants.CREATE_LAYOUT)) {
-         return new Boolean(facade.isAuthorized(agent,function,id));
+         return Boolean.valueOf(facade.isAuthorized(agent,function,id));
       } else if (function.equals(PresentationFunctionConstants.EDIT_LAYOUT)) {
          return isLayoutAuth(facade, id, agent, function);
       } else if (function.equals(PresentationFunctionConstants.PUBLISH_LAYOUT)) {
@@ -87,7 +87,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT)) {
          PresentationLayout layout = getPresentationManager().getPresentationLayout(id);
          Id siteId = getIdManager().getId(layout.getSiteId());
-         return new Boolean(facade.isAuthorized(agent,function,siteId));
+         return Boolean.valueOf(facade.isAuthorized(agent,function,siteId));
       } else if (function.equals(PresentationFunctionConstants.DELETE_LAYOUT)) {
          return isLayoutAuth(facade, id, agent, function);
       } else {
@@ -99,61 +99,61 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
 
       if (presentation == null) {
          // must be tool id
-         return new Boolean(facade.isAuthorized(function,qualifier));
+         return Boolean.valueOf(facade.isAuthorized(function,qualifier));
       }
       
       //owner can do anything
       if (presentation.getOwner().equals(agent)){
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       }
       Id toolId = getIdManager().getId(presentation.getToolId());
-      return new Boolean(facade.isAuthorized(function,toolId));
+      return Boolean.valueOf(facade.isAuthorized(function,toolId));
    }
 
    protected Boolean isTemplateAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
       PresentationTemplate template = getPresentationManager().getPresentationTemplate(qualifier);
       //owner can do anything
       if (template.getOwner().equals(agent)){
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       }
       Id siteId = getIdManager().getId(template.getSiteId());
-      return new Boolean(facade.isAuthorized(function,siteId));
+      return Boolean.valueOf(facade.isAuthorized(function,siteId));
    }
    
    protected Boolean isLayoutAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
       PresentationLayout layout = getPresentationManager().getPresentationLayout(qualifier);
       //owner can do anything
       if (agent.equals(layout.getOwner())){
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       }
       Id toolId = getIdManager().getId(layout.getToolId());
-      return new Boolean(facade.isAuthorized(function,toolId));
+      return Boolean.valueOf(facade.isAuthorized(function,toolId));
    }
 
    protected Boolean canPublishLayout(AuthorizationFacade facade, Id qualifier, Agent agent, String function) {
       PresentationLayout layout = getPresentationManager().getPresentationLayout(qualifier);
       if (layout == null) {
-         return new Boolean(facade.isAuthorized(function,qualifier));
+         return Boolean.valueOf(facade.isAuthorized(function,qualifier));
       }
 
       Id siteId = getIdManager().getId(layout.getSiteId());
-      return new Boolean(facade.isAuthorized(function,siteId));  
+      return Boolean.valueOf(facade.isAuthorized(function,siteId));  
    }
    
    protected Boolean isPresentationCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
       Presentation pres = getPresentationManager().getLightweightPresentation(id);
 
       if (!pres.isAllowComments()){
-         return new Boolean(false);
+         return Boolean.valueOf(false);
       }
 
       if (pres.getIsPublic()) {
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       } else if (pres.getOwner().equals(agent)) {
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       } else {
          Id toolId = getIdManager().getId(pres.getToolId());
-         return new Boolean(facade.isAuthorized(agent, PresentationFunctionConstants.COMMENT_PRESENTATION, toolId));
+         return Boolean.valueOf(facade.isAuthorized(agent, PresentationFunctionConstants.COMMENT_PRESENTATION, toolId));
       }
    }
 
@@ -166,11 +166,11 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
    protected Boolean isPresentationViewAuth(Presentation pres, AuthorizationFacade facade,
                                             Agent agent, Id id, boolean allowAnonymous) {
       if (pres.getIsPublic() && (allowAnonymous || !agent.isInRole(Agent.ROLE_ANONYMOUS))) {
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       } else if (pres.getOwner().equals(agent)) {
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       } else {
-         return new Boolean(facade.isAuthorized(agent, PresentationFunctionConstants.VIEW_PRESENTATION, id));
+         return Boolean.valueOf(facade.isAuthorized(agent, PresentationFunctionConstants.VIEW_PRESENTATION, id));
       }
    }
 

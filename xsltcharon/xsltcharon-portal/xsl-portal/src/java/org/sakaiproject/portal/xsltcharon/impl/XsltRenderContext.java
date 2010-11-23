@@ -343,7 +343,7 @@ public class XsltRenderContext implements PortalRenderContext {
 
    protected Element createPageXml(Document doc, Map page) throws ToolRenderException {
       Element pageElement = doc.createElement("page");
-      pageElement.setAttribute("order", new Integer(0).toString());
+      pageElement.setAttribute("order", Integer.valueOf(0).toString());
       Boolean selected = (Boolean) page.get("current");
       pageElement.setAttribute("selected", selected.toString());
 
@@ -466,7 +466,7 @@ public class XsltRenderContext implements PortalRenderContext {
          boolean showPresence = ((Boolean)sitePages.get("pageNavShowPresenceLoggedIn")).booleanValue();
          Element presence = doc.createElement("presence");
          safeAppendTextNode(doc, presence, presenceUrl, true);
-         presence.setAttribute("include", new Boolean(showPresence && loggedIn).toString());
+         presence.setAttribute("include", Boolean.valueOf(showPresence && loggedIn).toString());
          config.appendChild(presence);
          helpUrl = (String) context.get("pageNavHelpUrl");
          config.setAttribute("pageNavPublished", sitePages.get("pageNavPublished").toString());

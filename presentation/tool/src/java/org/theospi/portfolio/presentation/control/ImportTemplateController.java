@@ -80,7 +80,7 @@ public class ImportTemplateController extends AbstractPresentationController imp
          
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
                ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.templateImportFile"));
-         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, Integer.valueOf(1));
          
          return new ModelAndView("pickImport");
       }

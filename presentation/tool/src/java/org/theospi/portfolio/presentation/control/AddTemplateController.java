@@ -230,8 +230,8 @@ public class AddTemplateController extends AbstractWizardFormController {
                         throws Exception{
       Map model = new HashMap();
       PresentationTemplate template = (PresentationTemplate) command;
-      model.put("currentPage", new Integer(page + 1));
-      model.put("totalPages", new Integer(4));
+      model.put("currentPage", Integer.valueOf(page + 1));
+      model.put("totalPages", Integer.valueOf(4));
       model.put("template", template);
       ToolSession session = getSessionManager().getCurrentToolSession();
       
@@ -298,7 +298,7 @@ public class AddTemplateController extends AbstractWizardFormController {
             break;
          case CONTENT_PAGE :
             Collection mimeTypes = getMimeTypes();
-            model.put("mimeTypeListSize", new Integer(mimeTypes.size()));
+            model.put("mimeTypeListSize", Integer.valueOf(mimeTypes.size()));
             model.put("mimeTypeList", mimeTypes);
             model.put("homes", getHomes());            
             break;
@@ -368,7 +368,7 @@ public class AddTemplateController extends AbstractWizardFormController {
             else
                session.removeAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
             
-            session.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
+            session.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, Integer.valueOf(1));
             
             break;
       }

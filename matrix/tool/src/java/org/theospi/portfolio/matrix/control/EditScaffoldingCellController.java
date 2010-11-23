@@ -284,19 +284,19 @@ public class EditScaffoldingCellController extends
 			scaffoldingCell.setDefaultEvaluationForm(true);
 		}
 		
-		if(request.get("defaultEvaluators") == null || request.get("defaultEvaluators").toString().equals("false")){
+		if(request.get("defaultEvaluators") == null || "false".equals(request.get("defaultEvaluators").toString())){
 			scaffoldingCell.setDefaultEvaluators(false);
 		}else{
 			scaffoldingCell.setDefaultEvaluators(true);
 		}
 		
-		if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString().equals("false")){
+		if(request.get("allowRequestFeedback") == null || "false".equals(request.get("allowRequestFeedback").toString())){
 			scaffoldingCell.setAllowRequestFeedback(false);
 		}else{
 			scaffoldingCell.setAllowRequestFeedback(true);  
 		}
 		
-		  if(request.get("hideEvaluations") == null || request.get("hideEvaluations").toString() == "false"){
+		  if(request.get("hideEvaluations") == null || "false".equals(request.get("hideEvaluations").toString())){
 			  scaffoldingCell.setHideEvaluations(false);
 	      }else{
 	    	  scaffoldingCell.setHideEvaluations(true);  
@@ -511,8 +511,8 @@ public class EditScaffoldingCellController extends
 				|| forwardView.equals("editExamples")
 				|| forwardView.equals("editRubrics")
 				|| forwardView.equals("editExpectations")) {
-			Boolean bTrue = new Boolean(true);
-			Boolean bFalse = new Boolean(false);
+			Boolean bTrue = Boolean.valueOf(true);
+			Boolean bFalse = Boolean.valueOf(false);
 			//guidance context
 			session.remove(GuidanceHelper.CONTEXT);
 			session.remove(GuidanceHelper.CONTEXT2);

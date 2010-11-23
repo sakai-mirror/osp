@@ -89,7 +89,7 @@ public class SequentialWizardPageController extends WizardPageController {
       // but I'm leaving the check here for the time being.
       if (steps != null) {
          int currentStep = getCurrentStep(session);
-         request.put(WizardPageHelper.TOTAL_STEPS, new Integer(steps.size()));
+         request.put(WizardPageHelper.TOTAL_STEPS, Integer.valueOf(steps.size()));
          //if(currentStep == 0)
          //   currentStep = 1;
          currentStep = currentStep + 1;
@@ -97,7 +97,7 @@ public class SequentialWizardPageController extends WizardPageController {
          if (session.get(WizardPageHelper.WIZARD_OWNER) == null)
             session.put(WizardPageHelper.WIZARD_OWNER, page.getOwner());
 
-         request.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, new Integer(currentStep));
+         request.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, Integer.valueOf(currentStep));
          //session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, currentStep);
 
          session.put(WizardPageHelper.WIZARD_PAGE, page);
@@ -113,7 +113,7 @@ public class SequentialWizardPageController extends WizardPageController {
             break;
          counter++;
       }
-      return new Integer(counter);
+      return Integer.valueOf(counter);
    }
 
    protected List getPageList(List completedPages) {
@@ -180,7 +180,7 @@ public class SequentialWizardPageController extends WizardPageController {
          currentStep--;
       }
 
-      return new Integer(currentStep);
+      return Integer.valueOf(currentStep);
    }
 
 }

@@ -102,7 +102,7 @@ public class DecoratedCompletedPage {
             getBase().getCategory().getWizard().getWizard().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, getPageList());
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
-               new Integer(getBase().getSequence()));
+               Integer.valueOf(getBase().getSequence()));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
       }
 

@@ -42,7 +42,7 @@ public abstract class AbstractMatrixController extends AbstractFormController im
    
    
    protected Boolean isMaintainer(){
-      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+      return Boolean.valueOf(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
    

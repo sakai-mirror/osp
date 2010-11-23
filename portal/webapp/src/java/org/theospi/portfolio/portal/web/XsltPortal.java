@@ -68,6 +68,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Created by IntelliJ IDEA.
@@ -464,9 +465,10 @@ public class XsltPortal extends CharonPortal {
 
    protected void checkToolPermissions(Map pages) {
       List emptyCategories = new ArrayList();
-      for (Iterator<ToolCategory> i=pages.keySet().iterator();i.hasNext();) {
-         ToolCategory category = i.next();
-         List categoryPages = (List) pages.get(category);
+      for (Iterator<ToolCategory> i=pages.entrySet().iterator();i.hasNext();) {
+    	  Entry entry = (Entry) i.next();
+         ToolCategory category = (ToolCategory) entry.getKey();
+         List categoryPages = (List) entry.getValue();
          checkPagesAccess(categoryPages);
          if (categoryPages.isEmpty()) {
             emptyCategories.add(category);
@@ -606,7 +608,7 @@ public class XsltPortal extends CharonPortal {
          boolean showPresence = ServerConfigurationService.getBoolean("display.users.present", true);
          Element presence = doc.createElement("presence");
          safeAppendTextNode(doc, presence, presenceUrl, true);
-         presence.setAttribute("include", new Boolean(showPresence && loggedIn).toString());
+         presence.setAttribute("include", Boolean.valueOf(showPresence && loggedIn).toString());
          config.appendChild(presence);
       }
 
@@ -692,9 +694,10 @@ public class XsltPortal extends CharonPortal {
    protected Element createPageCategoriesXml(Document doc, Map pages, String siteId, String toolCategoryKey, String pageId) {
       Element pagesElement = doc.createElement("categories");
 
-      for (Iterator i=pages.keySet().iterator();i.hasNext();) {
-         ToolCategory category = (ToolCategory) i.next();
-         List categoryPageList = (List) pages.get(category);
+      for (Iterator i=pages.entrySet().iterator();i.hasNext();) {
+    	  Entry entry = (Entry) i.next();
+         ToolCategory category = (ToolCategory) entry.getKey();
+         List categoryPageList = (List) entry.getValue();
          pagesElement.appendChild(createCategoryXml(doc, category, categoryPageList, siteId, toolCategoryKey, pageId));
       }
       return pagesElement;
@@ -704,8 +707,8 @@ public class XsltPortal extends CharonPortal {
                                        String siteId, String categoryKey, String pageId) {
       Element categoryElement = doc.createElement("category");
       boolean selected = category.getKey().equals(categoryKey);
-      categoryElement.setAttribute("selected", new Boolean(selected).toString());
-      categoryElement.setAttribute("order", new Integer(category.getOrder()).toString());
+      categoryElement.setAttribute("selected", Boolean.valueOf(selected).toString());
+      categoryElement.setAttribute("order", Integer.valueOf(category.getOrder()).toString());
       Element categoryKeyElement = doc.createElement("key");
       safeAppendTextNode(doc, categoryKeyElement, category.getKey(), false);
       Element categoryEscapedKeyElement = doc.createElement("escapedKey");
@@ -772,11 +775,11 @@ public class XsltPortal extends CharonPortal {
    protected Element createPageXml(Document doc, int index, String siteId, SitePage page,
                                    String parentCategoryKey, String pageId) {
       Element pageElement = doc.createElement("page");
-      pageElement.setAttribute("order", new Integer(index).toString());
+      pageElement.setAttribute("order", Integer.valueOf(index).toString());
       boolean pageSelected = page.getId().equals(pageId);
-      pageElement.setAttribute("selected", new Boolean(pageSelected).toString());
-      pageElement.setAttribute("layout", new Integer(page.getLayout()).toString());
-      pageElement.setAttribute("popUp", new Boolean(page.isPopUp()).toString());
+      pageElement.setAttribute("selected", Boolean.valueOf(pageSelected).toString());
+      pageElement.setAttribute("layout", Integer.valueOf(page.getLayout()).toString());
+      pageElement.setAttribute("popUp", Boolean.valueOf(page.isPopUp()).toString());
       pageElement.setAttribute("toolId", getFirstToolId(page));
       Element pageName = doc.createElement("title");
       safeAppendTextNode(doc, pageName, page.getTitle(), true);
@@ -798,7 +801,7 @@ public class XsltPortal extends CharonPortal {
 
       for (int i=0;i<2;i++) {
          Element column = doc.createElement("column");
-         column.setAttribute("index", new Integer(i).toString());
+         column.setAttribute("index", Integer.valueOf(i).toString());
          column.appendChild(createColumnToolsXml(doc, page.getTools(i), page));
          columns.appendChild(column);
       }
@@ -880,9 +883,9 @@ public class XsltPortal extends CharonPortal {
 
    protected Element createSiteTypeXml(Document doc, SiteType type, List sites, boolean selected, String siteId) {
       Element siteTypeElement = doc.createElement("siteType");
-      siteTypeElement.setAttribute("selected", new Boolean(selected).toString());
-      siteTypeElement.setAttribute("order", new Integer(type.getOrder()).toString());
-      siteTypeElement.setAttribute("userSite", new Boolean(type == SiteType.MY_WORKSPACE).toString());
+      siteTypeElement.setAttribute("selected", Boolean.valueOf(selected).toString());
+      siteTypeElement.setAttribute("order", Integer.valueOf(type.getOrder()).toString());
+      siteTypeElement.setAttribute("userSite", Boolean.valueOf(type == SiteType.MY_WORKSPACE).toString());
       Element siteTypeKey = doc.createElement("key");
       safeAppendTextNode(doc, siteTypeKey, type.getKey(), false);
       siteTypeElement.appendChild(siteTypeKey);
@@ -953,8 +956,6 @@ public class XsltPortal extends CharonPortal {
          }
       }
 
-      int tabsToDisplay = prefTabs;
-
       mySites.removeAll(prefExclude);
       // re-order mySites to have order first, the rest later
       List ordered = new Vector();
@@ -990,10 +991,10 @@ public class XsltPortal extends CharonPortal {
 
    protected Element createSiteXml(Document doc, Site site, boolean selected, int order, boolean extra) {
       Element siteElement = doc.createElement("site");
-      siteElement.setAttribute("selected", new Boolean(selected).toString());
-      siteElement.setAttribute("extra", new Boolean(extra).toString());
-      siteElement.setAttribute("published", new Boolean(site.isPublished()).toString());
-      siteElement.setAttribute("order", new Integer(order).toString());
+      siteElement.setAttribute("selected", Boolean.valueOf(selected).toString());
+      siteElement.setAttribute("extra", Boolean.valueOf(extra).toString());
+      siteElement.setAttribute("published", Boolean.valueOf(site.isPublished()).toString());
+      siteElement.setAttribute("order", Integer.valueOf(order).toString());
 
       Element siteUrl = doc.createElement("url");
       // http://localhost:8080/portal/site/bc5b1aa2-c53b-4fd1-0017-f91eef511e65<key>

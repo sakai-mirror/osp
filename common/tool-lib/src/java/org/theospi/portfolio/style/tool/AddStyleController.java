@@ -116,7 +116,7 @@ public class AddStyleController extends AbstractStyleController
             session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
                   ComponentManager.get(filter));
          
-         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, Integer.valueOf(1));
        
          
          return new ModelAndView("pickStyleFiles");

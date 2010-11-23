@@ -364,7 +364,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    }
    
    private Boolean isMaintainer() {
-      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+      return Boolean.valueOf(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
             getIdManager().getId(getToolManager().getCurrentPlacement().getContext())));
    }
 

@@ -516,7 +516,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public List listWizardsByType(String owner, String siteIdStr, String type) {
-      Object[] params = new Object[]{getAgentManager().getAgent(owner), new Boolean(true), siteIdStr, type};
+      Object[] params = new Object[]{getAgentManager().getAgent(owner), Boolean.valueOf(true), siteIdStr, type};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? and w.type=? order by seq_num", params);
    }
@@ -543,7 +543,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public List listAllWizardsByOwner(String owner, String siteIdStr) {
       Agent ownerAgent = getAgentManager().getAgent(owner);
-      Object[] params = new Object[]{ownerAgent, new Boolean(true), siteIdStr};
+      Object[] params = new Object[]{ownerAgent, Boolean.valueOf(true), siteIdStr};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? order by seq_num", params);
    }
@@ -555,7 +555,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public List findPublishedWizards(List<String> sites) {
       String[] paramNames = new String[] {"published", "siteIds"};
-      Object[] params = new Object[]{new Boolean(true), sites};
+      Object[] params = new Object[]{Boolean.valueOf(true), sites};
       return getHibernateTemplate().findByNamedParam("from Wizard w where w.published=:published " +
             "and w.siteId in ( :siteIds ) order by seq_num", 
             paramNames, params);
@@ -577,14 +577,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Criteria rootCat = c.createCriteria("rootCategory");
       rootCat.setFetchMode("childPages", FetchMode.SELECT);
       rootCat.setFetchMode("childCategories", FetchMode.SELECT);
-      c.add(Expression.eq("published", new Boolean(true)));
+      c.add(Expression.eq("published", Boolean.valueOf(true)));
       c.add(Expression.in("siteId", sites));
       
       return new ArrayList(c.list());
    }
    
    public List findPublishedWizards(String siteId) {
-      Object[] params = new Object[]{new Boolean(true), siteId};
+      Object[] params = new Object[]{Boolean.valueOf(true), siteId};
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
    
@@ -1358,7 +1358,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             String userId = evaluator.getTextTrim();
             boolean isRole = evaluator.getAttribute("isRole").getBooleanValue();
 
-            evaluatorsMap.put(userId, new Boolean(isRole));
+            evaluatorsMap.put(userId, Boolean.valueOf(isRole));
          }
 
          // read the evaluation, review, reflection
@@ -1961,7 +1961,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          attrNode.addContent(new CDATA(additionalForm));
          additionalFormsNode.addContent(attrNode);
 
-         exportForms.put(additionalForm, new Integer(0));
+         exportForms.put(additionalForm, Integer.valueOf(0));
       }
       pageDefNode.addContent(additionalFormsNode);
 
@@ -2073,7 +2073,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       workflowObjNode.addContent(attrNode);
 
       if(objWorkflow.getEvaluationDevice() != null)
-         exportForms.put(objWorkflow.getEvaluationDevice().getValue(), new Integer(0));
+         exportForms.put(objWorkflow.getEvaluationDevice().getValue(), Integer.valueOf(0));
 
       attrNode = new Element("evaluationDeviceType");
       attrNode.addContent(new CDATA(objWorkflow.getEvaluationDeviceType()));
@@ -2085,7 +2085,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       workflowObjNode.addContent(attrNode);
 
       if(objWorkflow.getReflectionDevice() != null)
-         exportForms.put(objWorkflow.getReflectionDevice().getValue(), new Integer(0));
+         exportForms.put(objWorkflow.getReflectionDevice().getValue(), Integer.valueOf(0));
 
       attrNode = new Element("reflectionDeviceType");
       attrNode.addContent(new CDATA(objWorkflow.getReflectionDeviceType()));
@@ -2097,7 +2097,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       workflowObjNode.addContent(attrNode);
 
       if(objWorkflow.getReviewDevice() != null)
-         exportForms.put(objWorkflow.getReviewDevice().getValue(), new Integer(0));
+         exportForms.put(objWorkflow.getReviewDevice().getValue(), Integer.valueOf(0));
 
       attrNode = new Element("reviewDeviceType");
       attrNode.addContent(new CDATA(objWorkflow.getReviewDeviceType()));

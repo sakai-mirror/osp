@@ -70,8 +70,8 @@ public class SharePresentationController extends AbstractPresentationController 
 	
    private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    
-   private final String SHARE_PUBLIC  = "pres_share_public";
-   private final String SHARE_COLLAB  = "pres_share_collab";
+   private final static String SHARE_PUBLIC  = "pres_share_public";
+   private final static String SHARE_COLLAB  = "pres_share_collab";
    
    public final static String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
    public final static String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";

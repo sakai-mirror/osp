@@ -99,13 +99,13 @@ public class MatrixJsfTool extends JsfTool {
 
 		if (logger.isDebugEnabled()) {
 			Map<String, String[]> reqParms = req.getParameterMap();
-			for (String reqParmKey : reqParms.keySet()) {
+			for (Map.Entry<String, String[]> entry : reqParms.entrySet()) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("REQ_PARM: ");
-				sb.append(reqParmKey);
+				sb.append(entry.getKey());
 				sb.append(" = ");
 				sb.append('[');
-				String[] reqParm = reqParms.get(reqParmKey);
+				String[] reqParm = entry.getValue();
 				for (int i = 0; i < reqParm.length;) {
 					sb.append(reqParm[i]);
 					if (++i < reqParm.length) {

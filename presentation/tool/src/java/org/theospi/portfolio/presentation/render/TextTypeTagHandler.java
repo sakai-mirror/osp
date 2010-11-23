@@ -76,7 +76,7 @@ public class TextTypeTagHandler extends LayoutPageHandlerBase {
       boolean richEdit = false;
 
       if (attributes.getValue("isRichText") != null) {
-         richEdit = new Boolean(attributes.getValue("isRichText")).booleanValue();
+         richEdit = Boolean.valueOf(attributes.getValue("isRichText")).booleanValue();
       }
       
       if (attributes.getValue(ATTR_COLS) != null) {

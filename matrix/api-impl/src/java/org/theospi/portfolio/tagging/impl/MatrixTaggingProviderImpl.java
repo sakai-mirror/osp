@@ -130,7 +130,7 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 						(!sCell.isDefaultReviewers() && getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId())) ||
 						(getAuthzManager().isAuthorized(agent, MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(sCell.getScaffolding().getReference())))){
 					//SecurityService.pushAdvisor(new MySecurityAdvisor(userId, Arrays.asList(functions), Arrays.asList(itemRefs)));  
-					return new Boolean(true);
+					return Boolean.valueOf(true);
 				}
 			}
 		} catch (PermissionException e) {

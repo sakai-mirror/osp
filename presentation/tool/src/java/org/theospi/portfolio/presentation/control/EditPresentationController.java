@@ -57,15 +57,15 @@ public class EditPresentationController extends SimpleFormController {
 		}
 		List<PresentationComment> comments = presentationService.getComments(presentation.getId().getValue());
 		model.put("comments", comments);
-		model.put("numComments", new Integer(comments.size()));
+		model.put("numComments", Integer.valueOf(comments.size()));
       
 		boolean isOwner = presentationService.isOwner(presentation);
 		boolean optionsAreNull = presentation.getTemplate().getPropertyFormType() != null && presentation.getPropertyForm() == null;
 		
 		model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
-		model.put("optionsAreNull", new Boolean(optionsAreNull));
-		model.put("disableShare", new Boolean(!isOwner));
-		model.put("disableOptions", new Boolean(!isOwner));
+		model.put("optionsAreNull", Boolean.valueOf(optionsAreNull));
+		model.put("disableShare", Boolean.valueOf(!isOwner));
+		model.put("disableOptions", Boolean.valueOf(!isOwner));
       
 		return model;
 	}

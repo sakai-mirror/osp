@@ -10,6 +10,11 @@
 	<osp-c:authZMap	prefix="osp.wizard." var="canOperate" qualifier="${wizardId}" />
 	<c:set var="canOperateWizard" value="${canOperate.operate}" /> 	
 </c:if>
+<c:if test="${nullCellError}">
+	<div class="alertMessage">
+		<c:out value="${msgs.viewcell_nullwarning}"/>
+	</div>
+</c:if>
 <c:if test="${matrixCanViewCell || (isWizard == 'true' && (isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
 
 

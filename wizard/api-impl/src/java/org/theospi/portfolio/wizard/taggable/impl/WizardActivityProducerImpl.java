@@ -53,7 +53,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	private static final Log logger = LogFactory
 			.getLog(WizardActivityProducerImpl.class);
 
-	protected static ResourceLoader messages = new ResourceLoader(
+	protected static final ResourceLoader messages = new ResourceLoader(
 			"org.theospi.portfolio.wizard.bundle.Messages");
 
 	MatrixManager matrixManager;

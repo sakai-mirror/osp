@@ -77,8 +77,8 @@ public class ToolCategory extends IdentifiableObject implements Comparable, Clon
    }
 
    public int compareTo(Object o) {
-      Integer order = new Integer(getOrder());
-      Integer other = new Integer(((ToolCategory)o).getOrder());
+      Integer order = Integer.valueOf(getOrder());
+      Integer other = Integer.valueOf(((ToolCategory)o).getOrder());
       if (other.equals(order) && !getKey().equals(((ToolCategory)o).getKey())) {
          return getKey().equals(UNCATEGORIZED_KEY)?1:-1;
       }

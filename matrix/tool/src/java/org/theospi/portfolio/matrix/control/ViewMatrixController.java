@@ -313,11 +313,11 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       int matrixRowFooter = ServerConfigurationService.getInt("osp.matrixRowFooter", MATRIX_ROW_FOOTER );
       
       if ( matrixRowFooter < 0 )
-         return new Boolean(false);
+         return Boolean.valueOf(false);
       else if ( grid.getMatrixContents().size() > MATRIX_ROW_FOOTER )
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       else
-         return new Boolean(false);
+         return Boolean.valueOf(false);
    }
    
 	/**

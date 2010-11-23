@@ -41,7 +41,7 @@ public class StyleAuthorizerImpl implements ApplicationAuthorizer {
    public Boolean isAuthorized(AuthorizationFacade facade, Agent agent,
          String function, Id id) {
       if (function.equals(StyleFunctionConstants.CREATE_STYLE)) {
-         return new Boolean(facade.isAuthorized(agent, function, id));
+         return Boolean.valueOf(facade.isAuthorized(agent, function, id));
       } else if (function.equals(StyleFunctionConstants.EDIT_STYLE)) {
          return isStyleAuth(facade, id, agent, function);
       } else if (function.equals(StyleFunctionConstants.PUBLISH_STYLE)) {
@@ -60,14 +60,14 @@ public class StyleAuthorizerImpl implements ApplicationAuthorizer {
    protected Boolean isStyleAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
       Style style = getStyleManager().getLightWeightStyle(qualifier);
       if (style == null) {
-         return new Boolean(facade.isAuthorized(function,qualifier));
+         return Boolean.valueOf(facade.isAuthorized(function,qualifier));
       }
       //owner can do anything
       if (agent.equals(style.getOwner())){
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       }
       Id siteId = getIdManager().getId(style.getSiteId());
-      return new Boolean(facade.isAuthorized(function,siteId));
+      return Boolean.valueOf(facade.isAuthorized(function,siteId));
    }
 
    public List getFunctions() {

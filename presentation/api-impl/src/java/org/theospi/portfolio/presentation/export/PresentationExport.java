@@ -176,9 +176,13 @@ public class PresentationExport extends Crawler implements LinkListener {
             }
             out.closeEntry();
          } finally {
-        	if (origin != null) {
-        		origin.close();
-        	}
+        	 try {
+        		 if (origin != null) {
+        			 origin.close();
+        		 }
+        	 } catch (Exception e) {
+        		 logger.warn("Error cleaning up resource: ", e);
+        	 }
             try {
                in.close();
             } catch (Exception e) {
@@ -293,7 +297,7 @@ public class PresentationExport extends Crawler implements LinkListener {
     * Implements the FileFilter.  it accepts the switch of whether to accept files or directories
     *
     */
-   private class DirectoryFileFilter implements FileFilter {
+   private static class DirectoryFileFilter implements FileFilter {
       private boolean directories = false;
 
       public DirectoryFileFilter(boolean directories) {

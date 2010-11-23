@@ -193,18 +193,19 @@ public class StyleManagerImpl extends HibernateDaoSupport
    }
    
    public Collection findPublishedStyles(String currentWorksiteId) {
-      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
+      Object[] params = new Object[]{Integer.valueOf(Style.STATE_PUBLISHED),
                                      currentWorksiteId,
                                      getAuthnManager().getAgent()};
       return getHibernateTemplate().findByNamedQuery("findPublishedStyles", params);
    }
    
    protected String buildGlobalSiteList() {
-      String query = "(";
+	   StringBuffer queryBuffer = new StringBuffer();
+	   queryBuffer.append("(");
       
       for (Iterator<String> i=getGlobalSites().iterator();i.hasNext();) {
          String site = (String)i.next();
-         query += "'" + site + "',";
+         queryBuffer.append("'").append(site).append("',");
       }
       
       for (Iterator<String> j = getGlobalSiteTypes().iterator(); j.hasNext();) {
@@ -212,19 +213,19 @@ public class StyleManagerImpl extends HibernateDaoSupport
          List<Site> sites = SiteService.getSites(SelectionType.ANY, type, null, null, null, null);
          for (Iterator<Site> k = sites.iterator(); k.hasNext();) {
             Site theSite = (Site) k.next();
-            query += "'" + theSite.getId() + "',";
+            queryBuffer.append("'").append(theSite.getId()).append("',");
          }
       }
       
-      query += "'')";
+      queryBuffer.append("'')");
       
-      return query;
+      return queryBuffer.toString();
    }
    
    public Collection findGlobalStyles(Agent agent) {
       String query = "from Style s where ((s.siteId in " + buildGlobalSiteList() + 
             " and (s.globalState = ? or s.owner = ?)) or s.globalState = 1)";
-      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
+      Object[] params = new Object[]{Integer.valueOf(Style.STATE_PUBLISHED),
                                      agent};
       return getHibernateTemplate().find(query, params);
    }
@@ -462,9 +463,10 @@ public class StyleManagerImpl extends HibernateDaoSupport
 
       postPocessAttachments(styleMap.values(), attachmentMap);
 
-      for (Iterator i=styleMap.keySet().iterator();i.hasNext();) {
-         String key = (String) i.next();
-         Style style = (Style)styleMap.get(key);
+      for (Iterator i=styleMap.entrySet().iterator();i.hasNext();) {
+    	  Map.Entry entry = (Map.Entry) i.next(); 
+         String key = entry.getKey().toString();
+         Style style = (Style)entry.getValue();
          Style found = findMatchingStyle(style);
          if (found == null) {
             storeStyle(style, false);
@@ -646,7 +648,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
     *  or in the same site and also has the same styleHash value.
     */
    protected Style findMatchingStyle(Style style) {
-      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
+      Object[] params = new Object[]{Integer.valueOf(Style.STATE_PUBLISHED),
                                      style.getSiteId(), style.getStyleHash()};
       List styles = getHibernateTemplate().findByNamedQuery("findMatchingStyle", params);
 

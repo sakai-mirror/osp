@@ -305,12 +305,18 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
    }
 
    protected List correctList(List returned) {
-      for (Iterator i=returned.iterator();i.hasNext();) {
-         Authorization authz = (Authorization)i.next();
-         if (authz.getAgent() == null) {
-            i.remove();
-         }
-      }
+	   if(returned !=null){
+		   for (Iterator i=returned.iterator();i.hasNext();) {
+			   Authorization authz = (Authorization)i.next();
+			   if (authz.getAgent() == null) {
+				   i.remove();
+			   }
+		   }
+	   }else{
+		   //return an empty list
+		   returned = new ArrayList();
+	   }
+	   
       return returned;
    }
 

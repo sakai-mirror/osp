@@ -69,7 +69,7 @@ import org.theospi.portfolio.style.model.Style;
  */
 public class FreeFormTool extends HelperToolBase {
 
-   protected static Log logger = LogFactory.getLog(FreeFormTool.class);
+   protected static final Log logger = LogFactory.getLog(FreeFormTool.class);
    private PresentationManager presentationManager;
    private IdManager idManager;
    private XmlTagFactory factory;
@@ -226,7 +226,7 @@ public class FreeFormTool extends HelperToolBase {
    public void processActionManageItems(ActionEvent event) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
-      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
+      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, Boolean.valueOf(true).toString());
 
       List attachments = new ArrayList(getPresentation().getItems());
       List attachmentRefs = EntityManager.newReferenceList();
@@ -547,7 +547,6 @@ public class FreeFormTool extends HelperToolBase {
     */
    public String getPreviewUrl() {
       String url = setRedirectCaller("viewPresentation.osp");
-      Presentation presentaiton = getPresentation();
       setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
       url += "?1=1&id="+presentation.getId().getValue();
       return url;
