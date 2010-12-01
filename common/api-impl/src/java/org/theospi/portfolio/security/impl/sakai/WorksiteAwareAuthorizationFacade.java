@@ -117,16 +117,16 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
          // Compare the permitted roles against the ones granted to this user.
          if (azgs.size() > 0) {
             Map<String, String> grants = AuthzGroupService.getUserRoles(agent.getId().getValue(), azgs.keySet());
-            for (String realmId : grants.keySet()) {
-               if (azgs.containsKey(realmId)) {
+            for (Map.Entry entry : grants.entrySet()) {
+               if (azgs.containsKey(entry.getKey())) {
                   // Grab the list of permitted roles for this realm, since the user is a member, and compare.
-                  List<String> needed = azgs.get(realmId);
-                  String granted = grants.get(realmId);
+                  List<String> needed = azgs.get(entry.getKey());
+                  String granted = entry.getValue().toString();
                   if (needed.contains(granted)) {
                      if (logger.isDebugEnabled())
-                        logger.debug("Generating realmRole authz - (realmId, role), function, id: (" + realmId + ", " + granted + "), " + function + ", " + id);
+                        logger.debug("Generating realmRole authz - (realmId, role), function, id: (" + entry.getKey() + ", " + granted + "), " + function + ", " + id);
                      
-                     return new Authorization(agentManager.getRealmRole(granted, realmId), function, id);
+                     return new Authorization(agentManager.getRealmRole(granted, entry.getKey().toString()), function, id);
                   }
                }
             }

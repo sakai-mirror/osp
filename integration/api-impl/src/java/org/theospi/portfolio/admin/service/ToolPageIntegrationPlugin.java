@@ -123,7 +123,7 @@ public class ToolPageIntegrationPlugin extends IntegrationPluginBase {
    }
 
    public boolean executeOption(IntegrationOption option) {
-      PageOption pageOption = (PageOption)option;
+      //PageOption pageOption = (PageOption)option;
 
       /*
       for (Iterator i=pageOption.getTools().iterator();i.hasNext();) {

@@ -100,7 +100,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
     * {@inheritDoc}
     */
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer) {
-      Object[] params = new Object[]{parentId, new Integer(type)};
+      Object[] params = new Object[]{parentId, Integer.valueOf(type)};
       return getReviewsByParent("getReviewsByParentAndType", params, parentId, siteId, producer);
    }
     /**
@@ -117,7 +117,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
     public List getReviewsByParentAndTypes(String parentId, int[] intTypes, String siteId, String producer) {
         Integer[] types = new Integer[intTypes.length];
         for (int i=0;i<intTypes.length;i++){
-            types[i] = new Integer(intTypes[i]);
+            types[i] = Integer.valueOf(intTypes[i]);
         }
         List reviews = this.getSession().createCriteria(Review.class).add(
                 Restrictions.eq("parent",parentId)).add(Restrictions.in("type",types)).list();

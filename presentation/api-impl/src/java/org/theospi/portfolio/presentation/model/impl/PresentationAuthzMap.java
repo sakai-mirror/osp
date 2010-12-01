@@ -59,16 +59,16 @@ public class PresentationAuthzMap extends HashMap {
     */
    public Object get(Object key) {
       if (owner) {
-         return new Boolean(true); // owner can do anything
+         return Boolean.valueOf(true); // owner can do anything
       }
 
       String func = PresentationFunctionConstants.PRESENTATION_PREFIX + key.toString();
 
       if (func.equals(PresentationFunctionConstants.VIEW_PRESENTATION)) {
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       }
       else {
-         return new Boolean(false);
+         return Boolean.valueOf(false);
       }
    }
 }

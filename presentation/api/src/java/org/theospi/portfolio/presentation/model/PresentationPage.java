@@ -137,8 +137,8 @@ public class PresentationPage extends IdentifiableObject implements Serializable
 
    public int compareTo(Object o) {
       PresentationPage other = (PresentationPage) o;
-      Integer seq = new Integer(getSequence());
-      Integer seqOther = new Integer(other.getSequence());
+      Integer seq = Integer.valueOf(getSequence());
+      Integer seqOther = Integer.valueOf(other.getSequence());
       return seq.compareTo(seqOther);
    }
 

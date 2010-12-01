@@ -71,7 +71,7 @@ public class PermissionsController extends AbstractFormController implements For
    public ModelAndView processCancel(Map request, Map session, Map application,
                                      Object command, Errors errors) throws Exception {
 		if (request.get(getPermissionManager().RETURN_KEY) != null
-				&& request.get(getPermissionManager().RETURN_KEY) != ""
+				&& !"".equals(request.get(getPermissionManager().RETURN_KEY))
 				&& request.get(getPermissionManager().RETURN_KEY) instanceof String)
 			return new ModelAndView("helperDone", (String) request
 					.get(getPermissionManager().RETURN_KEY), request
@@ -102,7 +102,7 @@ public class PermissionsController extends AbstractFormController implements For
       returnMap.put("toolPermissionSaved", request.get("toolPermissionsSaved"));
 
       if (request.get(getPermissionManager().RETURN_KEY) != null
-				&& request.get(getPermissionManager().RETURN_KEY) != "")
+				&& !"".equals(request.get(getPermissionManager().RETURN_KEY)))
 			returnMap.put(request.get(getPermissionManager().RETURN_KEY),
 					request.get(getPermissionManager().RETURN_KEY_VALUE));
 

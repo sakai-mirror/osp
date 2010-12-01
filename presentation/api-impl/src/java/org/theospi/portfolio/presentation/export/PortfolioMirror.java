@@ -36,7 +36,6 @@ import java.util.Vector;
 
 public class PortfolioMirror extends Mirror {
    protected final transient Log logger = LogFactory.getLog(getClass());
-   private int index = 0;
    private URL base = null;
    private boolean needRewrite = false;
    Vector files = new Vector ();

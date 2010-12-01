@@ -129,7 +129,6 @@ public class ListPresentationController extends AbstractPresentationController {
       Collection presentations = null;
       String filterToolId = null;
       
-      String baseUrl  = getServerConfigurationService().getServerUrl();
       boolean viewAll = getServerConfigurationService().getBoolean("osp.presentation.viewall", false) &&
          getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
                                         getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));

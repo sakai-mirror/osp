@@ -91,8 +91,8 @@ public class
    }
 
    public int compareTo(Object o) {
-      Integer order = new Integer(getOrder());
-      Integer other = new Integer(((SiteType)o).getOrder());
+      Integer order = Integer.valueOf(getOrder());
+      Integer other = Integer.valueOf(((SiteType)o).getOrder());
       return order.compareTo(other);
    }
 

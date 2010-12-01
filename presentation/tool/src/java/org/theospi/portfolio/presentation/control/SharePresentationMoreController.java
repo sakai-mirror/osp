@@ -321,9 +321,9 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     **/   
    private Boolean getGuestUserEnabled() {
       if ( getServerConfigurationService().getBoolean("notifyNewUserEmail",true) )
-         return new Boolean(true);
+         return Boolean.valueOf(true);
       else
-         return new Boolean(false);
+         return Boolean.valueOf(false);
    }
 
    /**
@@ -332,12 +332,12 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    private Boolean getHasGroups( String siteId ) {
       try {
          Site site = getSiteService().getSite(siteId);
-         return new Boolean( site.hasGroups() );
+         return Boolean.valueOf( site.hasGroups() );
       }
       catch (Exception e) {
          logger.warn(e.toString());
       }
-      return new Boolean(false);
+      return Boolean.valueOf(false);
    }
     
    /**

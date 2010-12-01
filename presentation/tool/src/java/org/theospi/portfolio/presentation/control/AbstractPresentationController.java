@@ -62,7 +62,7 @@ abstract public class AbstractPresentationController extends AbstractFormControl
     * @return true is current agent is a maintainer in the current site
     */
    protected Boolean isMaintainer(){
-      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+      return Boolean.valueOf(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
 

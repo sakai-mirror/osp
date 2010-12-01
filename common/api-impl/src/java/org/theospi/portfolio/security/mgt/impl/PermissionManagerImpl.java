@@ -201,7 +201,6 @@ public class PermissionManagerImpl implements PermissionManager {
    }
    
    public void updatePermissions(PermissionsEdit edit, boolean useQualifier) {
-      AuthorizationFacade manager = getAuthzManager();
       List origPermissions = null;
 
       PermissionsEdit orig = (PermissionsEdit)edit.clone();

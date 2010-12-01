@@ -77,7 +77,7 @@ public class ListStyleController extends AbstractStyleController {
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()));
       model.put("isMaintainer", isMaintainer());
-      model.put("isGlobal", new Boolean(getStyleManager().isGlobal()));
+      model.put("isGlobal", Boolean.valueOf(getStyleManager().isGlobal()));
       
       return new ModelAndView("success", model);
    }

@@ -38,7 +38,7 @@ public class WizardActivityImpl implements TaggableActivity {
 
 	WizardReference reference;
 	
-	protected static ResourceLoader messages = new ResourceLoader(
+	protected static final ResourceLoader messages = new ResourceLoader(
 		"org.theospi.portfolio.wizard.bundle.Messages");
 
 	public WizardActivityImpl(WizardPageDefinition def,

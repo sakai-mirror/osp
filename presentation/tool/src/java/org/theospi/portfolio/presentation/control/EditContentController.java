@@ -61,8 +61,8 @@ public class EditContentController extends SimpleFormController {
 		boolean optionsAreNull = presentation.getTemplate().getPropertyFormType() != null && presentation.getPropertyForm() == null;
       
 		model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
-		model.put("optionsAreNull", new Boolean(optionsAreNull));
-		model.put("disableShare", new Boolean(disableShare));
+		model.put("optionsAreNull", Boolean.valueOf(optionsAreNull));
+		model.put("disableShare", Boolean.valueOf(disableShare));
 		model.put("currentUser", SessionManager.getCurrentSessionUserId());
       
 		return model;

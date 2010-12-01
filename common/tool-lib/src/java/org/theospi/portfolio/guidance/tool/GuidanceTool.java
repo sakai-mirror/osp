@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -492,9 +493,9 @@ public class GuidanceTool extends HelperToolBase {
 
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
       
-      for (Iterator iter = typeFlags.keySet().iterator(); iter.hasNext();) {
-         String key = (String) iter.next();
-         session.setAttribute(key, typeFlags.get(key));
+      for (Iterator iter = typeFlags.entrySet().iterator(); iter.hasNext();) {
+         Entry entry = (Entry) iter.next();
+         session.setAttribute(entry.getKey().toString(), entry.getValue().toString());
       }
 
       try {

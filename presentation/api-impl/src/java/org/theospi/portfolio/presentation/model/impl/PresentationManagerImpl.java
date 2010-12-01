@@ -82,6 +82,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.zip.*;
 
 public class PresentationManagerImpl extends HibernateDaoSupport
@@ -756,12 +757,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public Collection findPublishedTemplates() {
       return getHibernateTemplate().findByNamedQuery("findPublishedTemplates",
-         new Object[]{new Boolean(true), getAuthnManager().getAgent()});
+         new Object[]{Boolean.valueOf(true), getAuthnManager().getAgent()});
    }
 
    public Collection findPublishedTemplates(String siteId) {
       return getHibernateTemplate().findByNamedQuery("findPublishedTemplatesBySite",
-         new Object[]{new Boolean(true), getAuthnManager().getAgent(), siteId});
+         new Object[]{Boolean.valueOf(true), getAuthnManager().getAgent(), siteId});
    }
 
    public Collection findGlobalTemplates() {
@@ -784,9 +785,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       Object[] parms = null;      
       if ( isGlobal() ) 
-         parms = new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue()};
+         parms = new Object[]{Boolean.valueOf(true), getAuthnManager().getAgent().getId().getValue()};
       else
-         parms = new Object[]{new Boolean(true)};
+         parms = new Object[]{Boolean.valueOf(true)};
          
       return getHibernateTemplate().find(query.toString(), parms );
    }
@@ -794,7 +795,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected Collection findPublishedTemplatesBySite(String siteId) {
       return getHibernateTemplate().findByNamedQuery(
          "findAllPublishedTemplatesBySite",
-         new Object[]{new Boolean(true), siteId});
+         new Object[]{Boolean.valueOf(true), siteId});
    }
 
    /**
@@ -1843,10 +1844,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          boolean changed = false;
 
          // subst.
-         for (Iterator i=fileMap.keySet().iterator();i.hasNext();) {
-            Id key = (Id)i.next();
+         for (Iterator i=fileMap.entrySet().iterator();i.hasNext();) {
+        	 Entry entry = (Entry) i.next();
 
-            if (substituteFileId(sb, key, (Id)fileMap.get(key))) {
+            if (substituteFileId(sb, (Id) entry.getKey(), (Id)entry.getValue())) {
                changed = true;
             }
          }
@@ -2604,7 +2605,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       /*
       return getHibernateTemplate().find(
             "from PresentationLayout where globalState=? and owner_id!=? and site_id=? Order by name",
-            new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED), 
+            new Object[]{Integer.valueOf(PresentationLayout.STATE_PUBLISHED), 
                   getAuthnManager().getAgent().getId().getValue(), siteId});
       */
       return new ArrayList();
@@ -2619,12 +2620,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public Collection findMyGlobalLayouts() {
       return getHibernateTemplate().findByNamedQuery("findPublishedLayouts",
-         new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED)});
+         new Object[]{Integer.valueOf(PresentationLayout.STATE_PUBLISHED)});
    }
 
    public Collection findAllGlobalLayouts() {
       return getHibernateTemplate().findByNamedQuery("findGlobalLayouts",
-         new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED), new Integer(PresentationLayout.STATE_WAITING_APPROVAL)});
+         new Object[]{Integer.valueOf(PresentationLayout.STATE_PUBLISHED), Integer.valueOf(PresentationLayout.STATE_WAITING_APPROVAL)});
    }
    
    public PresentationLayout storeLayout (PresentationLayout layout) {
@@ -2739,7 +2740,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
    public PresentationPage getPresentationPage(Id presentationId, int pageIndex) {
       List pages = getHibernateTemplate().findByNamedQuery("findPortfolioPagesByPortfolioAndSequence", 
-            new Object[]{presentationId, new Integer(pageIndex)});
+            new Object[]{presentationId, Integer.valueOf(pageIndex)});
 
       return (pages == null || pages.size() == 0) ? null : (PresentationPage)pages.get(0);
    }

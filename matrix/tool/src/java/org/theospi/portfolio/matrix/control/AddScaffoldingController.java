@@ -128,13 +128,13 @@ public class AddScaffoldingController extends BaseScaffoldingController
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       Scaffolding scaffolding = sessionBean.getScaffolding();      
       
-      if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString() == "false"){
+      if(request.get("allowRequestFeedback") == null || "false".equals(request.get("allowRequestFeedback").toString())){
     	  scaffolding.setAllowRequestFeedback(false);
       }else{
     	  scaffolding.setAllowRequestFeedback(true);  
       }
       
-      if(request.get("hideEvaluations") == null || request.get("hideEvaluations").toString() == "false"){
+      if(request.get("hideEvaluations") == null || "false".equals(request.get("hideEvaluations").toString())){
     	  scaffolding.setHideEvaluations(false);
       }else{
     	  scaffolding.setHideEvaluations(true);  

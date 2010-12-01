@@ -939,7 +939,6 @@ public class AudienceTool extends HelperToolBase {
     	Set<User> usersInGroup = getUserList(site.getId(), null, false, new ArrayList<Group>(getGroupList(site,	false)));
     	
     	 List authzs = getAuthzManager().getAuthorizations(null, function, idManager.getId(objectId));
-    	 List<DecoratedMember> matrixSelectedReviewers = new ArrayList();
     	 for (Iterator i = authzs.iterator(); i.hasNext();) {
     		 Authorization authz = (Authorization) i.next();
     		 DecoratedMember dMember = new DecoratedMember(this, authz.getAgent());

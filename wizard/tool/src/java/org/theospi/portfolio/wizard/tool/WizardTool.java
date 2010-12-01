@@ -301,7 +301,7 @@ public class WizardTool extends BuilderTool {
 
       if (wizard.getExposedPageId() != null && !wizard.getExposedPageId().equals("") &&
             (wizard.getExposeAsTool() == null || wizard.getExposeAsTool().booleanValue())) {
-         wizard.setExposeAsTool(new Boolean(true));
+         wizard.setExposeAsTool(Boolean.valueOf(true));
       }
 
       return current;
@@ -597,11 +597,11 @@ public class WizardTool extends BuilderTool {
                WizardFunctionConstants.EDIT_WIZARD);
       }
 
-      session.setAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG, new Boolean(instructions));
-      session.setAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG, new Boolean(rationale));
-      session.setAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG, new Boolean(examples));
-      session.setAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG, new Boolean(rubric));
-      session.setAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, new Boolean(expectations));
+      session.setAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG, Boolean.valueOf(instructions));
+      session.setAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG, Boolean.valueOf(rationale));
+      session.setAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG, Boolean.valueOf(examples));
+      session.setAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG, Boolean.valueOf(rubric));
+      session.setAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, Boolean.valueOf(expectations));
       
       
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
@@ -690,7 +690,7 @@ public class WizardTool extends BuilderTool {
             getCurrent().getBase().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, pages);
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
-               new Integer(0));
+               Integer.valueOf(0));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
 
          // this page goes to back to the list page
@@ -813,8 +813,8 @@ public class WizardTool extends BuilderTool {
    }
 
    public boolean isMaintainer() {
-      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-         getIdManager().getId(getToolManager().getCurrentPlacement().getContext()))).booleanValue();
+      return Boolean.valueOf(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+         getIdManager().getId(getToolManager().getCurrentPlacement().getContext())));
    }
 
    public String processPermissions()
@@ -865,7 +865,7 @@ public class WizardTool extends BuilderTool {
       clearInterface();
 	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 	      ToolSession session = getSessionManager().getCurrentToolSession();
-	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, Boolean.valueOf(true).toString());
 	      /*
 	      List wsItemRefs = EntityManager.newReferenceList();
 

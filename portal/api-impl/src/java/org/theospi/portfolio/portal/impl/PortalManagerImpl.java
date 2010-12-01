@@ -285,13 +285,9 @@ public class PortalManagerImpl extends HibernateDaoSupport implements PortalMana
 
          SiteType siteType = (SiteType) getSiteTypes().get(site.getType());
 
-         if (toolOrder == null) {
-            toolOrder = new ArrayList();
-         }
-
          if (siteType != null) {
             while (siteType.getFirstCategory() > toolOrder.size()) {
-               toolOrder.add(new Integer(0));
+               toolOrder.add(Integer.valueOf(0));
             }
 
             toolOrder.addAll(siteType.getFirstCategory(), siteType.getToolCategories());

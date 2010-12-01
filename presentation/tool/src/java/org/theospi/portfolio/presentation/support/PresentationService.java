@@ -367,7 +367,6 @@ public class PresentationService {
         Map<String, Object> artifactCache = new HashMap<String, Object>();
         Map<String, Object> itemHash = new HashMap<String, Object>();
         Agent agent = authnManager.getAgent();
-        ArrayList agentList = new ArrayList();
         
         // Create list of item definition types for this template
         PresentationTemplate template = presentationManager.getPresentationTemplate(presentation.getTemplate().getId());

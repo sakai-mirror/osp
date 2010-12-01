@@ -44,7 +44,7 @@ public class AuthZMap extends HashMap {
 
    public Object get(Object key){
       if (super.get(key) == null) {
-         super.put(key, new Boolean(authzFacade.isAuthorized(prefix + key.toString(), qualifier)));
+         super.put(key, Boolean.valueOf(authzFacade.isAuthorized(prefix + key.toString(), qualifier)));
       }
       return super.get(key);      
    }

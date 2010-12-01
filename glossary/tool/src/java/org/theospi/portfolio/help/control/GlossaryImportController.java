@@ -94,7 +94,7 @@ public class GlossaryImportController extends HelpController implements Validato
             }
             session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          }
-         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, Integer.valueOf(1));
          return new ModelAndView("pickImport");
          
       } else {
@@ -147,7 +147,9 @@ public class GlossaryImportController extends HelpController implements Validato
          // here is where we setup the id
          List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          if (refs.size() >= 1) {
+        	 StringBuffer idsBuffer = new StringBuffer();
         	String ids = "";
+        	StringBuffer namesBuffer = new StringBuffer();
         	String names = "";
         	
         	for(Iterator iter = refs.iterator(); iter.hasNext(); ) {
@@ -156,11 +158,13 @@ public class GlossaryImportController extends HelpController implements Validato
 	
 	            Node node = getHelpManager().getNode(getIdManager().getId(nodeId));
 	            
-	            if(ids.length() > 0)
-	            	ids += ",";
-	            ids += node.getId();
-	            names += node.getDisplayName() + " ";
+	            if(idsBuffer.length() > 0)
+	            	idsBuffer.append(",");
+	            idsBuffer.append(node.getId());
+	            namesBuffer.append(node.getDisplayName()).append(" ");
         	}
+        	names = namesBuffer.toString();
+        	ids = idsBuffer.toString();
             templateForm.setUploadedGlossary(ids);
             model.put("name", names);
          }

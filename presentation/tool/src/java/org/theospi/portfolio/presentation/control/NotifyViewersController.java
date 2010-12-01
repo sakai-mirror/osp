@@ -82,7 +82,7 @@ public class NotifyViewersController implements Controller {
 	}
 	
 	protected Boolean isMaintainer(){
-	      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+	      return Boolean.valueOf(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
 	            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
 	   }
 

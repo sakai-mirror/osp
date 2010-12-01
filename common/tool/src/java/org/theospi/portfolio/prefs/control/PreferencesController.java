@@ -66,7 +66,7 @@ public class PreferencesController extends SimpleFormController {
 		if (prefEdit != null) {
 			//Find the default
 			ResourcePropertiesEdit defautProps = prefEdit.getPropertiesEdit(NotificationService.PREFS_TYPE + npb.getTypeKey());
-			String defaultProp = (String)defautProps.get(new Integer(NotificationService.NOTI_OPTIONAL).toString());
+			String defaultProp = (String)defautProps.get(Integer.valueOf(NotificationService.NOTI_OPTIONAL).toString());
 			if (defaultProp != null) {
 				npb.setDefaultOption(Integer.valueOf(defaultProp).intValue());
 			}		
