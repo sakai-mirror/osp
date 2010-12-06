@@ -114,6 +114,7 @@ public class SessionAccess extends Access {
 #endif JDK1.0*/
            out.print (query);
            out.flush ();
+           out.close();
        }
 
        connect(conn);

@@ -93,15 +93,33 @@ public class PresentationExport extends Crawler implements LinkListener {
    }
 
    public void createZip(OutputStream out) throws IOException {
-      File directory = new File(tempDirectory + webappName);
+	   File directory = new File(tempDirectory + webappName);
 
-      CheckedOutputStream checksum = new CheckedOutputStream(out, new Adler32());
-      ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
+	   CheckedOutputStream checksum = null;
+	   ZipOutputStream zos = null;
+	   try{
+		   checksum =  new CheckedOutputStream(out, new Adler32());
+		   zos = new ZipOutputStream(new BufferedOutputStream(checksum));
+		   recurseDirectory("", directory, zos);
 
-      recurseDirectory("", directory, zos);
-
-      zos.finish();
-      zos.flush();
+		   zos.finish();
+		   zos.flush();
+	   } 
+	   finally {
+		   if (zos != null) {
+			   try {
+				zos.close();
+			} catch (IOException e) {
+			}
+		   }
+		   if (checksum != null) {
+			   try {
+				checksum.close();
+			} catch (IOException e) {
+			}
+		   }
+	   }
+      
    }
 
    /**
@@ -158,6 +176,9 @@ public class PresentationExport extends Crawler implements LinkListener {
             }
             out.closeEntry();
          } finally {
+        	if (origin != null) {
+        		origin.close();
+        	}
             try {
                in.close();
             } catch (Exception e) {
