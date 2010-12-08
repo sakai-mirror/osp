@@ -468,7 +468,7 @@ public class XsltRenderContext implements PortalRenderContext {
          safeAppendTextNode(doc, presence, presenceUrl, true);
          presence.setAttribute("include", Boolean.valueOf(showPresence && loggedIn).toString());
          config.appendChild(presence);
-         helpUrl = (String) context.get("pageNavHelpUrl");
+         helpUrl = (String) sitePages.get("pageNavHelpUrl");
          config.setAttribute("pageNavPublished", sitePages.get("pageNavPublished").toString());
       }
 
