@@ -57,7 +57,7 @@ public class RegionSequenceMap extends Hashtable {
    public void remove(ActionEvent event) {
       for (Iterator i=getChildRegions().iterator();i.hasNext();) {
          ValueBinding binding = (ValueBinding) i.next();
-         DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());;
+         DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());
          removeItem(region.getBase());
          region.setRegionItemList(null);
          region.initRegionList();
