@@ -1306,7 +1306,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          queryBuf.append( " tool_id = :toolId and" );
       }
       queryBuf.append( " creator_id = :creatorId" );
-      queryBuf.append( " ORDER BY " + orderBy + " " + sortBy.getDirection() );;
+      queryBuf.append( " ORDER BY " + orderBy + " " + sortBy.getDirection() );
 
       Session session = getSession();
 

@@ -62,7 +62,7 @@ public class SequenceComponent extends HtmlDataTable implements XmlDocumentConta
    public void addToSequence() {
       for (Iterator i=childRegions.iterator();i.hasNext();) {
          ValueBinding binding = (ValueBinding) i.next();
-         DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());;
+         DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());
          region.getBase().addBlank();
          region.initRegionList();
       }
