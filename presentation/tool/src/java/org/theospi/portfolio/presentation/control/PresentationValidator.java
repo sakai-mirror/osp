@@ -191,6 +191,10 @@ public class PresentationValidator extends ValidatorBase {
       Presentation presentation = (Presentation) obj;
       if (presentation.getName() == null || presentation.getName().length() == 0) {
          errors.rejectValue("name", "error.required", "name is required");
+      } else {
+    	  if (presentation.getName().length() > 255) {
+    		  errors.rejectValue("name", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters"); 
+    	  }
       }
 
       //FIXME: This has got to go -- changing values in validation is a bad idea
