@@ -37,6 +37,7 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
@@ -181,7 +182,9 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, parentId, node.getResource(), producer));
 
-      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
+      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked(), 
+    		  buildRefDecorator(siteId, parentId, producer) + 
+    		  buildRefDecorator(siteId, artifactId.getValue(), MetaobjEntityManager.METAOBJ_CONTENT_ENTITY_PREFIX));
    }
 
    /**
@@ -228,6 +231,18 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
          String producer) {
       return ContentEntityUtil.getInstance().buildRef(
          producer, siteId, contextId, resource.getReference());
+   }
+   
+   /**
+    * Build a new reference with the given params
+    * @param siteId
+    * @param contextId
+    * @param producer
+    * @return A String reference like so: "/&lt;producer&gt;/&lt;siteId&gt;/&lt;contextId&gt;"
+    */
+   protected String buildRefDecorator(String siteId, String contextId, String producer) {
+	   return ContentEntityUtil.getInstance().buildRef(
+		         producer, siteId, contextId, "");
    }
 
    public Node getNode(Reference ref) {

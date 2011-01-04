@@ -96,6 +96,7 @@ import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.FormConsumer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -1053,7 +1054,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       if (page.getPageForms() != null) {
          for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
             WizardPageForm wpf = (WizardPageForm) iter.next();
-            Node node = getNode(wpf.getArtifactId(), page);
+            Node node = getNode(wpf.getArtifactId(), page, true);
             if (node != null) {
                result.add(node);
             }
@@ -1076,7 +1077,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       if (page.getAttachments() != null) {
          for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
             Attachment attachment = (Attachment) iter.next();
-            Node node = getNode(attachment.getArtifactId(), page);
+            Node node = getNode(attachment.getArtifactId(), page, false);
             if (node != null) {
                result.add(node);
             }
@@ -1093,7 +1094,14 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return result;
    }
 
-   protected Node getNode(Id artifactId, WizardPage page) {
+   /**
+    * 
+    * @param artifactId
+    * @param page
+    * @param isForm Flag indication that the artifact in question is a form or not
+    * @return
+    */
+   protected Node getNode(Id artifactId, WizardPage page, boolean isForm) {
       Node node = getNode(artifactId);
       if (node == null) {
          return null;
@@ -1102,7 +1110,12 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, page.getId().getValue(), node.getResource()));
 
-      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
+      if (!isForm)
+    	  return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
+      else 
+    	  return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked(), 
+    			  buildRefDecorator(siteId, page.getId().getValue(), MatrixContentEntityProducer.MATRIX_PRODUCER) + 
+    			  buildRefDecorator(siteId, artifactId.getValue(), MetaobjEntityManager.METAOBJ_CONTENT_ENTITY_PREFIX));
    }
 
    private boolean isNodeHidden( Id artifactId ) {
@@ -2772,6 +2785,18 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    protected String buildRef(String siteId, String contextId, ContentResource resource) {
       return ContentEntityUtil.getInstance().buildRef(
             MatrixContentEntityProducer.MATRIX_PRODUCER, siteId, contextId, resource.getReference());
+   }
+   
+   /**
+    * Build a new reference with the given params
+    * @param siteId
+    * @param contextId
+    * @param producer
+    * @return A String reference like so: "/&lt;producer&gt;/&lt;siteId&gt;/&lt;contextId&gt;"
+    */
+   protected String buildRefDecorator(String siteId, String contextId, String producer) {
+	   return ContentEntityUtil.getInstance().buildRef(
+		         producer, siteId, contextId, "");
    }
 
    public DefaultScaffoldingBean getDefaultScaffoldingBean() {
