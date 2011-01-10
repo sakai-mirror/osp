@@ -610,7 +610,7 @@
             <ref bean="org.theospi.portfolio.admin.model.IntegrationOption.adminStyle"/>
             <ref bean="org.theospi.portfolio.admin.model.IntegrationOption.adminGlossaryToAdmin"/>
             <ref bean="org.theospi.portfolio.admin.model.IntegrationOption.adminFormsToAdmin"/>
-            <ref bean="org.theospi.portfolio.admin.model.IntegrationOption.adminReport"/>
+            <!-- <ref bean="org.theospi.portfolio.admin.model.IntegrationOption.adminReport"/> -->
             <ref bean="org.theospi.portfolio.admin.model.IntegrationOption.adminSiteInfo"/>
          </list>
       </property>
