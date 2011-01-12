@@ -25,6 +25,9 @@ public class UpdatePresentationController extends AbstractCommandController {
 	protected ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		if (errors.hasErrors()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You have submitted bad input -- check the API");
+			// This call should return a MaV that contains the error information. 
+			// return new ModelAndView("editPresentation", errors.getModel());
+			return null;
 		}
 		
 		Boolean active = null;
