@@ -183,9 +183,14 @@ public class PermissionManagerImpl implements PermissionManager {
 	    			  logger.warn("Permission exception", ape);
 	    		  } 
 	    	  }
-	    	  
-	         logger.warn("Cannot find realm corresponding to site: " + e.getId() + ".  Skipping it for setting permissions.", e);
-	         //throw new OspException(e);
+		  // SAK-19632 - changed this to a debug to avoid logging unimportant warnings, added info log
+                  String msg = "Cannot find realm corresponding to site: " + e.getId() + ".  Skipping it for setting permissions.";
+		  if (logger.isDebugEnabled()) {
+                      // log the stacktrace
+	              logger.debug(msg, e);
+		  }
+                  logger.info(msg);
+	          //throw new OspException(e);
 	      }
 	      return null;
 	   }
