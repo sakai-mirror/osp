@@ -1601,9 +1601,21 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	   oldScaffolding.setOwner(null);
 	   oldScaffolding.setPublishedBy(null);
 
+	   // We also strip the Agent from the attached Style if there is one.
+	   if (oldScaffolding.getStyle() != null) {
+		   oldScaffolding.getStyle().setOwner(null);
+	   }
+
 	   ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	   XMLEncoder xenc=new XMLEncoder(bos);
-	   xenc.writeObject(oldScaffolding);
+	   try {
+		   xenc.writeObject(oldScaffolding);
+	   }
+	   catch (StackOverflowError e) {
+		   logger.error("Stack Overflow when serializing Scaffolding with ID: " + oldScaffolding.getId().getValue()
+                        + ". This is likely due to an unexpected Agent being referenced.");
+		   throw new IllegalArgumentException("Caught Stack Overflow serializing Scaffolding. It likely contains a nested Agent reference.", e);
+	   }
 	   xenc.close();
 
 	   removeFromSession(oldScaffolding);
