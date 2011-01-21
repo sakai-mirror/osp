@@ -3544,6 +3544,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     	String uCasePageType = isMatrix ? messages.getString("email_uppercase_matrixCell") : messages.getString("email_uppercase_wizardPage");
     	String pageType = isMatrix ? messages.getString("email_matrixCell") : messages.getString("email_wizardPage");
     	String pageTool = isMatrix ? messages.getString("email_matrix") : messages.getString("email_wizard");
+    	String toolTitle = isMatrix ? messages.getString("email_matrices") : messages.getString("email_wizards");
     	boolean evaluation = MatrixFunctionConstants.EVALUATE_MATRIX.equals(function);
     	String notificationId = "";
     	
@@ -3583,10 +3584,10 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     			
     			emailBody = messages.getFormattedMessage(
     					"matrixEvaluationBody", new Object[] {userName, pageType, wizPage.getPageDefinition().getTitle(),
-    							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), url, pageType, pageType, pageType});
+    							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), toolTitle, url, pageType, pageType, pageType});
     			emailBodyAnon = messages.getFormattedMessage(
     					"matrixEvaluationBody", new Object[] {userNameAnon, pageType, wizPage.getPageDefinition().getTitle(),
-    							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), url, pageType, pageType, pageType});
+    							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), toolTitle, url, pageType, pageType, pageType});
     		}else{
     			emailBody = messages.getFormattedMessage(
     					"matrixFeedbackBody", new Object[] {userName, wizPage.getPageDefinition().getTitle(),
