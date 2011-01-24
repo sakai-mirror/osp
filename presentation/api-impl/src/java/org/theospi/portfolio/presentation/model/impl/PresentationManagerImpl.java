@@ -3733,7 +3733,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
        copy.setIsPublic(false); // FORCED
        HashSet<PresentationItem> copiedItems = new HashSet<PresentationItem>(original.getItems().size());
        for (PresentationItem item : (Set<PresentationItem>) original.getItems()) {
-           copiedItems.add(item);
+           PresentationItem copiedItem = new PresentationItem();
+           copiedItem.setArtifactId(item.getArtifactId());
+           copiedItem.setDefinition(item.getDefinition());
+    	   copiedItems.add(copiedItem);
        }
        copy.setItems(copiedItems); // list (ref)
        copy.setLayout(original.getLayout()); // obj (ref)
@@ -3752,7 +3755,36 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                if (page.getRegions() != null) {
                    HashSet<PresentationPageRegion> copiedRegions = new HashSet<PresentationPageRegion>();
                    for (PresentationPageRegion region : (Set<PresentationPageRegion>) page.getRegions()) {
-                       copiedRegions.add(region);
+                       PresentationPageRegion newRegion = new PresentationPageRegion();
+                       newRegion.setHelpText(region.getHelpText());
+                       
+                       List<PresentationPageItem> regionItems = new ArrayList<PresentationPageItem>(region.getItems().size());
+                       for (PresentationPageItem item : (List<PresentationPageItem>) region.getItems()) {
+                    	   PresentationPageItem copiedItem = new PresentationPageItem();
+                           copiedItem.setLayoutRegionId(item.getLayoutRegionId());
+                    	   
+                           Set<PresentationItemProperty> properties = new HashSet<PresentationItemProperty>(item.getProperties().size());
+                           for (PresentationItemProperty property : (Set<PresentationItemProperty>)item.getProperties()) {
+                        	   PresentationItemProperty newProperty = new PresentationItemProperty();
+                        	   newProperty.setItem(copiedItem);
+                        	   newProperty.setKey(property.getKey());
+                        	   newProperty.setValue(property.getValue());
+                        	   properties.add(newProperty);
+                           }
+                           
+                           copiedItem.setProperties(properties);
+                           copiedItem.setRegion(newRegion);
+                           copiedItem.setRegionItemSeq(item.getRegionItemSeq());
+                           copiedItem.setType(item.getType());
+                           copiedItem.setValue(item.getValue());
+                           regionItems.add(copiedItem);
+                       }
+                       
+                       newRegion.setItems(regionItems);
+                       newRegion.setPage(cp);
+                       newRegion.setRegionId(region.getRegionId());
+                       newRegion.setType(region.getType());
+                	   copiedRegions.add(newRegion);
                    }
                    cp.setRegions(copiedRegions);
                }
