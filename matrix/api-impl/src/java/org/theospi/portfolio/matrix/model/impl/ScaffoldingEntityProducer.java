@@ -43,6 +43,10 @@ public class ScaffoldingEntityProducer implements EntityProducer {
 			logger.warn("Error registering Matrix Content Entity Producer", e);
 		}
 	}
+	
+	public void destroy() {
+		logger.info("destroy()");
+	}
 
 	public String archive(String siteId, Document doc, Stack stack,
 			String archivePath, List attachments) {
