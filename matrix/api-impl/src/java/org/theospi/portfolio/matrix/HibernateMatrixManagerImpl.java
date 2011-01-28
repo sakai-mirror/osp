@@ -3445,6 +3445,8 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	public Set getGroupList(Site site, boolean allowAllGroups) {
 		Set groupSet = new HashSet();
 		Collection siteGroups = null;
+
+		boolean includeSections = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_INCLUDE_SECTIONS, false);
       
 		if (site.hasGroups()) {
 			String currentUser = SessionManager.getCurrentSessionUserId();
@@ -3458,7 +3460,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			// Only add worksite groups (e.g. not section groups)
 			for (Iterator it = siteGroups.iterator(); it.hasNext(); ) {
 				Group group = (Group)it.next();
-				if ( group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+				if ( includeSections || group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
 					groupSet.add(group);
 			}
 		}
