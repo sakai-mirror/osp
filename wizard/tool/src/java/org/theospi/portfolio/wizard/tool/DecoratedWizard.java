@@ -169,6 +169,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 		Collection groups = null;
 		boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
 					|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
+		boolean includeSections = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_INCLUDE_SECTIONS, false);
 					
 		try {
 			Site site = SiteService.getSite(base.getSiteId());
@@ -182,7 +183,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 				}
 				for (Iterator it = groups.iterator(); it.hasNext();) {
 					Group group = (Group) it.next();
-					if ( group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+					if ( includeSections || group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
 						groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
 				}
 			}
