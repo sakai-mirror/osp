@@ -38,5 +38,7 @@ public interface WizardMatrixConstants {
 	// sakai.properties (default is false)
    public static final String PROP_GROUPS_ALLOW_ALL_GLOBAL = "osp.reviewer.groups.allowall.global";   
    
+	// sakai.properties (default is false), SAK-17055, SAK-18538
+   public static final String PROP_GROUPS_INCLUDE_SECTIONS = "osp.reviewer.groups.include.sections";
 }
 
