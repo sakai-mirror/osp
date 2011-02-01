@@ -58,12 +58,82 @@ public class WizardCategory extends IdentifiableObject {
       setModified(new Date());
    }
    
-   public boolean equals(Object in) {
-      return super.equals(in);
+   public boolean equals(Object obj) {
+	   if (this == obj)
+		   return true;
+	   if (!super.equals(obj))
+		   return false;
+	   if (getClass() != obj.getClass())
+		   return false;
+	   WizardCategory other = (WizardCategory) obj;
+	   if (childCategories == null) {
+		   if (other.childCategories != null)
+			   return false;
+	   } else if (!childCategories.equals(other.childCategories))
+		   return false;
+	   if (childPages == null) {
+		   if (other.childPages != null)
+			   return false;
+	   } else if (!childPages.equals(other.childPages))
+		   return false;
+	   if (created == null) {
+		   if (other.created != null)
+			   return false;
+	   } else if (!created.equals(other.created))
+		   return false;
+	   if (description == null) {
+		   if (other.description != null)
+			   return false;
+	   } else if (!description.equals(other.description))
+		   return false;
+	   if (keywords == null) {
+		   if (other.keywords != null)
+			   return false;
+	   } else if (!keywords.equals(other.keywords))
+		   return false;
+	   if (modified == null) {
+		   if (other.modified != null)
+			   return false;
+	   } else if (!modified.equals(other.modified))
+		   return false;
+	   if (parentCategory == null) {
+		   if (other.parentCategory != null)
+			   return false;
+	   } else if (!parentCategory.equals(other.parentCategory))
+		   return false;
+	   if (sequence != other.sequence)
+		   return false;
+	   if (title == null) {
+		   if (other.title != null)
+			   return false;
+	   } else if (!title.equals(other.title))
+		   return false;
+	   if (wizard == null) {
+		   if (other.wizard != null)
+			   return false;
+	   } else if (!wizard.equals(other.wizard))
+		   return false;
+	   return true;
    }
-
+   
    public int hashCode() {
-      return super.hashCode();
+	   final int prime = 31;
+	   int result = super.hashCode();
+	   result = prime * result
+	   + ((childCategories == null) ? 0 : childCategories.hashCode());
+	   result = prime * result
+	   + ((childPages == null) ? 0 : childPages.hashCode());
+	   result = prime * result + ((created == null) ? 0 : created.hashCode());
+	   result = prime * result
+	   + ((description == null) ? 0 : description.hashCode());
+	   result = prime * result + ((keywords == null) ? 0 : keywords.hashCode());
+	   result = prime * result + ((modified == null) ? 0 : modified.hashCode());
+	   result = prime * result
+	   + ((parentCategory == null) ? 0 : parentCategory.hashCode());
+	   result = prime * result + sequence;
+	   result = prime * result + ((title == null) ? 0 : title.hashCode());
+	   result = prime * result + ((wizard == null) ? 0 : wizard.hashCode());
+	   return result;
    }
 
    public String getTitle() {
