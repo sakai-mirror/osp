@@ -404,11 +404,11 @@ your browser doesn't support iframes
          </xsl:call-template>
       </xsl:if>
       <xsl:if test="$content='false'">
+         <xsl:variable name="selectToolClass"><xsl:value-of select="menuClass"/></xsl:variable>
          <li class="selectedTool">
-            <span>
-               <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
-               <xsl:value-of disable-output-escaping="yes" select="title"/>   
-            </span>
+            <a class="{$selectToolClass}">
+               <span><xsl:value-of disable-output-escaping="yes" select="title"/></span>   
+            </a>
          </li>
       </xsl:if>
    </xsl:template>
