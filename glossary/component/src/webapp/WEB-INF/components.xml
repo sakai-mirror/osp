@@ -172,11 +172,6 @@
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
-            <value>text/xml</value>
-            <value>application/x-osp</value>
-            <value>application/xml</value>
-            <value>application/zip</value>
-            <value>application/x-zip-compressed</value>
          </list>
       </property>
       <property name="acceptedExtensions">
