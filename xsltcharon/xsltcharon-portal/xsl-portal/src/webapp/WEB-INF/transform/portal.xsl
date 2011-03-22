@@ -570,22 +570,64 @@ your browser doesn't support iframes
             </img>
          </a>
 </xsl:if>
-      <h2><xsl:value-of disable-output-escaping="yes" select="$tool/title"/></h2>
+      <h2>
+         <xsl:choose>
+            <xsl:when test="$tool/@renderResult='true'"><xsl:value-of disable-output-escaping="yes" select="$tool/resultTitle"/></xsl:when>
+            <xsl:otherwise><xsl:value-of disable-output-escaping="yes" select="$tool/title"/></xsl:otherwise>
+         </xsl:choose>
+      </h2>
       </div>
       <div class="action">
-<xsl:if test="$tool/@hasHelp='true'">
-   <a accesskey="h" target="_blank">
+
+<xsl:if test="$tool/@has168Edit='true'">
+   <a accesskey="e" id="jsr-edit">
       <xsl:attribute name="href">
-         <xsl:value-of select="$tool/toolHelp"/>
+         <xsl:value-of select="$tool/toolJSR168Edit" />
       </xsl:attribute>
-      <xsl:attribute name="onClick">
-         openWindow('<xsl:value-of select="$tool/toolHelp"/>', '<xsl:value-of select="$externalized/entry[@key='sit_help']"/>',
-  'resizable=yes,toolbar=no,scrollbars=yes,menubar=yes,width=800,height=600'); return false
+      <xsl:attribute name="title">
+         <xsl:value-of select="$externalized/entry[@key='sit_edit']" />
       </xsl:attribute>
-      <img src="/library/image/transparent.gif" border="0">
-         <xsl:attribute name="alt"><xsl:value-of select="$externalized/entry[@key='sit_help']"/></xsl:attribute>
-      </img>
+          <img src="/library/image/transparent.gif" border="0">
+            <xsl:attribute name="alt">
+               <xsl:value-of select="$externalized/entry[@key='sit_edit']"/>
+            </xsl:attribute>
+         </img>
    </a>
+</xsl:if>
+
+<xsl:if test="$tool/@hasHelp='true'">
+   <xsl:choose>
+      <xsl:when test="$tool/@has168Help='true'">
+         <a accesskey="e" id="jsr-edit">
+            <xsl:attribute name="href">
+               <xsl:value-of select="$tool/toolJSR168Help" />
+            </xsl:attribute>
+            <xsl:attribute name="title">
+               <xsl:value-of select="$externalized/entry[@key='sit_help']" />
+            </xsl:attribute>
+            <img src="/library/image/transparent.gif" border="0">
+               <xsl:attribute name="alt">
+                  <xsl:value-of select="$externalized/entry[@key='sit_help']"/>
+               </xsl:attribute>
+            </img>
+         </a>
+      </xsl:when>
+
+      <xsl:otherwise>
+         <a accesskey="h" target="_blank">
+            <xsl:attribute name="href">
+               <xsl:value-of select="$tool/toolHelp"/>
+            </xsl:attribute>
+            <xsl:attribute name="onClick">
+               openWindow('<xsl:value-of select="$tool/toolHelp"/>', '<xsl:value-of select="$externalized/entry[@key='sit_help']"/>',
+        'resizable=yes,toolbar=no,scrollbars=yes,menubar=yes,width=800,height=600'); return false
+            </xsl:attribute>
+            <img src="/library/image/transparent.gif" border="0">
+               <xsl:attribute name="alt"><xsl:value-of select="$externalized/entry[@key='sit_help']"/></xsl:attribute>
+            </img>
+         </a>
+      </xsl:otherwise>
+   </xsl:choose>
 </xsl:if>
       </div>
    </div>
