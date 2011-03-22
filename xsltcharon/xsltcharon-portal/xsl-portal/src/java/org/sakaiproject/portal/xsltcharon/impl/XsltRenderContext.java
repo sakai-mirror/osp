@@ -35,6 +35,7 @@ import org.sakaiproject.site.api.SitePage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.tidy.Tidy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,6 +45,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
+import java.io.StringWriter;
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -414,6 +417,14 @@ public class XsltRenderContext implements PortalRenderContext {
 
       appendTextElementNode(doc, "toolReset", tool.get("toolResetActionUrl").toString(), toolElement);
       appendTextElementNode(doc, "toolHelp", tool.get("toolHelpActionUrl").toString(), toolElement);
+      if (tool.get("toolJSR168Edit") != null) {
+         appendTextElementNode(doc, "toolJSR168Edit", tool.get("toolJSR168Edit").toString(), toolElement);
+         toolElement.setAttribute("has168Edit", "true");
+      }
+      if (tool.get("toolJSR168Help") != null) {
+         appendTextElementNode(doc, "toolJSR168Help", tool.get("toolJSR168Help").toString(), toolElement);
+         toolElement.setAttribute("has168Help", "true");
+      }
 
       toolElement.setAttribute("hasReset", tool.get("toolShowResetButton").toString());
       toolElement.setAttribute("hasHelp", tool.get("toolShowHelpButton").toString());
@@ -423,6 +434,8 @@ public class XsltRenderContext implements PortalRenderContext {
          toolElement.setAttribute("renderResult", "true");
          RenderResult result = (RenderResult) tool.get("toolRenderResult");
 
+         appendTextElementNode(doc, "resultTitle", result.getTitle(), toolElement);
+
          //SAK-18793 - readDocumentFromString returns null on error; this check prevents NPEs
          String contentStr = result.getContent();
          if (contentStr == null)
@@ -430,7 +443,18 @@ public class XsltRenderContext implements PortalRenderContext {
              throw new ToolRenderException ("tool xml failed to render and is null");
          }
 
-         Document content = Xml.readDocumentFromString(contentStr);
+         Tidy tdpr = new Tidy();
+         tdpr.setForceOutput(true);
+         tdpr.setShowWarnings(false);
+         tdpr.setXHTML(true);
+         tdpr.setXmlOut(true);
+         tdpr.setPrintBodyOnly(true);
+         tdpr.setQuiet(true);
+         StringWriter sw = new StringWriter();
+         tdpr.parse(new StringReader(contentStr), sw);
+         
+         // Wrap tidy'd source in a div so we guarantee a root element
+         Document content = Xml.readDocumentFromString("<div>" + sw.toString() + "</div>");
          Element contentRoot = (Element) doc.importNode(content.getDocumentElement(), true);
          Element contentElement = doc.createElement("content");
          contentElement.appendChild(contentRoot);

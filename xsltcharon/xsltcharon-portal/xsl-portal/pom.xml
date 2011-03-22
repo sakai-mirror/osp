@@ -166,6 +166,11 @@
         </exclusions>
 
     </dependency>
+    <dependency>
+        <groupId>jtidy</groupId>
+        <artifactId>jtidy</artifactId>
+        <version>r938</version>
+    </dependency>
   </dependencies>
   <build>
     <resources>
