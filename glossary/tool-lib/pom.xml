@@ -86,7 +86,6 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -133,6 +132,7 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
     </dependency>
+    <!-- provided by the sakai jsf pom above
     <dependency>
       <groupId>jsf</groupId>
       <artifactId>jsf-impl</artifactId>
@@ -142,11 +142,10 @@
       <groupId>jsf</groupId>
       <artifactId>jsf-api</artifactId>
       <version>1.1.01</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>

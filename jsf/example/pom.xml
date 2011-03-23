@@ -54,19 +54,6 @@
 			</properties>
 		</dependency>
 		-->
-<!-- Sun JSF dependencies -->
-    <dependency>
-      <groupId>jsf</groupId>
-      <artifactId>jsf-api</artifactId>
-      <version>1.1.01</version>
-<!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
-    </dependency>
-    <dependency>
-      <groupId>jsf</groupId>
-      <artifactId>jsf-impl</artifactId>
-      <version>1.1.01</version>
-<!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
-    </dependency>
 <!-- Sakai tag library -->
 <!-- OSP tag library -->
     <dependency>
@@ -88,7 +75,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -120,8 +106,7 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
-    </dependency>
+   </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
