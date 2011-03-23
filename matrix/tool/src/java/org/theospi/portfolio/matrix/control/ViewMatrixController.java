@@ -157,7 +157,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
       Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
       if (matrix == null) {
-         if (currentAgent != null && !currentAgent.equals("")) {
+         if (currentAgent != null && !currentAgent.getId().getValue().equals("")) {
             //Don't create a matrix unless the scaffolding has been published 
             // and the user has permission to use a matrix.
             if (scaffolding.isPublished() || scaffolding.isPreview()) {
