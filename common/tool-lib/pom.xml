@@ -64,19 +64,17 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment-api</artifactId>
     </dependency>
-<!-- Sun JSF dependencies -->
+<!-- Sun JSF dependencies defined by sakai deps
     <dependency>
       <groupId>jsf</groupId>
       <artifactId>jsf-api</artifactId>
       <version>1.1.01</version>
-<!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
     </dependency>
     <dependency>
       <groupId>jsf</groupId>
       <artifactId>jsf-impl</artifactId>
       <version>1.1.01</version>
-<!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.sakaiproject.jsf</groupId>
       <artifactId>jsf-tool</artifactId>
@@ -103,7 +101,6 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -153,19 +150,8 @@
       <version>3.8.1</version>
     </dependency>
     <dependency>
-      <groupId>jsf</groupId>
-      <artifactId>jsf-impl</artifactId>
-      <version>1.1.01</version>
-    </dependency>
-    <dependency>
-      <groupId>jsf</groupId>
-      <artifactId>jsf-api</artifactId>
-      <version>1.1.01</version>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
-      <version>1.1.2</version>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>
