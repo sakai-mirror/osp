@@ -63,10 +63,6 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-metaobj-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-tool-lib</artifactId>
     </dependency>
