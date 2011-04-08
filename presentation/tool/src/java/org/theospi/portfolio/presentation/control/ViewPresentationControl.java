@@ -326,8 +326,9 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
       if (xsl.getTechnicalMetadata().getLastModified().getTime() > wrapper.modified) {
          try {
-            wrapper.transformer = TransformerFactory.newInstance()
-                  .newTransformer(new StreamSource(xsl.getInputStream()));
+            TransformerFactory tf = TransformerFactory.newInstance();
+            tf.setURIResolver(getUriResolver());
+            wrapper.transformer = tf.newTransformer(new StreamSource(xsl.getInputStream()));
             wrapper.modified = xsl.getTechnicalMetadata().getLastModified()
                   .getTime();
          } catch (TransformerConfigurationException e) {
