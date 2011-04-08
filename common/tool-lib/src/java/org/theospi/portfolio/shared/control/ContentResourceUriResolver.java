@@ -53,6 +53,12 @@ public class ContentResourceUriResolver implements URIResolver {
       try {
          String accessUrl = getServerConfigurationService().getAccessUrl();
          String url = href.replaceAll(accessUrl, "");
+
+         // We depend on these resolving as content entities (e.g., /content/group/<site> or /content/user/<user>),
+         // so provide some assistance and consistency with metaobj resolution.
+         if (!url.startsWith("/content/"))
+            url = "/content" + (url.startsWith("/") ? "" : "/") + url;
+
          Reference ref = getEntityManager().newReference(url);
          
          StreamSource strs = new StreamSource(((ContentResource)ref.getEntity()).streamContent());
