@@ -46,6 +46,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdCustomEditor;
@@ -53,6 +54,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.Placement;
@@ -88,6 +90,7 @@ public class PresentationService {
 	private IdCustomEditor idCustomEditor;
 	private TypedPropertyEditor presentationItemCustomEditor;
 	private TypedPropertyEditor presentationViewerCustomEditor;
+	private ArtifactFinder artifactFinder;
 	
 	private SiteService siteService;
 	private ContentHostingService contentHostingService;
@@ -310,6 +313,19 @@ public class PresentationService {
 			Presentation presentation = getPresentation(presentationId);
 			String formId = contentHostingService.resolveUuid(artifactId);
 			contentHostingService.checkResource(formId);
+
+			// Check the form type with the options form type. Multiple tabs can stomp each others' session state,
+			// forcing an attempt to save the wrong type as the options form, which is unrecoverable from the UI.
+			PresentationTemplate template = presentation.getTemplate();
+			StructuredArtifact bean = (StructuredArtifact) artifactFinder.load(idManager.getId(artifactId));
+			if (template == null || Presentation.FREEFORM_TYPE.equals(presentation.getPresentationType()))
+				throw new IllegalArgumentException("Presentation has no template or is free-form, so options cannot be saved.");
+			else if (template.getPropertyFormType() == null)
+				throw new IllegalArgumentException("Presentation has no options form type set, so options cannot be saved.");
+			else if (bean == null || !template.getPropertyFormType().equals(bean.getHome().getType().getId()))
+				throw new IllegalArgumentException(
+						"Form type mismatch, so options cannot be saved. Are you attempting to edit multiple forms simultaneously?");
+
 			presentation.setPropertyForm(idManager.getId(artifactId));
 			presentationManager.storePresentation(presentation);
 		} catch (PermissionException e) {
@@ -605,6 +621,10 @@ public class PresentationService {
 
 	public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
 		this.serverConfigurationService = serverConfigurationService;
+	}
+
+	public void setArtifactFinder(ArtifactFinder artifactFinder) {
+		this.artifactFinder = artifactFinder;
 	}
 
 }
