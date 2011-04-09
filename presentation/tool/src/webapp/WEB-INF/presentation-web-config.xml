@@ -507,6 +507,9 @@
 		<property name="serverConfigurationService">
 			<ref bean="org.sakaiproject.component.api.ServerConfigurationService" />
 		</property>
+		<property name="artifactFinder">
+			<ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.structuredArtifacts" />
+		</property>
     </bean>
     
     <bean id="supportedController" abstract="true">
