@@ -148,7 +148,7 @@
 					  Specify input object reference as first parameter to the function and palete selection as second.
 				   -->
 				   <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])" title='<c:out value="${msgs.color_picker_linktitle_status}"/>'>
-				   <img width="15" height="13" border="0" alt='<c:out value="${msgs.color_picker_linktitle}"/>' src="<osp:url value="/js/colorPicker/img/sel.gif"/>" /></a>
+				   <img width="15" height="13" border="0" alt='<c:out value="${msgs.color_picker_linktitle_status}"/>' src="<osp:url value="/js/colorPicker/img/sel.gif"/>" /></a>
 				</p>
 			   </spring:bind>
 		  </c:forTokens>

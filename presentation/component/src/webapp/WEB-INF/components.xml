@@ -526,10 +526,6 @@
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
-            <value>text/xml</value>
-            <value>text/html</value>
-            <value>application/xml</value>
-            <value>application/xhtml+xml</value>
          </list>
       </property>
       <property name="acceptedExtensions">
@@ -556,12 +552,12 @@
       </property>
       <property name="mimeTypes">
          <list>
-            <value>text/xml</value>
          </list>
       </property>
       <property name="acceptedExtensions">
          <list>
             <value>xsl</value>
+            <value>xslt</value>
          </list>
       </property>
    </bean>
@@ -571,8 +567,6 @@
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
-            <value>application/zip</value>
-            <value>application/x-zip-compressed</value>
          </list>
       </property>
       <property name="acceptedExtensions">
