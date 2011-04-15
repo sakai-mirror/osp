@@ -256,52 +256,103 @@ public class PresentationService {
 		return params;
 	}
 	
-	public Map<String, Object> createForm(String presentationId, String formTypeId) {
-		HashMap<String, Object> params = new HashMap<String, Object>();
+	public Map<String, Object> createForm(String presentationId, String formTypeId, String itemDefId) {
+		return editForm(presentationId, formTypeId, null, itemDefId, true);
+	}
+
+	public Map<String, Object> editForm(String presentationId, String formTypeId, String formId, String itemDefId) {
+		return editForm(presentationId, formTypeId, formId, itemDefId, false);
+	}
+
+	public Map<String, Object> editForm(String presentationId, String formId, String itemDefId) {
+		return editForm(presentationId, getFormType(formId), formId, itemDefId);
+	}
+
+	protected Map<String, Object> editForm(String presentationId, String formTypeId, String formId, String itemDefId, boolean newItem) {
+		// Sanity check parameters (will throw an exception for any unacceptable conditions)
+		if (newItem)
+			checkFormCreateParameters(presentationId, formTypeId, itemDefId);
+		else
+			checkFormEditParameters(presentationId, formTypeId, formId, itemDefId);
+
 		Presentation presentation = getPresentation(presentationId);
+		PresentationTemplate template = presentation.getTemplate();
+		PresentationItemDefinition itemDef = null;
+		for (PresentationItemDefinition def : (Collection<PresentationItemDefinition>) template.getItemDefinitions())
+			if (def.getId().getValue().equals(itemDefId))
+				itemDef = def;
+
+		String folderPath = getFormsFolder();
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		if (newItem)
+			params.put(FormHelper.PARENT_ID_TAG, folderPath);
+		else
+			params.put(ResourceEditingHelper.ATTACHMENT_ID, contentHostingService.resolveUuid(formId));
+		params.put(ResourceEditingHelper.CREATE_TYPE, ResourceEditingHelper.CREATE_TYPE_FORM);
+		params.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
+		params.put(FormHelper.PRESENTATION_TEMPLATE_ID, template.getId().getValue());
+		params.put(FormHelper.PRESENTATION_ITEM_DEF_ID, itemDefId);
+		params.put(FormHelper.PRESENTATION_ITEM_DEF_NAME, itemDef.getName());
+		return params;
+	}
+
+	/**
+	 * Check to see that all form creation parameters are set and valid. Throws IllegalArgumentException on any errors.
+	 * 
+	 * @param presentationId
+	 *            Presentation from which the form is being edited
+	 * @param formTypeId
+	 *            Form type ID for the form to be edited
+	 * @param itemDefId
+	 *            Presentation Item Definition ID of the "slot" for the item
+	 */
+	protected void checkFormCreateParameters(String presentationId, String formTypeId, String itemDefId) {
+		Presentation presentation = getPresentation(presentationId);
+		if (presentation == null)
+			throw new IllegalArgumentException("Cannot edit nonexistent presentation");
+
+		PresentationTemplate template = presentation.getTemplate();
+		if (!Presentation.TEMPLATE_TYPE.equals(presentation.getPresentationType()) || template == null)
+			throw new IllegalArgumentException("Cannot edit form because presentation [ID: " + presentationId + "] has no template.");
+
 		if (formTypeId == null)
 			throw new IllegalArgumentException("Cannot create null-typed forms");
 		
-		boolean found = false;
-		for (PresentationItemDefinition itemDef : (Collection<PresentationItemDefinition>) presentation.getTemplate().getItemDefinitions())
-			if (formTypeId.equals(itemDef.getType()))
-				found = true;
+		PresentationItemDefinition itemDef = null;
+		for (PresentationItemDefinition def : (Collection<PresentationItemDefinition>) presentation.getTemplate().getItemDefinitions())
+			if (def.getId().getValue().equals(itemDefId))
+				itemDef = def;
+
+		if (itemDef == null)
+			throw new IllegalArgumentException("Cannot edit form because presentation [ID: " + presentationId + "] "
+					+ "does not contain item definition [ID: " + itemDefId + "].");
 		
-		if (!found)
+		if (!formTypeId.equals(itemDef.getType()))
 			throw new IllegalArgumentException("Presentation [ID: " + presentationId + "] does not accept forms of type: " + formTypeId);
 		
-		String folderPath = getFormsFolder();
-		params.put(FormHelper.PARENT_ID_TAG, folderPath);
-		params.put(ResourceEditingHelper.CREATE_TYPE, ResourceEditingHelper.CREATE_TYPE_FORM);
-		params.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-		return params;
 	}
 	
-	public Map<String, Object> editForm(String presentationId, String formTypeId, String formId) {
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		Presentation presentation = getPresentation(presentationId);
-		if (formTypeId == null)
-			formTypeId = getFormType(formId);
-		
-		if (formTypeId == null)
-			throw new IllegalArgumentException("Cannot edit with null form type");
+	/**
+	 * Check to see that all form editing parameters are set and valid. Throws IllegalArgumentException on any errors.
+	 * 
+	 * @param presentationId
+	 *            Presentation from which the form is being edited
+	 * @param formTypeId
+	 *            Form type ID for the form to be edited
+	 * @param formId
+	 *            The specific artifact ID to edit
+	 * @param itemDefId
+	 *            Presentation Item Definition ID of the "slot" for the item
+	 */
+	protected void checkFormEditParameters(String presentationId, String formTypeId, String formId, String itemDefId) {
+		checkFormCreateParameters(presentationId, formTypeId, itemDefId);
 		
 		if (formId == null)
 			throw new IllegalArgumentException("Cannot edit null form");
-		
-		formId = contentHostingService.resolveUuid(formId);
-		if (formId == null)
+
+		if (contentHostingService.resolveUuid(formId) == null)
 			throw new IllegalArgumentException("Cannot edit nonexistent form");
 		
-		//String resourceId = contentHostingService.resolveUuid(formId);
-		params.put(ResourceEditingHelper.ATTACHMENT_ID, formId);
-		params.put(ResourceEditingHelper.CREATE_TYPE, ResourceEditingHelper.CREATE_TYPE_FORM);
-		params.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-		return params;
-	}
-	
-	public Map<String, Object> editForm(String presentationId, String formId) {
-		return editForm(presentationId, getFormType(formId), formId);
 	}
 	
 	public String getFormType(String formId) {
