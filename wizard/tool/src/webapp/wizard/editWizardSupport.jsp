@@ -50,7 +50,7 @@
 	</f:facet>
 	<h:panelGroup>
 	     		<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
-            <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment" summary="layout" rendered="#{not empty wizard.current.guidanceInstructionsAttachments}">
+            <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment" rendered="#{not empty wizard.current.guidanceInstructionsAttachments}">
                <h:column>
                		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -81,7 +81,7 @@
 			</f:facet> 
 			<h:panelGroup>
 					<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
-            <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment" summary="layout" rendered="#{not empty wizard.current.guidanceRationaleAttachments}">
+            <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment" rendered="#{not empty wizard.current.guidanceRationaleAttachments}">
                <h:column>
                		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -114,7 +114,7 @@
 				<h:panelGroup>	
 					<h:outputText value="#{wizard.current.example.text}" escape="false"/>
 	
-					<sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" summary="layout" rendered="#{not empty wizard.current.guidanceExamplesAttachments}">
+					<sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" rendered="#{not empty wizard.current.guidanceExamplesAttachments}">
 					   <h:column>
 							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
 							 <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -151,7 +151,7 @@
 					<h:outputText value="#{wizard.current.rubric.text}" escape="false" />
 					<sakai:flat_list
 						value="#{wizard.current.guidanceRubricAttachments}"
-						var="attachment" summary="layout"
+						var="attachment"
 						rendered="#{not empty wizard.current.guidanceRubricAttachments}">
 						<h:column>
 							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}"
@@ -193,7 +193,7 @@
 					<h:outputText value="#{wizard.current.expectations.text}" escape="false" />
 					<sakai:flat_list
 						value="#{wizard.current.guidanceExpectationsAttachments}"
-						var="attachment" summary="layout"
+						var="attachment"
 						rendered="#{not empty wizard.current.guidanceExpectationsAttachments}">
 						<h:column>
 							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}"
@@ -233,7 +233,7 @@
 		</fieldset>	
 		<fieldset class="fieldsetVis">
 		 	<legend>Feedback and Evaluation</legend>
-			<h:panelGrid columns="1" summary="layout">
+			<h:panelGrid columns="1">
 				<h:column>
 						
 					<sakai:instruction_message value="#{msgs.com_feedb_instruction}" />
@@ -277,7 +277,7 @@
 
 			
 			</p>
-			<sakai:flat_list value="#{wizard.current.evaluators}" var="evaluator" summary="layout" rendered="#{not empty wizard.current.evaluators}" style="width:70%;margin-left:1em">
+			<sakai:flat_list value="#{wizard.current.evaluators}" var="evaluator" rendered="#{not empty wizard.current.evaluators}" style="width:70%;margin-left:1em">
                <h:column>
                		<h:outputText value="#{evaluator}" />
                </h:column>

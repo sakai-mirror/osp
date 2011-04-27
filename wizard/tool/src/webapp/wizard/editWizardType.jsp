@@ -20,7 +20,7 @@
     
    <sakai:instruction_message value="#{msgs.wizard_type_instructions}" />
    <sakai:messages />
-      <h:panelGrid columns="1" styleClass="jsfFormTable" summary="layout">
+      <h:panelGrid columns="1" styleClass="jsfFormTable">
 <%--      <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" /> --%>
       <h:panelGroup>
          <h:selectOneRadio layout="pageDirection" id="type" value="#{wizard.current.base.type}" disabled="#{wizard.current.base.published}">
