@@ -46,9 +46,9 @@
             <artifactId>sakai-component-manager</artifactId>
         </dependency>
         <dependency>
-            <groupId>quartz</groupId>
+            <groupId>org.opensymphony.quartz</groupId>
             <artifactId>quartz</artifactId>
-            <version>1.5.2</version>
+            <version>${sakai.quartz.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sakaiproject</groupId>
