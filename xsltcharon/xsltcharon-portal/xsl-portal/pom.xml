@@ -99,7 +99,7 @@
           <artifactId>cglib-full</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>javax.transaction</groupId>
+          <groupId>jta</groupId>
           <artifactId>jta</artifactId>
         </exclusion>
         <exclusion>
@@ -131,7 +131,7 @@
             <artifactId>cglib-full</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>javax.transaction</groupId>
+            <groupId>jta</groupId>
             <artifactId>jta</artifactId>
           </exclusion>
           <exclusion>
@@ -156,7 +156,7 @@
             <artifactId>cglib-full</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>javax.transaction</groupId>
+            <groupId>jta</groupId>
             <artifactId>jta</artifactId>
           </exclusion>
           <exclusion>

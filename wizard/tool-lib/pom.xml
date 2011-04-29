@@ -129,9 +129,8 @@
       <artifactId>jstl</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.transaction</groupId>
+      <groupId>jta</groupId>
       <artifactId>jta</artifactId>
-      <version>1.0.1B</version>
     </dependency>
     <dependency>
       <groupId>javax.portlet</groupId>
