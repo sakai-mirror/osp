@@ -35,7 +35,7 @@
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
-   <h:panelGrid columns="1"  styleClass="jsfFormTable" cellpadding="0" summary="layout">
+   <h:panelGrid columns="1"  styleClass="jsfFormTable" cellpadding="0">
       <h:panelGroup styleClass="shorttext">
          <h:outputText value="*" styleClass="reqStar"/>
          <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
