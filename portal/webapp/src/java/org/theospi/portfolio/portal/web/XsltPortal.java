@@ -40,7 +40,7 @@ import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.sakaiproject.util.ResourceLoader;
-import org.sakaiproject.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.util.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SitePageWrapper;
@@ -1125,18 +1125,18 @@ public class XsltPortal extends CharonPortal {
          logInOutUrl += getPortalString() + "/login";
          
          // let the login url be overridden by configuration
-         String overrideLoginUrl = StringUtil
+         String overrideLoginUrl = StringUtils
                .trimToNull(ServerConfigurationService
                      .getString("login.url"));
          if (overrideLoginUrl != null) logInOutUrl = overrideLoginUrl;
    
          // check for a login text override
-         loginText = StringUtil.trimToNull(ServerConfigurationService
+         loginText = StringUtils.trimToNull(ServerConfigurationService
                .getString("login.text"));
          if (loginText == null) loginText = rbsitenav.getString("log.login");
    
          // check for an image for the login
-         image1 = StringUtil.trimToNull(ServerConfigurationService
+         image1 = StringUtils.trimToNull(ServerConfigurationService
                .getString("login.icon"));
          
    //    check for a possible second, xlogin link
@@ -1144,9 +1144,9 @@ public class XsltPortal extends CharonPortal {
                ServerConfigurationService.getString("xlogin.enabled")))
          {
             // get the text and image as configured
-            loginText2 = StringUtil.trimToNull(ServerConfigurationService
+            loginText2 = StringUtils.trimToNull(ServerConfigurationService
                   .getString("xlogin.text"));
-            image2 = StringUtil.trimToNull(ServerConfigurationService
+            image2 = StringUtils.trimToNull(ServerConfigurationService
                   .getString("xlogin.icon"));
             logInOutUrl2 = ServerConfigurationService
                   .getString("portalPath")
@@ -1159,7 +1159,7 @@ public class XsltPortal extends CharonPortal {
       }
       
       // check for a logout text override
-      logoutText = StringUtil.trimToNull(ServerConfigurationService
+      logoutText = StringUtils.trimToNull(ServerConfigurationService
             .getString("logout.text"));
       if (logoutText == null) logoutText = rbsitenav.getString("sit_log");
       
