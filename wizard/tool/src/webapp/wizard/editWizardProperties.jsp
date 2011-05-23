@@ -22,7 +22,7 @@
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
-   <sakai:messages />
+   <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
    
    <%@include file="wizardPropertiesFrame.jspf"%>
    <h:commandLink action="#{wizard.processActionAudienceHelper}">

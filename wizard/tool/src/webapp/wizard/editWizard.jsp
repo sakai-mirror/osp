@@ -34,7 +34,7 @@
    
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
-   <sakai:messages />
+   <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
    <h:panelGrid columns="1"  styleClass="jsfFormTable" cellpadding="0">
       <h:panelGroup styleClass="shorttext">
          <h:outputText value="*" styleClass="reqStar"/>

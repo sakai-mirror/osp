@@ -27,7 +27,7 @@
                
    <%@include file="steps.jspf"%>
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
-   <sakai:messages />
+   <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
 	  
 	<fieldset class="fieldsetVis">
 	<legend>

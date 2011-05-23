@@ -54,7 +54,7 @@
       <sakai:instruction_message value="#{msgs.run_wizard_pages_instructions_seq}" />
    </f:subview>
 
-   <sakai:messages />
+   <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
 
    <%@include file="wizardGuidance.jspf"%>
 
