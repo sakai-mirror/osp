@@ -83,6 +83,21 @@
          <description>Service Dependency: linkManager</description>
          <property-name>linkManager</property-name>
          <value>#{Components["org.sakaiproject.taggable.api.LinkManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: toolManager</description>
+         <property-name>toolManager</property-name>
+         <value>#{Components["org.sakaiproject.tool.api.ActiveToolManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: serverConfigurationService</description>
+         <property-name>serverConfigurationService</property-name>
+         <value>#{Components["org.sakaiproject.component.api.ServerConfigurationService"]}</value>
+      </managed-property>      
+      <managed-property>
+         <description>Service Dependency: entityManager</description>
+         <property-name>entityManager</property-name>
+         <value>#{Components["org.sakaiproject.entity.api.EntityManager"]}</value>
       </managed-property>      
       
    </managed-bean>

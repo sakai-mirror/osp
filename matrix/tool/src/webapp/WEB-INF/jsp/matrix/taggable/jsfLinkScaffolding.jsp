@@ -20,7 +20,17 @@
 <f:verbatim>
 <script type="text/javascript" language="JavaScript" src="/library/js/jquery-ui-latest/js/jquery.min.js"></script>
 	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
-	
+	<script type="text/javascript" language="JavaScript">
+function localConfirm(elem, txt)
+{
+	//only show the confirmation if we are unchecking the box
+	if ( !elem.checked )
+	{
+		return confirm(txt);
+	}
+	return true;
+}
+</script>
 	
 </f:verbatim>
 		<h:outputText escape="fase" value="#{matrixLinkTool.frameId}" />
@@ -97,10 +107,15 @@
 												<p style="position: relative; height: 100%;">
 											</f:verbatim>
 
-											<h:selectBooleanCheckbox
+											<h:selectBooleanCheckbox rendered="#{!matrixLinkTool.canOverride}"
 												style="position: absolute; top:0px; right:0px;"
 												id="cellLinkBox" value="#{cell.linked}"
 												valueChangeListener="#{cell.checkBoxChanged}" disabled="#{cell.disabled}" />
+											<h:selectBooleanCheckbox rendered="#{matrixLinkTool.canOverride}"
+                                    			style="position: absolute; top:0px; right:0px;"
+                                    			id="cellLinkBoxOverride" value="#{cell.linked}"
+                                    			valueChangeListener="#{cell.checkBoxChanged}" 
+                                    			onclick="return localConfirm(this, '#{matrixLinkTool.unlinkOverrideConfirmationText}')" />
 											<f:verbatim>
 												<center>
 											</f:verbatim>

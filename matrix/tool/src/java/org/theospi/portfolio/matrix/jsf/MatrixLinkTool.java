@@ -34,8 +34,9 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -53,7 +54,9 @@ import org.sakaiproject.taggable.api.TaggableActivityProducer;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Validator;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.control.MatrixGridBean;
@@ -85,11 +88,19 @@ public class MatrixLinkTool extends HelperToolBase
 	private TaggingProvider matrixTaggingProvider;
 	private SiteAssocManager siteAssocManager;
 	
+	private ToolManager toolManager;
+	private ServerConfigurationService serverConfigurationService;
+	private EntityManager entityManager;
+	
 	private TaggableActivity currentActivity;
 	private String selectedSiteId;
 	private List<Id> addLinkList = new ArrayList<Id>();
 	private List<Id> removeLinkList = new ArrayList<Id>();
 	private int gridSize = 0;
+	
+	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	
+	public static final String PROP_ALLOW_UNLINK_OVERRIDE = "osp.cellunlink.override";
 	
 	/**
 	 * Clear all variables that were used
@@ -172,6 +183,8 @@ public class MatrixLinkTool extends HelperToolBase
 		TaggableActivityProducer producer = activity.getProducer();
 		boolean hasSubmissions = producer.hasSubmissions(activity, getMatrixTaggingProvider(), true, null);
 		
+		boolean canOverride = getCanOverride();
+		
 		for (Scaffolding scaffolding : scaffoldingList) {
 			MatrixGridBean grid = new MatrixGridBean();
 			
@@ -191,11 +204,11 @@ public class MatrixLinkTool extends HelperToolBase
 					ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
 					//WizardReference reference = new WizardReference(WizardReference.REF_DEF, scaffoldingCell.getWizardPageDefinition().getId()
 					//		.toString());
-					Reference actRef = EntityManager.newReference(activity.getReference());
-					Reference wizRef = EntityManager.newReference(scaffoldingCell.getWizardPageDefinition().getReference());
+					Reference actRef = getEntityManager().newReference(activity.getReference());
+					Reference wizRef = getEntityManager().newReference(scaffoldingCell.getWizardPageDefinition().getReference());
 					Link link = linkManager.lookupLink(links, scaffoldingCell.getWizardPageDefinition().getReference());
 					boolean linkDisabled = (link != null && hasSubmissions) || actRef.getId().equals(wizRef.getId());
-					DecoratedScaffoldingCell linkableCell = new DecoratedScaffoldingCell(this, scaffoldingCell, link, linkDisabled);
+					DecoratedScaffoldingCell linkableCell = new DecoratedScaffoldingCell(this, scaffoldingCell, link, linkDisabled, canOverride);
 					row.add(linkableCell);
 				}
 				matrixContents.add(row);
@@ -285,6 +298,39 @@ public class MatrixLinkTool extends HelperToolBase
 		String script = "<script type=\"text/javascript\" language=\"JavaScript\">iframeId = '" + id + "';</script>";
 		
 		return script;
+	}
+	
+	//NOTE: This method is context-aware, checking properties of the current tool
+	public boolean getCanOverride() {
+
+		//Leave override off by default if not configured
+		boolean canOverride = serverConfigurationService.getBoolean(PROP_ALLOW_UNLINK_OVERRIDE, false);
+		try {
+			String siteWide = siteService.findTool(toolManager.getCurrentPlacement().getId())
+				.getContainingPage().getContainingSite().getProperties()
+				.getProperty(PROP_ALLOW_UNLINK_OVERRIDE);
+
+			//We want to allow sites to turn free-form back on if off system-wide, or off if on by default
+			//But be specific about the property values
+			if ("true".equalsIgnoreCase(siteWide) || "1".equals(siteWide))
+				canOverride = true;
+			else if ("false".equalsIgnoreCase(siteWide) || "0".equals(siteWide))
+				canOverride = false;
+		}
+		catch (Exception e) {
+			if (logger.isDebugEnabled())
+				logger.debug("Error retrieving site properties for tool placement: " + toolManager.getCurrentPlacement());
+		}
+
+		return canOverride;
+	}
+	
+	public String getUnlinkOverrideConfirmationText() {
+		TaggableActivity act = getCurrentActivity();
+		
+		String[] args = {act.getTypeName()};
+		String text = myResources.getFormattedMessage("unlink_override_confirm", args);
+		return text;
 	}
 	
 	
@@ -381,19 +427,46 @@ public class MatrixLinkTool extends HelperToolBase
 		this.siteAssocManager = siteAssocManager;
 	}
 
+	public ToolManager getToolManager() {
+		return toolManager;
+	}
+
+	public void setToolManager(ToolManager toolManager) {
+		this.toolManager = toolManager;
+	}
+
+	public ServerConfigurationService getServerConfigurationService() {
+		return serverConfigurationService;
+	}
+
+	public void setServerConfigurationService(
+			ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
+	}
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+
 	public class DecoratedScaffoldingCell {
 		private ScaffoldingCell scaffoldingCell;
 		private Link link;
 		private boolean linked = false;
 		private boolean disabled = false;
 		private MatrixLinkTool parentTool;
+		private boolean canOverride = false;
 
-		public DecoratedScaffoldingCell(MatrixLinkTool parentTool, ScaffoldingCell scaffoldingCell, Link link, boolean disabled) {
+		public DecoratedScaffoldingCell(MatrixLinkTool parentTool, ScaffoldingCell scaffoldingCell, Link link, boolean disabled, boolean canOverride) {
 			this.scaffoldingCell = scaffoldingCell;
 			this.link = link;
 			this.linked = link != null;
 			this.parentTool = parentTool;
 			this.disabled = disabled;
+			this.canOverride = canOverride;
 		}
 		
 		public ScaffoldingCell getScaffoldingCell()
@@ -482,6 +555,14 @@ public class MatrixLinkTool extends HelperToolBase
 		public void setDisabled(boolean disabled)
 		{
 			this.disabled = disabled;
+		}
+
+		public boolean isCanOverride() {
+			return canOverride;
+		}
+
+		public void setCanOverride(boolean canOverride) {
+			this.canOverride = canOverride;
 		}
 	}
 
