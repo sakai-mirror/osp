@@ -27,7 +27,7 @@
    </query>
    
    <query name="findTerms">
-      from GlossaryEntry where lower(term)=? AND (worksiteId=? or worksiteId is null)
+      from GlossaryEntry where lower(term)=lower(?) AND (worksiteId=? or worksiteId is null)
    </query>
    
 	<query name="findAllSiteTerms">
