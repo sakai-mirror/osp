@@ -508,6 +508,13 @@ public class XsltRenderContext implements PortalRenderContext {
       String serviceVersion = (String) context.get("bottomNavServiceVersion");
       String sakaiVersion = (String) context.get("bottomNavSakaiVersion");
       String server = (String) context.get("bottomNavServer");
+      String portalPath =  (String) context.get("portalPath");
+      String timeoutDialogEnabled = context.get("timeoutDialogEnabled").toString();
+      String timeoutDialogWarningSeconds = context.get("timeoutDialogWarningSeconds").toString();
+      String portal_allow_auto_minimize = context.get("portal_allow_auto_minimize").toString();
+      String portal_allow_minimize_tools = context.get("portal_allow_minimize_tools").toString();
+      String portal_allow_minimize_navigation = context.get("portal_allow_minimize_navigation").toString();
+      String portal_add_mobile_link = context.get("portal_add_mobile_link").toString();
 
       String[] bottomNav = getListAsStringArray("bottomNav");
       List poweredByList = (List) context.get("bottomNavPoweredBy");
@@ -526,6 +533,13 @@ public class XsltRenderContext implements PortalRenderContext {
       appendTextElementNode(doc, "sakaiVersion", sakaiVersion, config);
       appendTextElementNode(doc, "server", server, config);
       appendTextElementNode(doc, "helpUrl", helpUrl, config);
+      appendTextElementNode(doc, "portalPath", portalPath, config);
+      appendTextElementNode(doc, "timeoutDialogWarningSeconds", timeoutDialogWarningSeconds, config);
+      appendTextElementNode(doc, "timeoutDialogEnabled", timeoutDialogEnabled, config);
+      appendTextElementNode(doc, "portal_allow_auto_minimize", portal_allow_auto_minimize, config);
+      appendTextElementNode(doc, "portal_allow_minimize_tools", portal_allow_minimize_tools, config);
+      appendTextElementNode(doc, "portal_allow_minimize_navigation", portal_allow_minimize_navigation, config);
+      appendTextElementNode(doc, "portal_add_mobile_link", portal_add_mobile_link, config);
 
       appendTextElementNodes(doc, bottomNav, config, "bottomNavs", "bottomNav");
 
@@ -633,9 +647,12 @@ public class XsltRenderContext implements PortalRenderContext {
       Element user = doc.createElement("currentUser");
 
       appendTextElementNode(doc, "id", current.getId(), user);
+      appendTextElementNode(doc, "eid", current.getEid(), user);
       appendTextElementNode(doc, "first", current.getFirstName(), user);
       appendTextElementNode(doc, "last", current.getLastName(), user);
+      appendTextElementNode(doc, "displayName", current.getDisplayName(), user);
       appendTextElementNode(doc, "email", current.getEmail(), user);
+      appendTextElementNode(doc, "type", current.getType(), user);
 
       return user;
    }
