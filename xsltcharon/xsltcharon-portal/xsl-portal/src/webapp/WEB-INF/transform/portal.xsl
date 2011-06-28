@@ -45,6 +45,24 @@
       <script type="text/javascript" language="JavaScript" src="/portal/scripts/portalscripts.js">
          <xsl:value-of select="' '"/>
       </script>
+      <script type="text/javascript" language="JavaScript">
+         setLoginStatus (
+           <xsl:choose><xsl:when test="currentUser">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose>,
+           "<xsl:value-of select="config/portalPath"/>",
+           "<xsl:value-of select="config/logout"/>",
+           "<xsl:value-of select="currentUser/id"/>",
+           "<xsl:value-of select="currentUser/eid"/>"
+         );
+         setTimeoutInfo (
+         	<xsl:value-of select="config/timeoutDialogEnabled"/>, 
+         	<xsl:value-of select="config/timeoutDialogWarningSeconds"/>
+         );
+         setUIToggleState (
+         	<xsl:value-of select="config/portal_allow_auto_minimize"/>, 
+         	<xsl:value-of select="config/portal_allow_minimize_tools"/>,
+         	<xsl:value-of select="config/portal_allow_minimize_navigation"/>
+         );
+      </script>
    </head>
 <body class="portalBody">
 	<script type="text/javascript" language="JavaScript">
