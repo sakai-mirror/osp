@@ -87,6 +87,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+        <groupId>org.sakaiproject.taggable</groupId>
+        <artifactId>sakai-taggable-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
     </dependency>

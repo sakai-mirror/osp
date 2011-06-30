@@ -44,13 +44,6 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-component${sakai.version}-->
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
-<!--org.sakaiprojectsakai-entity-api${sakai.version}-->
-<!--org.sakaiprojectsakai-tool-api${sakai.version}-->
-<!--org.sakaiprojectsakai-util-api${sakai.version}-->
-<!--org.sakaiprojectsakai-content-api${sakai.version}-->
-<!--org.sakaiprojectsakai-user-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
@@ -70,6 +63,10 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-tool-lib</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.sakaiproject.taggable</groupId>
+        <artifactId>sakai-taggable-api</artifactId>
     </dependency>
     <dependency>
       <groupId>aopalliance</groupId>
@@ -106,8 +103,6 @@
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
     </dependency>
-<!--${sakai.ehcache.groupId}${sakai.ehcache.artifactId}${sakai.ehcache.version}-->
-<!--${sakai.hibernate.groupId}${sakai.hibernate.artifactId}${sakai.hibernate.version}-->
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
@@ -132,8 +127,6 @@
       <artifactId>portlet-api</artifactId>
       <version>1.0</version>
     </dependency>
-<!--javax.servletservlet-api${sakai.servletapi.version}-->
-<!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}-->
   </dependencies>
   <build>
     <resources>

@@ -116,6 +116,10 @@
       <artifactId>sakai-site-manage-util</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    <dependency>
+        <groupId>org.sakaiproject.taggable</groupId>
+        <artifactId>sakai-taggable-api</artifactId>
+    </dependency>
 <!-- OSP tag library -->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
