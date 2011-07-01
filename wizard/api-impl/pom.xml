@@ -73,7 +73,7 @@
       <artifactId>sakai-metaobj-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.assignment</groupId>
       <artifactId>sakai-assignment-api</artifactId>
     </dependency>
     <dependency>
