@@ -26,7 +26,7 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.sakaiproject</groupId>
+                    <groupId>org.sakaiproject.portal</groupId>
                     <artifactId>sakai-portal-impl</artifactId>
                 </dependency>
             </dependencies>
@@ -36,7 +36,7 @@
             <id>was</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.sakaiproject</groupId>
+                    <groupId>org.sakaiproject.portal</groupId>
                     <artifactId>sakai-portal-impl</artifactId>
                     <exclusions>
                         <exclusion>
@@ -94,7 +94,7 @@
 <!--org.sakaiprojectsakai-util-api${sakai.version}-->
 <!--org.sakaiprojectsakai-component-api${sakai.version}-->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.portal</groupId>
       <artifactId>sakai-portal-util</artifactId>
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
