@@ -51,7 +51,7 @@
             <version>${sakai.quartz.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject</groupId>
+            <groupId>org.sakaiproject.metaobj</groupId>
             <artifactId>sakai-metaobj-api</artifactId>
         </dependency>
         <dependency>

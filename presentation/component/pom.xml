@@ -87,7 +87,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.metaobj</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
       <exclusions>
         <exclusion>

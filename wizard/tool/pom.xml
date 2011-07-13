@@ -127,7 +127,7 @@
       <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.metaobj</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
     </dependency>
     <dependency>
@@ -135,7 +135,7 @@
       <artifactId>sakai-assignment-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.metaobj</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
       <exclusions>
         <exclusion>

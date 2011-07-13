@@ -139,12 +139,9 @@
             <artifactId>portlet-api</artifactId>
           </exclusion>
         </exclusions>
-
     </dependency>
-<!--javax.servletservlet-api${sakai.servletapi.version}provided-->
-<!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}provided-->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.metaobj</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
         <exclusions>
           <exclusion>
