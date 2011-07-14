@@ -64,13 +64,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-<!--
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-warehouse-impl</artifactId>
-      
-    </dependency>
--->
   </dependencies>
   <build>
     <resources>
