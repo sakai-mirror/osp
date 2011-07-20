@@ -351,6 +351,7 @@ public class XsltRenderContext implements PortalRenderContext {
       pageElement.setAttribute("selected", selected.toString());
 
       pageElement.setAttribute("popUp", page.get("ispopup").toString());
+      pageElement.setAttribute("hidden", page.get("hidden").toString());
 
       Element pageName = doc.createElement("title");
       safeAppendTextNode(doc, pageName, page.get("pageTitle").toString(), true);

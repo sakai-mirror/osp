@@ -422,7 +422,7 @@ your browser doesn't support iframes
          </xsl:call-template>
       </xsl:if>
       <xsl:if test="$content='false'">
-         <xsl:variable name="selectToolClass"><xsl:value-of select="menuClass"/></xsl:variable>
+         <xsl:variable name="selectToolClass"><xsl:value-of select="menuClass"/><xsl:if test="@hidden='true'"> hidden</xsl:if></xsl:variable>
          <li class="selectedTool">
             <a class="{$selectToolClass}">
                <span><xsl:value-of disable-output-escaping="yes" select="title"/></span>   
@@ -450,7 +450,7 @@ your browser doesn't support iframes
                <xsl:value-of select="../../@order"/>
             </xsl:attribute>
             <span>
-               <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
+               <xsl:attribute name="class"><xsl:value-of select="menuClass"/><xsl:if test="@hidden='true'"> hidden</xsl:if></xsl:attribute>
                <xsl:value-of disable-output-escaping="yes" select="title"/>   
             </span>
          </li>
@@ -490,7 +490,7 @@ your browser doesn't support iframes
                <xsl:attribute name="accesskey">
                   <xsl:value-of select="../../@order" />
                </xsl:attribute>
-               <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
+               <xsl:attribute name="class"><xsl:value-of select="menuClass"/><xsl:if test="@hidden='true'"> hidden</xsl:if></xsl:attribute>
                <span>
                   <xsl:value-of disable-output-escaping="yes" select="title"/>   
                </span>
