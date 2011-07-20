@@ -56,12 +56,25 @@ public class ContentResourceUriResolver implements URIResolver {
 
          // We depend on these resolving as content entities (e.g., /content/group/<site> or /content/user/<user>),
          // so provide some assistance and consistency with metaobj resolution.
-         if (!url.startsWith("/content/"))
-            url = "/content" + (url.startsWith("/") ? "" : "/") + url;
-
-         Reference ref = getEntityManager().newReference(url);
          
-         StreamSource strs = new StreamSource(((ContentResource)ref.getEntity()).streamContent());
+         // Check if this already resolves as a content entity and, if not, try again by prepending /content/.
+         Reference ref = getEntityManager().newReference(url);
+         Object entity = ref.getEntity();
+         if (entity == null || !(entity instanceof ContentResource)) {
+            if (!url.startsWith("/content/")) {
+               url = "/content" + (url.startsWith("/") ? "" : "/") + url;
+               ref = getEntityManager().newReference(url);
+               entity = ref.getEntity();
+            }
+            if (entity == null || !(entity instanceof ContentResource)) {
+               String msg = "Could not resolve URI as a content resource: " + href;
+               logger.info(msg);
+               throw new TransformerException(msg);
+            }
+         }
+         
+         ContentResource res = (ContentResource) entity;
+         StreamSource strs = new StreamSource(res.streamContent());
          SAXSource ss = new SAXSource(new InputSource(strs.getInputStream()));
          CatalogResolver resolver = new CatalogResolver();
          String appUrl = getServerConfigurationService().getServerUrl();
