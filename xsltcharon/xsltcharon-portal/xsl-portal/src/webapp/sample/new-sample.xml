@@ -334,7 +334,7 @@
          <value>Log in</value>
       </entry>
       <entry key="sit_selectmessage">
-         <value>Press alt + up and down arrows to scroll through menu</value>
+         <value>To operate the combo box, first press Alt+Down Arrow to open it, and then use the up and down arrow keys to scroll through the options.</value>
       </entry>
       <entry key="sit_presencetitle">
          <value>Users present:</value>
