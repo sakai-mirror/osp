@@ -18,7 +18,6 @@ public abstract class AbstractCalloutController extends AbstractController {
 	protected PresentationService presentationService;
 	protected String helperView = "formHelper";
 	protected String returnView = "editPresentationRedirect";
-	protected static final String PROP_PRESENTATION_ID = "_Presentation:Id";
 		
 	//There are only three ways this controller gets invoked
 	// 1: Initial request -- set up session and call out to helper
@@ -30,7 +29,7 @@ public abstract class AbstractCalloutController extends AbstractController {
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
 		Object helperAction = session.getAttribute(FormHelper.RETURN_ACTION_TAG);
-		String cachedId = (String) session.getAttribute(PROP_PRESENTATION_ID);
+		String cachedId = (String) session.getAttribute(FormHelper.PRESENTATION_ID);
 		
 		if (FormHelper.RETURN_ACTION_SAVE.equals(helperAction)) {
 			return handleSave(cachedId, session);
@@ -49,7 +48,7 @@ public abstract class AbstractCalloutController extends AbstractController {
 		cleanUpSession(session);
 		for (Entry<String, Object> entry : getSessionParams(presentationId, request).entrySet())
 			session.setAttribute(entry.getKey(), entry.getValue());
-		session.setAttribute(PROP_PRESENTATION_ID, presentationId);
+		session.setAttribute(FormHelper.PRESENTATION_ID, presentationId);
 		return sendToHelper();
 	}
 	
@@ -86,7 +85,7 @@ public abstract class AbstractCalloutController extends AbstractController {
         session.removeAttribute(FormHelper.RETURN_ACTION_TAG);
         session.removeAttribute(FormHelper.PARENT_ID_TAG);
         session.removeAttribute(FormHelper.NEW_FORM_DISPLAY_NAME_TAG);
-        session.removeAttribute(PROP_PRESENTATION_ID);
+        session.removeAttribute(FormHelper.PRESENTATION_ID);
 	}
 	
 	private ModelAndView sendToHelper() {

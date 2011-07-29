@@ -31,7 +31,8 @@ $(document).ready(function() {
 			window.location = '<osp:url value="editPresentationForm.osp" />'
 					+ '&id=<c:out value="${presentation.id.value}" />'
 					+ '&formTypeId=' + formTypeId
-					+ '&formId=' + formId;
+					+ '&formId=' + formId
+					+ '&itemDefId=' + itemDefId;
 		}		
 	});
 });
