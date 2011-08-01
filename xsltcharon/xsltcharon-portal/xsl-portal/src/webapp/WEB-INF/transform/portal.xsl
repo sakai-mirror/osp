@@ -109,6 +109,27 @@
       <td>
          <div id="portalOuterContainer">
             <div id="portalContainer">
+            <xsl:variable name="pwd" select="/portal/sites/tabsSites/site[@selected='true']/pwd"/>
+	        <xsl:choose>
+	            <xsl:when test="count($pwd) > 0">
+	                <ul id="siteHierarchy">             
+	                    <xsl:for-each select="$pwd">
+	                        <li>
+	                            <xsl:attribute name="class">crumb-<xsl:value-of select="position()" /></xsl:attribute>
+	                            <xsl:choose>
+	                                <xsl:when test="position() = 2">
+	                                    <span class="breadSeparator">&gt;</span>
+	                                </xsl:when>
+	                            </xsl:choose>
+	                            <a>
+	                                <xsl:attribute name="href"><xsl:value-of select="@siteUrl"/></xsl:attribute>
+	                                <span><xsl:value-of select="@siteTitle"/></span>
+	                            </a>
+	                        </li>
+	                    </xsl:for-each>
+	                </ul>
+	            </xsl:when>
+	        </xsl:choose>
 <div id="container">
    <xsl:attribute name="class">
       <xsl:value-of select="siteTypes/siteType[@selected='true']/name"/>
