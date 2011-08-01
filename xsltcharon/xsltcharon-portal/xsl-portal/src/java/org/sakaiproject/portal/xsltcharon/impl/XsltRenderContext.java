@@ -260,7 +260,7 @@ public class XsltRenderContext implements PortalRenderContext {
       site.setAttribute("myWorkspace", siteMap.get("isMyWorkspace").toString());
       site.setAttribute("depth", siteMap.get("depth").toString());
       site.setAttribute("order", "" + index);
-s      
+      
       if ( siteMap.get("isChild") != null ){
     	  site.setAttribute("isChild", "true");
          site.setAttribute("child", siteMap.get("isChild").toString());
