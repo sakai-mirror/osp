@@ -45,9 +45,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
+
 import java.io.StringWriter;
 import java.io.StringReader;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Created by IntelliJ IDEA.
@@ -142,7 +144,7 @@ public class XsltRenderContext implements PortalRenderContext {
       }
 
       root.appendChild(createExternalizedXml(doc));
-
+      
       return doc;
    }
 
@@ -258,9 +260,21 @@ public class XsltRenderContext implements PortalRenderContext {
       site.setAttribute("myWorkspace", siteMap.get("isMyWorkspace").toString());
       site.setAttribute("depth", siteMap.get("depth").toString());
       site.setAttribute("order", "" + index);
-      
-      if ( siteMap.get("isChild") != null )
+s      
+      if ( siteMap.get("isChild") != null ){
+    	  site.setAttribute("isChild", "true");
          site.setAttribute("child", siteMap.get("isChild").toString());
+         List pwd = (List) siteMap.get("pwd");
+         if(pwd != null){
+        	 for(Map pwdMap : (List<Map>) pwd){
+        		 Element pwdElement = doc.createElement("pwd");
+        		 for(Entry entry : (Set<Entry>) pwdMap.entrySet()){
+        			 pwdElement.setAttribute(entry.getKey().toString(), entry.getValue().toString());
+        		 }
+        		 site.appendChild(pwdElement);
+        	 }
+         }
+      }
       else if ( siteMap.get("parentSite") != null )
          site.setAttribute("child", Boolean.TRUE.toString());
       else
