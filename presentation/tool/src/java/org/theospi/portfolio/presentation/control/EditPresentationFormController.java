@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
@@ -19,7 +20,6 @@ public class EditPresentationFormController extends AbstractCalloutController {
 	//      of an existing presentation. It sets the return view to the contents
 	//      of that presentation.
 	
-	protected static final String PROP_PRESENTATION_ITEM_DEF_ID = "_PresentationItemDef:Id";
 	protected IdManager idManager;
 	
 	public EditPresentationFormController() {
@@ -33,18 +33,16 @@ public class EditPresentationFormController extends AbstractCalloutController {
 		String itemDefId = request.getParameter("itemDefId");
 		
 		if (formId != null)
-			return presentationService.editForm(presentationId, formTypeId, formId);
+			return presentationService.editForm(presentationId, formTypeId, formId, itemDefId);
 		else {
-			Map<String, Object> retMap = presentationService.createForm(presentationId, formTypeId);
-			retMap.put(PROP_PRESENTATION_ITEM_DEF_ID, itemDefId);
-			return retMap;
+			return presentationService.createForm(presentationId, formTypeId, itemDefId);
 		}
 	}
 
 	@Override
 	protected void save(String presentationId, String reference,
 			HttpSession session) {
-		String itemDefId = (String) session.getAttribute(PROP_PRESENTATION_ITEM_DEF_ID);
+		String itemDefId = (String) session.getAttribute(FormHelper.PRESENTATION_ITEM_DEF_ID);
 		//Check for an itemDefId...if none, was an edit and don't need to do anything
 		if (itemDefId != null) {
 			Presentation presentation = presentationService.getPresentation(presentationId);
@@ -88,7 +86,10 @@ public class EditPresentationFormController extends AbstractCalloutController {
 	@Override
 	protected void cleanUpSession(HttpSession session) {
 		super.cleanUpSession(session);
-		session.removeAttribute(PROP_PRESENTATION_ITEM_DEF_ID);
+		session.removeAttribute(FormHelper.PRESENTATION_ITEM_DEF_ID);
+		session.removeAttribute(FormHelper.PRESENTATION_ID);
+		session.removeAttribute(FormHelper.PRESENTATION_ITEM_DEF_NAME);
+		session.removeAttribute(FormHelper.PRESENTATION_TEMPLATE_ID);
 	}
 	
 	public void setIdManager(IdManager idManager) {

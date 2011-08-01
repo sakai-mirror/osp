@@ -45,6 +45,7 @@ import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -747,6 +748,10 @@ public class CellController implements FormController, LoadObjectController {
 
 		session.removeAttribute(ReviewHelper.REVIEW_TYPE);
 		session.removeAttribute(ReviewHelper.REVIEW_TYPE_KEY);
+
+		session.removeAttribute(FormHelper.XSL_OBJECT_ID);
+		session.removeAttribute(FormHelper.XSL_OBJECT_TITLE);
+		session.removeAttribute(FormHelper.XSL_WIZARD_PAGE_ID);
 
 		session.removeAttribute(WHICH_HELPER_KEY);
 		session.removeAttribute(KEEP_HELPER_LIST);

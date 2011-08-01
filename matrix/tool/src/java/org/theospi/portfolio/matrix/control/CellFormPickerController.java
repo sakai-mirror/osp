@@ -213,22 +213,27 @@ public class CellFormPickerController extends CellController implements FormCont
       session.put("page_id", pageId);
       session.put(FormHelper.FORM_STYLES, getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
+      
+      String objectId = (String)request.get("objectId");
+      String objectTitle = (String)request.get("objectTitle");
+
+      session.put(FormHelper.XSL_SITE_ID, currentSite);
+      session.put(FormHelper.XSL_WIZARD_PAGE_ID, pageId);
+      session.put(FormHelper.XSL_OBJECT_ID, objectId);
+      session.put(FormHelper.XSL_OBJECT_TITLE, objectTitle);
+      
       if (request.get("current_form_id") == null) {
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
          session.put(ResourceEditingHelper.CREATE_TYPE,
                ResourceEditingHelper.CREATE_TYPE_FORM);
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
 
-         String objectId = (String)request.get("objectId");
-         String objectTitle = (String)request.get("objectTitle");
-
          StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
          List contentResourceList = null;
          try {
             String folderBase = getUserCollection().getId();
-
-            Placement placement = ToolManager.getCurrentPlacement();
-            String currentSite = placement.getContext();
 
             String rootDisplayName = myResources.getString("portfolioInteraction.displayName");
             String rootDescription = myResources.getString("portfolioInteraction.description");
