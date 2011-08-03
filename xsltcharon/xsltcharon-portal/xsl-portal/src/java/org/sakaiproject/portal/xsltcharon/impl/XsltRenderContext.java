@@ -133,6 +133,30 @@ public class XsltRenderContext implements PortalRenderContext {
       root.appendChild(createSkin(doc));
       root.appendChild(createConfixXml(doc, loggedIn, sitePages));
 
+      //subsites:
+      if(context.get("subSites") != null){
+    	  if(sitePages.get("subsiteClass") != null){
+    		  Element subSiteClass = doc.createElement("subSiteClass");
+    		  subSiteClass.setAttribute("subSiteClass", sitePages.get("subsiteClass").toString());
+    		  root.appendChild(subSiteClass);
+    	  }
+    	  try{
+    		  List<HashMap> subsites = (List<HashMap>) context.get("subSites");
+    		  
+    		  for (HashMap hashMap : subsites) {
+    			  Element subSiteElement = doc.createElement("subSite");
+    			  String siteTitle = hashMap.get("siteTitle").toString();
+    			  String siteUrl = hashMap.get("siteUrl").toString();
+    			  subSiteElement.setAttribute("siteTitle", siteTitle);
+    			  subSiteElement.setAttribute("siteUrl", siteUrl);
+    			  root.appendChild(subSiteElement);
+    		  }
+    	  }catch (Exception e) {
+    		  //prob class cast exception
+    		  log.warn(e);
+		}
+      }
+
       if (loggedIn) {
          root.appendChild(createSites(doc));
       }

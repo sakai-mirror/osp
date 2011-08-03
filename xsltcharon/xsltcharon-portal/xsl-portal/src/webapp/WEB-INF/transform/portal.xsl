@@ -742,6 +742,29 @@ your browser doesn't support iframes
 
       </ul>
 	</div>
+	<xsl:variable name="subsites" select="/portal/subSite"/>
+    <xsl:choose>
+        <xsl:when test="count($subsites) > 0">
+            <div id="subSites">
+            <ul>             
+                <xsl:for-each select="$subsites">
+                    <li>
+                        <a>
+                            <xsl:attribute name="class"><xsl:value-of select="/portal/subSiteClass[1]/@subSiteClass"/></xsl:attribute>
+                            <xsl:attribute name="href"><xsl:value-of select="@siteUrl"/></xsl:attribute>
+                            <xsl:attribute name="title"><xsl:value-of select="@siteTitle"/></xsl:attribute>
+                            <span>
+                                <xsl:value-of select="/portal/externalized/entry[@key='subsite']/value[1]"/>
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="@siteTitle"/>
+                            </span>
+                        </a>
+                    </li>
+                </xsl:for-each>
+            </ul>
+            </div>
+        </xsl:when>
+    </xsl:choose>
 
    <xsl:if test="$config/presence[@include='true']">
       <xsl:call-template name="presence" />
