@@ -118,11 +118,9 @@
 <!--javax.servletservlet-api${sakai.servletapi.version}-->
 <!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}-->
     <dependency>
-      <groupId>quartz</groupId>
+      <groupId>org.opensymphony.quartz</groupId>
       <artifactId>quartz</artifactId>
-      <version>1.5.2</version>
     </dependency>
-<!--org.sakaiprojectsakai-component${sakai.version}-->
   </dependencies>
   <build>
     <resources>
