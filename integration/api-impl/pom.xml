@@ -54,9 +54,7 @@
     <dependency>
       <groupId>org.opensymphony.quartz</groupId>
       <artifactId>quartz</artifactId>
-      <version>${sakai.quartz.version}</version>
     </dependency>
-<!--org.sakaiprojectsakai-component${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>

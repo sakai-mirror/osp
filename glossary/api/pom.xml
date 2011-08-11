@@ -114,14 +114,10 @@
       <artifactId>portlet-api</artifactId>
       <version>1.0</version>
     </dependency>
-<!--javax.servletservlet-api${sakai.servletapi.version}-->
-<!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}-->
     <dependency>
       <groupId>org.opensymphony.quartz</groupId>
       <artifactId>quartz</artifactId>
-      <version>${sakai.quartz.version}</version>
     </dependency>
-<!--org.sakaiprojectsakai-component${sakai.version}-->
   </dependencies>
   <build>
     <resources>
