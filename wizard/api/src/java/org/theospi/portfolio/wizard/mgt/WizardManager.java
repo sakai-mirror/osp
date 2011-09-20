@@ -132,7 +132,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 
 	public List findWizardsByOwner(String ownerId, String siteId);
 
-	public Collection getAvailableForms(String siteId, String type);
+	public Collection getAvailableForms(String siteId, String type, String currentUserId);
 
 	public CompletedWizard getCompletedWizard(Id completedWizardId);
 

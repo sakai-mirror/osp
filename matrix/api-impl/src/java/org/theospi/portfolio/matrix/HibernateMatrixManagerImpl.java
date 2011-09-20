@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -160,6 +161,7 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
@@ -173,6 +175,8 @@ import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 import org.theospi.portfolio.tagging.impl.DecoratedTaggableItemImpl;
 import org.theospi.portfolio.tagging.impl.DecoratedTaggingProviderImpl;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.taggable.cover.WizardActivityProducer;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
@@ -208,6 +212,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private StyleManager styleManager;
    private LinkManager linkManager = null;
    private TaggingManager taggingManager;
+   public final static String FORM_TYPE = "form";
 
    private PreferencesService preferencesService = null;
    private EntityManager entityManager = null;
@@ -4142,6 +4147,236 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 
 	public UserNotificationPreferencesRegistration getWizardPreferencesConfig() {
 		return wizardPreferencesConfig;
+	}
+
+	public Map getConfirmFlagsForScaffolding(Scaffolding scaffolding){
+		Map model = new HashMap();
+		
+		//if scaffolding is published, warn user;    
+		if (scaffolding.isPublished()){
+			model.put(CONFIRM_PUBLISHED_FLAG, true);
+		}
+		
+		//Get reference of scaffolding, if scaffolding is new, grab default template:
+		String reference = "";
+		if(scaffolding.getId() == null){
+			//If site has not been created, grab the default template for scaffolding
+			try {
+				String realmTemplate = "!matrix.template.";
+				Site site = SiteService.getSite(scaffolding.getWorksiteId().getValue());
+				reference = realmTemplate + site.getType();
+			} catch (IdUnusedException e) {
+				e.printStackTrace();
+			}
+		}else{
+			reference = scaffolding.getReference();
+		}
+		
+		//get ID of scaffolding, if new, get default ID
+		Id scaffid;
+		//if scaffolding id does not exists (add matrix), 
+		//check if there is a "new"id, which acts like a temp id,
+		//if not, create one, then use the "new"id as a reference
+		if(scaffolding.getId() == null){
+			if(scaffolding.getNewId() == null){
+				scaffolding.setNewId(getIdManager().createId());
+			}
+			scaffid = scaffolding.getNewId();
+		}else{
+			scaffid = scaffolding.getId();
+		}
+		
+		model.putAll(getConfirmFlagsForRef(scaffolding.getWorksiteId().getValue(), scaffid, reference));
+
+		return model;
+	}
+	
+	public Map getConfirmFlagsForScaffoldingCell(ScaffoldingCell scaffoldingCell){
+		Map model = new HashMap();
+		//if scaffolding is published, warn user;    
+		if (scaffoldingCell.getScaffolding().isPublished()){
+			model.put(CONFIRM_PUBLISHED_FLAG, true);
+		}
+		
+		model.putAll(getConfirmFlagsForRef(scaffoldingCell.getScaffolding()
+				.getWorksiteId().getValue(), scaffoldingCell
+				.isDefaultEvaluators() ? scaffoldingCell.getScaffolding()
+				.getId() : scaffoldingCell.getWizardPageDefinition().getId(), scaffoldingCell
+				.getScaffolding().getReference()));
+
+		return model;
+	}
+	
+	public Map getConfirmFlagsForRef(String siteId, Id id, String reference){
+		Map model = new HashMap();
+  	  
+  	  try {
+  		  //if site has groups, check to see evaluators have VIEW_ALL_GROUPS permission,
+  		  //if not, then warn the user about this
+  		  Site site = SiteService.getSite(siteId);
+  		  if(site != null && site.hasGroups()){
+  			  List evaluators = getAuthzManager().getAuthorizations(null,
+  					  MatrixFunctionConstants.EVALUATE_MATRIX, id);
+
+  			  
+  			  boolean warnUser = false;
+  			  HashSet rolesAllowedViewAllGroups = null;
+				try {
+					rolesAllowedViewAllGroups = (HashSet) AuthzGroupService.getAuthzGroup(reference).getRolesIsAllowed(MatrixFunctionConstants.VIEW_ALL_GROUPS);
+				} catch (GroupNotDefinedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+  			  for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+  				  boolean evaluatorViewAllGroups = true;	
+    			  boolean allEvalsAssignedToAGroup = true;
+  				  Authorization az = (Authorization) iter.next();
+  				  Agent agent = az.getAgent();
+  				  if(agent.isRole()){
+  					  if(rolesAllowedViewAllGroups != null)
+  						  evaluatorViewAllGroups = evaluatorViewAllGroups && rolesAllowedViewAllGroups.contains(agent.getDisplayName());
+  					  else
+  						  evaluatorViewAllGroups = false;
+
+  					  // check every user with this role to make sure they have at least 1 group assigned to them
+  					  if (!evaluatorViewAllGroups) {
+  						  Set<String> usersWithRole = (Set<String>) site
+  						  .getUsersHasRole(agent.getDisplayName());
+  						  for (String user : usersWithRole) {
+  							  Collection groups = site.getGroupsWithMember(user);
+  							  if (groups == null || groups.size() == 0) {
+  								  allEvalsAssignedToAGroup = false;
+  							  }
+  						  }
+  					  }
+
+  				  } else {
+  					  evaluatorViewAllGroups = evaluatorViewAllGroups
+  					  && getAuthzManager().isAuthorized(
+  							  agent,
+  							  MatrixFunctionConstants.VIEW_ALL_GROUPS,
+  							  getIdManager()
+  							  .getId(reference));
+  					  Collection groups = site.getGroupsWithMember(agent.getId().getValue());
+  					  if(groups == null || groups.size() == 0){
+  						  allEvalsAssignedToAGroup = false;
+  					  }
+  				  }
+  				  if(!evaluatorViewAllGroups && !allEvalsAssignedToAGroup){
+  					  warnUser = true;
+  					  break;
+  				  }
+  			  }
+  			  if(evaluators.size() > 0 && warnUser){
+  				  model.put(CONFIRM_EVAL_VIEW_ALL_GROUPS_FLAG, true);
+  			  }
+  		  }
+  	  } catch (IdUnusedException e) {
+  		  e.printStackTrace();
+  	  }
+  	  
+  	  return model;
+	}
+	
+
+	public Collection getFormsForSelect(String type, String currentSiteId, String currentUserId) {
+		Collection commentForms = getAvailableForms(currentSiteId, type, currentUserId);
+
+		List retForms = new ArrayList();
+		for (Iterator iter = commentForms.iterator(); iter.hasNext();) {
+			StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter
+			.next();
+			retForms.add(new CommonFormBean(sad.getId().getValue(), sad
+					.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+					.getName(), sad.getModified()));
+		}
+
+		Collections.sort(retForms, CommonFormBean.beanComparator);
+		return retForms;
+	}
+
+	protected Collection getAvailableForms(String siteId, String type, String currentUserId) {
+		return getStructuredArtifactDefinitionManager().findAvailableHomes(
+				getIdManager().getId(siteId), currentUserId, true, true);
+	}
+
+	protected Collection getWizardsForSelect(List wizards, String type, String currentSiteId) {		
+		List retWizards = new ArrayList();
+		for (Iterator iter = wizards.iterator(); iter.hasNext();) {
+			Wizard wizard = (Wizard) iter.next();
+			retWizards.add(new CommonFormBean(wizard.getId().getValue(), wizard
+					.getName(), WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL,
+					wizard.getOwner().getName(), wizard.getModified()));
+		}
+
+		Collections.sort(retWizards, CommonFormBean.beanComparator);
+		return retWizards;
+	}
+
+	public Collection getTypeDevices(List wizards, String siteId, Id deviceId, String type, String currentUserId) {
+		Collection all = getFormsForSelect(type, siteId, currentUserId);
+		all.addAll(getWizardsForSelect(wizards, type, siteId));
+
+		//add any of the forms that the user does not have access to but has been added to the matrix
+		//Id selectedId = scaffolding.getReviewDevice();
+
+		if (deviceId != null && !sadCollectionContainsId(all, deviceId.getValue())){
+			StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(deviceId);
+			all.add(new CommonFormBean(sad.getId().getValue(), sad
+					.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+					.getName(), sad.getModified()));
+		}
+
+
+
+		return all;
+	}
+
+	private boolean sadCollectionContainsId(Collection sadCol, String id){
+		boolean contains = false;
+
+		for (Iterator iter = sadCol.iterator(); iter.hasNext();) {
+			CommonFormBean bean = (CommonFormBean) iter.next();
+
+			if(bean.getId().equals(id)){
+				contains = true;
+				break;
+			}
+		}
+
+		return contains;
+	}
+
+	public Collection getSelectedAdditionalFormDevices(Collection additionalForms, String siteId, String currentUserId) {
+		// cwm need to preserve the ordering
+		Collection returnCol = new ArrayList();
+		Collection col = getAdditionalFormDevices(siteId, currentUserId);
+		for (Iterator iter = col.iterator(); iter.hasNext();) {
+			CommonFormBean bean = (CommonFormBean) iter.next();
+			if (additionalForms.contains(bean.getId()))
+				returnCol.add(bean);
+		}
+
+		//add any of the forms that the user does not have access to but has been added to the matrix
+		//	Collection selectedIds = sCell.getAdditionalForms();
+		for (Iterator iterator = additionalForms.iterator(); iterator.hasNext();) {
+			String id = (String) iterator.next();
+			if (!sadCollectionContainsId(returnCol, id)){
+				StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(getIdManager().getId(id));
+				returnCol.add(new CommonFormBean(sad.getId().getValue(), sad
+						.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+						.getName(), sad.getModified()));
+			}
+		}
+
+
+		return returnCol;
+	}
+
+	protected Collection getAdditionalFormDevices( String siteId, String currentUserId ) {
+		// Return all forms
+		return getFormsForSelect(null, siteId, currentUserId);
 	}
 
 }

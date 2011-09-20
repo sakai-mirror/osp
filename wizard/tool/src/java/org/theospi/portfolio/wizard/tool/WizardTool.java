@@ -1166,7 +1166,7 @@ public class WizardTool extends BuilderTool {
       Placement placement = getToolManager().getCurrentPlacement();
       String currentSiteId = placement.getContext();
       Collection forms = 
-               getWizardManager().getAvailableForms(currentSiteId, type);
+               getWizardManager().getAvailableForms(currentSiteId, type, getSessionManager().getCurrentSessionUserId());
       
       List retForms = new ArrayList();
       for(Iterator iter = forms.iterator(); iter.hasNext();) {
