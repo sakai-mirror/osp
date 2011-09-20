@@ -54,6 +54,9 @@
 		<property name="basename"><value>org.theospi.portfolio.presentation.bundle.Messages</value></property>
 	</bean>
 
+   <bean id="localeResolver" class="org.sakaiproject.spring.util.SakaiLocaleResolver">
+   </bean>
+
    <bean name="openSessionInViewInterceptor"
       class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
       <property name="sessionFactory"><ref bean="sessionFactory"/></property>
