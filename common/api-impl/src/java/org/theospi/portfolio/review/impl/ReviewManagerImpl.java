@@ -131,6 +131,20 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
        return reviews;
     }
 
+    public List<Review> getReviewsByMatrix(String matrixId) {
+        Id id = getIdManager().getId(matrixId);
+        List<Review> reviews = (List<Review>) getHibernateTemplate().findByNamedQuery("getReviewsByMatrix",
+                new Object[] {id});
+        return reviews;
+    }
+
+    public List<Review> getReviewsByMatrixAndType(String matrixId, int type) {
+        Id id = getIdManager().getId(matrixId);
+        List<Review> reviews = (List<Review>) getHibernateTemplate().findByNamedQuery("getReviewsByMatrixAndType",
+                new Object[] {id, type});
+        return reviews;
+    }
+
     protected void populateReviews(String parentId, String siteId, String producer, List reviews) {
         for (Iterator i = reviews.iterator(); i.hasNext();) {
            Review review = (Review) i.next();
