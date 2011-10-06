@@ -198,6 +198,8 @@
       <property name="linkManager">
       	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
       </property>
+      <property name="preferencesService"
+      	ref="org.sakaiproject.user.api.PreferencesService" />
    </bean>
 
    <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">

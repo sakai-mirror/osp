@@ -39,8 +39,10 @@ import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.email.cover.DigestService;
 import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
@@ -315,15 +317,20 @@ public class ReviewHelperController implements Controller {
        String cellPageName = "";
        String matrixWizardName = "";
        String to = null;
+       String toUserId = null;
+       Agent owner = null;
+       String notificationId = "";
        
        if ("page_id".equals(lookupId)) {
     	   Id pageId = getIdManager().getId(strId);
     	   WizardPage wizPage = getMatrixManager().getWizardPage(pageId);
-    	   Agent owner = wizPage.getOwner();
+    	   owner = wizPage.getOwner();
     	   try {
     		   User user = UserDirectoryService.getUser(owner.getId().getValue()); 
-    		   if (user != null)
+    		   if (user != null) {
     			   to = user.getEmail();
+    			   toUserId = user.getId();
+    		   }
     	   } catch (UserNotDefinedException e) {
     		   LOG.warn("Unable to find user " + e.getId() + " to get email address for notification");
     	   }
@@ -341,6 +348,7 @@ public class ReviewHelperController implements Controller {
     		   }else{
     			   sendNotification = !wpd.isHideEvaluations();
     		   }
+    		   notificationId = "sakai:matrix"; //getMatrixPreferencesConfig().getType();
     	   }
     	   else {
     		   //at a wizard page?
@@ -349,13 +357,13 @@ public class ReviewHelperController implements Controller {
     		   matrixWizardType = myResources.getString("wizardType");
     		   CompletedWizard cWizard = getWizardManager().getCompletedWizardByPage(pageId);
     		   matrixWizardName = cWizard.getWizard().getName();
+    		   notificationId = "sakai:wizard"; //getWizardPreferencesConfig().getType();
     	   }
        }
        else {
     	   //At a wizard?
     	   skipNotification = true;
        }
-       
        
        String typeStr = myResources.getString("legend_feedback");
        String typeIntroStr = myResources.getString("notification_newFeedback");
@@ -388,7 +396,22 @@ public class ReviewHelperController implements Controller {
          String from = "postmaster@".concat(ServerConfigurationService.getServerName());
     	   from = ServerConfigurationService.getString("setup.request", from);
     	   //String to = ownerUser.getEmail();
-    	   EmailService.send(from, to, message_subject, content, to, from, null);
+    	   
+    	   int userPref = getMatrixManager().getNotificationOption(owner.getId().getValue(), notificationId, currentSite);
+			
+			if (userPref == NotificationService.PREF_DIGEST) {
+				LOG.debug("processEvalFeedbackNotifications() - Sending digest to " + to);
+				DigestService.digest(toUserId, message_subject, content);
+			}
+			else if (userPref == NotificationService.PREF_IMMEDIATE) {
+				LOG.debug("processEvalFeedbackNotifications() - Sending message to " + to);
+				EmailService.send(from, to,
+						message_subject, content, to, from, null);
+			}
+			else {
+				LOG.debug("processEvalFeedbackNotifications() - Sending nothing to " + to);
+			}
+    	   
        }
    }
 
@@ -619,31 +642,31 @@ public class ReviewHelperController implements Controller {
    }
 
    public void setStyleManager(StyleManager styleManager) {
-      this.styleManager = styleManager;
+	   this.styleManager = styleManager;
    }
 
-public SecurityService getSecurityService() {
-	return securityService;
-}
+   public SecurityService getSecurityService() {
+	   return securityService;
+   }
 
-public void setSecurityService(SecurityService securityService) {
-	this.securityService = securityService;
-}
+   public void setSecurityService(SecurityService securityService) {
+	   this.securityService = securityService;
+   }
 
-public AuthenticationManager getAuthManager() {
-	return authManager;
-}
+   public AuthenticationManager getAuthManager() {
+	   return authManager;
+   }
 
-public void setAuthManager(AuthenticationManager authManager) {
-	this.authManager = authManager;
-}
+   public void setAuthManager(AuthenticationManager authManager) {
+	   this.authManager = authManager;
+   }
 
-public WorkflowManager getWorkflowManager() {
-	return workflowManager;
-}
+   public WorkflowManager getWorkflowManager() {
+	   return workflowManager;
+   }
 
-public void setWorkflowManager(WorkflowManager workflowManager) {
-	this.workflowManager = workflowManager;
-}
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+	   this.workflowManager = workflowManager;
+   }
 
 }
