@@ -756,10 +756,10 @@
 			value="<osp:message key="button_save"  />"
 		</c:if>
 		onclick="javascript:document.forms[0].validate.value='true';"/>
-		<c:if test="${empty scaffolding.title}">
+		<c:if test="${empty scaffolding.id}">
 		 	<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>" accesskey="x"/>
 		</c:if>
-		<c:if test="${not empty scaffolding.title}">
+		<c:if test="${not empty scaffolding.id}">
 			<input type="submit" name="cancelActionExisting" value="<osp:message key="button_cancel"/>" accesskey="x"/>
 		</c:if>
 		

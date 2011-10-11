@@ -481,6 +481,9 @@ public class XsltRenderContext implements PortalRenderContext {
          {
              throw new ToolRenderException ("tool xml failed to render and is null");
          }
+         
+         //remove the title b/c XML will freak out if there is some foreign language utf-8 symbols
+         contentStr = contentStr.replaceAll("title=\".*" + result.getTitle() + ".*\"", "");
 
          Tidy tdpr = new Tidy();
          tdpr.setForceOutput(true);
