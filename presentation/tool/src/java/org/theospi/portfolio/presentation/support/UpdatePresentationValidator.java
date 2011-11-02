@@ -17,10 +17,10 @@ public class UpdatePresentationValidator implements Validator {
 			errors.rejectValue("id", "error.required", "Portfolio ID required");
 		
 		// validate name not blank and length <= 255 characters
-		if (StringUtils.isBlank(presentation.getName())) {
+		if (presentation.getName() != null && "".equals(presentation.getName())) {
 			errors.rejectValue("name", "error.required", "Portfolio Name required");
 		} else {
-			if (presentation.getName().length() > 255) {
+			if (presentation.getName() != null && presentation.getName().length() > 255) {
 				errors.rejectValue("name", "error.lengthExceeded", new Object[]{"255"}, "Name must be less than {0} characters");
 			}
 		}
