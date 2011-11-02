@@ -24,7 +24,7 @@
 		</li>
 		<li>
 			<span>
-				<a href="#" onclick="document.backtolist.submit()"><c:choose><c:when test="${empty returnText}"><c:out value="${msgs.table_comments_back}"/></c:when><c:otherwise><c:out value="${msgs.${returnText}"/></c:otherwise></c:choose></a>
+				<a href="#" onclick="document.backtolist.submit()"><c:choose><c:when test="${empty returnText}"><c:out value="${msgs.table_comments_back}"/></c:when><c:otherwise><c:out value="${msgs[returnText]}"/></c:otherwise></c:choose></a>
 			</span>	
 		</li>
 	</ul>	
