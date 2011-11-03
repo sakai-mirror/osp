@@ -15,7 +15,7 @@
 <f:view>
 <sakai:view>
 
-   <%@include file="steps.jspf"%>
+   <%@ include file="steps.jspf"%>
 
 <h:form>
    <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
@@ -25,7 +25,7 @@
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
    
-   <%@include file="wizardPropertiesFrame.jspf"%>
+   <%@ include file="wizardPropertiesFrame.jspf"%>
    
    <ospx:xheader>
       <ospx:xheadertitle id="styleTitle" value="#{msgs.style_title}" />
@@ -42,7 +42,7 @@
       </ospx:xheaderdrawer>
    </ospx:xheader>   
    
-   <%@include file="builderButtons.jspf"%>
+   <%@ include file="builderButtons.jspf"%>
 
 </h:form>
 </sakai:view>

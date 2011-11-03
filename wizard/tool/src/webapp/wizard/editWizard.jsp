@@ -26,7 +26,7 @@
    <sakai:view_title value="#{msgs.edit_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"  rendered="#{wizard.current.base.type !=
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
     
-   <%@include file="steps.jspf"%>
+   <%@ include file="steps.jspf"%>
    
    <sakai:instruction_message value="#{msgs.wizard_instructions}" />
       
@@ -107,7 +107,7 @@
       </h:panelGroup>
    </h:panelGrid>
 
-   <%@include file="builderButtons.jspf"%>
+   <%@ include file="builderButtons.jspf"%>
 </h:form>
 </sakai:view>
 

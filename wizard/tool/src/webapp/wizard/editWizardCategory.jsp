@@ -15,7 +15,7 @@
 <f:view>
 <sakai:view>
 <h:form styleClass="portletBody">
-   <%@include file="steps.jspf"%>
+   <%@ include file="steps.jspf"%>
 
    <sakai:view_title value="#{msgs.edit_wizard_category}" rendered='#{wizard.currentCategory.base.id != null}'/>
    <sakai:view_title value="#{msgs.add_wizard_category}"  rendered='#{wizard.currentCategory.base.id == null}'/>

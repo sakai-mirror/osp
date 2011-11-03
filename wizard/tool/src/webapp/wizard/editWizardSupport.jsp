@@ -25,7 +25,7 @@
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
     
                
-   <%@include file="steps.jspf"%>
+   <%@ include file="steps.jspf"%>
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
    <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
 	  
@@ -284,7 +284,7 @@
             </sakai:flat_list>
 			</fieldset>
 	   
-   <%@include file="builderButtons.jspf"%>
+   <%@ include file="builderButtons.jspf"%>
    
 </h:form>
 </sakai:view>

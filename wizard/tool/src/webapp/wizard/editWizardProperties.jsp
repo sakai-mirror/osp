@@ -15,7 +15,7 @@
 <f:view>
 <sakai:view>
 
-   <%@include file="steps.jspf"%>
+   <%@ include file="steps.jspf"%>
 <h:form>
   <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
    <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
@@ -24,7 +24,7 @@
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
    
-   <%@include file="wizardPropertiesFrame.jspf"%>
+   <%@ include file="wizardPropertiesFrame.jspf"%>
    <h:commandLink action="#{wizard.processActionAudienceHelper}">
       <h:outputText value="#{msgs.select_reviewers}"/>
    </h:commandLink>
@@ -32,7 +32,7 @@
    <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.exposeAsTool}" />
    <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
 
-   <%@include file="builderButtons.jspf"%>
+   <%@ include file="builderButtons.jspf"%>
    
 </h:form>
 </sakai:view>

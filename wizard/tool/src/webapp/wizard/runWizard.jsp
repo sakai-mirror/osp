@@ -43,7 +43,7 @@
 
    <sakai:view_title value="#{msgs.run_wizard}"/>
 
-   <%@include file="showWizardOwnerMessage.jspf"%>
+   <%@ include file="showWizardOwnerMessage.jspf"%>
    
    <f:subview id="instructionsHier" rendered="#{wizard.current.base.type ==
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
@@ -56,7 +56,7 @@
 
    <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
 
-   <%@include file="wizardGuidance.jspf"%>
+   <%@ include file="wizardGuidance.jspf"%>
 
    <sakai:flat_list value="#{wizard.current.runningWizard.rootCategory.categoryPageList}" var="item">
       <h:column>

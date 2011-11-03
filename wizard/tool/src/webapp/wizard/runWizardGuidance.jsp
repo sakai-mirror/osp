@@ -33,7 +33,7 @@
    <%-- TODO: munge these strings- want the pattern as in matrices: View: "Wizard title" (READ ONLY): Selected user name --%>
    <h3>
    <h:outputText value="#{wizard.current.base.name}"/>:
-	<%@include file="showWizardOwnerMessage.jspf"%>
+	<%@ include file="showWizardOwnerMessage.jspf"%>
    </h3>
    <sakai:messages rendered="#{!empty facesContext.maximumSeverity}"/>
    
