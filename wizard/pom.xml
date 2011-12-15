@@ -64,7 +64,7 @@
       <dependency>
           <groupId>org.sakaiproject.taggable</groupId>
           <artifactId>sakai-taggable-api</artifactId>
-          <version>2.9-SNAPSHOT</version>
+          <version>2.10-SNAPSHOT</version>
           <scope>provided</scope>
       </dependency>
     </dependencies>
