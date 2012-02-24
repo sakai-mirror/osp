@@ -1113,10 +1113,8 @@ public class XsltPortal extends CharonPortal {
       String loginText2 = null;
       String image2 = null;
       
-      boolean topLogin = Boolean.TRUE.toString().equalsIgnoreCase(
-            ServerConfigurationService.getString("top.login"));
-      boolean containerLogin = Boolean.TRUE.toString().equalsIgnoreCase(
-            ServerConfigurationService.getString("container.login"));
+      boolean topLogin = ServerConfigurationService.getBoolean("top.login", true);
+      boolean containerLogin = ServerConfigurationService.getBoolean("container.login", false);
       if (containerLogin) topLogin = false;
       
       
