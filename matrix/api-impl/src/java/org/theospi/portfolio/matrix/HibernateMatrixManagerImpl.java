@@ -3460,7 +3460,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			// Only add worksite groups (e.g. not section groups)
 			for (Iterator it = siteGroups.iterator(); it.hasNext(); ) {
 				Group group = (Group)it.next();
-				if ( includeSections || group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+				if ( includeSections || group.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED) != null )
 					groupSet.add(group);
 			}
 		}

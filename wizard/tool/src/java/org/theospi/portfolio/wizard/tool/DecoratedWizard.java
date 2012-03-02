@@ -183,7 +183,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 				}
 				for (Iterator it = groups.iterator(); it.hasNext();) {
 					Group group = (Group) it.next();
-					if ( includeSections || group.getProperties().getProperty(SiteConstants.GROUP_PROP_WSETUP_CREATED) != null )
+					if ( includeSections || group.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED) != null )
 						groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
 				}
 			}
