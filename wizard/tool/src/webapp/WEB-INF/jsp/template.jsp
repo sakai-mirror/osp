@@ -43,6 +43,8 @@
       }
    }
   </script>
+  <%= request.getAttribute("editorHeadScript") %>
+  
   </head>
 
   <body onload="loaded();">
