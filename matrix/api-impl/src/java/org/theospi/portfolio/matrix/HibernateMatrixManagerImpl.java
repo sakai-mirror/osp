@@ -4193,6 +4193,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	
 	public Map getConfirmFlagsForScaffoldingCell(ScaffoldingCell scaffoldingCell){
 		Map model = new HashMap();
+		if (scaffoldingCell.getScaffolding() == null) {
+			return model;
+		}
 		//if scaffolding is published, warn user;    
 		if (scaffoldingCell.getScaffolding().isPublished()){
 			model.put(CONFIRM_PUBLISHED_FLAG, true);
