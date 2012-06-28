@@ -26,12 +26,12 @@ import java.util.Date;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.util.ResourceLoader;
-import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
@@ -86,14 +86,27 @@ public class WizardItemImpl implements TaggableItem {
 	public String getItemDetailUrl()
 	{
 		String url = null;
-		String placement = getSite(page.getPageDefinition().getSiteId()).getToolForCommonId("osp.matrix").getId();
+		Site site = getSite(page.getPageDefinition().getSiteId());
+		ToolConfiguration tc_matrix = site.getToolForCommonId("osp.matrix");
+		ToolConfiguration tc_wizard = site.getToolForCommonId("osp.wizard");
+		String placement = null;
 
 		//pick one to start with
 		String view = "viewCell.osp";
-		if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_HIER_TYPE))
+		if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_HIER_TYPE)) {
 			view="wizardPage.osp";
-		else if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_SEQ_TYPE))
+			if (tc_wizard != null)
+				placement = tc_wizard.getId();
+		}
+		else if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_SEQ_TYPE)) {
 			view="sequentialWizardPage.osp";
+			if (tc_wizard != null)
+				placement = tc_wizard.getId();
+		}
+		else {
+			if (tc_matrix != null)
+				placement = tc_matrix.getId();
+		}
 
 		url = ServerConfigurationService.getServerUrl() + "/direct/matrixcell/"
 				+ page.getId().getValue() + "/" + placement + "/" + view;
