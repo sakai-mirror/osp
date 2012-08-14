@@ -110,4 +110,14 @@ public class WizardActivityImpl implements TaggableActivity {
 			retValue = messages.getString("wizard_type");
 		return retValue;
 	}
+
+	public String getActivityDetailUrlParams() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean getUseDecoration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
