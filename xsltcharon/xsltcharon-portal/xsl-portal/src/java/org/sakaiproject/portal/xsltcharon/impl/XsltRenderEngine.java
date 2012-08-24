@@ -155,7 +155,7 @@ public class XsltRenderEngine implements PortalRenderEngine {
       XsltRenderContext xrc = (XsltRenderContext) rcontext;
 
       if (log.isTraceEnabled()) {
-     	 log.debug("Portal debug is on, dumping PortalRenderContext to log:\n" + xrc.dump());
+     	 log.trace("Portal trace is on, dumping PortalRenderContext to log:\n" + xrc.dump());
       }
 
       if (template.equals("site")) {
