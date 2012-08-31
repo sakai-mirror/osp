@@ -30,7 +30,6 @@
         <module>presentation</module>
         <module>warehouse</module>
         <module>wizard</module>
-        <module>xsltcharon</module>
     </modules>
     
     <dependencyManagement>
