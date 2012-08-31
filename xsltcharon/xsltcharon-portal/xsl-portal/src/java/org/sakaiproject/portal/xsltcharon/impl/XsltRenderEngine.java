@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL:$
- * $Id:$
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2008 The Sakai Foundation
@@ -154,6 +154,10 @@ public class XsltRenderEngine implements PortalRenderEngine {
    public void render(String template, PortalRenderContext rcontext, Writer out) throws Exception {
       XsltRenderContext xrc = (XsltRenderContext) rcontext;
 
+      if (log.isTraceEnabled()) {
+     	 log.debug("Portal debug is on, dumping PortalRenderContext to log:\n" + xrc.dump());
+      }
+
       if (template.equals("site")) {
          Document doc = xrc.produceDocument();
          writeDocument(doc, out, xrc);
@@ -288,6 +292,7 @@ public class XsltRenderEngine implements PortalRenderEngine {
 
    protected Templates createTemplate()
       throws IOException, TransformerConfigurationException {
+	   // TODO Update default trasformer path to use neo transformer when available
       String transformerPath = getDefaultTransformerPath();
       return createTemplate(transformerPath);
    }
