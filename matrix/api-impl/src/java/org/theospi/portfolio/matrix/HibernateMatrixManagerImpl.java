@@ -1064,7 +1064,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    public Set getPageForms(WizardPage page) {
       Set result = new HashSet();
       Set removes = new HashSet();
-      if (page.getPageForms() != null) {
+      if (page != null && page.getPageForms() != null) {
          for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
             WizardPageForm wpf = (WizardPageForm) iter.next();
             Node node = getNode(wpf.getArtifactId(), page, true);
@@ -1087,7 +1087,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    public Set getPageContents(WizardPage page) {
       Set result = new HashSet();
       Set removes = new HashSet();
-      if (page.getAttachments() != null) {
+      if (page != null && page.getAttachments() != null) {
          for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
             Attachment attachment = (Attachment) iter.next();
             Node node = getNode(attachment.getArtifactId(), page, false);
@@ -1956,67 +1956,74 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    public void checkPageAccess(String id) {
       Id pageId = getIdManager().getId(id);
       WizardPage page = getWizardPage(pageId);
+      WizardPageDefinition wpd = null;
+      Scaffolding scaffolding = null;
+      boolean owns = false;
+      if (page == null) {
+    	  wpd = getWizardPageDefinition(pageId);
+    	  scaffolding = this.getScaffoldingCellByWizardPageDef(wpd.getId()).getScaffolding();
+    	  owns = scaffolding.getOwner().getId().equals(getAuthnManager().getAgent().getId());
+      } else {
+    	  wpd = page.getPageDefinition();
+    	  scaffolding = this.getMatrixByPage(page.getId()).getScaffolding();
+    	  owns = page.getOwner().getId().equals(getAuthnManager().getAgent().getId());
+      }
       // todo need to figure out matrix or wizard authz stuff here
 
       // this should set the security advisor for the attached artifacts.
       //getPageArtifacts(page);
       
-      boolean isMatrix = page.getPageDefinition().getType().equals(page.getPageDefinition().WPD_MATRIX_TYPE);
+      boolean isMatrix = wpd.getType().equals(wpd.WPD_MATRIX_TYPE);
       
       boolean canEval = false, canReview = false, hideEvaluations = false;
       
-      if(page.getPageDefinition().isDefaultEvaluators()){
+      if(wpd.isDefaultEvaluators()){
     	  if(isMatrix){
-    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
     		  canEval = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.EVALUATE_MATRIX);
     	  }
       }else{
     	  canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
-  	            page.getPageDefinition().getId());
+  	            wpd.getId());
       }
       
       //this is user specified reviewer access:
-      canReview = hasPermission(pageId, this.getIdManager().getId(page.getPageDefinition().getSiteId()), MatrixFunctionConstants.FEEDBACK_MATRIX);
+      canReview = hasPermission(pageId, this.getIdManager().getId(wpd.getSiteId()), MatrixFunctionConstants.FEEDBACK_MATRIX);
       
       
       if(!canReview){
-    	  if(page.getPageDefinition().isDefaultReviewers()){
+    	  if(wpd.isDefaultReviewers()){
     		  if(isMatrix){
     			  //currently, this can only be true if its a matrix
-    			  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
     			  canReview = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.REVIEW_MATRIX);
     		  }
     	  }else{
     		  canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
-    				  page.getPageDefinition().getId());
+    				  wpd.getId());
     	  }
       }
 
       if (!canReview) {
          canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(page.getPageDefinition().getSiteId()));
+            getIdManager().getId(wpd.getSiteId()));
       }
       
       if(isMatrix){
 
-    	  if(page.getPageDefinition().isDefaultEvaluationForm()){
-    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    	  if(wpd.isDefaultEvaluationForm()){
     		  hideEvaluations = scaffolding.isHideEvaluations();
     	  }else{
-    		  hideEvaluations = page.getPageDefinition().isHideEvaluations();
+    		  hideEvaluations = wpd.isHideEvaluations();
     	  }
       }
 
       
       
       
-      boolean owns = page.getOwner().getId().equals(getAuthnManager().getAgent().getId());     
       boolean canAccessAllCells = false;
       boolean canViewOtherReviews = false;
       boolean canViewOtherEvals = false;
       
       if(isMatrix){
-    	  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
     	  canAccessAllCells = getAuthzManager().isAuthorized(MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(scaffolding.getReference()));
     	  canViewOtherReviews = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_FEEDBACK_OTHER, getIdManager().getId(scaffolding.getReference()));
     	  canViewOtherEvals = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_EVAL_OTHER, getIdManager().getId(scaffolding.getReference()));
@@ -2027,7 +2034,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 
       String decPageId = (String) session.getAttribute("decPageId");
       if(decPageId != null && !decPageId.equals("")){
-    	  hasAccessThroughLink = canUserAccessWizardPageAndLinkedArtifcact(page.getPageDefinition().getSiteId(), decPageId, "/wizard/page/" + pageId.getValue());
+    	  hasAccessThroughLink = canUserAccessWizardPageAndLinkedArtifcact(wpd.getSiteId(), decPageId, "/wizard/page/" + pageId.getValue());
       }
 
       
@@ -2041,7 +2048,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          //can I look at reviews/evals/reflections? - own, review or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.REFLECTION_TYPE,
-               page.getPageDefinition().getSiteId(),
+               wpd.getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
          
          
@@ -2054,7 +2061,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          //can I look at reviews/evals/reflections? - own or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.EVALUATION_TYPE,
-               page.getPageDefinition().getSiteId(),
+               wpd.getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
       }
       
@@ -2062,7 +2069,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id, Review.FEEDBACK_TYPE,
-               page.getPageDefinition().getSiteId(),
+               wpd.getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);         
       }
    }
@@ -2477,18 +2484,20 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 
    public List getStyles(Id objectId) {
       WizardPage wp = getWizardPage(objectId);
+      ScaffoldingCell sCell = getScaffoldingCellByWizardPageDef(objectId);
 
-      if (wp != null) {
-         ScaffoldingCell sCell = getScaffoldingCellByWizardPageDef(
+      if (wp != null || sCell != null) {
+    	  if (sCell == null) {
+    		  sCell = getScaffoldingCellByWizardPageDef(
                      wp.getPageDefinition().getId());
-
+    	  }
          if (sCell != null) {
             List styles = new ArrayList();
             if (sCell.getScaffolding().getStyle() != null) {
                styles.add(sCell.getScaffolding().getStyle());
             }
-            if (wp.getPageDefinition().getStyle() != null) {
-               styles.add(wp.getPageDefinition().getStyle());
+            if (sCell.getWizardPageDefinition().getStyle() != null) {
+               styles.add(sCell.getWizardPageDefinition().getStyle());
             }
             return styles;
          }
@@ -3895,14 +3904,16 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			//TODO: Make sure it's always okay to ignore the provider
 			for (DecoratedTaggingProvider provider : providers) {
 				for (Link link : links) {
+					TaggableActivityProducer producer = getTaggingManager().findProducerByRef(link.getActivityRef());
+					SecurityAdvisor myAdv = null;
+					if (producer.getItemPermissionOverride() != null) {
+						myAdv = new SimpleSecurityAdvisor(
+								SessionManager.getCurrentSessionUserId(), 
+								producer.getItemPermissionOverride());
+						getSecurityService().pushAdvisor(myAdv);
+					}
 					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider());
 					if (activity != null) {
-						TaggableActivityProducer producer = getTaggingManager().findProducerByRef(activity.getReference());
-						if (producer.getItemPermissionOverride() != null) {
-							getSecurityService().pushAdvisor(new SimpleSecurityAdvisor(
-									SessionManager.getCurrentSessionUserId(), 
-									producer.getItemPermissionOverride()));
-						}
 						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true, criteriaRef);
 						
 						for (TaggableItem tagItem : items) {
@@ -3917,14 +3928,14 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 						
 						activities.add(activity);
 						
-						if (producer.getItemPermissionOverride() != null) {
-							getSecurityService().popAdvisor();
-						}
 					}
 					else {
 						logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
 						getLinkManager().removeLink(link);
 						links.remove(link);
+					}
+					if (producer.getItemPermissionOverride() != null && myAdv != null) {
+						getSecurityService().popAdvisor(myAdv);
 					}
 				}
 			}
