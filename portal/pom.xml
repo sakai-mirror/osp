@@ -58,12 +58,12 @@
       <dependency>
         <groupId>org.sakaiproject.portal</groupId>
         <artifactId>sakai-portal-impl</artifactId>
-        <version>2.9-SNAPSHOT</version>
+        <version>${sakai.portal.version}</version>
       </dependency>
       <dependency>
         <groupId>org.sakaiproject.portal</groupId>
         <artifactId>sakai-portal-util</artifactId>
-        <version>2.9-SNAPSHOT</version>
+        <version>${sakai.portal.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
