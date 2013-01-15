@@ -2076,6 +2076,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                   
          Document doc = new Document();
          SAXBuilder saxBuilder = new SAXBuilder();
+         saxBuilder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23131
          try {
             doc = saxBuilder.build(propNode.getInputStream());
          } catch (JDOMException e) {

@@ -1335,6 +1335,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private boolean readWizardXML(Wizard wizard, InputStream inStream, Map importData) throws ImportException
    {
       SAXBuilder builder = new SAXBuilder();
+      builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); // SAK-23131
       Map evaluatorsMap = (Map)importData.get(IMPORT_EVALUATORS_KEY);
       //Map stylesMap = (Map)importData.get(IMPORT_STYLES_KEY);
 
