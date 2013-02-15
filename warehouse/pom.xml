@@ -28,7 +28,7 @@
       <dependency>
         <groupId>org.sakaiproject.warehouse</groupId>
         <artifactId>sakai-warehouse-impl</artifactId>
-        <version>${sakai.warehouse.version}</version>
+        <version>${sakai.version}</version>
       </dependency>
       <dependency>
         <groupId>org.sakaiproject.osp</groupId>
