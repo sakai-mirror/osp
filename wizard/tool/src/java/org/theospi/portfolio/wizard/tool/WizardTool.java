@@ -826,7 +826,7 @@ public class WizardTool extends BuilderTool {
 
       try {
            context.redirect("osp.permissions.helper/editPermissions?" +
-                 "message=" + getPermissionsMessage() +
+                 "message=" + Validator.escapeUrl(getPermissionsMessage()) +
                  "&name=wizard" +
                  "&qualifier=" + getToolManager().getCurrentPlacement().getContext() +
                  "&returnView=matrixRedirect");
