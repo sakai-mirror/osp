@@ -32,6 +32,7 @@
         <groupId>org.sakaiproject.osp</groupId>
         <artifactId>osp-depend-jsf-widgets-sun</artifactId>
         <version>${project.version}</version>
+	<type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.sakaiproject.osp</groupId>

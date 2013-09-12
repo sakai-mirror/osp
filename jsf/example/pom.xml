@@ -59,6 +59,7 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-depend-jsf-widgets-sun</artifactId>
+      <type>pom</type>
     </dependency>
 <!-- Adaptor to use tag library with Sun's RI -->
     <dependency>
