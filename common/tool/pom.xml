@@ -74,7 +74,7 @@
       <artifactId>commons-codec</artifactId>
       <version>1.2</version>
     </dependency>
-<!-- OSP tag library -->
+    <!-- OSP tag library -->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-depend-jsf-widgets-sun</artifactId>
