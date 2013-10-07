@@ -296,7 +296,15 @@
                 </property>
                 <property name="presentationService">
                   <ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
-                </property>		
+                </property>
+                <property name="siteService">
+                    <ref bean="org.sakaiproject.site.api.SiteService"/>
+                </property>
+                <property name="toolManager">
+                    <ref bean="org.sakaiproject.tool.api.ToolManager"/>
+                </property>
+                <property name="preferencesService"
+                    ref="org.sakaiproject.user.api.PreferencesService" />
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -424,6 +432,14 @@
                 <property name="presentationService">
                   <ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
                 </property>		
+                <property name="siteService">
+                    <ref bean="org.sakaiproject.site.api.SiteService"/>
+                </property>
+                <property name="toolManager">
+                    <ref bean="org.sakaiproject.tool.api.ToolManager"/>
+                </property>
+                <property name="preferencesService"
+                    ref="org.sakaiproject.user.api.PreferencesService" />
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -483,6 +499,14 @@
          <property name="serverConfigurationService">
            <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
          </property>
+           <property name="siteService">
+               <ref bean="org.sakaiproject.site.api.SiteService"/>
+           </property>
+           <property name="toolManager">
+               <ref bean="org.sakaiproject.tool.api.ToolManager"/>
+           </property>
+           <property name="preferencesService"
+               ref="org.sakaiproject.user.api.PreferencesService" />
        </bean>
      </property>
      <property name="customTypedEditors">

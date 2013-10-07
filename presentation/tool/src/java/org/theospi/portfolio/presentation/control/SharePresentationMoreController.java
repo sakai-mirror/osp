@@ -65,13 +65,11 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    protected final Log logger = LogFactory.getLog(getClass());
    private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    private ServerConfigurationService serverConfigurationService;
-   private SiteService siteService;
    private EmailService emailService;
    private UserDirectoryService userDirectoryService;
    
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
    private RoleAgentComparator roleAgentComparator = new RoleAgentComparator();
-   private GroupComparator     groupComparator     = new GroupComparator();
    
    private final String SHAREBY_KEY    = "shareBy";
    private final String SHAREBY_BROWSE = "share_browse";
@@ -327,20 +325,6 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    }
 
    /**
-    ** Check if presentation's worksite has groups defined and return true/false
-    **/
-   private Boolean getHasGroups( String siteId ) {
-      try {
-         Site site = getSiteService().getSite(siteId);
-         return Boolean.valueOf( site.hasGroups() );
-      }
-      catch (Exception e) {
-         logger.warn(e.toString());
-      }
-      return Boolean.valueOf(false);
-   }
-    
-   /**
     ** Check for share list changes from form submission and update shareList and availList if necessary
     **
     ** @return true if update was necessary, otherwise false
@@ -391,76 +375,6 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       }
       
       return mods;
-   }
-
-   /** Return list of all groups associated with the given site
-    **/   
-   private List getGroupList( String siteId, Map request ) {
-      List groupsList = new ArrayList();
-      Site site;
-      
-      try {
-         site = getSiteService().getSite(siteId);
-      }
-      catch ( Exception e ) {
-         logger.warn(e.toString());
-         return groupsList;
-      }
-      
-      Collection groups = site.getGroups();
-      String selectedGroup = (String)request.get("groups");
-      for (Iterator i = groups.iterator(); i.hasNext();) {
-         Group group = (Group) i.next();
-         boolean checked = false;
-         if ( selectedGroup == null )
-            selectedGroup = group.getId();
-         if ( selectedGroup.equals(group.getId()) )
-            checked = true;
-         groupsList.add(new GroupWrapper( group, checked ));
-      }
-      
-      Collections.sort(groupsList, groupComparator);
-      return groupsList;
-   }
-
-   /** Return list of site users (not yet shared) users, optionally filtered by specified group
-    **/
-   private List getFilteredMembersList( String siteId, List groupList ) {
-      Site site;
-      Set members = new HashSet();
-      List memberList = new ArrayList();
-      
-      try {
-         site = getSiteService().getSite(siteId);
-      } 
-      catch (Exception e) {
-         logger.warn(e.toString());
-         return memberList;
-      }
-
-      // Find members of selected groups
-      if ( groupList != null ) {
-         for ( Iterator gIt=groupList.iterator(); gIt.hasNext(); ) {
-            GroupWrapper group = (GroupWrapper)gIt.next();
-            if ( group.getChecked() )
-               members.addAll( site.getGroup( group.getId()).getMembers() );
-         }
-      }
-      
-      // If no groups are available or selected
-      if ( members.size() == 0 ) 
-         members = site.getMembers(); 
-      
-      for (Iterator it=members.iterator(); it.hasNext(); ) {
-         String userId = ((Member)it.next()).getUserId();
-         
-         // Check for a null agent since the site.getMembers() will return member records for deleted users
-         Agent agent = getAgentManager().getAgent(userId);
-         if (agent != null && agent.getId() != null) 
-            memberList.add(agent);
-      }
-      
-      return memberList;
    }
 
    /** Return list of available users (i.e. not in shareList) optionally filtered by group
@@ -581,14 +495,6 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
       this.serverConfigurationService = serverConfigurationService;
    }
-
-   public SiteService getSiteService() {
-      return siteService;
-   }
-
-   public void setSiteService( SiteService siteService) {
-      this.siteService = siteService;
-   }
    
    public EmailService getEmailService() {
       return emailService;
@@ -613,36 +519,4 @@ public class SharePresentationMoreController extends AbstractPresentationControl
 			return o1.getDisplayName().compareTo( o2.getDisplayName() );
 		}
 	}
-   
-   /** Comparator for sorting GroupWrapper objects by title
-    **/
-	public class GroupComparator implements Comparator<GroupWrapper> {
-		public int compare(GroupWrapper o1, GroupWrapper o2) {
-			return o1.getTitle().compareTo( o2.getTitle() );
-		}
-	}
-   
-   /** Wrap Group class to support getChecked() method
-    **/
-   public class GroupWrapper {
-      private Group group;
-      private boolean checked;
-      
-      public GroupWrapper( Group group, boolean checked ) {
-         this.group = group;
-         this.checked = checked;
-      }
-      public void setChecked( boolean checked ) {
-         this.checked = checked;
-      }
-      public boolean getChecked() {
-         return checked;
-      }
-      public String getId() {
-         return group.getId();
-      }
-      public String getTitle() {
-         return group.getTitle();
-      }
-   }
 }

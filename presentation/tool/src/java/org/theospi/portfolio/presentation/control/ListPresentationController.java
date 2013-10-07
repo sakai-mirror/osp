@@ -21,40 +21,39 @@
 package org.theospi.portfolio.presentation.control;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.spring.util.SpringTool;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.PreferencesEdit;
-import org.sakaiproject.user.cover.PreferencesService;
+import org.sakaiproject.user.api.PreferencesService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.support.PresentationService;
 
@@ -64,6 +63,8 @@ public class ListPresentationController extends AbstractPresentationController {
    private ListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
    protected PresentationService presentationService;
+   private ToolManager toolManager;
+   private PreferencesService preferencesService;
    
    private final static String PORTFOLIO_PREFERENCES = "org.theospi.portfolio.presentation.placement.";
    private final static String PREF_HIDDEN = "org.theospi.portfolio.presentation.hidden.";
@@ -106,7 +107,7 @@ public class ListPresentationController extends AbstractPresentationController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
-      String currentToolId = ToolManager.getCurrentPlacement().getId();
+      String currentToolId = getToolManager().getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
       String showHidden = getUserPreferenceProperty(PREF_HIDDEN, 
@@ -126,12 +127,15 @@ public class ListPresentationController extends AbstractPresentationController {
       if ( filterList.equals(PREF_FILTER_VALUE_ALL) )
          filterList = PREF_FILTER_VALUE_MINE;
          
+      // set the group related pieces
+      model.putAll(getGroupData(request, worksiteId));
+
       Collection presentations = null;
       String filterToolId = null;
       
       boolean viewAll = getServerConfigurationService().getBoolean("osp.presentation.viewall", false) &&
          getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
-                                        getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
+                                        getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
       
       // If not on MyWorkspace, grab presentations for this tool only
       if ( ! isOnWorkspaceTab() )
@@ -155,18 +159,28 @@ public class ListPresentationController extends AbstractPresentationController {
 
        // Sort the presentations
       Boolean sortOrderIsAscending = SORTORDER_ASCENDING.equals(sortOrder) ? true : false;
-      sortPresentations(presentations, sortColumn, sortOrderIsAscending);
-       
-      List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
-      model.put("presentations", getPresentationData(presSubList) );
 
-      List templates = presentationService.getAvailableTemplates();
-      model.put("createAvailable", presentationService.isFreeFormEnabled() || templates.size() > 0);
-       
+      Site site = getWorksiteManager().getSite(worksiteId);
+
+      sortPresentations(presentations, sortColumn, sortOrderIsAscending);
+      List<PresentationDataBean> presDataList = getPresentationDataAndGroupFilter(
+            new ArrayList<Presentation>(presentations), site,
+            (String) request.get("groups"));
+
+      List presSubList = getListScrollIndexer().indexList(request, model,
+            presDataList, true);
+
+      model.put("presentations", presSubList);
+
+      List<PresentationTemplate> templates = presentationService
+      .getAvailableTemplates();
+      model.put("createAvailable", presentationService.isFreeFormEnabled()
+            || templates.size() > 0);
+
       model.put(SORTORDER_ISASCENDING_KEY, sortOrderIsAscending);
       model.put(SORTCOLUMN_KEY, sortColumn);
       model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
-      model.put("worksite", getWorksiteManager().getSite(worksiteId));
+      model.put("worksite", site);
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
@@ -176,9 +190,37 @@ public class ListPresentationController extends AbstractPresentationController {
       model.put("lastViewKey", SpringTool.LAST_VIEW_VISITED);
       return new ModelAndView("success", model);
    }
-   
-   /** Sort given collection of presentations, using given sortColumn in ascending or descending order
-    **
+
+   private Hashtable<String, Object> getGroupData(Map request,
+         String worksiteId) {
+      Hashtable<String, Object> model = new Hashtable<String, Object>();
+
+      if (request.get("groups") == null) {
+         request.put("groups", "");
+      }
+      List<GroupWrapper> groupList = new ArrayList<GroupWrapper>(
+            getGroupList(worksiteId, request));
+      // Collections.sort(groupList);
+      // TODO: Figure out why ClassCastExceptions fire if we do this the
+      // obvious way... The User list sorts fine
+      Collections.sort(groupList, groupComparator);
+      
+      String filteredGroup = (String) request.get("groups");
+      model.put("filteredGroup", filteredGroup == null ? "" : filteredGroup);
+
+      model.put("userGroups", groupList);
+      // TODO: Address why the fn:length() function can't be loaded or another
+      // handy way to pull collection size via EL
+      model.put("userGroupsCount", groupList.size());
+      model.put("hasGroups", getHasGroups(worksiteId));
+
+      return model;
+   }
+
+   /**
+    * Sort given collection of presentations, using given sortColumn in
+    * ascending or descending order
+    ** 
     **/
    private void sortPresentations(final Collection<Presentation> presentations,
                                   final String sortColumn, final Boolean inAscendingOrder) 
@@ -207,12 +249,12 @@ public class ListPresentationController extends AbstractPresentationController {
    protected String getUserPreferenceProperty(String prefKey, String prefValue, String dfltValue) 
    {
       
-      String propsName = PORTFOLIO_PREFERENCES + ToolManager.getCurrentPlacement().getId();
+      String propsName = PORTFOLIO_PREFERENCES + getToolManager().getCurrentPlacement().getId();
       String userId    = getAuthManager().getAgent().getId().getValue();
 
       // If no preference was provided in request, then get saved preference
       if ( prefValue == null ) {
-         Preferences userPreferences = PreferencesService.getPreferences(userId);
+         Preferences userPreferences = getPreferencesService().getPreferences(userId);
          ResourceProperties portfolioPrefs = userPreferences.getProperties(propsName);
          prefValue = portfolioPrefs.getProperty(prefKey);
          
@@ -228,7 +270,7 @@ public class ListPresentationController extends AbstractPresentationController {
       // Otherwise, save preference and return  
       PreferencesEdit prefEdit = null;
       try {
-         prefEdit = (PreferencesEdit) PreferencesService.add(userId);
+         prefEdit = (PreferencesEdit) getPreferencesService().add(userId);
       } 
       catch (PermissionException e) {
          logger.warn(e.toString());
@@ -236,7 +278,7 @@ public class ListPresentationController extends AbstractPresentationController {
       catch (IdUsedException e) {
          // Preferences already exist, just edit
          try {
-            prefEdit = (PreferencesEdit) PreferencesService.edit(userId);
+            prefEdit = (PreferencesEdit) getPreferencesService().edit(userId);
          } 
          catch (Exception e2) {
             logger.warn(e2.toString());
@@ -247,7 +289,7 @@ public class ListPresentationController extends AbstractPresentationController {
          try {
             ResourceProperties propEdit = prefEdit.getPropertiesEdit(propsName);
             propEdit.addProperty(prefKey, prefValue);
-            PreferencesService.commit(prefEdit);
+            getPreferencesService().commit(prefEdit);
          }
          catch (Exception e) {
             logger.warn(e.toString());
@@ -263,7 +305,7 @@ public class ListPresentationController extends AbstractPresentationController {
     */
    private boolean isOnWorkspaceTab()
    {
-      return SiteService.isUserSite(ToolManager.getCurrentPlacement().getContext());
+      return getSiteService().isUserSite(getToolManager().getCurrentPlacement().getContext());
    }
 	
    public ListScrollIndexer getListScrollIndexer() {
@@ -289,13 +331,55 @@ public class ListPresentationController extends AbstractPresentationController {
    
    /** Given a list of presentations, this method returns a list of PresentationDataBean objects
     **/
-   public List getPresentationData( List presList ) {
-      ArrayList presData = new ArrayList( presList.size() );
-      for (Iterator it = presList.iterator(); it.hasNext();) {
-         Presentation pres = (Presentation) it.next();
-         presData.add( new PresentationDataBean( pres ) );
+   public List<PresentationDataBean> getPresentationDataAndGroupFilter(
+         List<Presentation> presList, Site site, String groupId) {
+      List<PresentationDataBean> presData = new ArrayList<PresentationDataBean>(
+            presList.size());
+      Set<String> groupUserIds = null;
+      Group group = site.getGroup(groupId);
+
+      if (group != null) {
+         groupUserIds = group.getUsers();
+      } else if (groupId != null && "UNASSIGNED_GROUP".equals(groupId)) {
+         groupUserIds = new HashSet<String>();
+         // get all users not in a group
+         // TODO Is there a more efficient way to do this?
+         Set<Member> siteMembers = site.getMembers();
+         for (Member siteMember : siteMembers) {
+            Collection memberGroups = site.getGroupsWithMember(siteMember
+                  .getUserId());
+            if (memberGroups == null
+                  || (memberGroups != null && (memberGroups.isEmpty() || memberGroups
+                        .size() == 0))) {
+               groupUserIds.add(siteMember.getUserId());
+            }
+         }
+      }
+
+      for (Presentation pres : presList) {
+         if (groupUserIds == null
+               || groupUserIds
+               .contains(pres.getOwner().getId().getValue())) {
+            presData.add(new PresentationDataBean(pres));
+         }
       }
       return presData;
+   }
+
+   public void setToolManager(ToolManager toolManager) {
+      this.toolManager = toolManager;
+   }
+
+   public ToolManager getToolManager() {
+      return toolManager;
+   }
+
+   public void setPreferencesService(PreferencesService preferencesService) {
+      this.preferencesService = preferencesService;
+   }
+
+   public PreferencesService getPreferencesService() {
+      return preferencesService;
    }
    
    /** This class provides auxiliary data (comments, shared status) for a given presentation

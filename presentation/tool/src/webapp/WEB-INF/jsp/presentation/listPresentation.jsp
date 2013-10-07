@@ -61,6 +61,20 @@ $(document).ready(function() {
 
 </script>
 --%>
+
+<style>
+
+div.filterrow span.filterleft {
+  float: left;
+  text-align: left;
+  width: 25%;
+  }
+
+div.filterrow span.filterright {
+  float: left;
+  text-align: left;
+  }
+</style>
 	
 <script  type ="text/javascript">
 $(document).ready(function() {
@@ -138,6 +152,8 @@ $(document).ready(function() {
 	<div class="tabNavPanel">
  <!-- temp separation; end of tabs -->
 
+<div class="filterrow">
+<span class="filterleft">
 
 <ul class="smallNavIntraTool specialLink">
 		<li>
@@ -170,7 +186,40 @@ $(document).ready(function() {
       </c:otherwise>
     </c:choose>
 </ul>
-
+</span>
+	<c:if test="${filterList != 'mine'}">
+        <span class="filterright">
+			<form method="get" action="<osp:url value="listPresentation.osp"/>">
+				<osp:form />
+					<c:if test="${not empty userGroups && userGroupsCount > 0}">
+						<label for="groups" class="smallNavIntraTool"><fmt:message
+								key="filter_by_group" />
+						</label>
+						<select name="groups" id="groups"
+							onchange="this.form.submit()">
+							<option value="">
+								<fmt:message key="select_group" />
+							</option>
+							<option value=""
+								<c:if test="${empty filteredGroup}">selected="selected"</c:if>>
+								<fmt:message key="groups_showall"></fmt:message>
+							</option>
+							<c:forEach var="group" items="${userGroups}">
+								<option value="<c:out value="${group.id}"/>"
+									<c:if test="${group.checked}"> selected="selected"</c:if>>
+									<c:out value="${group.title}"></c:out>
+								</option>
+							</c:forEach>
+							<option value="UNASSIGNED_GROUP"
+								<c:if test="${filteredGroup == 'UNASSIGNED_GROUP'}">selected="selected"</c:if>>
+								<fmt:message key="groups_unassigned"></fmt:message>
+							</option>
+						</select>
+					</c:if>
+			</form>
+        </span>
+	</c:if>
+</div>
 <div class="navPanel" id="NavPanelPager">
 	<osp:url var="listUrl" value="listPresentation.osp"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
