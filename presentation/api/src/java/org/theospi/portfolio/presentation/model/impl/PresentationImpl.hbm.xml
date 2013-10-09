@@ -99,6 +99,7 @@
          column="tool_id"
          length="36"
          not-null="false"/>
+      <property name="isSearchable" type="boolean" column="isSearchable" not-null="false"/>
    </class>
 
    <class name="PresentationComment" table="osp_presentation_comment">
@@ -312,6 +313,11 @@
    </query>
    <query name="findPortfolioByOwnerExclusive">
 		from Presentation p where owner=:owner and p.id not in ( :hiddenId ) Order by p.name
+   </query>
+   <query name="findPortfolioByOwnerExclusiveSearchable">
+		from Presentation p where owner=:owner and p.id not in ( :hiddenId ) and p.isSearchable=1 
+		and (p.template.propertyFormType is null or p.propertyForm is not null) 
+		Order by p.name
    </query>
    
    <query name="findPortfolioByOwnerAndToolExclusive">

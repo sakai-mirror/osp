@@ -36,9 +36,11 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
@@ -47,6 +49,7 @@ import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.PreferencesEdit;
 import org.sakaiproject.user.api.PreferencesService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -56,6 +59,11 @@ import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.support.PresentationService;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
+
+
+import org.sakaiproject.email.cover.EmailService;
 
 public class ListPresentationController extends AbstractPresentationController {
 
@@ -76,6 +84,9 @@ public class ListPresentationController extends AbstractPresentationController {
    private final static String PREF_FILTER_VALUE_PUBLIC = "public";
    private final static String PREF_FILTER_VALUE_MINE   = "mine";
    private final static String PREF_FILTER_VALUE_SHARED = "shared";
+   private final static String PREF_FILTER_VALUE_SEARCH = "search";
+   
+   private final static String SEARCH_ENABLED_KEY = "osp.portfolio.search.enabled";
    
    private final static String SORTCOLUMN_KEY = "sortOn";
    private static final Object SORTORDER_KEY = "sortorder";
@@ -87,6 +98,7 @@ public class ListPresentationController extends AbstractPresentationController {
    private static final String DATEMODIFIED_COLUMNKEY = "dateModified";
    private static final String OWNER_COLUMNKEY = "owner";
    private static final String REVIEWED_COLUMNKEY = "reviewed";
+   private static final String WORKSITE_COLUMNKEY = "worksite";
    
    private static final Map<String, Comparator<Presentation>> sortName2PresentationComparator = initSortName2PresentationComparator();
    
@@ -100,12 +112,16 @@ public class ListPresentationController extends AbstractPresentationController {
                  new PresentationComparators.ByOwnerComparator());
       result.put(REVIEWED_COLUMNKEY,
                  new PresentationComparators.ByReviewedComparator());
+      result.put(WORKSITE_COLUMNKEY,
+              new PresentationComparators.ByWorksiteComparator());
       return result;
    }
  
    @SuppressWarnings("unchecked")
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      Hashtable<String, Object> model = new Hashtable<String, Object>();
+	   
+	  Hashtable<String, Object> model = new Hashtable<String, Object>();
+
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = getToolManager().getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
@@ -122,6 +138,16 @@ public class ListPresentationController extends AbstractPresentationController {
       String sortOrder = getUserPreferenceProperty(PREF_SORT_ORDER, 
                                                    (String)request.get(SORTORDER_KEY),
                                                    SORTORDER_ASCENDING);
+      
+      String searchText = (String)request.get("searchText");
+      String memberSearch = (String)request.get("memberSearch");
+      String pagerUrlParms = "";
+      
+      boolean isSearchEnabled = false;
+      
+      if (serverConfigurationService.getBoolean(SEARCH_ENABLED_KEY, false)) {
+    	 isSearchEnabled = true; 
+      }
                                                    
       // Reset deprecated 'ALL' preference with 'MINE' preference
       if ( filterList.equals(PREF_FILTER_VALUE_ALL) )
@@ -137,9 +163,11 @@ public class ListPresentationController extends AbstractPresentationController {
          getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
                                         getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
       
-      // If not on MyWorkspace, grab presentations for this tool only
-      if ( ! isOnWorkspaceTab() )
+      // If not on MyWorkspace, grab presentations for this tool only and display show members presentation link
+      if ( ! isOnWorkspaceTab() ) {
          filterToolId = currentToolId;
+         model.put("show_members_presentations_link", true);
+      }
         
       if ( filterList.equals(PREF_FILTER_VALUE_MINE) )
       {
@@ -151,6 +179,60 @@ public class ListPresentationController extends AbstractPresentationController {
             presentations = getPresentationManager().findOtherPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
          else
             presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
+      }
+      else if ( isSearchEnabled && filterList.equals(PREF_FILTER_VALUE_SEARCH) ) {
+          pagerUrlParms = pagerUrlParms + "?filterList=search";
+          
+          if (memberSearch != null) {
+              model.put("memberSearch", "1");
+              pagerUrlParms = pagerUrlParms + "&memberSearch=1";
+              
+              try 
+              {
+                String siteId = getToolManager().getCurrentPlacement().getContext();
+                
+                Set<String> users = getSiteService().getSite(siteId).getUsers();
+                
+                String viewSearchable = getPresentationManager().PRESENTATION_VIEW_SEARCHABLE;
+                
+                for(String user: users) {
+                    
+                    Agent userAgent = getAgentManager().getAgent(user);
+                    Collection userPresentations = getPresentationManager().findOwnerPresentations(userAgent, null, viewSearchable);
+                    
+                    if (presentations == null) {
+                        presentations = userPresentations;
+                    }
+                    else {
+                        if (userPresentations != null) {
+                            presentations.addAll(userPresentations);
+                        }
+                    }
+                    
+                }
+              } 
+              catch (IdUnusedException e) 
+              {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+              
+          }
+          else { 
+              presentations = getPresentationManager().findAllPresentationsByUserString(currentAgent, searchText);
+
+              if (searchText != null) {
+
+                  model.put("searchText", searchText);
+                  pagerUrlParms = pagerUrlParms + "&searchText=" + org.apache.commons.lang.StringEscapeUtils.escapeHtml(searchText);
+                  
+                  if (presentations.size() == 0) {
+                      model.put("searchTextNotFound", true);
+                  }
+              }
+          }
+          
+          model.put("flname", currentAgent.getName());
       }
       else // ( filterList.equals(PREF_FILTER_VALUE_PUBLIC) )
       {
@@ -174,9 +256,16 @@ public class ListPresentationController extends AbstractPresentationController {
 
       List<PresentationTemplate> templates = presentationService
       .getAvailableTemplates();
-      model.put("createAvailable", presentationService.isFreeFormEnabled()
-            || templates.size() > 0);
+      
+      
+      if (! filterList.equals(PREF_FILTER_VALUE_SEARCH) ) {
+    	  model.put("createAvailable", presentationService.isFreeFormEnabled()
+    			  || templates.size() > 0);
+      }
 
+	  
+	  model.put("isSearchEnabled", isSearchEnabled);
+	  model.put("pagerUrlParms", pagerUrlParms);
       model.put(SORTORDER_ISASCENDING_KEY, sortOrderIsAscending);
       model.put(SORTCOLUMN_KEY, sortColumn);
       model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
@@ -449,5 +538,4 @@ public class ListPresentationController extends AbstractPresentationController {
          return m_collab;
       }
    }
-	
 }

@@ -325,6 +325,43 @@
         </property>
     </bean>
 
+	<bean id="requestPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+        <property name="controller">
+            <bean class="org.theospi.portfolio.presentation.control.RequestPresentationController">
+		         <property name="presentationManager">
+		            <ref bean="presentationManager"/>
+		        </property>
+            	<property name="idManager">
+			        <ref bean="idManager"/>
+		        </property>	
+		        <property name="authzManager">
+		            <ref bean="authzManager"/>
+		        </property>
+		         <property name="agentManager">
+			         <ref bean="agentManager"/>
+		         </property>
+                <property name="userDirectoryService">
+                    <ref bean="org.sakaiproject.user.api.UserDirectoryService"/>
+                </property>
+                <property name="emailService">
+                    <ref bean="org.sakaiproject.email.api.EmailService"/>
+                </property>
+                <property name="portalService">
+                    <ref bean="org.sakaiproject.portal.api.PortalService"/>
+                </property>
+                <property name="siteService">
+                    <ref bean="org.sakaiproject.site.api.SiteService"/>
+                </property>
+            </bean>
+        </property>
+        <property name="screenMappings">
+            <props>
+              <prop key="success">requestPresentationRedirect</prop>
+              <prop key="list">listPresentationRedirect</prop>
+            </props>
+        </property>
+    </bean>
+	
     <bean id="deletePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.DeletePresentationController" parent="abstractPresentationController">
@@ -585,6 +622,12 @@
 	</bean>
 	
 	<bean id="updatePresentationController" class="org.theospi.portfolio.presentation.control.UpdatePresentationController" parent="supportedController">
+		<property name="authzManager">
+			<ref bean="authzManager"/>
+		</property>
+        <property name="authManager">
+        	<ref bean="authManager" />
+        </property>
 	</bean>
 	
 	<bean id="editPresentationFormController" class="org.theospi.portfolio.presentation.control.EditPresentationFormController" parent="supportedController">

@@ -68,6 +68,7 @@ public interface PresentationManager extends CleanupableService {
    public static final String PRESENTATION_VIEW_ALL     = "all";
    public static final String PRESENTATION_VIEW_HIDDEN  = "hidden";
    public static final String PRESENTATION_VIEW_VISIBLE = "visible"; // not hidden
+   public static final String PRESENTATION_VIEW_SEARCHABLE = "searchable";
 
    
    public PresentationTemplate storeTemplate(PresentationTemplate template);
@@ -194,6 +195,15 @@ public interface PresentationManager extends CleanupableService {
     * @return collection of presentations
     */
    public Collection findOtherPresentationsUnrestricted(Agent owner, String toolId, String showHidden);
+   
+   /**
+    * Return a list of presentations that are owned by userId or name matching userString
+    * 
+    * @param viewer
+    * @param userString
+    * @return collection of presentations
+    */
+   public Collection findAllPresentationsByUserString(Agent viewer, String userString);
    
    /**
     * Return a list of presentation  shared with agent, optionally filtered by toolId.

@@ -14,6 +14,11 @@ $(document).ready(function() {
 			var params = { id : osp.bag.presentationId };
 			params[$(this).attr('name')] = $(this).val();
 			$.post('updatePresentation.osp', params );
+		} else {
+			if ($(this).is(':checkbox')) {
+				var params = { id : osp.bag.presentationId };
+				$.post('updatePresentation.osp', params );
+			}
 		}
 	});
 });
@@ -90,9 +95,16 @@ $(document).ready(function() {
 					<label for="btnActive"><c:out value="${msgs.button_active}" /></label>
 				</p>
 				<p class="quickLinkInfo">
-					<c:out value="${msgs.active_caption}" />
+				    <input class="autoPost"  type="checkbox" 
+				           id="btnNotSearchable" name="not_searchable" value="true"
+				           <c:if test="${not_searchable}">checked="checked"</c:if> />
+                    <fmt:message key="button_not_include_in_search"/>				           
 				</p>
-				
+				<p style="line-height:4px;">&nbsp;</p>
+				<p class="quickLinkInfo">
+					<fmt:message key="active_caption" />
+				</p>
+				<p class="quickLink">&nbsp;</p>				
 				<p class="quickLink">
 					<input class="autoPost" type="radio"
 					       id="btnInactive"

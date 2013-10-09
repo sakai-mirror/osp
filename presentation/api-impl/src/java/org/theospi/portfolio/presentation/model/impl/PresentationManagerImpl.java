@@ -966,6 +966,41 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
+   public Collection findAllPresentationsByUserString(Agent viewer, String userString) {
+	   Session session = getSession();
+	   
+	   if (userString != null && userString.trim().length() > 0) {
+		   //remove sql wildcard character
+		   userString = userString.replace("%", "");
+
+		   String userStringSql = "%" + userString.trim().toLowerCase() + "%";
+
+		   SQLQuery query = session.createSQLQuery("SELECT {osp_presentation.*}" +
+				   " FROM osp_presentation {osp_presentation}, osp_presentation_template pt, SAKAI_USER su, SAKAI_USER_ID_MAP suidm" +
+				   " WHERE {osp_presentation}.owner_id = su.USER_ID and {osp_presentation}.owner_id = suidm.USER_ID" + 
+				   " and {osp_presentation}.template_id = pt.id" +
+				   " and ({osp_presentation}.expiresOn is null or {osp_presentation}.expiresOn >= current_date)" + 
+				   " and {osp_presentation}.isSearchable = 1" + 
+				   " and (pt.propertyFormType is null or (pt.propertyFormType is not null and {osp_presentation}.property_form is not null)) " +
+				   " and (lower(suidm.EID) like :userString or lower(su.FIRST_NAME) like :userString or lower(su.LAST_NAME) like :userString)");
+
+		   query.addEntity("osp_presentation", Presentation.class);
+		   query.setString("userString", userStringSql);
+
+		   try {
+			   return query.list();
+		   } catch (HibernateException e) {
+			   logger.error("",e);
+			   throw new OspException(e);
+		   } 
+	   }
+	   
+	   return new ArrayList<Presentation>();
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
    public Collection findSharedPresentations(Agent viewer, String toolId, String showHidden) {
       // Build list of hidden presentation authzs
       Collection hiddenAuthzs = getAuthzManager().getAuthorizations(viewer, 
@@ -1057,6 +1092,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
                                                        "findPortfolioByOwnerExclusive", 
                                                        paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_SEARCHABLE) ) 
+             presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                        "findPortfolioByOwnerExclusiveSearchable", 
+                                                        paramNames, params);
          else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
             presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
                                                        "findPortfolioByOwnerExclusive", 
