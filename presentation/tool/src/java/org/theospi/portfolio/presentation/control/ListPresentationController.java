@@ -31,6 +31,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Set;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.Element;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.Member;
@@ -40,16 +44,17 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.metaobj.utils.mvc.impl.ListScrollResultBean;
+import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollResultsFilter;
+import org.sakaiproject.metaobj.utils.mvc.intf.FilterableListScrollIndexer;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.PreferencesEdit;
 import org.sakaiproject.user.api.PreferencesService;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -57,28 +62,27 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.support.PresentationService;
-import org.sakaiproject.user.api.UserDirectoryService;
-import org.sakaiproject.util.ResourceLoader;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 
-import org.sakaiproject.email.cover.EmailService;
-
-public class ListPresentationController extends AbstractPresentationController {
+public class ListPresentationController extends AbstractPresentationController implements ListScrollResultsFilter {
 
    protected final Log logger = LogFactory.getLog(getClass());
-   private ListScrollIndexer listScrollIndexer;
+   private FilterableListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
    protected PresentationService presentationService;
    private ToolManager toolManager;
    private PreferencesService preferencesService;
+   
+   private Cache userToolCache = null;
    
    private final static String PORTFOLIO_PREFERENCES = "org.theospi.portfolio.presentation.placement.";
    private final static String PREF_HIDDEN = "org.theospi.portfolio.presentation.hidden.";
    private final static String PREF_FILTER = "org.theospi.portfolio.presentation.filter.";
    private final static String PREF_SORT_ORDER = "org.theospi.portfolio.presentation.sortOrder.";
    private final static String PREF_SORT_KEY = "org.theospi.portfolio.presentation.sortKey.";
+   private final static String PREF_ALL_SITES = "org.theospi.portfolio.presentation.allSites.";
    
    private final static String PREF_FILTER_VALUE_ALL    = "all"; // deprecated - but keep for parsing old preferences
    private final static String PREF_FILTER_VALUE_PUBLIC = "public";
@@ -116,6 +120,45 @@ public class ListPresentationController extends AbstractPresentationController {
               new PresentationComparators.ByWorksiteComparator());
       return result;
    }
+   
+   /**
+    * Get all of the presentation tool placements for all the current user's sites
+    * @return
+    */
+   private List<String> getPresentationToolIds(String toolId) {
+   	List<String> toolIds = new ArrayList<String>();
+   	if (toolId != null) {
+   		toolIds.add(toolId);
+   	}
+   	else {
+   		String userId = getAuthManager().getAgent().getId().getValue();
+   		try {
+   	    	  Element elem = null;
+   	    	  
+   	    	  if(userId != null)
+   	    		  	elem = userToolCache.get(userId);
+   	         if(userToolCache != null && elem != null) {
+   	        	   if(elem.getValue() == null)
+   	        	      return null;
+   	            return (List<String>)elem.getValue();
+   	         }
+   	      } catch(CacheException e) {
+   	         logger.warn("the userTool ehcache had an exception", e);
+   	      }
+   		
+   		
+      	List<Site> sites = getWorksiteManager().getUserSites();
+      	for (Site site : sites) {
+      		ToolConfiguration tc = site.getToolForCommonId("osp.presentation");
+      		if (tc != null) {
+      			toolIds.add(tc.getId());
+      		}
+      	}
+      	if(userToolCache != null && userId != null)
+      		userToolCache.put(new Element(userId, toolIds));
+   	}
+   	return toolIds;
+   }
  
    @SuppressWarnings("unchecked")
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
@@ -138,6 +181,9 @@ public class ListPresentationController extends AbstractPresentationController {
       String sortOrder = getUserPreferenceProperty(PREF_SORT_ORDER, 
                                                    (String)request.get(SORTORDER_KEY),
                                                    SORTORDER_ASCENDING);
+      String showAllSites = getUserPreferenceProperty(PREF_ALL_SITES, 
+              (String)request.get("showAllSitesKey"), 
+              "false");
       
       String searchText = (String)request.get("searchText");
       String memberSearch = (String)request.get("memberSearch");
@@ -163,23 +209,26 @@ public class ListPresentationController extends AbstractPresentationController {
          getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
                                         getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
       
+      Site site = getWorksiteManager().getSite(worksiteId);
+      Set<String> siteUserIds = site.getUsers();
+      
       // If not on MyWorkspace, grab presentations for this tool only and display show members presentation link
-      if ( ! isOnWorkspaceTab() ) {
+      if ( ! isOnWorkspaceTab() && !"true".equalsIgnoreCase(showAllSites) ) {
          filterToolId = currentToolId;
          model.put("show_members_presentations_link", true);
       }
-        
+      else {
+      	//If we are in a my workspace, clear out the user list
+      	siteUserIds.clear();
+      }
+      
+      List<String> toolIds = getPresentationToolIds(filterToolId);
       if ( filterList.equals(PREF_FILTER_VALUE_MINE) )
       {
-         presentations = getPresentationManager().findOwnerPresentations(currentAgent, filterToolId, showHidden);
+         presentations = getPresentationManager().findOwnerPresentations(currentAgent, toolIds, showHidden);
       }
       else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
-      {
-         if ( viewAll && !isOnWorkspaceTab() )
-            presentations = getPresentationManager().findOtherPresentationsUnrestricted(currentAgent, filterToolId, showHidden);
-         else
-            presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
-      }
+          presentations = getPresentationManager().findSharedPresentations(currentAgent, toolIds, showHidden, siteUserIds, "true".equalsIgnoreCase(showAllSites));
       else if ( isSearchEnabled && filterList.equals(PREF_FILTER_VALUE_SEARCH) ) {
           pagerUrlParms = pagerUrlParms + "?filterList=search";
           
@@ -236,21 +285,24 @@ public class ListPresentationController extends AbstractPresentationController {
       }
       else // ( filterList.equals(PREF_FILTER_VALUE_PUBLIC) )
       {
-         presentations = getPresentationManager().findPublicPresentations(currentAgent, filterToolId, showHidden);
+         presentations = getPresentationManager().findPublicPresentations(currentAgent, filterToolId, showHidden, "true".equalsIgnoreCase(showAllSites));
       }
 
        // Sort the presentations
       Boolean sortOrderIsAscending = SORTORDER_ASCENDING.equals(sortOrder) ? true : false;
 
-      Site site = getWorksiteManager().getSite(worksiteId);
-
       sortPresentations(presentations, sortColumn, sortOrderIsAscending);
-      List<PresentationDataBean> presDataList = getPresentationDataAndGroupFilter(
-            new ArrayList<Presentation>(presentations), site,
-            (String) request.get("groups"));
+      
+      model.put("showHidden", showHidden);
+      model.put("worksite", site);
+      model.put("groupId", (String) request.get("groups"));
+      
+      if (model.get("groupId") != null && ((String) model.get("groupId")).length() > 0) {
+          pagerUrlParms = pagerUrlParms + "&groups=" + (String) model.get("groupId");
+      }
 
       List presSubList = getListScrollIndexer().indexList(request, model,
-            presDataList, true);
+      		new ArrayList<Presentation>(presentations), true, this);
 
       model.put("presentations", presSubList);
 
@@ -269,13 +321,14 @@ public class ListPresentationController extends AbstractPresentationController {
       model.put(SORTORDER_ISASCENDING_KEY, sortOrderIsAscending);
       model.put(SORTCOLUMN_KEY, sortColumn);
       model.put("baseUrl", PresentationService.VIEW_PRESENTATION_URL);
-      model.put("worksite", site);
+      
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
-      model.put("showHidden", showHidden);
+      
       model.put("filterList", filterList);
       model.put("myworkspace", isOnWorkspaceTab() );
+      model.put("showAllSites", showAllSites);
       model.put("lastViewKey", SpringTool.LAST_VIEW_VISITED);
       return new ModelAndView("success", model);
    }
@@ -397,11 +450,11 @@ public class ListPresentationController extends AbstractPresentationController {
       return getSiteService().isUserSite(getToolManager().getCurrentPlacement().getContext());
    }
 	
-   public ListScrollIndexer getListScrollIndexer() {
+   public FilterableListScrollIndexer getListScrollIndexer() {
       return listScrollIndexer;
    }
 
-   public void setListScrollIndexer(ListScrollIndexer listScrollIndexer) {
+   public void setListScrollIndexer(FilterableListScrollIndexer listScrollIndexer) {
       this.listScrollIndexer = listScrollIndexer;
    }
     public ServerConfigurationService getServerConfigurationService() {
@@ -416,15 +469,53 @@ public class ListPresentationController extends AbstractPresentationController {
    public void setPresentationService(PresentationService presentationService) {
       this.presentationService = presentationService;
    }
+
+   public void setToolManager(ToolManager toolManager) {
+      this.toolManager = toolManager;
+   }
+
+   public ToolManager getToolManager() {
+      return toolManager;
+   }
+
+   public void setPreferencesService(PreferencesService preferencesService) {
+      this.preferencesService = preferencesService;
+   }
+
+   public PreferencesService getPreferencesService() {
+      return preferencesService;
+   }
    
-   
-   /** Given a list of presentations, this method returns a list of PresentationDataBean objects
-    **/
-   public List<PresentationDataBean> getPresentationDataAndGroupFilter(
-         List<Presentation> presList, Site site, String groupId) {
-      List<PresentationDataBean> presData = new ArrayList<PresentationDataBean>(
+   public Cache getUserToolCache() {
+	   return userToolCache;
+   }
+
+	public void setUserToolCache(Cache userToolCache) {
+	   this.userToolCache = userToolCache;
+   }
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.sakaiproject.metaobj.utils.mvc.intf.ListScrollResultsFilter#process(java.util.Map, java.util.Map, java.util.List, int, int)
+	 */
+	public ListScrollResultBean process(Map request, Map model, List sourceList, int startingIndex, int pageSize) {
+	   return process(request, model, sourceList, startingIndex, pageSize, true);
+   }
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.sakaiproject.metaobj.utils.mvc.intf.ListScrollResultsFilter#process(java.util.Map, java.util.Map, java.util.List, int, int, boolean)
+	 */
+	public ListScrollResultBean process(Map request, Map model, List sourceList, int startingIndex, int pageSize, boolean startAtFront) {
+		List<Presentation> presList = sourceList;
+		int listSize = sourceList.size();
+		List<PresentationDataBean> presData = new ArrayList<PresentationDataBean>(
             presList.size());
-      Set<String> groupUserIds = null;
+		
+		Site site = (Site)model.get("worksite");
+		String groupId = (String)model.get("groupId");
+		
+		Set<String> groupUserIds = null;
       Group group = site.getGroup(groupId);
 
       if (group != null) {
@@ -444,34 +535,54 @@ public class ListPresentationController extends AbstractPresentationController {
             }
          }
       }
-
-      for (Presentation pres : presList) {
-         if (groupUserIds == null
-               || groupUserIds
-               .contains(pres.getOwner().getId().getValue())) {
-            presData.add(new PresentationDataBean(pres));
-         }
+		
+		String showHidden = (String)model.get("showHidden");
+      
+      boolean viewHidden = !showHidden.equals(PresentationManager.PRESENTATION_VIEW_VISIBLE);
+      boolean viewNotHidden = !showHidden.equals(PresentationManager.PRESENTATION_VIEW_HIDDEN);
+      int count = 0;
+      int skipCount = 0;
+      int processedCount = 0;
+      int index = startingIndex;
+      int insertAt = listSize;
+      if (!startAtFront) {
+      	//previous and last processing will start from the end if the list rather than the beginning
+      	Collections.reverse(presList);
+      	index = listSize - startingIndex - 1;
+      	insertAt = 0;
       }
-      return presData;
-   }
+      logger.debug("starting index: " + startingIndex);
+      logger.debug("adjusted starting index: " + index);
+      List<Presentation> subList = presList.subList(index, listSize);
+      for (Presentation pres : subList) {
+      	processedCount++;
+      	if (groupUserIds == null
+               || groupUserIds.contains(pres.getOwner().getId().getValue())) {
+            PresentationDataBean pdb = new PresentationDataBean(pres);
+            if ((pdb.getHidden() && viewHidden) || (!pdb.getHidden() && viewNotHidden)) {
+            	if (insertAt == 0)
+            		presData.add(insertAt, pdb);
+            	else
+            		presData.add(pdb);
+            	count++;
+            	if (count == pageSize)
+            		break;
+            }
+            else 
+            	skipCount++;
+      	}
+      	else 
+         	skipCount++;
+      }
 
-   public void setToolManager(ToolManager toolManager) {
-      this.toolManager = toolManager;
-   }
+      ListScrollResultBean lsrb = new ListScrollResultBean(presData, startingIndex, processedCount, skipCount, count);
+      if (!startAtFront) {
+      	lsrb.setAltStartIndex(startingIndex-processedCount);
+      }
+      return lsrb;
+	}
 
-   public ToolManager getToolManager() {
-      return toolManager;
-   }
-
-   public void setPreferencesService(PreferencesService preferencesService) {
-      this.preferencesService = preferencesService;
-   }
-
-   public PreferencesService getPreferencesService() {
-      return preferencesService;
-   }
-   
-   /** This class provides auxiliary data (comments, shared status) for a given presentation
+	/** This class provides auxiliary data (comments, shared status) for a given presentation
     **/
    public class PresentationDataBean {
       Presentation m_presentation;
@@ -479,6 +590,8 @@ public class ListPresentationController extends AbstractPresentationController {
       boolean m_shared = false;
       boolean m_public = false;
       boolean m_collab = false;
+      boolean m_hidden = false;
+      boolean m_viewable = false;
       
       public PresentationDataBean( Presentation presentation ) {
          m_presentation = presentation;
@@ -491,10 +604,11 @@ public class ListPresentationController extends AbstractPresentationController {
          List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
          if (authzs.size() > 0)
             m_shared = true;
+
+         m_viewable = getAuthzManager().isAuthorized(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
             
          // Determine if user can collaboratively edit this portfolio
-         if ( presentation.getIsCollab() &&
-              getAuthzManager().isAuthorized(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId()) ) {
+         if ( presentation.getIsCollab() && m_viewable ) {
                     m_collab = true;
          }
          
@@ -506,6 +620,13 @@ public class ListPresentationController extends AbstractPresentationController {
          else {
             m_commentNum = -1; // comments not allowed
          }
+         
+         //See if this is hidden
+         m_hidden = getAuthzManager().isAuthorized(PresentationFunctionConstants.HIDE_PRESENTATION, presentation.getId());
+         //m_hidden = myFuncs.contains(PresentationFunctionConstants.HIDE_PRESENTATION);
+         
+       //See if this is hidden
+         
       }
       
       public Presentation getPresentation() {
@@ -536,6 +657,14 @@ public class ListPresentationController extends AbstractPresentationController {
       
       public boolean getIsCollab() {
          return m_collab;
+      }
+      
+      public boolean getHidden() {
+         return m_hidden;
+      }
+      
+      public boolean getViewable() {
+         return m_viewable;
       }
    }
 }

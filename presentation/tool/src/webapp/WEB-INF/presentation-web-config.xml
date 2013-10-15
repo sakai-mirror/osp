@@ -288,6 +288,21 @@
         </property>
     </bean>
 
+   <bean id="org.theospi.portfolio.presentation.control.ListPresentationController.cache"
+      class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+      <property name="cacheManager">
+         <ref bean="org.sakaiproject.memory.api.MemoryService.cacheManager" />
+      </property>
+      <property name="cacheName">
+         <value>org.theospi.portfolio.presentation.control.ListPresentationController.cache</value>
+      </property>
+      <property name="maxElementsInMemory"><value>500</value></property>
+      <property name="diskPersistent"><value>false</value></property>
+      <property name="eternal"><value>false</value></property>
+      <property name="timeToLive"><value>60</value></property>
+      <property name="timeToIdle"><value>10</value></property>
+   </bean>
+
     <bean id="listPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.ListPresentationController" parent="listScrollerController">
@@ -305,6 +320,7 @@
                 </property>
                 <property name="preferencesService"
                     ref="org.sakaiproject.user.api.PreferencesService" />
+                <property name="userToolCache" ref="org.theospi.portfolio.presentation.control.ListPresentationController.cache"/>
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -477,6 +493,7 @@
                 </property>
                 <property name="preferencesService"
                     ref="org.sakaiproject.user.api.PreferencesService" />
+                <property name="userToolCache" ref="org.theospi.portfolio.presentation.control.ListPresentationController.cache"/>
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -544,6 +561,7 @@
            </property>
            <property name="preferencesService"
                ref="org.sakaiproject.user.api.PreferencesService" />
+           <property name="userToolCache" ref="org.theospi.portfolio.presentation.control.ListPresentationController.cache"/>
        </bean>
      </property>
      <property name="customTypedEditors">

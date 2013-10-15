@@ -391,12 +391,10 @@ $(document).ready(function() {
 <div class="filterrow">
 <span class="filterleft">
 
+<c:if test="${filterList != 'search'}">
+    <p class="smallNavIntraTool specialLink"><fmt:message key="title_show"/></p>
+</c:if>
 <ul class="smallNavIntraTool specialLink">
-		<c:if test="${filterList != 'search'}">
-		    <li>
-	            <fmt:message key="title_show"/>
-		    </li>
-		</c:if>
 	<c:choose>
       <c:when test="${showHidden != 'visible' && filterList != 'search'}">
          <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=visible"><c:out value="${msgs.action_show_not_hidden}"/></a></span></li>
@@ -430,6 +428,20 @@ $(document).ready(function() {
       </c:otherwise>
     </c:choose>
 </ul>
+<c:if test="${!myworkspace}">
+<ul class="smallNavIntraTool specialLink">
+   <c:choose>
+      <c:when test="${showAllSites == 'true'}">
+         <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showAllSitesKey=false"><fmt:message key="action_show_thissite"/></a></span></li>
+         <li><span><fmt:message key="action_show_allsites"/></span></li>
+      </c:when>
+      <c:otherwise>
+         <li class="firstItem"><span><fmt:message key="action_show_thissite"/></span></li>
+         <li><span><a href="<osp:url value="listPresentation.osp"/>&showAllSitesKey=true"><fmt:message key="action_show_allsites"/></a></span></li>
+      </c:otherwise>
+   </c:choose>
+</ul>
+</c:if>
 </span>
 	<c:if test="${filterList != 'mine'}">
         <span class="filterright">
@@ -629,6 +641,9 @@ $(document).ready(function() {
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
 	                            </c:if>
+	                            <c:if test="${! empty groups}">
+								    <osp:param name="groups" value="${groups}"/>
+	                            </c:if>
 								</osp:url>">
 				<c:out value="${msgs.table_header_name}" /></a> 
 				<c:if	test="${sortOn eq 'name'}">
@@ -648,6 +663,9 @@ $(document).ready(function() {
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
 	                            </c:if>
+	                            <c:if test="${! empty groups}">
+								    <osp:param name="groups" value="${groups}"/>
+	                            </c:if>
 								</osp:url>">
 				<c:out value="${msgs.table_header_owner}" /></a> 
 				<c:if	test="${sortOn eq 'owner'}">
@@ -664,6 +682,9 @@ $(document).ready(function() {
 	                            </c:if>
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
+	                            </c:if>
+	                            <c:if test="${! empty groups}">
+								    <osp:param name="groups" value="${groups}"/>
 	                            </c:if>
 								</osp:url>">
 				<c:out value="${msgs.table_header_dateModified}" /></a> 
@@ -683,6 +704,9 @@ $(document).ready(function() {
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
 	                            </c:if>
+	                            <c:if test="${! empty groups}">
+								    <osp:param name="groups" value="${groups}"/>
+	                            </c:if>
 								</osp:url>">
 					 <c:out value="${msgs.table_header_review}" /></a> 
 					 <c:if test="${sortOn eq 'reviewed'}">
@@ -699,7 +723,7 @@ $(document).ready(function() {
 			 <th scope="col" class="attach"><c:out value="${msgs.table_header_comments}"/></th>
 	     </c:if>
           
-			 <c:if test="${myworkspace || (filterList == 'search' && isSearchEnabled)}">
+			 <c:if test="${myworkspace || (filterList == 'search' && isSearchEnabled) || showAllSites == 'true'}">
 				 <th scope="col" class="${className_worksite}">
 		 			 <a href="<osp:url value="listPresentation.osp">
 								 <osp:param name="sortOn" value="worksite"/>
@@ -709,6 +733,9 @@ $(document).ready(function() {
 	                            </c:if>
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
+	                            </c:if>
+	                            <c:if test="${! empty groups}">
+								    <osp:param name="groups" value="${groups}"/>
 	                            </c:if>
 								 </osp:url>">
 			                     <fmt:message key="table_header_worksite"/></a>
@@ -809,18 +836,18 @@ $(document).ready(function() {
                         </c:if>
                         
                         <c:if test="${!presCan.hide}">
-                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.table_action_hide}"/></a>
+                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_hide}"/></a>
                         </c:if>
                         
                         <c:if test="${presCan.hide}">
-                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.table_action_show}"/></a>
+                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_show}"/></a>
                         </c:if>
                         
                         <c:if test="${!myworkspace && can.review && !presentation.isDefault}">
-                        <a href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.table_action_review_set}"/></a>
+                        <a href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_review_set}"/></a>
                         </c:if>
                         <c:if test="${!myworkspace && can.review && presentation.isDefault}">
-                        <a href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.table_action_review_clear}"/></a>
+                        <a href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_review_clear}"/></a>
                         </c:if>
 
                         <!-- http://jira.sakaiproject.org/browse/SAK-17351 -->
@@ -886,7 +913,7 @@ $(document).ready(function() {
 				</c:choose>
 			</td>
          </c:if>
-		  <c:if test="${myworkspace || (filterList == 'search' && isSearchEnabled)}">
+		  <c:if test="${myworkspace || (filterList == 'search' && isSearchEnabled) || showAllSites == 'true'}">
 			 <td style="white-space:nowrap" ><c:out value="${presentation.worksiteName}" /></td>
 		  </c:if>
 		</tr>

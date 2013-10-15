@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.jdom.Document;
 import org.sakaiproject.entity.api.Reference;
@@ -166,6 +167,17 @@ public interface PresentationManager extends CleanupableService {
     */
    public Collection findPublicPresentations(Agent viewer, String toolId, String showHidden);
 
+   /**
+    * Return a list presentation ids of all publicly shared presentations (optionally filtered by toolId)
+    *
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @param isAllSites option to use all site scope
+    * @return collection of presentations
+    */
+   public Collection findPublicPresentations(Agent viewer, String toolId, String showHidden, boolean isAllSites);
+
    /** Return the XML document string corresponding to the specified public portfolio's propertyForm
     ** (portfolio must be publicly viewable).
     **
@@ -182,7 +194,7 @@ public interface PresentationManager extends CleanupableService {
     * @param showHidden option to show all, hidden, not hidden portfolios
     * @return collection of presentations
     */
-   public Collection findAllPresentations(Agent viewer, String toolId, String showHidden);
+   public Collection findAllPresentations(Agent viewer, List<String> toolIds, String showHidden, Set<String> siteUserIds);
 
    /**
     * Return a unrestricted list of presentations for given toolId
@@ -194,7 +206,7 @@ public interface PresentationManager extends CleanupableService {
     * @param showHidden option to show all, hidden, not hidden portfolios
     * @return collection of presentations
     */
-   public Collection findOtherPresentationsUnrestricted(Agent owner, String toolId, String showHidden);
+   public Collection findOtherPresentationsUnrestricted(Agent owner, List<String> toolIds, String showHidden, Set<String> siteUserIds);
    
    /**
     * Return a list of presentations that are owned by userId or name matching userString
@@ -216,6 +228,27 @@ public interface PresentationManager extends CleanupableService {
    public Collection findSharedPresentations(Agent viewer, String toolId, String showHidden);
    
    /**
+    * Return a list of presentation  shared with agent, optionally filtered by toolId.
+    *
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
+    */
+   public Collection findSharedPresentations(Agent viewer, List<String> toolIds, String showHidden, Set<String> siteUserIds);
+   
+   /**
+    * Return a list of presentation  shared with agent, optionally filtered by toolId.
+    *
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @param isAllSites option to use all site scope
+    * @return collection of presentations
+    */
+   public Collection findSharedPresentations(Agent viewer, List<String> toolIds, String showHidden, Set<String> siteUserIds, boolean isAllSites);
+
+   /**
     * Return a list of all presentation owned by agent, optionally filtered by toolId.
     *
     * @param owner current user
@@ -223,7 +256,7 @@ public interface PresentationManager extends CleanupableService {
     * @param showHidden option to show all, hidden, not hidden portfolios
     * @return collection of presentations
     */
-   public Collection findOwnerPresentations(Agent owner, String toolId, String showHidden);
+   public Collection findOwnerPresentations(Agent owner, List<String> toolIds, String showHidden);
 
    public void createComment(PresentationComment comment);
    public void createComment(PresentationComment comment, boolean checkAuthz, boolean updateDates);
