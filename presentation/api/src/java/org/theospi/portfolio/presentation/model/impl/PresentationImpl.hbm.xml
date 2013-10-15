@@ -321,6 +321,7 @@
    </query>
    <query name="findPortfolioByOwnerExclusiveSearchable">
 		from Presentation p where owner=:owner and p.isSearchable=1 
+		and (p.expiresOn is null or p.expiresOn >= current_date)
 		and (p.template.propertyFormType is null or p.propertyForm is not null) 
 		Order by p.name
    </query>
