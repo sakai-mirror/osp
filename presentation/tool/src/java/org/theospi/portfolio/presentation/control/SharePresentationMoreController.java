@@ -46,6 +46,7 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.support.AgentWrapper;
 import org.theospi.portfolio.presentation.support.PresentationService;
+import org.theospi.portfolio.presentation.support.PresentationShareUserService;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
@@ -67,6 +68,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    private ServerConfigurationService serverConfigurationService;
    private EmailService emailService;
    private UserDirectoryService userDirectoryService;
+   private PresentationShareUserService presentationShareUserService;
    
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
    private RoleAgentComparator roleAgentComparator = new RoleAgentComparator();
@@ -139,7 +141,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       {
          String shareUser = (String)request.get("share_user");
          if ( shareUser != null && !shareUser.equals("") ) {
-            String errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
+            String errMsg = addUserByEmailOrId(presentation, shareBy, shareUser, shareList);
             if ( errMsg != null )
             {
                model.put("errMsg", rl.getFormattedMessage(errMsg, new Object[]{shareUser}) );
@@ -186,7 +188,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     ** @return null if successful, otherwise an error message property is returned
     ** 
     **/
-   private String addUserByEmailOrId( String shareBy, String shareUser, List shareList ) {
+   private String addUserByEmailOrId( Presentation presentation, String shareBy, String shareUser, List shareList ) {
       List userList = getAgentManager().findByProperty(AgentManager.TYPE_EID, shareUser);
       
       // Check if user not found (and not share-by-email or guest user)
@@ -218,7 +220,10 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       // Otherwise, user is found; add to the shareList
       else {
-         shareList.add( userList.get(0) );
+           Agent agent = (Agent) userList.get(0);
+           shareList.add(agent);
+           presentationShareUserService.triggerAddUserEvent(presentation.getId().getValue(), // add to cluster
+                                        agent.getId().getValue());
       }
        
       return null;
@@ -301,8 +306,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     ** get session-based share list
     **/
    private List getShareList( Presentation presentation ) {
-      Session session = SessionManager.getCurrentSession();
-      List shareList = (List)session.getAttribute(SharePresentationController.SHARE_LIST_ATTRIBUTE+presentation.getId().getValue());
+      List shareList = presentationShareUserService.getSharedList(presentation);
       return shareList;
    }
    
@@ -310,8 +314,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     ** set session-based share list
     **/
    private void setShareList( Presentation presentation, List shareList ) {
-      Session session = SessionManager.getCurrentSession();
-      session.setAttribute(SharePresentationController.SHARE_LIST_ATTRIBUTE+presentation.getId().getValue(), shareList);
+       presentationShareUserService.setSharedList(shareList, presentation);
    }
    
    /** 
@@ -341,7 +344,9 @@ public class SharePresentationMoreController extends AbstractPresentationControl
             if ( request.get(availItem.getId().getValue()) != null )
             {
                mods = true;
-               selectedList.add( availItem );
+//               selectedList.add( availItem );
+               presentationShareUserService.triggerAddUserEvent(presentation.getId().getValue(), // add user to the cluster's cache
+                                                                availItem.getId().getValue());
             }
             else {
                newAvailList.add( availItem );
@@ -356,7 +361,9 @@ public class SharePresentationMoreController extends AbstractPresentationControl
             if ( request.get(availItem.getId().getValue()) != null )
             {
                mods = true;
-               selectedList.add( availItem );
+//               selectedList.add( availItem );
+               presentationShareUserService.triggerAddUserEvent(presentation.getId().getValue(), // add user to the cluster's cache
+                       availItem.getId().getValue());
             }
             else {
                newAvailList.add( availItem );
@@ -366,8 +373,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       if ( mods ) {
          // Add selected items to shareList and save
-         shareList.addAll(selectedList);
-         setShareList(presentation, shareList);
+//         shareList.addAll(selectedList);
+//         setShareList(presentation, shareList);
          
          // Delete selected items from availList
          availList.clear();
@@ -512,7 +519,15 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       this.userDirectoryService = userDirectoryService;
    }
    
-   /** Comparator for sorting role-based AgentWrapper objects
+   public PresentationShareUserService getPresentationShareUserService() {
+      return presentationShareUserService;
+   }
+
+   public void setPresentationShareUserService(PresentationShareUserService presentationShareUserService) {
+      this.presentationShareUserService = presentationShareUserService;
+   }
+
+/** Comparator for sorting role-based AgentWrapper objects
     **/
 	public class RoleAgentComparator implements Comparator<AgentWrapper> {
 		public int compare(AgentWrapper o1, AgentWrapper o2) {

@@ -403,6 +403,31 @@
         </property>
     </bean>
 
+    <bean id="presentationShareUserService" class="org.theospi.portfolio.presentation.support.PresentationShareUserService"
+          init-method="init" lazy-init="false">
+        <property name="memoryService"><ref bean="org.sakaiproject.memory.api.MemoryService"/></property>
+        <property name="presentationService">
+            <ref bean="org.theospi.portfolio.presentation.support.PresentationService" /> 
+        </property>
+        <property name="eventService">
+            <ref bean="org.theospi.event.EventService"/>
+        </property>
+		<property name="agentManager">
+			<ref bean="agentManager"/>
+		</property>
+    </bean>   
+      
+    <bean id="org.theospi.portfolio.presentation.ShareUserCacheListener"
+          class="org.theospi.portfolio.presentation.support.ShareUserCacheListener"
+          init-method="init" lazy-init="false">
+        <property name="presentationShareUserService">
+            <ref bean="presentationShareUserService"/>
+        </property>
+        <property name="serverConfigurationService">
+            <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+        </property>
+    </bean>
+
     <bean id="sharePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.SharePresentationController" parent="abstractPresentationController">
@@ -416,8 +441,11 @@
                   <ref bean="org.sakaiproject.email.api.EmailService"/>
                 </property>
                 <property name="presentationService">
-                  <ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
-                </property>		
+                  <ref bean="org.theospi.portfolio.presentation.support.PresentationService" /> 
+                </property>
+                <property name="presentationShareUserService">
+                  <ref bean="presentationShareUserService" /> 
+                </property>
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -454,6 +482,9 @@
                 </property>
                 <property name="emailService">
                   <ref bean="org.sakaiproject.email.api.EmailService"/>
+                </property>
+                <property name="presentationShareUserService">
+                  <ref bean="presentationShareUserService" /> 
                 </property>
             </bean>
         </property>
