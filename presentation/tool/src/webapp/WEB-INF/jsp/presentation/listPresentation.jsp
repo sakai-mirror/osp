@@ -270,19 +270,6 @@ ul.makeMenu{border:none !important}
 </style>
 <![endif]-->
 
-<%--
-<script  type ="text/javascript">
-$(document).ready(function() {
-	$('.makeMenu').click(function(e) {
-			targetId=$(e.target).parent('li').attr('id');
-			$('.makeMenuChild').fadeOut();
-			$('#menu-' + targetId).fadeIn();
-		});
-	});
-
-</script>
---%>
-
 <style>
 
 div.filterrow span.filterleft {
@@ -295,31 +282,41 @@ div.filterrow span.filterright {
   float: left;
   text-align: left;
   }
+  
+ul.makeMenu li:hover > ul {
+    display: none;
+    margin-top: 0;
+}
+
+.menuOpen {
+    cursor: pointer;
+}
+
+ul.makeMenu li > ul {
+    top: auto;
+}  
 </style>
 	
 <script  type ="text/javascript">
 $(document).ready(function() {
-	jQuery('body').click(function(e) { 
-			
-		if ( e.target.className !='menuOpen' &&e.target.className !='dropdn'  ){
-			$('.makeMenuChild').fadeOut();
-		}
-			else
-			{
-				if( e.target.className =='dropdn' ){
-			targetId=$(e.target).parent('li').attr('id');
-			$('.makeMenuChild').hide();
-			$('#menu-' + targetId).fadeIn(500);
+    jQuery('body').click(function(e) { 
+        
+        if ( e.target.className !='menuOpen' &&e.target.className !='dropdn'  ){
+            $('.makeMenuChild').fadeOut();
+        }
+        else {
+            if( e.target.className =='dropdn' ) {
+                $('.makeMenuChild').hide();
+                $(e.target).parent('li').find('ul').show().find('li:first a').focus();
 
-}
-				else{
-			targetId=e.target.id;
-			$('.makeMenuChild').hide();
-			$('#menu-' + targetId).fadeIn(500);
-			}}
-	});
-	});
-
+            }
+            else {
+                $('.makeMenuChild').hide();
+                $(e.target).find('ul').show().find('li:first a').focus();
+            }
+        }
+    });
+});
 </script>
 
 <ul class="navIntraTool">
@@ -803,51 +800,72 @@ $(document).ready(function() {
 		  <td>
 		   <c:if test="${filterList != 'search'}">
            <form name="form${presentation.id.value}" style="margin:0">
-               <a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';"></a>
-               <a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='block';" class="skip"><c:out value="${msgs.table_action_action_open}"/></a>
 
                <%-- desNote: alternate rendering - using the resources menu as model - come back to it if time--%>
-               <ul style="z-index:<c:out  value="${1000 - loopCounter.index}" />;margin:0;display:block" class="makeMenu">
-                   <li  class="menuOpen" id="<c:out  value="${loopCounter.index}" />">
-						&nbsp;<c:out value="${msgs.table_action_action}"/>
-						<img src = "/library/image/sakai/icon-dropdn.gif?panel=Main" border="0"  alt="Add"  class="dropdn"/> 
-						<ul  id="menu-<c:out  value="${loopCounter.index}" />" class="makeMenuChild">
-						<c:if test="${presentation.owner.id.value == osp_agent.id.value && !optionsAreNull}">
-							<li>
-								<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.action_share}"/>
-								</a>
-							</li>
-						</c:if>
+					<ul style="z-index:<c:out  value="${1000 - loopCounter.index}" />;margin:0;display:block" class="makeMenu" role="menubar">
+						<li  class="menuOpen" tabindex="0" role="menuitem" aria-haspopup="true" aria-label="<fmt:message key="table_action_action"/>: <c:out value="${presentation.name}" />" >
+							&nbsp;<fmt:message key="table_action_action"/>
+							<img src = "/library/image/sakai/icon-dropdn.gif?panel=Main" border="0"  alt="Add"  class="dropdn"/> 
+							<ul role="menu" class="makeMenuChild">
+							<c:if test="${presentation.owner.id.value == osp_agent.id.value && !optionsAreNull}">
+							    <li>
+									<a role="menuitem" tabindex="-1" style="width:auto" href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/>
+									</a>
+							    </li>
+							</c:if>               
 						<c:if test="${isAuthorizedTo.edit || presentationBean.isCollab}">
-								<a 
-								href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <c:out value="${msgs.table_action_edit}"/>
-								</a>
+							    <li>
+									<a role="menuitem" tabindex="-1" style="width:auto"  
+									   href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
+									</a>
+								</li>
 						</c:if>
                         <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-                        <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><c:out value="${msgs.table_action_viewStats}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto" 
+                                       href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
+                                </li>
                         </c:if>
                         
                         <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-                        <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><c:out value="${msgs.table_action_download}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto"  
+                                       href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
+                                </li>
                         </c:if>
                         
                         <c:if test="${isAuthorizedTo.delete}">
-                        <a href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}"/>"><c:out value="${msgs.table_action_delete}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto" 
+                                       href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}"/>"><fmt:message key="table_action_delete"/></a>
+                                </li>                        
                         </c:if>
                         
                         <c:if test="${!presCan.hide}">
-                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_hide}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto" 
+                                       href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><fmt:message key="table_action_hide"/></a>
+                                </li>                        
                         </c:if>
                         
                         <c:if test="${presCan.hide}">
-                        <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_show}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto" 
+                                       href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><fmt:message key="table_action_show"/></a>
+                                </li>
                         </c:if>
                         
                         <c:if test="${!myworkspace && can.review && !presentation.isDefault}">
-                        <a href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_review_set}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto" 
+                                       href="<osp:url value="reviewPresentation.osp"/>&review=true&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><fmt:message key="table_action_review_set"/></a>
+                                </li>
                         </c:if>
                         <c:if test="${!myworkspace && can.review && presentation.isDefault}">
-                        <a href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.table_action_review_clear}"/></a>
+                                <li>
+                                    <a role="menuitem" tabindex="-1" style="width:auto" 
+                                       href="<osp:url value="reviewPresentation.osp"/>&review=false&id=<c:out value="${presentation.id.value}" />&filterList=<c:out value="${filterList}"/>"><fmt:message key="table_action_review_clear"/></a>
+                                </li>                        
                         </c:if>
 
                         <!-- http://jira.sakaiproject.org/browse/SAK-17351 -->
@@ -931,3 +949,63 @@ $(document).ready(function() {
 	 </c:otherwise>
 </c:choose> 
 </div>
+
+<script language="JavaScript" type="text/JavaScript">
+<!--
+
+$('ul.makeMenu').keydown(function(e) { // "Add" and "Action" menus keyboard interaction handler
+if(e.target.nodeName.toLowerCase() == 'li') {
+    // Must be an 'add' or 'action' li
+    switch(e.which) {
+        case 38: // up arrow
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $('.makeMenuChild').hide();
+            $(e.target).find('.makeMenuChild').show().find('li:last a').first().focus();
+            break;
+        case 13: // enter
+        case 32: // space
+        case 40: // down arrow
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $('.makeMenuChild').hide();
+            $(e.target).find('.makeMenuChild').show().find('li:first a').first().focus();
+            break;
+        case 9:
+            $('.makeMenuChild').hide();
+            break;
+    }
+} else {
+    // If not a li element, must be a submenu link (nothing else can have keyboard focus)
+    switch(e.which) {
+        case 32: // space
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            window.location.href = e.target.href; // .trigger('click') didn't work on the anchors, this does though
+            break;
+        case 38: // up arrow -- does not wrap around
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $(e.target).parent('li').prev('li').find('a').first().focus();
+            break;
+        case 40: // down arrow -- does not wrap around
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $(e.target).parent('li').next('li').find('a').first().focus();
+            break;
+        case 9: // tab key
+            // don't stop propagation or default, let browser move the focus!
+            $('.makeMenuChild').hide();
+            break;
+        case 27: // esc key
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $('.makeMenuChild').hide();
+            $(e.target).parents('ul.makeMenu > li').first().focus();
+            break;
+    }
+}
+});
+
+//-->
+</script>
