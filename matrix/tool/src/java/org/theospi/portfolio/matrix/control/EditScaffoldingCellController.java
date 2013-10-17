@@ -298,6 +298,30 @@ public class EditScaffoldingCellController extends
 	      }else{
 	    	  scaffoldingCell.setHideEvaluations(true);  
 	      }
+		  
+		  if(request.get("defaultItemLevelEval") == null || request.get("defaultItemLevelEval").toString().equals("false")){
+			  scaffoldingCell.getWizardPageDefinition().setDefaultItemLevelEval(false);
+		  }else{
+			  scaffoldingCell.getWizardPageDefinition().setDefaultItemLevelEval(true);  
+		  }
+
+		  if(request.get("itemLevelEvals") == null || request.get("itemLevelEvals").toString().equals("false")){
+			  scaffoldingCell.getWizardPageDefinition().setItemLevelEvals(false);
+		  }else{
+			  scaffoldingCell.getWizardPageDefinition().setItemLevelEvals(true);  
+		  }
+
+		  if(request.get("enableItemLevelEvalsInLinkedTools") == null || request.get("enableItemLevelEvalsInLinkedTools").toString().equals("false")){
+			  scaffoldingCell.getWizardPageDefinition().setEnableItemLevelEvalsInLinkedTools(false);
+		  }else{
+			  scaffoldingCell.getWizardPageDefinition().setEnableItemLevelEvalsInLinkedTools(true);  
+		  }
+
+		  if(request.get("hideItemLevelEvals") == null || request.get("hideItemLevelEvals").toString().equals("false")){
+			  scaffoldingCell.getWizardPageDefinition().setHideItemLevelEvals(false);
+		  }else{
+			  scaffoldingCell.getWizardPageDefinition().setHideItemLevelEvals(true);  
+		  }
 		//End Checkbox saves
 
 		if (addFormAction != null) {

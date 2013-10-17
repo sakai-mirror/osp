@@ -64,6 +64,14 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Matrix getMatrix(Id scaffoldingId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
    List getPagesByPageDef(Id pageDefId);
+   
+   /**
+    * Get the WizardPage for the specified page definition and user
+    * @param pageDefId
+    * @param user
+    * @return
+    */
+   public WizardPage getPageByPageDefAndUser(Id pageDefId, Agent user);
 
    Cell getCell(Matrix matrix, Criterion rootCriterion, Level level);
 

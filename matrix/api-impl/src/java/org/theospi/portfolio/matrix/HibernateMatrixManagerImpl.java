@@ -390,6 +390,16 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return list;
    }
    
+   public WizardPage getPageByPageDefAndUser(Id pageDefId, Agent user) {
+	   String[] paramNames = new String[] {"pageDefId", "owner"};
+	   Object[] params = new Object[]{pageDefId, user};
+	   
+	   List<WizardPage> pages = getHibernateTemplate().findByNamedParam("from WizardPage where pageDefinition.id=:pageDefId and owner=:owner", paramNames, params);
+	   if (pages.size() > 0)
+		   return pages.get(0);
+	   return null;
+   }
+   
    public List getMatrices(Id scaffoldingId, Id agentId) {
       String query = "from Matrix matrix";
       Object[] params = new Object[]{};
@@ -2063,6 +2073,12 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
                id, Review.EVALUATION_TYPE,
                wpd.getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
+         
+         getReviewManager().getReviewsByParentAndType(
+                 id, Review.ITEM_LEVEL_EVAL_TYPE,
+                 page.getPageDefinition().getSiteId(),
+                 MatrixContentEntityProducer.MATRIX_PRODUCER);
+         
       }
       
       if (hasAccessThroughLink || owns || (isMatrix && canViewOtherReviews) || (!isMatrix && (canEval || canReview))){

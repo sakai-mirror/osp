@@ -152,6 +152,12 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
            review.setReviewContentNode(node);
         }
     }
+    
+    public List<Review> getReviewsByItemAndType(String itemRef, int type, String parentId, String siteId, String producer) {
+    	
+    	Object[] params = new Object[]{itemRef, new Integer(type)};
+        return getReviewsByParent("getReviewsByItemAndType", params, parentId, siteId, producer);
+    }
 
     public Review saveReview(Review review) {
       if (review.isNewObject()) {

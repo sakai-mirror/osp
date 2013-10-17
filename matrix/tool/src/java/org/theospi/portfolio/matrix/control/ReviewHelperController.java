@@ -281,6 +281,10 @@ public class ReviewHelperController implements Controller {
             formTypeId = obj.getReflectionDevice().getValue();
             formTypeTitleKey = "osp.reviewType." + Review.REFLECTION_TYPE;
             break;
+         case Review.ITEM_LEVEL_EVAL_TYPE:
+            formTypeId = obj.getItemLevelEvaluationDevice().getValue();
+            formTypeTitleKey = "osp.reviewType." + Review.ITEM_LEVEL_EVAL_TYPE;
+            break;
       }
 
 

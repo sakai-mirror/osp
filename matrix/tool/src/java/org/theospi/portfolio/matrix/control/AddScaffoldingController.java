@@ -139,6 +139,18 @@ public class AddScaffoldingController extends BaseScaffoldingController
       }else{
     	  scaffolding.setHideEvaluations(true);  
       }
+      
+      if(request.get("enableItemLevelEvalsInLinkedTools") == null || request.get("enableItemLevelEvalsInLinkedTools").toString() == "false"){
+    	  scaffolding.setEnableItemLevelEvalsInLinkedTools(false);
+      }else{
+    	  scaffolding.setEnableItemLevelEvalsInLinkedTools(true);  
+      }
+      
+      if(request.get("hideItemLevelEvals") == null || request.get("hideItemLevelEvals").toString() == "false"){
+    	  scaffolding.setHideItemLevelEvals(false);
+      }else{
+    	  scaffolding.setHideItemLevelEvals(true);  
+      }
 
       if (addFormAction != null) {
 
