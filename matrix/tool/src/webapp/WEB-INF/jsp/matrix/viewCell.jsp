@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
+<fmt:setLocale value="${locale}" />
+<fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
 
 
 <osp-c:authZMap	prefix="osp.wizard." var="wizardCan" qualifier="${siteId}" />
@@ -107,10 +109,17 @@
 	</osp-h:glossary>
 
 	<c:if test="${sequential == 'true'}">
-		<p class="step"><c:out value="${msgs.seq_pages_step}"/>
+		<p class="step"><fmt:message key="seq_pages_step">
+                <fmt:param>
 				<c:out value="${currentStep}" /> / 
+                </fmt:param>
+                <fmt:param>
 				<c:out value="${totalSteps}" /> :
+                </fmt:param>
+                <fmt:param>
 				<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
+                </fmt:param>
+              </fmt:message>
 		</p>
 	</c:if>
 
@@ -144,7 +153,11 @@
 		
 		
 </osp-h:glossary> <c:if test="${(cell.status != 'READY' && cell.status != 'RETURNED')}">
-	<div class="information"><c:out value="${msgs.status_warning}"/> <c:out value="${cell.status}" />
+	<div class="information"><fmt:message key="status_warning">
+	    <fmt:param>
+	     <c:out value="${cell.status}" />
+	    </fmt:param>
+	   </fmt:message>
 	</div>
 </c:if> 
 <c:if test="${feedbackSent}">
