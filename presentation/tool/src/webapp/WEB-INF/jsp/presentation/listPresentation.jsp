@@ -350,7 +350,7 @@ $(document).ready(function() {
 <ul class="tabNav specialLink">
     <c:choose>
       <c:when test="${filterList != 'mine'}">
-          <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=mine"><c:out value="${msgs.action_filter_mine}"/></a></li>
+          <li><a href="<osp:url value="listPresentation.osp"/>&filterList=mine"><c:out value="${msgs.action_filter_mine}"/></a></li>
       </c:when>
       <c:otherwise>
       	<li class="selected"><span><c:out value="${msgs.action_filter_mine}"/></span></li>
@@ -359,7 +359,7 @@ $(document).ready(function() {
     
     <c:choose>
       <c:when test="${filterList != 'shared'}">
-         <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=shared"><c:out value="${msgs.action_filter_shared}"/></a></li>
+         <li><a href="<osp:url value="listPresentation.osp"/>&filterList=shared"><c:out value="${msgs.action_filter_shared}"/></a></li>
       </c:when>
       <c:otherwise>
         <li class="selected"><span><c:out value="${msgs.action_filter_shared}"/></span></li>
@@ -368,7 +368,7 @@ $(document).ready(function() {
     
     <c:choose>
       <c:when test="${filterList != 'public'}">
-          <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=public"><c:out value="${msgs.action_filter_public}"/></a></li>
+          <li><a href="<osp:url value="listPresentation.osp"/>&filterList=public"><c:out value="${msgs.action_filter_public}"/></a></li>
       </c:when>
       <c:otherwise>
         <li class="selected"><span><c:out value="${msgs.action_filter_public}"/></span></li>
@@ -379,7 +379,7 @@ $(document).ready(function() {
         <c:choose>
     
             <c:when test="${filterList != 'search'}">
-                <li><a href="<osp:url value="listPresentation.osp"/>&filterListKey=search"><fmt:message key="action_filter_search"/></a></li>
+                <li><a href="<osp:url value="listPresentation.osp"/>&filterList=search"><fmt:message key="action_filter_search"/></a></li>
             </c:when>
             <c:otherwise>
                 <li class="selected"><span><fmt:message key="action_filter_search"/></span></li>
@@ -399,7 +399,7 @@ $(document).ready(function() {
 <ul class="smallNavIntraTool specialLink">
 	<c:choose>
       <c:when test="${showHidden != 'visible' && filterList != 'search'}">
-         <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=visible"><c:out value="${msgs.action_show_not_hidden}"/></a></span></li>
+         <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=visible&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.action_show_not_hidden}"/></a></span></li>
       </c:when>
       <c:otherwise>
          <c:if test="${filterList != 'search'}">
@@ -410,7 +410,7 @@ $(document).ready(function() {
     
     <c:choose>
       <c:when test="${showHidden != 'hidden' && filterList != 'search'}">
-          <li><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=hidden"><c:out value="${msgs.action_show_hidden}"/></a></span></li>
+          <li><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=hidden&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.action_show_hidden}"/></a></span></li>
       </c:when>
       <c:otherwise>
 		<c:if test="${filterList != 'search'}">
@@ -421,7 +421,7 @@ $(document).ready(function() {
     
     <c:choose>
       <c:when test="${showHidden != 'all' && filterList != 'search'}">
-          <li><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=all"><c:out value="${msgs.action_show_all}"/></a></span></li>
+          <li><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=all&filterList=<c:out value="${filterList}"/>"><c:out value="${msgs.action_show_all}"/></a></span></li>
       </c:when>
       <c:otherwise>
 		 <c:if test="${filterList != 'search'}">
@@ -434,12 +434,12 @@ $(document).ready(function() {
 <ul class="smallNavIntraTool specialLink">
    <c:choose>
       <c:when test="${showAllSites == 'true'}">
-         <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showAllSitesKey=false"><fmt:message key="action_show_thissite"/></a></span></li>
+         <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showAllSitesKey=false&filterList=<c:out value="${filterList}"/>"><fmt:message key="action_show_thissite"/></a></span></li>
          <li><span><fmt:message key="action_show_allsites"/></span></li>
       </c:when>
       <c:otherwise>
          <li class="firstItem"><span><fmt:message key="action_show_thissite"/></span></li>
-         <li><span><a href="<osp:url value="listPresentation.osp"/>&showAllSitesKey=true"><fmt:message key="action_show_allsites"/></a></span></li>
+         <li><span><a onclick="jQuery('#osp_portfolio_spinner').show();" href="<osp:url value="listPresentation.osp"/>&showAllSitesKey=true&filterList=<c:out value="${filterList}"/>"><fmt:message key="action_show_allsites"/></a></span></li>
       </c:otherwise>
    </c:choose>
 </ul>
@@ -479,6 +479,11 @@ $(document).ready(function() {
 	</c:if>
 </div>
 <div class="navPanel" id="NavPanelPager">
+<div id="osp_portfolio_spinner" style="display: none;">
+    <div>&nbsp;</div>
+    <span class="smallNavIntraTool"><fmt:message key="portfolio_spinner.wait_text"/></span>
+	<img src="/library/image/sakai/spinner.gif" alt='<fmt:message key="portfolio_spinner.wait_text"/>'/>
+</div>
 <osp:url var="listUrl" value="listPresentation.osp${pagerUrlParms}"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>	
@@ -486,13 +491,13 @@ $(document).ready(function() {
 <c:if test="${filterList == 'search' && isSearchEnabled}">
 <fmt:message key="share_request.instructions"/>
 <p/>
-    <form name="searchForm" id="searchForm" method="post" action="<osp:url value="listPresentation.osp"/>&filterListKey=search" >
+    <form name="searchForm" id="searchForm" method="post" action="<osp:url value="listPresentation.osp"/>&filterList=search" >
         <input type="text" name="searchText" value=""/>
         <input type="submit" value="<fmt:message key="share_request.button.search"/>" />
         <c:if test="${show_members_presentations_link}">
             <span>- <fmt:message key="text_search_or"/> - 
             <c:if test="${empty memberSearch}">
-                <a href="<osp:url value="listPresentation.osp"/>&filterListKey=search&memberSearch=1">
+                <a href="<osp:url value="listPresentation.osp"/>&filterList=search&memberSearch=1">
             </c:if>
                 
             <fmt:message key="link_search_show_all_members_presentations"/>
@@ -643,6 +648,9 @@ $(document).ready(function() {
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
 	                            </c:if>
+	                            <c:if test="${! empty filterList}">
+								    <osp:param name="filterList" value="${filterList}"/>
+	                            </c:if>
 	                            <c:if test="${! empty groups}">
 								    <osp:param name="groups" value="${groups}"/>
 	                            </c:if>
@@ -665,6 +673,9 @@ $(document).ready(function() {
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
 	                            </c:if>
+	                            <c:if test="${! empty filterList}">
+								    <osp:param name="filterList" value="${filterList}"/>
+	                            </c:if>
 	                            <c:if test="${! empty groups}">
 								    <osp:param name="groups" value="${groups}"/>
 	                            </c:if>
@@ -684,6 +695,9 @@ $(document).ready(function() {
 	                            </c:if>
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
+	                            </c:if>
+	                            <c:if test="${! empty filterList}">
+								    <osp:param name="filterList" value="${filterList}"/>
 	                            </c:if>
 	                            <c:if test="${! empty groups}">
 								    <osp:param name="groups" value="${groups}"/>
@@ -705,6 +719,9 @@ $(document).ready(function() {
 	                            </c:if>
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
+	                            </c:if>
+	                            <c:if test="${! empty filterList}">
+								    <osp:param name="filterList" value="${filterList}"/>
 	                            </c:if>
 	                            <c:if test="${! empty groups}">
 								    <osp:param name="groups" value="${groups}"/>
@@ -735,6 +752,9 @@ $(document).ready(function() {
 	                            </c:if>
 	                            <c:if test="${! empty memberSearch}">
 								    <osp:param name="memberSearch" value="${memberSearch}"/>
+	                            </c:if>
+	                            <c:if test="${! empty filterList}">
+								    <osp:param name="filterList" value="${filterList}"/>
 	                            </c:if>
 	                            <c:if test="${! empty groups}">
 								    <osp:param name="groups" value="${groups}"/>

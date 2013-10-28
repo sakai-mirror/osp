@@ -173,7 +173,7 @@ public class ListPresentationController extends AbstractPresentationController i
                                                     (String)request.get("showHiddenKey"),
                                                     PresentationManager.PRESENTATION_VIEW_VISIBLE);
       String filterList = getUserPreferenceProperty(PREF_FILTER, 
-                                                    (String)request.get("filterListKey"),
+                                                    (String)request.get("filterList"),
                                                     PREF_FILTER_VALUE_MINE);
       String sortColumn = getUserPreferenceProperty(PREF_SORT_KEY, 
                                                     (String)request.get(SORTCOLUMN_KEY),
@@ -185,9 +185,20 @@ public class ListPresentationController extends AbstractPresentationController i
               (String)request.get("showAllSitesKey"), 
               "false");
       
+      // tool reset or the first time this user visited the tool for this session
+      if ((String)request.get("filterList") == null && (String) request.get("groups") == null) {
+          filterList = PREF_FILTER_VALUE_MINE;
+          showHidden = PresentationManager.PRESENTATION_VIEW_VISIBLE;
+          showAllSites = "false";
+          
+          saveUserPreferenceProperty(PREF_FILTER, filterList);
+          saveUserPreferenceProperty(PREF_HIDDEN, showHidden);
+          saveUserPreferenceProperty(PREF_ALL_SITES, showAllSites);
+      }
+      
       String searchText = (String)request.get("searchText");
       String memberSearch = (String)request.get("memberSearch");
-      String pagerUrlParms = "";
+      String pagerUrlParms = "?filterList=" + filterList;
       
       boolean isSearchEnabled = false;
       
@@ -230,8 +241,6 @@ public class ListPresentationController extends AbstractPresentationController i
       else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
           presentations = getPresentationManager().findSharedPresentations(currentAgent, toolIds, showHidden, siteUserIds, "true".equalsIgnoreCase(showAllSites));
       else if ( isSearchEnabled && filterList.equals(PREF_FILTER_VALUE_SEARCH) ) {
-          pagerUrlParms = pagerUrlParms + "?filterList=search";
-          
           if (memberSearch != null) {
               model.put("memberSearch", "1");
               pagerUrlParms = pagerUrlParms + "&memberSearch=1";
@@ -441,6 +450,48 @@ public class ListPresentationController extends AbstractPresentationController i
       return prefValue;
    }
 
+   protected void saveUserPreferenceProperty(String prefKey, String prefValue) 
+   {
+       String propsName = PORTFOLIO_PREFERENCES + getToolManager().getCurrentPlacement().getId();
+       String userId    = getAuthManager().getAgent().getId().getValue();
+
+       // If no preference was provided in request, then get saved preference
+       if ( prefKey == null || prefValue == null ) {
+           return;
+       }
+
+       Preferences userPreferences = getPreferencesService().getPreferences(userId);
+       ResourceProperties portfolioPrefs = userPreferences.getProperties(propsName);
+
+       PreferencesEdit prefEdit = null;
+       try {
+           prefEdit = (PreferencesEdit) getPreferencesService().add(userId);
+       } 
+       catch (PermissionException e) {
+           logger.warn(e.toString());
+       } 
+       catch (IdUsedException e) {
+           // Preferences already exist, just edit
+           try {
+               prefEdit = (PreferencesEdit) getPreferencesService().edit(userId);
+           } 
+           catch (Exception e2) {
+               logger.warn(e2.toString());
+           } 
+       }
+
+       if (prefEdit != null) {
+           try {
+               ResourceProperties propEdit = prefEdit.getPropertiesEdit(propsName);
+               propEdit.addProperty(prefKey, prefValue);
+               getPreferencesService().commit(prefEdit);
+           }
+           catch (Exception e) {
+               logger.warn(e.toString());
+           }
+       }
+   }
+   
    /**
     * See if the current tab is the workspace tab.
     * @return true if we are currently on the "My Workspace" tab.
