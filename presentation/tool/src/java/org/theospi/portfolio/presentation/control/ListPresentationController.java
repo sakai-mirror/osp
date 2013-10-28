@@ -216,10 +216,6 @@ public class ListPresentationController extends AbstractPresentationController i
       Collection presentations = null;
       String filterToolId = null;
       
-      boolean viewAll = getServerConfigurationService().getBoolean("osp.presentation.viewall", false) &&
-         getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
-                                        getIdManager().getId(getToolManager().getCurrentPlacement().getContext()));
-      
       Site site = getWorksiteManager().getSite(worksiteId);
       Set<String> siteUserIds = site.getUsers();
       
@@ -591,6 +587,11 @@ public class ListPresentationController extends AbstractPresentationController i
       
       boolean viewHidden = !showHidden.equals(PresentationManager.PRESENTATION_VIEW_VISIBLE);
       boolean viewNotHidden = !showHidden.equals(PresentationManager.PRESENTATION_VIEW_HIDDEN);
+      
+      boolean viewAllConfigProp = getServerConfigurationService().getBoolean("osp.presentation.viewall", false);
+      Map<String, Boolean> reviewMap = new HashMap<String, Boolean>();
+      
+      
       int count = 0;
       int skipCount = 0;
       int processedCount = 0;
@@ -609,15 +610,19 @@ public class ListPresentationController extends AbstractPresentationController i
       	processedCount++;
       	if (groupUserIds == null
                || groupUserIds.contains(pres.getOwner().getId().getValue())) {
-            PresentationDataBean pdb = new PresentationDataBean(pres);
-            if ((pdb.getHidden() && viewHidden) || (!pdb.getHidden() && viewNotHidden)) {
-            	if (insertAt == 0)
-            		presData.add(insertAt, pdb);
-            	else
-            		presData.add(pdb);
-            	count++;
-            	if (count == pageSize)
-            		break;
+            PresentationDataBean pdb = new PresentationDataBean(pres, viewAllConfigProp, reviewMap);
+            if (pdb.getOwns() || pdb.getViewable() || pdb.getReviewable()) {
+            	if ((pdb.getHidden() && viewHidden) || (!pdb.getHidden() && viewNotHidden)) {
+            		if (insertAt == 0)
+            			presData.add(insertAt, pdb);
+            		else
+            			presData.add(pdb);
+            		count++;
+            		if (count == pageSize)
+            			break;
+            	}
+            	else 
+               	skipCount++;
             }
             else 
             	skipCount++;
@@ -636,15 +641,17 @@ public class ListPresentationController extends AbstractPresentationController i
 	/** This class provides auxiliary data (comments, shared status) for a given presentation
     **/
    public class PresentationDataBean {
-      Presentation m_presentation;
-      int m_commentNum;
-      boolean m_shared = false;
-      boolean m_public = false;
-      boolean m_collab = false;
-      boolean m_hidden = false;
-      boolean m_viewable = false;
+      private Presentation m_presentation;
+      private int m_commentNum;
+      private boolean m_shared = false;
+      private boolean m_public = false;
+      private boolean m_collab = false;
+      private boolean m_hidden = false;
+      private boolean m_viewable = false;
+      private boolean m_reviewable = false;
+      private boolean m_owns = false;
       
-      public PresentationDataBean( Presentation presentation ) {
+      public PresentationDataBean( Presentation presentation, boolean viewAllConfigProp, Map<String, Boolean> reviewMap ) {
          m_presentation = presentation;
          
          // determine shared attributes (public is considered shared)
@@ -676,7 +683,23 @@ public class ListPresentationController extends AbstractPresentationController i
          m_hidden = getAuthzManager().isAuthorized(PresentationFunctionConstants.HIDE_PRESENTATION, presentation.getId());
          //m_hidden = myFuncs.contains(PresentationFunctionConstants.HIDE_PRESENTATION);
          
-       //See if this is hidden
+         //See if this is reviewable
+         if (viewAllConfigProp) {
+         	Boolean canReview = reviewMap.get(presentation.getSiteId());
+         	if (canReview != null) {
+         		m_reviewable = canReview.booleanValue();
+         	}
+         	else {
+         		m_reviewable = getAuthzManager().isAuthorized(PresentationFunctionConstants.REVIEW_PRESENTATION,
+         				getIdManager().getId(presentation.getSiteId()));
+         		reviewMap.put(presentation.getSiteId(), m_reviewable);
+         	}
+         }
+         
+         String currentUserId = getAuthManager().getAgent().getId().getValue();
+         if (currentUserId.equals(presentation.getOwner().getId().getValue())) {
+         	m_owns = true;
+         }
          
       }
       
@@ -716,6 +739,14 @@ public class ListPresentationController extends AbstractPresentationController i
       
       public boolean getViewable() {
          return m_viewable;
+      }
+      
+      public boolean getReviewable() {
+         return m_reviewable;
+      }
+      
+      public boolean getOwns() {
+         return m_owns;
       }
    }
 }

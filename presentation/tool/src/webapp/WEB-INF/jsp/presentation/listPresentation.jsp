@@ -8,6 +8,7 @@
 
 <osp-c:authZMap prefix="osp.presentation." var="can" />
 <c:set var="showCreate" value="${can.create && createAvailable}" />
+<c:set var="canReviewInSite" value="${can.review}" />
 
 <script type="text/javascript" src="/library/js/jquery-ui-latest/js/jquery.min.js">
 </script>
@@ -709,7 +710,7 @@ $(document).ready(function() {
 				</c:if>
 			</th>
           
-			 <c:if test="${!myworkspace && can.review}">
+			 <c:if test="${myworkspace || showAllSites == 'true' || canReviewInSite}">
 				 <th scope="col" class="${className_reviewed}">
 					 <a href="<osp:url value="listPresentation.osp">
 								 <osp:param name="sortOn" value="reviewed"/>
@@ -914,7 +915,7 @@ $(document).ready(function() {
         
 		  <td><c:set var="dateFormat"><c:out value="${msgs.dateFormat_Middle}"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
         
-		  <c:if test="${!myworkspace && can.review}">
+		  <c:if test="${myworkspace || showAllSites == 'true' || canReviewInSite}">
 			 <td align="center" width="5%">
 			 <c:if test="${presentation.isDefault}">
 				<img alt='<c:out value="${msgs.alt_image_yes}"/>'  src="/library/image/sakai/checkon.gif" border="0"/>
