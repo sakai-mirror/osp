@@ -611,7 +611,7 @@ public class ListPresentationController extends AbstractPresentationController i
       	if (groupUserIds == null
                || groupUserIds.contains(pres.getOwner().getId().getValue())) {
             PresentationDataBean pdb = new PresentationDataBean(pres, viewAllConfigProp, reviewMap);
-            if (pdb.getOwns() || pdb.getViewable() || pdb.getReviewable()) {
+            if (pdb.getOwns() || pdb.getViewable() || pdb.getReviewable() || pdb.getSearchable()) {
             	if ((pdb.getHidden() && viewHidden) || (!pdb.getHidden() && viewNotHidden)) {
             		if (insertAt == 0)
             			presData.add(insertAt, pdb);
@@ -650,6 +650,7 @@ public class ListPresentationController extends AbstractPresentationController i
       private boolean m_viewable = false;
       private boolean m_reviewable = false;
       private boolean m_owns = false;
+      private boolean m_searchable = false;
       
       public PresentationDataBean( Presentation presentation, boolean viewAllConfigProp, Map<String, Boolean> reviewMap ) {
          m_presentation = presentation;
@@ -701,6 +702,10 @@ public class ListPresentationController extends AbstractPresentationController i
          	m_owns = true;
          }
          
+         // see if the presentation is searchable
+         if (presentation.getIsSearchable() != null && presentation.getIsSearchable()) {
+             m_searchable = true;
+         }
       }
       
       public Presentation getPresentation() {
@@ -747,6 +752,10 @@ public class ListPresentationController extends AbstractPresentationController i
       
       public boolean getOwns() {
          return m_owns;
+      }
+      
+      public boolean getSearchable() {
+          return m_searchable;
       }
    }
 }
