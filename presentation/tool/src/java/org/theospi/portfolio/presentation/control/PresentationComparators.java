@@ -52,7 +52,7 @@ final class PresentationComparators {
             } else if (s2 == null) {
                 return 1;
             } else {
-                return s1.compareToIgnoreCase(s2);
+                return s1.trim().compareToIgnoreCase(s2.trim());
             }
         }
     }
