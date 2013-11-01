@@ -220,21 +220,6 @@ public class ReviewHelperController implements Controller {
            return new ModelAndView("postProcessor", model);
         }
          
-        // Check for workflow post process
-        if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null && 
-                FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG))) {
-           Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
-           List wfList = Arrays.asList(workflows.toArray());
-           Collections.sort(wfList, Workflow.getComparator());
-           model.put("workflows", wfList);
-           model.put("manager", manager);
-           model.put("obj_id", strId);
-           session.remove(FormHelper.RETURN_ACTION_TAG);
-           return new ModelAndView("postProcessor", model);
-        }
-        
-         session.remove(FormHelper.RETURN_ACTION_TAG);
-        
          return new ModelAndView(returnView, model);
       }
 
@@ -415,7 +400,7 @@ public class ReviewHelperController implements Controller {
 
     	   String[] contentArray = {cellPageType, cellPageName, cellPageTypeBig, matrixWizardType, matrixWizardName, siteName, typeIntroStr, directLink};
     	   String content = myResources.getFormattedMessage("feedbackEvalNotificationBody", contentArray);
-           String from = "postmaster@".concat(ServerConfigurationService.getServerName());
+         String from = "postmaster@".concat(ServerConfigurationService.getServerName());
     	   from = ServerConfigurationService.getString("setup.request", from);
     	   //String to = ownerUser.getEmail();
     	   

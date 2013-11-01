@@ -270,11 +270,8 @@ public class AddScaffoldingController extends BaseScaffoldingController
 		session.remove(AudienceSelectionHelper.CONTEXT);
 		session.remove(AudienceSelectionHelper.CONTEXT2);
 		
-        if(scaffolding != null){ 
-            session.put(AudienceSelectionHelper.CONTEXT,
-                    scaffolding.getTitle());
-        }	
-   }  
+		session.put(AudienceSelectionHelper.CONTEXT, scaffolding.getTitle());
+	}  
    
    
    protected Collection getEvaluationDevices(String siteId, Scaffolding scaffolding) {

@@ -137,8 +137,6 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       // Update list of Shared-with Users         
       List shareList = getShareList(presentation);
       
-      boolean isUpdated = false;
-      boolean isShareUser = true;
       if (shareBy.equals(SHAREBY_EMAIL) || shareBy.equals(SHAREBY_SEARCH) ) 
       {
          String shareUser = (String)request.get("share_user");
@@ -192,9 +190,6 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     **/
    private String addUserByEmailOrId( Presentation presentation, String shareBy, String shareUser, List shareList ) {
       List userList = getAgentManager().findByProperty(AgentManager.TYPE_EID, shareUser);
-      if(userList == null && shareBy.equals(SHAREBY_EMAIL)){
-          userList = getAgentManager().findByProperty(AgentManager.TYPE_EMAIL, shareUser);
-      }
       
       // Check if user not found (and not share-by-email or guest user)
       if ( userList==null && shareBy.equals(SHAREBY_SEARCH) ) {
@@ -203,19 +198,19 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       // Otherwise if user not found and this is share-by-email or guest user (assume SHAREBY_EMAIL)
       else if ( userList == null ) {
-          if ( validateEmail(shareUser) ) {
-              Agent agent = getAgentManager().createAgent(shareUser, getIdManager().getId(shareUser) );
-              if (agent != null) {
-                 notifyNewUserEmail( agent );
-                 shareList.add( agent );
-              }
-              else {
-                 return "share_err_email";
-              }
-           }
-           else {
-              return "share_err_email";
-           }
+         if ( validateEmail(shareUser) ) {
+            Agent agent = getAgentManager().createAgent(shareUser, getIdManager().getId(shareUser) );
+            if (agent != null) {
+               notifyNewUserEmail( agent );
+               shareList.add( agent );
+            }
+            else {
+               return "share_err_email";
+            }
+         }
+         else {
+            return "share_err_email";
+         }
       }
       
       // Check for duplciates

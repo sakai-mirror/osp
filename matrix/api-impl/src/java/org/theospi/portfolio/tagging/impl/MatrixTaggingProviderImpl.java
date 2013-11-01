@@ -177,7 +177,7 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		TaggingHelperInfo helperInfo = null;
 		String context = taggingManager.getContext(activityRef);
 		if (allowTagActivities(context)
-				&& (taggingManager.getActivity(activityRef, this, null) != null)) {
+				&& (taggingManager.getActivity(activityRef, this) != null)) {
 			Map<String, String> parameterMap = new HashMap<String, String>();
 			parameterMap.put(ACTIVITY_REF, activityRef);
 			String text = messages.getString("act_helper_text");
@@ -194,7 +194,7 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		if (allowTagActivities(context)) {
 			
 			for (String activityRef : activityRefs) {
-				TaggableActivity activity = taggingManager.getActivity(activityRef, this, null);
+				TaggableActivity activity = taggingManager.getActivity(activityRef, this);
 				if (activity != null && context.equals(activity.getContext())) {
 					Map<String, String> parameterMap = new HashMap<String, String>();
 					parameterMap.put(ACTIVITY_REF, activityRef);

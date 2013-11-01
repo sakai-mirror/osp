@@ -73,8 +73,11 @@ public class ListScaffoldingController extends AbstractMatrixController {
 		}
 		else
 		{
-            scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId.getValue(), currentAgent, isMaintainer());
-        }
+			boolean listPreview = true;
+			if ( previewAuthz != null )
+				listPreview = getAuthzManager().isAuthorized( previewAuthz, worksiteId );
+			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId.getValue(), currentAgent, listPreview);
+		}
 		
 		if(request.get(SORT) != null){
 			sortBy = request.get(SORT).toString();

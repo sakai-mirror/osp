@@ -433,19 +433,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
    
    public List getCells(Matrix matrix) {
-       getHibernateTemplate().setCacheQueries(true);
-       
-       List list = getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
-             matrix.getId());
-
-       //evict the wizard page since there could be stale data (ie. status)
-       //this is ok to evict after the query and will refresh for this call
-       for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-         Cell cell = (Cell) iterator.next();
-         getHibernateTemplate().getSessionFactory().evictEntity("org.theospi.portfolio.matrix.model.WizardPage", cell.getWizardPage().getId());
-       }
-       
-       return list;
+      return getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
+            matrix.getId());
+      
    }
 
    public Cell getCell(Matrix matrix, Criterion rootCriterion, Level level) {
@@ -1398,7 +1388,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return page;
    }
    
-   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash, Map<String, Set<String>> siteMap) {
+   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash) {
       String[] paramNames;
       
       boolean rolesNotEmpty = (roles != null && roles.size() > 0);
@@ -1469,35 +1459,20 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
         	 evalItem.setHideOwnerDisplay(true);
          }
 
-         filteredMatrixCells.addAll(doEvalGroupFiltering(allowAllGroups, !scaffoldCanViewAllGroups, siteHash, siteMap, 
-                 wizPage.getPageDefinition().getSiteId(), wizPage.getOwner(), evalItem));               
+         if ( !allowAllGroups && !scaffoldCanViewAllGroups ) {
+            HashSet siteGroupUsers = (HashSet)siteHash.get( scaffolding.getWorksiteId().getValue() );
+            if ( siteGroupUsers != null && siteGroupUsers.contains(wizPage.getOwner().getId().getValue()) )
+               filteredMatrixCells.add( evalItem );
+         }
+         else {
+            filteredMatrixCells.add( evalItem );
+         }
+         
       }
       
       
       
       return filteredMatrixCells;
-   }
-   
-   public List doEvalGroupFiltering(boolean allowAllGroups, boolean normalGroupAccess, Map siteHash, 
-           Map<String, Set<String>> siteMap, String siteId, Agent owner, EvaluationContentWrapper evalItem) {
-       List filteredItems = new ArrayList();
-       Set siteUserIds = siteMap.get(siteId);
-       String ownerId = null;
-       if (owner != null && owner.getId() != null) 
-           ownerId = owner.getId().getValue();
-       
-       if (siteUserIds.contains(ownerId)) {
-           if ( !allowAllGroups && normalGroupAccess ) {
-               HashSet siteGroupUsers = (HashSet)siteHash.get( siteId );
-               if ( siteGroupUsers != null && siteGroupUsers.contains(ownerId) )
-                   filteredItems.add( evalItem );
-           }
-           else {
-               filteredItems.add( evalItem );
-           }
-       }
-       
-       return filteredItems;
    }
    
    /**
@@ -1733,42 +1708,23 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       List newForms = new ArrayList();
       for (Iterator i=forms.iterator();i.hasNext();) {
          String formId = (String) i.next();
-         if(formsMap.containsKey(formId))
-            newForms.add(formsMap.get(formId));
+         newForms.add(formsMap.get(formId));
       }
       wizardPage.setAdditionalForms(newForms);
 
       if (wizardPage.getEvaluationDevice() != null) {
-          String evalDev = (String) formsMap.get(
-                  wizardPage.getEvaluationDevice().getValue());
-          if(evalDev != null){
-              wizardPage.setEvaluationDevice(getIdManager().getId(evalDev));
-          }else{
-              wizardPage.setEvaluationDevice(null);
-              wizardPage.setEvaluationDeviceType(null);
-          }               
+         wizardPage.setEvaluationDevice(getIdManager().getId((String) formsMap.get(
+               wizardPage.getEvaluationDevice().getValue())));
       }
 
       if (wizardPage.getReflectionDevice() != null) {
-          String refDev = (String) formsMap.get(
-                  wizardPage.getReflectionDevice().getValue());
-          if(refDev != null){
-              wizardPage.setReflectionDevice(getIdManager().getId(refDev));
-          }else{
-              wizardPage.setReflectionDevice(null);
-              wizardPage.setReflectionDeviceType(null);
-          }               
+         wizardPage.setReflectionDevice(getIdManager().getId((String) formsMap.get(
+               wizardPage.getReflectionDevice().getValue())));
       }
 
       if (wizardPage.getReviewDevice() != null) {
-          String revDev = (String) formsMap.get(
-                  wizardPage.getReviewDevice().getValue());
-          if(revDev != null){
-              wizardPage.setReviewDevice(getIdManager().getId(revDev));
-          }else{
-              wizardPage.setReviewDevice(null);
-              wizardPage.setReviewDeviceType(null);
-          }         
+         wizardPage.setReviewDevice(getIdManager().getId((String) formsMap.get(
+               wizardPage.getReviewDevice().getValue())));
       }
    }
    
@@ -1777,42 +1733,23 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	      List newForms = new ArrayList();
 	      for (Iterator i=forms.iterator();i.hasNext();) {
 	         String formId = (String) i.next();
-             if(formsMap.containsKey(formId))
-	            newForms.add(formsMap.get(formId));
+	         newForms.add(formsMap.get(formId));
 	      }
 	      scaffolding.setAdditionalForms(newForms);
 
 	      if (scaffolding.getEvaluationDevice() != null) {
-              String evalDev = (String) formsMap.get(
-                      scaffolding.getEvaluationDevice().getValue());
-              if(evalDev != null){
-                  scaffolding.setEvaluationDevice(getIdManager().getId(evalDev));
-              }else{
-                  scaffolding.setEvaluationDevice(null);
-                  scaffolding.setEvaluationDeviceType(null);
-              }	    	  
+	    	  scaffolding.setEvaluationDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getEvaluationDevice().getValue())));
 	      }
 
 	      if (scaffolding.getReflectionDevice() != null) {
-              String refDev = (String) formsMap.get(
-                      scaffolding.getReflectionDevice().getValue());
-              if(refDev != null){
-                  scaffolding.setReflectionDevice(getIdManager().getId(refDev));
-              }else{
-                  scaffolding.setReflectionDevice(null);
-                  scaffolding.setReflectionDeviceType(null);
-              }	    	  
+	    	  scaffolding.setReflectionDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getReflectionDevice().getValue())));
 	      }
 
 	      if (scaffolding.getReviewDevice() != null) {
-              String revDev = (String) formsMap.get(
-                      scaffolding.getReviewDevice().getValue());
-              if(revDev != null){
-                  scaffolding.setReviewDevice(getIdManager().getId(revDev));
-              }else{
-                  scaffolding.setReviewDevice(null);
-                  scaffolding.setReviewDeviceType(null);
-              }	    	  
+	    	  scaffolding.setReviewDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getReviewDevice().getValue())));
 	      }
 	   }
 
@@ -1872,11 +1809,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     * 
     * @param siteId String of the site id
     * @param zis ZipInputStream of the packed scaffolding
-    * @param formUploadErrors  Any form that fails to upload will be ignored and the name of the form 
-    *                           will be added to this list.  Pass null if you don't care for the list
     * @throws IOException
     */
-   protected Scaffolding uploadScaffolding(String siteId, ZipInputStream zis, List<String> formUploadErrors, boolean ignoreInvalidForms)  throws IOException {
+   protected Scaffolding uploadScaffolding(String siteId, ZipInputStream zis)  throws IOException {
       
       ZipEntry currentEntry = zis.getNextEntry();
       Scaffolding scaffolding = null;
@@ -1890,7 +1825,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       Map styleMap = null;
 
       try {
-         ContentCollectionEdit fileParent = getFileDir(tempDirName, siteId);
+         ContentCollectionEdit fileParent = getFileDir(tempDirName);
          boolean gotFile = false;
          while (currentEntry != null) {
             logger.debug("current entry name: " + currentEntry.getName());
@@ -1906,7 +1841,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
             else if (!currentEntry.isDirectory()) {
                if (currentEntry.getName().startsWith("forms/")) {
                   processMatrixForm(currentEntry, zis, formsMap,
-                        getIdManager().getId(siteId), formUploadErrors);
+                        getIdManager().getId(siteId));
                }
                else if (currentEntry.getName().equals("guidance/guidanceList")) {
                   gotFile = true;
@@ -1943,9 +1878,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
         	 scaffolding.setDefaultFormsMatrixVersion(true);
          }
          
-         if(!ignoreInvalidForms && formUploadErrors.size() > 0){
-             return null;
-         }else{
+         
 
          scaffolding = saveNewScaffolding(scaffolding);         
 
@@ -1965,7 +1898,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          
          itWorked = true;
          return scaffolding;
-         }
       }
       catch (Exception exp) {
          throw new RuntimeException(exp);
@@ -1993,12 +1925,12 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	   
    }
 
-   public Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile, String siteId, List formUploadErrors, boolean ignoreInvalidForms)
+   public Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile, String siteId)
          throws IOException {
       Node file = getNode(uploadedScaffoldingFile);
 
       ZipInputStream zis = new UncloseableZipInputStream(file.getInputStream());
-      return uploadScaffolding(siteId, zis, formUploadErrors, ignoreInvalidForms);
+      return uploadScaffolding(siteId, zis);
       
    }
 
@@ -2012,7 +1944,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       return getStyleManager().importStyleList(parent, siteId, zis);
 }
 
-   protected void processMatrixForm(ZipEntry currentEntry, ZipInputStream zis, Map formMap, Id worksite, List<String> formUploadErrors)
+   protected void processMatrixForm(ZipEntry currentEntry, ZipInputStream zis, Map formMap, Id worksite)
          throws IOException {
       File file = new File(currentEntry.getName());
       String fileName = file.getName();
@@ -2024,19 +1956,11 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          //we want the bean even if it exists already
          bean = getStructuredArtifactDefinitionManager().importSad(
             worksite, zis, true, false, false);
-
-         formMap.put(oldId, bean.getId().getValue());
-         
-      }catch (org.sakaiproject.metaobj.shared.model.OspException ospE){
-          ospE.printStackTrace();
-          
-          if(formUploadErrors != null){
-              formUploadErrors.add(ospE.getSadName());
-          }
-          
-      } catch(ImportException ie) {       
-          throw new RuntimeException("the structured artifact failed to import", ie);   
+      } catch(ImportException ie) {
+         throw new RuntimeException("the structured artifact failed to import", ie);
       }
+
+      formMap.put(oldId, bean.getId().getValue());
    }
 
    public void checkPageAccess(String id) {
@@ -2290,21 +2214,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    }
    
    /**
-    * gets the site's resource collection
-    * 
-    * @param siteId Site id to look up
-    * @return ContentCollection
-    * @throws TypeException
-    * @throws IdUnusedException
-    * @throws PermissionException
-    */
-   protected ContentCollection getSiteCollection(String siteId) throws TypeException, IdUnusedException, PermissionException {
-      String wsCollectionId = getContentHosting().getSiteCollection(siteId);
-      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
-      return collection;
-   }
-   
-   /**
     * This gets the directory in which the import places files into.
     * 
     * This method gets the current users base collection, creates an imported directory,
@@ -2313,7 +2222,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     * this uses the bean property importFolderName to name the
     * 
     * @param origName String
-    * @param siteId Site id to look up
     * @return ContentCollectionEdit
     * @throws InconsistentException
     * @throws PermissionException
@@ -2322,15 +2230,15 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
     * @throws IdUnusedException
     * @throws TypeException
     */
-   protected ContentCollectionEdit getFileDir(String origName, String siteId) throws InconsistentException,
+   protected ContentCollectionEdit getFileDir(String origName) throws InconsistentException,
          PermissionException, IdUsedException, IdInvalidException, IdUnusedException, TypeException {
-      ContentCollection baseCollection = getSiteCollection(siteId);
+      ContentCollection userCollection = getUserCollection();
       
       try {
          //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
          // in common/components to get the name and id for this site.
          
-         ContentCollectionEdit groupCollection = getContentHosting().addCollection(baseCollection.getId() + IMPORT_BASE_FOLDER_ID);
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID);
          groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, getImportFolderName());
          getContentHosting().commitCollection(groupCollection);
       }
@@ -2344,7 +2252,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
          throw new RuntimeException(e);
       }
       
-      ContentCollection collection = getContentHosting().getCollection(baseCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
+      ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
       
       String childId = collection.getId() + origName;
       return getContentHosting().addCollection(childId);
@@ -2877,7 +2785,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
             ZipInputStream zis = new UncloseableZipInputStream(is);
             bos = null;
             
-            uploadScaffolding(toContext, zis, null, true);
+            uploadScaffolding(toContext, zis);
             is = null;
             zis = null;
          }
@@ -3560,21 +3468,29 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	}
 
 	public Set getGroupList(Site site, boolean allowAllGroups) {
-	    Set groups = new HashSet();
-	    
+		Set groupSet = new HashSet();
+		Collection siteGroups = null;
+
 		boolean includeSections = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_INCLUDE_SECTIONS, false);
       
 		if (site.hasGroups()) {
 			String currentUser = SessionManager.getCurrentSessionUserId();
 			if (allowAllGroups) {
-	            groups.addAll(site.getGroups());
+				siteGroups = site.getGroups();
 			}
 			else {
-				groups.addAll(site.getGroupsWithMember(currentUser));
+				siteGroups = site.getGroupsWithMember(currentUser);
+			}
+      
+			// Only add worksite groups (e.g. not section groups)
+			for (Iterator it = siteGroups.iterator(); it.hasNext(); ) {
+				Group group = (Group)it.next();
+				if ( includeSections || group.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED) != null )
+					groupSet.add(group);
 			}
 		}
       
-		return groups;
+		return groupSet;
 	}
 
 	public Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
@@ -3588,17 +3504,6 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 
 				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
 					members.addAll(site.getMembers());
-				}
-				else if (filterGroupId != null && MatrixFunctionConstants.UNASSIGNED_GROUP.equals(filterGroupId)) {
-					//get all users not in a group
-					//TODO Is there a more efficient way to do this?
-					Set<Member> siteMembers = site.getMembers();
-					for (Member siteMember : siteMembers) {
-						Collection memberGroups = site.getGroupsWithMember(siteMember.getUserId());
-						if (memberGroups == null || (memberGroups != null && (memberGroups.isEmpty() || memberGroups.size() == 0))) {
-							members.add(siteMember);
-						}
-					}
 				}
 				else {
 					for (Iterator iter = groups.iterator(); iter.hasNext();) {
@@ -3639,8 +3544,9 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
 				Authorization az = (Authorization) iter.next();
 				Agent agent = az.getAgent();
-	            String userId = az.getAgent().getEid().getValue();
-				
+				if (agent == null || agent.getEid() == null)
+					continue;
+				String userId = agent.getEid().getValue();
 				if (agent.isRole()) {
 					returnList.add(MessageFormat.format(messages
 							.getString("decorated_role_format"),
@@ -4022,7 +3928,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 								producer.getItemPermissionOverride());
 						getSecurityService().pushAdvisor(myAdv);
 					}
-					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider(), criteriaRef);
+					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider());
 					if (activity != null) {
 						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true, criteriaRef);
 						
@@ -4236,6 +4142,38 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		}
 		
 		return canAccessCell && isPageLinked;
+	}
+
+	public PreferencesService getPreferencesService() {
+		return preferencesService;
+	}
+
+	public void setPreferencesService(PreferencesService preferencesService) {
+		this.preferencesService = preferencesService;
+	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
+	public void setMatrixPreferencesConfig(UserNotificationPreferencesRegistration matrixPreferencesConfig) {
+		this.matrixPreferencesConfig = matrixPreferencesConfig;
+	}
+
+	public UserNotificationPreferencesRegistration getMatrixPreferencesConfig() {
+		return matrixPreferencesConfig;
+	}
+
+	public void setWizardPreferencesConfig(UserNotificationPreferencesRegistration wizardPreferencesConfig) {
+		this.wizardPreferencesConfig = wizardPreferencesConfig;
+	}
+
+	public UserNotificationPreferencesRegistration getWizardPreferencesConfig() {
+		return wizardPreferencesConfig;
 	}
 
 	public Map getConfirmFlagsForScaffolding(Scaffolding scaffolding){
@@ -4470,38 +4408,5 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		// Return all forms
 		return getFormsForSelect(null, siteId, currentUserId);
 	}
-	
-    public PreferencesService getPreferencesService() {
-		return preferencesService;
-	}
-
-	public void setPreferencesService(PreferencesService preferencesService) {
-		this.preferencesService = preferencesService;
-	}
-
-	public EntityManager getEntityManager() {
-		return entityManager;
-	}
-
-	public void setEntityManager(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
-
-	public void setMatrixPreferencesConfig(UserNotificationPreferencesRegistration matrixPreferencesConfig) {
-		this.matrixPreferencesConfig = matrixPreferencesConfig;
-	}
-
-	public UserNotificationPreferencesRegistration getMatrixPreferencesConfig() {
-		return matrixPreferencesConfig;
-	}
-
-	public void setWizardPreferencesConfig(UserNotificationPreferencesRegistration wizardPreferencesConfig) {
-		this.wizardPreferencesConfig = wizardPreferencesConfig;
-	}
-
-	public UserNotificationPreferencesRegistration getWizardPreferencesConfig() {
-		return wizardPreferencesConfig;
-	}
-
 
 }

@@ -1099,7 +1099,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          // read the wizard
          readWizardXML(wizard, zis, importData);
          // presentationmanagerimpl: 2642
-         ContentCollectionEdit fileParent = getFileDir(tempDirName, worksiteId);
+         ContentCollectionEdit fileParent = getFileDir(tempDirName);
 
          currentEntry = zis.getNextEntry();
          while(currentEntry != null) {
@@ -1224,21 +1224,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
       ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
       return collection;
    }
-   
-   /**
-    * gets the site's resource collection
-    * 
-    * @param siteId Site id to look up
-    * @return ContentCollection
-    * @throws TypeException
-    * @throws IdUnusedException
-    * @throws PermissionException
-    */
-   protected ContentCollection getSiteCollection(String siteId) throws TypeException, IdUnusedException, PermissionException {
-      String wsCollectionId = getContentHosting().getSiteCollection(siteId);
-      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
-      return collection;
-   }
 
    protected Map processMatrixGuidance(ContentCollection parent, String siteId,
                                        ZipInputStream zis) throws IOException {
@@ -1259,7 +1244,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
     * this uses the bean property importFolderName to name the
     * 
     * @param origName String
-    * @param siteId Site id to look up
     * @return ContentCollectionEdit
     * @throws InconsistentException
     * @throws PermissionException
@@ -1268,15 +1252,15 @@ public class WizardManagerImpl extends HibernateDaoSupport
     * @throws IdUnusedException
     * @throws TypeException
     */
-   protected ContentCollectionEdit getFileDir(String origName, String siteId) throws InconsistentException,
+   protected ContentCollectionEdit getFileDir(String origName) throws InconsistentException,
          PermissionException, IdUsedException, IdInvalidException, IdUnusedException, TypeException {
-      ContentCollection baseCollection = getSiteCollection(siteId);
-       
+      ContentCollection userCollection = getUserCollection();
+      
       try {
          //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
          // in common/components to get the name and id for this site.
          
-         ContentCollectionEdit groupCollection = getContentHosting().addCollection(baseCollection.getId() + IMPORT_BASE_FOLDER_ID);
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID);
          groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, getImportFolderName());
          getContentHosting().commitCollection(groupCollection);
       }
@@ -1290,7 +1274,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          throw new RuntimeException(e);
       }
       
-      ContentCollection collection = getContentHosting().getCollection(baseCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
+      ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
       
       String childId = collection.getId() + origName;
       return getContentHosting().addCollection(childId);
@@ -2467,7 +2451,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    }
 
-   protected List getEvaluatableWizardPages(Agent agent, List<Agent> roles, List<String> worksiteIds, HashMap siteHash, Map<String, Set<String>> siteMap) {
+   protected List getEvaluatableWizardPages(Agent agent, List<Agent> roles, List<String> worksiteIds, HashMap siteHash) {
 	   String[] paramNames;
 	   Object[] params;
 
@@ -2527,17 +2511,21 @@ public class WizardManagerImpl extends HibernateDaoSupport
          
          WizardPageSequence seq = getWizardPageSeqByDef(wizPage.getPageDefinition().getId());
          Wizard wizard = seq.getCategory().getWizard();
-
-         filteredWizardPages.addAll(
-                 matrixManager.doEvalGroupFiltering(allowAllGroups, wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS, siteHash, siteMap,  
-                         wizard.getSiteId(), wizPage.getOwner(), evalItem));
+         
+         if ( !allowAllGroups && wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
+            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId() );
+            if ( siteGroupUsers != null && siteGroupUsers.contains(wizPage.getOwner().getId().getValue()) )
+               filteredWizardPages.add( evalItem );
+         }
+         else {
+            filteredWizardPages.add( evalItem );
+         }
       }
       
       return filteredWizardPages;
    }
    
-   protected List getEvaluatableWizards(Agent agent, List<Agent> roles, List<String> worksiteIds, 
-                                          HashMap siteHash, Map<String, Set<String>> siteMap) {
+   protected List getEvaluatableWizards(Agent agent, List<Agent> roles, List<String> worksiteIds, HashMap siteHash) {
 	   
 	   String[] paramNames;
 	   Object[] params;
@@ -2599,9 +2587,15 @@ public class WizardManagerImpl extends HibernateDaoSupport
          Wizard wizard = getWizard( evalItem.getId() );
          CompletedWizard completedWiz = getCompletedWizard( wizard, evalItem.getOwner().getId(), false );
          
-         filteredWizards.addAll(
-                 matrixManager.doEvalGroupFiltering(allowAllGroups, wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS, siteHash, siteMap,  
-                         wizard.getSiteId(), completedWiz.getOwner(), evalItem));      }
+         if ( !allowAllGroups && wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
+            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId() );
+            if ( siteGroupUsers != null && siteGroupUsers.contains(completedWiz.getOwner().getId().getValue()) )
+               filteredWizards.add( evalItem );
+         }
+         else {
+            filteredWizards.add( evalItem );
+         }
+      }
       
       return filteredWizards;
    }
@@ -2664,8 +2658,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
     */
    public List getEvaluatableItems(Agent agent, List<String>siteIds) {
       List roles = new ArrayList();
-      HashMap siteGroupUserHash = new HashMap( siteIds.size() );
-      Map<String, Set<String>> siteMap = new HashMap<String, Set<String>>(siteIds.size());
+      HashMap siteHash = new HashMap( siteIds.size() );
       
       // Find user roles in each specified site
       for (Iterator i = siteIds.iterator(); i.hasNext();) {
@@ -2674,22 +2667,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
          roles.addAll( siteUserRoles );
          
          HashSet siteGroupUsers = getSiteGroupUsers( agent, worksiteId );
-         siteGroupUserHash.put( worksiteId, siteGroupUsers );      
-         
-         try {
-             Site site = SiteService.getSite(worksiteId);
-             siteMap.put(worksiteId, site.getUsers());
-          }
-          catch (IdUnusedException e) {
-             logger.warn(this+".getEvaluatableItems invalid site id: " + worksiteId );
-          }
-            
+         siteHash.put( worksiteId, siteGroupUsers );
       }
       
-      List evalItems = matrixManager.getEvaluatableCells(agent, roles, siteIds, siteGroupUserHash, siteMap);
+      List evalItems = matrixManager.getEvaluatableCells(agent, roles, siteIds, siteHash);
       
-      evalItems.addAll( getEvaluatableWizardPages(agent, roles, siteIds, siteGroupUserHash, siteMap) );
-      evalItems.addAll( getEvaluatableWizards(agent, roles, siteIds, siteGroupUserHash, siteMap)  );
+      evalItems.addAll( getEvaluatableWizardPages(agent, roles, siteIds, siteHash) );
+      evalItems.addAll( getEvaluatableWizards(agent, roles, siteIds, siteHash)  );
       
       return evalItems;
    }
