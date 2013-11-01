@@ -29,6 +29,7 @@ public class ScaffoldingUploadForm {
 
    private String scaffoldingFileName;
    private Reference uploadedScaffolding;
+   private boolean ignoreInvalidForms;
 
    public Reference getUploadedScaffolding() {
       return uploadedScaffolding;
@@ -44,6 +45,14 @@ public class ScaffoldingUploadForm {
 
    public void setScaffoldingFileName(String scaffoldingFileName) {
       this.scaffoldingFileName = scaffoldingFileName;
+   }
+   
+   public boolean isIgnoreInvalidForms() {
+       return ignoreInvalidForms;
+   }
+
+   public void setIgnoreInvalidForms(boolean ignoreInvalidForms) {
+       this.ignoreInvalidForms = ignoreInvalidForms;
    }
 
 }

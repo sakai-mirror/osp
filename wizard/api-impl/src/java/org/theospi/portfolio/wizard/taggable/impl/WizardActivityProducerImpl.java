@@ -162,7 +162,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public TaggableActivity getActivity(String activityRef,
-			TaggingProvider provider) {
+			TaggingProvider provider, String taggedItem) {
 		// We aren't picky about the provider, so ignore that argument.
 		TaggableActivity activity = null;
 		if (checkReference(activityRef)) {

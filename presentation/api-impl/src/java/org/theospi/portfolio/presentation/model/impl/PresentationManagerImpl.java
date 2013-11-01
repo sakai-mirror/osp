@@ -1627,7 +1627,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       boolean itWorked = false;
 
       try {
-         ContentCollectionEdit fileParent = getTemplateFileDir(tempDirName);
+         ContentCollectionEdit fileParent = getTemplateFileDir(tempDirName, toContext);
          boolean gotFile = false;
          
          while (currentEntry != null) {
@@ -2017,7 +2017,22 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
       return collection;
    }
-
+   
+   /**
+    * gets the site's resource collection
+    * 
+    * @param siteId Site id to look up
+    * @return ContentCollection
+    * @throws TypeException
+    * @throws IdUnusedException
+    * @throws PermissionException
+    */
+   protected ContentCollection getSiteCollection(String siteId) throws TypeException, IdUnusedException, PermissionException {
+      String wsCollectionId = getContentHosting().getSiteCollection(siteId);
+      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+      return collection;
+   }
+   
    /**
     * See if the current tab is the workspace tab.
     * @return true if we are currently on the "My Workspace" tab.
@@ -2037,6 +2052,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
     * this uses the bean property importFolderName to name the
     * 
     * @param origName String
+    * @param siteId Site id to look up
     * @return ContentCollectionEdit
     * @throws InconsistentException
     * @throws PermissionException
@@ -2045,14 +2061,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
     * @throws IdUnusedException
     * @throws TypeException
     */
-   protected ContentCollectionEdit getTemplateFileDir(String origName) throws TypeException, IdUnusedException, PermissionException, IdUsedException, IdInvalidException, InconsistentException {
-      ContentCollection userCollection = getUserCollection();
-      
+   protected ContentCollectionEdit getTemplateFileDir(String origName, String siteId) throws TypeException, IdUnusedException, PermissionException, IdUsedException, IdInvalidException, InconsistentException {
+      ContentCollection baseCollection = getSiteCollection(siteId);
+       
       try {
          //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
          // in common/components to get the name and id for this site.
          
-         ContentCollectionEdit groupCollection = getContentHosting().addCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID);
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(baseCollection.getId() + IMPORT_BASE_FOLDER_ID);
          groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, getImportFolderName());
          getContentHosting().commitCollection(groupCollection);
       }
@@ -2066,7 +2082,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          throw new RuntimeException(e);
       }
       
-      ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
+      ContentCollection collection = getContentHosting().getCollection(baseCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
       
       String childId = collection.getId() + origName;
       return getContentHosting().addCollection(childId);

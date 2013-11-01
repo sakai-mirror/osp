@@ -75,6 +75,6 @@ public interface MatrixFunctionConstants {
    public static final int EVALUATION_REVIEW_TYPE = 1;
    public static final int FEEDBACK_REVIEW_TYPE = 2;
    
-   
+   public static final String UNASSIGNED_GROUP = "UNASSIGNED_GROUP";   
    
 }

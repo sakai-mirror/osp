@@ -154,7 +154,13 @@ public class MatrixValidator extends ValidatorBase {
       if (scaffolding.getCriteria() == null || scaffolding.getCriteria().size() == 0) {
          errors.rejectValue("criteria", "error.required", "required");
       }
-      if (scaffolding.getDescription() != null) {
+      if(scaffolding.getRowLabel() == null || "".equals(scaffolding.getRowLabel())){
+          errors.rejectValue("rowLabel", "error.required", "required");
+      }
+      if(scaffolding.getColumnLabel() == null || "".equals(scaffolding.getColumnLabel())){
+          errors.rejectValue("columnLabel", "error.required", "required");
+      }
+       if (scaffolding.getDescription() != null) {
          StringBuilder sbError = new StringBuilder();
          String tempDesc = FormattedText.processFormattedText(scaffolding.getDescription(), sbError);
          

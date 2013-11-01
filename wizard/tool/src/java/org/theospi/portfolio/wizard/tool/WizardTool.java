@@ -348,6 +348,9 @@ public class WizardTool extends BuilderTool {
          setWizardListSize(wizards.size());
       }
       
+      if (wizards != null) 
+          setWizardListSize(wizards.size());
+      
       return returned;
    }
    
