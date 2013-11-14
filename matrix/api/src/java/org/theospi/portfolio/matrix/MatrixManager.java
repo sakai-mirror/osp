@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.site.api.Group;
@@ -47,6 +47,7 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
+import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.tagging.api.DecoratedTaggableItem;
@@ -168,7 +169,10 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    WizardPage submitPageForEvaluation(WizardPage page);
 
-   List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash);
+   List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHashh, Map<String, Set<String>> siteMap);
+
+   List doEvalGroupFiltering(boolean allowAllGroups, boolean normalGroupAccess, Map siteHash, 
+           Map<String, Set<String>> siteMap, String siteId, Agent owner, EvaluationContentWrapper evalItem);
 
    /**
     * @param matrixId
@@ -188,9 +192,21 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Node getNode(Id artifactId, boolean checkLocks);
 
    Node getNode(Reference ref, boolean checkLocks);
-
+   
+   /**
+    * This unpacks a zipped scaffolding and places it into the siteId. It saves the guidance, styles,
+    * and forms, resets the ids, and saves the scaffolding.  It returns the new unpacked scaffolding.
+    * 
+    * The owner becomes the current agent.
+    * 
+    * @param siteId String of the site id
+    * @param zis ZipInputStream of the packed scaffolding
+    * @param formUploadErrors  Any form that fails to upload will be ignored and the name of the form 
+    *                          will be added to this list.  Pass null if you don't care for the list
+    * @throws IOException
+    */
    Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile,
-                                 String toContext) throws IOException;
+                                 String toContext, List<String> formUploadErrors, boolean ignoreInvalidForms) throws IOException;
 
    //Scaffolding uploadScaffolding(String toContext, ZipInputStream zis) throws IOException;
    
@@ -427,18 +443,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	public boolean canUserAccessWizardPageAndLinkedArtifcact(String siteId, String pageId, String linkedArtifactId);
 	
 	/**
-	 * Get the user's notification option for this... one of the NotificationService's PREF_
-	 * settings.
-	 * If the user has no prefs set, the default of NotificationService.PREF_IMMEDIATE will be used.
-	 * 
-	 * @param userId
-	 * @param notificationId
-	 * @param siteId
-	 * @return
-	 */
-	public int getNotificationOption(String userId, String notificationId, String siteId);
-
-	/**
 	 * returns a map of flags for saving confirmation.  This is used to warn the user of any issues that may be present
 	 * by the scaffolding being saved.
 	 * 
@@ -484,4 +488,16 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 * @return
 	 */
 	public Collection getSelectedAdditionalFormDevices(Collection additionalForms, String siteId, String currentUserId);
+	
+    /**
+     * Get the user's notification option for this... one of the NotificationService's PREF_
+     * settings.
+     * If the user has no prefs set, the default of NotificationService.PREF_IMMEDIATE will be used.
+     * 
+     * @param userId
+     * @param notificationId
+     * @param siteId
+     * @return
+     */
+    public int getNotificationOption(String userId, String notificationId, String siteId);
 }

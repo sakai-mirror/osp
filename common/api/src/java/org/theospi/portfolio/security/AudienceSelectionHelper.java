@@ -78,6 +78,13 @@ public interface AudienceSelectionHelper {
        "org.theospi.portfolio.security.context2";
    
    /**
+    *   This is used to check if this is a wizard page... if so, then only allow the roles with the correct
+    *   evaluation permission to be listed.  This is not the same for a matrix cell
+    */   
+   public static final String WIZARD_PAGE_EVALUATE_FUNCTION =
+       "org.theospi.portfolio.security.wizardPageEvaluateFunction";
+   
+   /**
     * this is the id that MatrixFunctionConstants.REVIEW_MATRIX function uses for matrix reviewers:
     * This ID will either be scaffoldingCell.wizardPageDef.id or scaffolding.id
     */

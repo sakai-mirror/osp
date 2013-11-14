@@ -57,5 +57,7 @@ public interface WizardFunctionConstants {
    
    public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
    public final static String WIZARD_TYPE_HIERARCHICAL = "org.theospi.portfolio.wizard.model.Wizard.hierarchical";
+   
+   public static final String UNASSIGNED_GROUP = "UNASSIGNED_GROUP";
 }
 

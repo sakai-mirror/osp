@@ -94,8 +94,14 @@ public class ManageCellStatusController implements Controller {
       try {
     	  site = SiteService.getSite(page.getPageDefinition().getSiteId());
     	  
-    	  if (site.hasGroups())
-    		  model.put("groups", getMatrixManager().getGroupList(site, false));
+    	  if (site.hasGroups()) {
+              List<Group> groups = new ArrayList<Group>(site.getGroups());
+              Collections.sort(groups, new Comparator<Group>() {
+                  public int compare(Group arg0, Group arg1) {
+                      return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
+                  }});
+              model.put("groups", groups);
+          }
     	  
       } catch (IdUnusedException e) {
     	  // TODO Auto-generated catch block

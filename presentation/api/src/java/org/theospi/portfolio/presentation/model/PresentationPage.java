@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.tool.api.Tool;
@@ -91,7 +93,8 @@ public class PresentationPage extends IdentifiableObject implements Serializable
       return title;
    }
    public void setTitle(String title) {
-      this.title = title;
+       // avoid problems with insertion of invalid text (e.g. <script>)
+       this.title = StringEscapeUtils.escapeHtml(title);
    }
    public Date getCreated() {
       return created;
