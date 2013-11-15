@@ -39,6 +39,11 @@ public interface WizardActivityProducer extends TaggableActivityProducer {
 	 */
 	public static final String PRODUCER_ID = WizardActivityProducer.class
 			.getName();
+	
+	/**
+     * The key used to look up a value in the ServerConfigurationService if this producer should be enabled
+     */
+    public static final String PRODUCER_ENABLED_KEY = "wizard.activityProducer.enabled";
 
 	/**
 	 * Method to wrap the given wizard page definition as a taggable activity.

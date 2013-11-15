@@ -4016,36 +4016,38 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 				for (Link link : links) {
 					TaggableActivityProducer producer = getTaggingManager().findProducerByRef(link.getActivityRef());
 					SecurityAdvisor myAdv = null;
-					if (producer.getItemPermissionOverride() != null) {
-						myAdv = new SimpleSecurityAdvisor(
-								SessionManager.getCurrentSessionUserId(), 
-								producer.getItemPermissionOverride());
-						getSecurityService().pushAdvisor(myAdv);
-					}
-					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider(), criteriaRef);
-					if (activity != null) {
-						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true, criteriaRef);
-						
-						for (TaggableItem tagItem : items) {
-							DecoratedTaggableItem curItem = decoTaggableItems.get(tagItem.getTypeName());
-							if (curItem == null) {
-								curItem = new DecoratedTaggableItemImpl(tagItem.getTypeName());
-								allDecoratedTaggableItems.add(curItem);
-							}
-							curItem.addTaggableItem(tagItem);
-							decoTaggableItems.put(tagItem.getTypeName(), curItem);							
-						}						
-						
-						activities.add(activity);
-						
-					}
-					else {
-						logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
-						getLinkManager().removeLink(link);
-						links.remove(link);
-					}
-					if (producer.getItemPermissionOverride() != null && myAdv != null) {
-						getSecurityService().popAdvisor(myAdv);
+					if (producer != null) {
+						if (producer.getItemPermissionOverride() != null) {
+							myAdv = new SimpleSecurityAdvisor(
+									SessionManager.getCurrentSessionUserId(), 
+									producer.getItemPermissionOverride());
+							getSecurityService().pushAdvisor(myAdv);
+						}
+						TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider(), criteriaRef);
+						if (activity != null) {
+							List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider(), true, criteriaRef);
+							
+							for (TaggableItem tagItem : items) {
+								DecoratedTaggableItem curItem = decoTaggableItems.get(tagItem.getTypeName());
+								if (curItem == null) {
+									curItem = new DecoratedTaggableItemImpl(tagItem.getTypeName());
+									allDecoratedTaggableItems.add(curItem);
+								}
+								curItem.addTaggableItem(tagItem);
+								decoTaggableItems.put(tagItem.getTypeName(), curItem);							
+							}						
+							
+							activities.add(activity);
+							
+						}
+						else {
+							logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
+							getLinkManager().removeLink(link);
+							links.remove(link);
+						}
+						if (producer.getItemPermissionOverride() != null && myAdv != null) {
+							getSecurityService().popAdvisor(myAdv);
+						}
 					}
 				}
 			}

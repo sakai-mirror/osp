@@ -336,7 +336,7 @@ public class CellController implements FormController, LoadObjectController {
       model.put("styles",
     		  getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
-      if (getTaggingManager().isTaggable()) {
+      if (getTaggingManager().isTaggable() && serverConfigurationService.getBoolean(WizardActivityProducer.PRODUCER_ENABLED_KEY, true)) {
 			TaggableItem item = wizardActivityProducer.getItem(cell.getCell()
 					.getWizardPage());
 			model.put("taggable", "true");
