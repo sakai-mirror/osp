@@ -71,19 +71,11 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-glossary-api</artifactId>
     </dependency>
-<!--org.sakaiprojectsakai-content-api${sakai.version}-->
-<!--org.sakaiprojectsakai-entity-api${sakai.version}-->
-<!--org.sakaiprojectsakai-authz-api${sakai.version}-->
-<!--org.sakaiprojectsakai-site-api${sakai.version}-->
-<!--org.sakaiprojectsakai-tool-api${sakai.version}-->
-<!--org.sakaiprojectsakai-util-api${sakai.version}-->
-<!--org.sakaiprojectsakai-event-api${sakai.version}-->
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
