@@ -4013,7 +4013,10 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 			links = getLinkManager().getLinks(criteriaRef, true);
 			//TODO: Make sure it's always okay to ignore the provider
 			for (DecoratedTaggingProvider provider : providers) {
-				for (Link link : links) {
+				Iterator<Link> linkIter = links.iterator();
+				while (linkIter.hasNext()) { 
+					Link link = linkIter.next(); 
+
 					TaggableActivityProducer producer = getTaggingManager().findProducerByRef(link.getActivityRef());
 					SecurityAdvisor myAdv = null;
 					if (producer != null) {
@@ -4043,7 +4046,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 						else {
 							logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
 							getLinkManager().removeLink(link);
-							links.remove(link);
+							linkIter.remove();
 						}
 						if (producer.getItemPermissionOverride() != null && myAdv != null) {
 							getSecurityService().popAdvisor(myAdv);
