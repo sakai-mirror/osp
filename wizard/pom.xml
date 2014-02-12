@@ -32,17 +32,17 @@
       <dependency>
         <groupId>org.sakaiproject.osp</groupId>
         <artifactId>osp-wizard-impl</artifactId>
-        <version>10.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.sakaiproject.osp</groupId>
         <artifactId>osp-wizard-tool-lib</artifactId>
-        <version>10.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.sakaiproject.osp</groupId>
         <artifactId>osp-depend-jsf-widgets-sun</artifactId>
-        <version>10.0-SNAPSHOT</version>
+        <version>${project.version}</version>
         <type>pom</type>
       </dependency>
     </dependencies>
