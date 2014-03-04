@@ -101,15 +101,17 @@ public class SiteGroupProviderListener implements Observer {
                 ref = getEntityManager().newReference(ref.getId());
             }
             
-            // When adding in the listening for realm.upd, it picks up group updates now and we want to ignore them
-            if (!ref.getSubType().equals("group")) {
-                Site siteFromId = getSiteService().getSite(ref.getId());
-            
-                // check out the update
-                processUpdate(siteFromId);
-            }
+			if (ref != null && ref.getId() != null) {
+				// When adding in the listening for realm.upd, it picks up group updates now and we want to ignore them
+				if (!ref.getSubType().equals("group")) {
+					Site siteFromId = getSiteService().getSite(ref.getId());
+
+					// check out the update
+					processUpdate(siteFromId);
+				}
+			}
         } catch (IdUnusedException e) {
-            logger.error("error getting site object", e);
+            logger.info("Error getting site object:"+e.getMessage());
         }
     }
 
