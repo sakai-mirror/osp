@@ -144,7 +144,7 @@ public class PresentationService {
 	public boolean isFreeFormEnabled() {
 
 		//Leave free-form on by default if not configured
-		boolean disabled = serverConfigurationService.getBoolean(PROP_FREEFORM_DISABLED, false);
+		boolean disabled = serverConfigurationService.getBoolean(PROP_FREEFORM_DISABLED, true);
 		try {
 			String siteWide = siteService.findTool(toolManager.getCurrentPlacement().getId())
 				.getContainingPage().getContainingSite().getProperties()
