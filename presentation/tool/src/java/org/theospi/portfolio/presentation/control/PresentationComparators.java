@@ -52,7 +52,7 @@ final class PresentationComparators {
             } else if (s2 == null) {
                 return 1;
             } else {
-                return s1.trim().compareToIgnoreCase(s2.trim());
+                return s1.compareToIgnoreCase(s2);
             }
         }
     }
@@ -142,12 +142,4 @@ final class PresentationComparators {
         }
     }
    
-    static class ByWorksiteComparator implements Comparator<Presentation> {
-
-        public int compare(Presentation p1, Presentation p2) {
-            final String s1 = p1.getWorksiteName();
-            final String s2 = p2.getWorksiteName();
-            return s1.compareTo(s2);
-        }
-    }
 }

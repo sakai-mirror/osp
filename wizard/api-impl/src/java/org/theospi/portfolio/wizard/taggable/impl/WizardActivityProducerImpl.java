@@ -31,7 +31,6 @@ import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
@@ -163,7 +162,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public TaggableActivity getActivity(String activityRef,
-			TaggingProvider provider, String taggedItem) {
+			TaggingProvider provider) {
 		// We aren't picky about the provider, so ignore that argument.
 		TaggableActivity activity = null;
 		if (checkReference(activityRef)) {
@@ -328,10 +327,8 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	public void init() {
 		logger.info("init()");
-		if (ServerConfigurationService.getBoolean(PRODUCER_ENABLED_KEY, true)) {
-			logger.info("Enabling WizardActivityProducerImpl");
-			taggingManager.registerProducer(this);
-		}
+
+		taggingManager.registerProducer(this);
 	}
 
 	public void setAuthzManager(AuthorizationFacade authzManager) {

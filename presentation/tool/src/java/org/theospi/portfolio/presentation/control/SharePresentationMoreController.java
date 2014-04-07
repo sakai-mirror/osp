@@ -46,7 +46,6 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.support.AgentWrapper;
 import org.theospi.portfolio.presentation.support.PresentationService;
-import org.theospi.portfolio.presentation.support.PresentationShareUserService;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
@@ -66,12 +65,13 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    protected final Log logger = LogFactory.getLog(getClass());
    private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    private ServerConfigurationService serverConfigurationService;
+   private SiteService siteService;
    private EmailService emailService;
    private UserDirectoryService userDirectoryService;
-   private PresentationShareUserService presentationShareUserService;
    
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
    private RoleAgentComparator roleAgentComparator = new RoleAgentComparator();
+   private GroupComparator     groupComparator     = new GroupComparator();
    
    private final String SHAREBY_KEY    = "shareBy";
    private final String SHAREBY_BROWSE = "share_browse";
@@ -137,13 +137,11 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       // Update list of Shared-with Users         
       List shareList = getShareList(presentation);
       
-      boolean isUpdated = false;
-      boolean isShareUser = true;
       if (shareBy.equals(SHAREBY_EMAIL) || shareBy.equals(SHAREBY_SEARCH) ) 
       {
          String shareUser = (String)request.get("share_user");
          if ( shareUser != null && !shareUser.equals("") ) {
-            String errMsg = addUserByEmailOrId(presentation, shareBy, shareUser, shareList);
+            String errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
             if ( errMsg != null )
             {
                model.put("errMsg", rl.getFormattedMessage(errMsg, new Object[]{shareUser}) );
@@ -190,11 +188,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     ** @return null if successful, otherwise an error message property is returned
     ** 
     **/
-   private String addUserByEmailOrId( Presentation presentation, String shareBy, String shareUser, List shareList ) {
+   private String addUserByEmailOrId( String shareBy, String shareUser, List shareList ) {
       List userList = getAgentManager().findByProperty(AgentManager.TYPE_EID, shareUser);
-      if(userList == null && shareBy.equals(SHAREBY_EMAIL)){
-          userList = getAgentManager().findByProperty(AgentManager.TYPE_EMAIL, shareUser);
-      }
       
       // Check if user not found (and not share-by-email or guest user)
       if ( userList==null && shareBy.equals(SHAREBY_SEARCH) ) {
@@ -203,19 +198,19 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       // Otherwise if user not found and this is share-by-email or guest user (assume SHAREBY_EMAIL)
       else if ( userList == null ) {
-          if ( validateEmail(shareUser) ) {
-              Agent agent = getAgentManager().createAgent(shareUser, getIdManager().getId(shareUser) );
-              if (agent != null) {
-                 notifyNewUserEmail( agent );
-                 shareList.add( agent );
-              }
-              else {
-                 return "share_err_email";
-              }
-           }
-           else {
-              return "share_err_email";
-           }
+         if ( validateEmail(shareUser) ) {
+            Agent agent = getAgentManager().createAgent(shareUser, getIdManager().getId(shareUser) );
+            if (agent != null) {
+               notifyNewUserEmail( agent );
+               shareList.add( agent );
+            }
+            else {
+               return "share_err_email";
+            }
+         }
+         else {
+            return "share_err_email";
+         }
       }
       
       // Check for duplciates
@@ -225,10 +220,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       // Otherwise, user is found; add to the shareList
       else {
-           Agent agent = (Agent) userList.get(0);
-           shareList.add(agent);
-           presentationShareUserService.triggerAddUserEvent(presentation.getId().getValue(), // add to cluster
-                                        agent.getId().getValue());
+         shareList.add( userList.get(0) );
       }
        
       return null;
@@ -311,7 +303,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     ** get session-based share list
     **/
    private List getShareList( Presentation presentation ) {
-      List shareList = presentationShareUserService.getSharedList(presentation);
+      Session session = SessionManager.getCurrentSession();
+      List shareList = (List)session.getAttribute(SharePresentationController.SHARE_LIST_ATTRIBUTE+presentation.getId().getValue());
       return shareList;
    }
    
@@ -319,7 +312,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
     ** set session-based share list
     **/
    private void setShareList( Presentation presentation, List shareList ) {
-       presentationShareUserService.setSharedList(shareList, presentation);
+      Session session = SessionManager.getCurrentSession();
+      session.setAttribute(SharePresentationController.SHARE_LIST_ATTRIBUTE+presentation.getId().getValue(), shareList);
    }
    
    /** 
@@ -332,6 +326,20 @@ public class SharePresentationMoreController extends AbstractPresentationControl
          return Boolean.valueOf(false);
    }
 
+   /**
+    ** Check if presentation's worksite has groups defined and return true/false
+    **/
+   private Boolean getHasGroups( String siteId ) {
+      try {
+         Site site = getSiteService().getSite(siteId);
+         return Boolean.valueOf( site.hasGroups() );
+      }
+      catch (Exception e) {
+         logger.warn(e.toString());
+      }
+      return Boolean.valueOf(false);
+   }
+    
    /**
     ** Check for share list changes from form submission and update shareList and availList if necessary
     **
@@ -349,9 +357,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
             if ( request.get(availItem.getId().getValue()) != null )
             {
                mods = true;
-//               selectedList.add( availItem );
-               presentationShareUserService.triggerAddUserEvent(presentation.getId().getValue(), // add user to the cluster's cache
-                                                                availItem.getId().getValue());
+               selectedList.add( availItem );
             }
             else {
                newAvailList.add( availItem );
@@ -366,9 +372,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
             if ( request.get(availItem.getId().getValue()) != null )
             {
                mods = true;
-//               selectedList.add( availItem );
-               presentationShareUserService.triggerAddUserEvent(presentation.getId().getValue(), // add user to the cluster's cache
-                       availItem.getId().getValue());
+               selectedList.add( availItem );
             }
             else {
                newAvailList.add( availItem );
@@ -378,8 +382,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       if ( mods ) {
          // Add selected items to shareList and save
-//         shareList.addAll(selectedList);
-//         setShareList(presentation, shareList);
+         shareList.addAll(selectedList);
+         setShareList(presentation, shareList);
          
          // Delete selected items from availList
          availList.clear();
@@ -387,6 +391,76 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       }
       
       return mods;
+   }
+
+   /** Return list of all groups associated with the given site
+    **/   
+   private List getGroupList( String siteId, Map request ) {
+      List groupsList = new ArrayList();
+      Site site;
+      
+      try {
+         site = getSiteService().getSite(siteId);
+      }
+      catch ( Exception e ) {
+         logger.warn(e.toString());
+         return groupsList;
+      }
+      
+      Collection groups = site.getGroups();
+      String selectedGroup = (String)request.get("groups");
+      for (Iterator i = groups.iterator(); i.hasNext();) {
+         Group group = (Group) i.next();
+         boolean checked = false;
+         if ( selectedGroup == null )
+            selectedGroup = group.getId();
+         if ( selectedGroup.equals(group.getId()) )
+            checked = true;
+         groupsList.add(new GroupWrapper( group, checked ));
+      }
+      
+      Collections.sort(groupsList, groupComparator);
+      return groupsList;
+   }
+
+   /** Return list of site users (not yet shared) users, optionally filtered by specified group
+    **/
+   private List getFilteredMembersList( String siteId, List groupList ) {
+      Site site;
+      Set members = new HashSet();
+      List memberList = new ArrayList();
+      
+      try {
+         site = getSiteService().getSite(siteId);
+      } 
+      catch (Exception e) {
+         logger.warn(e.toString());
+         return memberList;
+      }
+
+      // Find members of selected groups
+      if ( groupList != null ) {
+         for ( Iterator gIt=groupList.iterator(); gIt.hasNext(); ) {
+            GroupWrapper group = (GroupWrapper)gIt.next();
+            if ( group.getChecked() )
+               members.addAll( site.getGroup( group.getId()).getMembers() );
+         }
+      }
+      
+      // If no groups are available or selected
+      if ( members.size() == 0 ) 
+         members = site.getMembers(); 
+      
+      for (Iterator it=members.iterator(); it.hasNext(); ) {
+         String userId = ((Member)it.next()).getUserId();
+         
+         // Check for a null agent since the site.getMembers() will return member records for deleted users
+         Agent agent = getAgentManager().getAgent(userId);
+         if (agent != null && agent.getId() != null) 
+            memberList.add(agent);
+      }
+      
+      return memberList;
    }
 
    /** Return list of available users (i.e. not in shareList) optionally filtered by group
@@ -507,6 +581,14 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    public void setServerConfigurationService(ServerConfigurationService serverConfigurationService) {
       this.serverConfigurationService = serverConfigurationService;
    }
+
+   public SiteService getSiteService() {
+      return siteService;
+   }
+
+   public void setSiteService( SiteService siteService) {
+      this.siteService = siteService;
+   }
    
    public EmailService getEmailService() {
       return emailService;
@@ -524,19 +606,43 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       this.userDirectoryService = userDirectoryService;
    }
    
-   public PresentationShareUserService getPresentationShareUserService() {
-      return presentationShareUserService;
-   }
-
-   public void setPresentationShareUserService(PresentationShareUserService presentationShareUserService) {
-      this.presentationShareUserService = presentationShareUserService;
-   }
-
-/** Comparator for sorting role-based AgentWrapper objects
+   /** Comparator for sorting role-based AgentWrapper objects
     **/
 	public class RoleAgentComparator implements Comparator<AgentWrapper> {
 		public int compare(AgentWrapper o1, AgentWrapper o2) {
 			return o1.getDisplayName().compareTo( o2.getDisplayName() );
 		}
 	}
+   
+   /** Comparator for sorting GroupWrapper objects by title
+    **/
+	public class GroupComparator implements Comparator<GroupWrapper> {
+		public int compare(GroupWrapper o1, GroupWrapper o2) {
+			return o1.getTitle().compareTo( o2.getTitle() );
+		}
+	}
+   
+   /** Wrap Group class to support getChecked() method
+    **/
+   public class GroupWrapper {
+      private Group group;
+      private boolean checked;
+      
+      public GroupWrapper( Group group, boolean checked ) {
+         this.group = group;
+         this.checked = checked;
+      }
+      public void setChecked( boolean checked ) {
+         this.checked = checked;
+      }
+      public boolean getChecked() {
+         return checked;
+      }
+      public String getId() {
+         return group.getId();
+      }
+      public String getTitle() {
+         return group.getTitle();
+      }
+   }
 }

@@ -2,7 +2,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <fmt:setLocale value="${locale}" />
-<fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
 <jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="request"><jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.matrix.bundle.Messages"/></jsp:useBean>
 
 <script type="text/javascript" language="JavaScript"
@@ -11,9 +10,8 @@
 	rel="stylesheet" media="all" />
 
 <h3>
- <fmt:message key="matrix_page_associations">
-  <fmt:param value="${pageTitle}" />
- </fmt:message>
+ <c:out value="${msgs.matrix_page_associations}"/>
+ <c:out value="${pageTitle}"/>
 </h3>
 
 <table class="listHier lines nolines" cellspacing="0" border="0"
