@@ -21,7 +21,6 @@
     <module>api-impl</module>
     <module>component</module>
     <module>tool</module>
-    <module>help</module>
   </modules>
   <build>
     <resources />
