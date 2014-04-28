@@ -27,7 +27,7 @@
 	</p>
 	<p class="indnt2">
 		<spring:bind path="presentationName">
-			<input type="text" size="40" name="${status.expression}" value="${status.value}" title="<fmt:message key="new_portfolio_enterNameLabel"/>"/>
+			<input type="text" size="40" name="${status.expression}" value="${status.value}"/>
 		</spring:bind>
 	</p>
     <%-- In case we get here without any available types, which should typically not happen due to links being supressed --%>
@@ -49,46 +49,40 @@
 	</spring:bind>
 	<spring:bind path="templateId">
 		<c:if test="${not empty availableTemplates}">
-		<fieldset class="presentationTypeGroup">
-			<%-- legend only viewable by screenreaders because redundant --%>
-		    <legend style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;">
-		        <fmt:message key="legend_selectType" />
-		    </legend>
+			<ul class="presentationTypeGroup">
 				<c:forEach var="template"
 					items="${availableTemplates}"
 					varStatus="templateStatus">
-                <input class="portfolioTypeOption" type="radio"						
+					<li class="portfolioTypeOption">
+						<input type="radio"
 							id="${status.expression}-${templateStatus.count}"
 							name="${status.expression}"
 							value="<c:out value="${template.id.value}"/>"
-							onclick="getElementById('presType').value = 'osp.presentation.type.template';" 
-							aria-describedby="presType${templateStatus.count}"/>
+							onclick="getElementById('presType').value = 'osp.presentation.type.template';" />
 						<label for="${status.expression}-${templateStatus.count}"><c:out value="${template.name}"/></label>
-						<p  id="presType${templateStatus.count}" class="messageInstruction">
+						<p class="messageInstruction">
 							<c:out value="${template.description}"/>
 						</p>
-				</c:forEach>			
-		</fieldset>
+					</li>
+				</c:forEach>
+			</ul>
 		</c:if>
 		
 		<%-- Handle option to turn free-form off --%>
 		<c:if test="${freeFormEnabled}">
-		<fieldset class="presentationTypeGroup">
-		<%-- legend only viewable by screenreaders because redundant --%>
-		<legend style="position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;">
-		    <fmt:message key="legend_selectType" />
-		</legend>				
+			<ul class="presentationTypeGroup">
+				<li class="portfolioTypeOption">
 					<input type="radio"
 						id="${status.expression}-freeForm"
 						name="${status.expression}"
 						value="${freeFormTemplateId.value}"
-						onclick="getElementById('presType').value = 'osp.presentation.type.freeForm';"
-						aria-describedby="presType-freeform"/>
-					<label for="${status.expression}-freeForm"><fmt:message key="label_freeForm"/></label>
-					<p id="presType-freeform" class="messageInstruction">
-						<fmt:message key="addPresentation1_manageYourself"/>
+						onclick="getElementById('presType').value = 'osp.presentation.type.freeForm';" />
+					<label for="${status.expression}-freeForm"><c:out value="${msgs.label_freeForm}"/></label>
+					<p class="messageInstruction">
+						<c:out value="${msgs.addPresentation1_manageYourself}"/>
 					</p>
-		</fieldset>						
+				</li>
+			</ul>
 		</c:if>
 	</spring:bind>
     <c:if test="${!showCreate}">

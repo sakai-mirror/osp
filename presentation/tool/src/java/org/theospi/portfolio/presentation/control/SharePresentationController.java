@@ -39,7 +39,6 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.support.PresentationService;
-import org.theospi.portfolio.presentation.support.PresentationShareUserService;
 
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.Tool;
@@ -63,7 +62,6 @@ import org.sakaiproject.util.ResourceLoader;
 public class SharePresentationController extends AbstractPresentationController implements Controller {
    protected final Log logger = LogFactory.getLog(getClass());
    private PresentationService presentationService;
-   private PresentationShareUserService presentationShareUserService;
 
    private ServerConfigurationService serverConfigurationService;
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
@@ -256,8 +254,12 @@ public class SharePresentationController extends AbstractPresentationController 
     **/
    private List getRevisedShareList( Map request, Presentation presentation ) {
    
-      List shareList = presentationShareUserService.getSharedList(presentation);
+      Session session = SessionManager.getCurrentSession();
       
+      List shareList = (List)session.getAttribute(SHARE_LIST_ATTRIBUTE+presentation.getId().getValue());
+      if ( shareList == null )
+         shareList = presentationService.getShareList( presentation );
+   
       List revisedShareList = new ArrayList();
       
       // Don't remove users if notify request
@@ -271,20 +273,13 @@ public class SharePresentationController extends AbstractPresentationController 
       {
          for (Iterator it=shareList.iterator(); it.hasNext(); ) {
             Agent member = (Agent)it.next();
-            if ( member.getId() != null) {
-                if (request.get(member.getId().getValue()) == null ) {
-                    revisedShareList.add( member );
-                }
-                else { // remove user from rest of the cluster's cache
-                    presentationShareUserService.triggerRemoveUserEvent(presentation.getId().getValue(), 
-                            member.getId().getValue());
-                }
-            }
+            if ( member.getId() != null && request.get(member.getId().getValue()) == null )
+               revisedShareList.add( member );
          }
       }
       
       Collections.sort(revisedShareList, userAgentComparator);
-      presentationShareUserService.setSharedList(revisedShareList, presentation);
+      session.setAttribute(SHARE_LIST_ATTRIBUTE+presentation.getId().getValue(), revisedShareList);
       return revisedShareList;
    }
    
@@ -359,15 +354,7 @@ public class SharePresentationController extends AbstractPresentationController 
       this.userDirectoryService = userDirectoryService;
    }
    
-   public void setPresentationService(PresentationService presentationService) {
-	  this.presentationService = presentationService;
-   }
-
-   public PresentationShareUserService getPresentationShareUserService() {
-	  return presentationShareUserService;
-   }
-
-   public void setPresentationShareUserService(PresentationShareUserService presentationShareUserService) {
-	  this.presentationShareUserService = presentationShareUserService;
+	public void setPresentationService(PresentationService presentationService) {
+		this.presentationService = presentationService;
 	}
 }

@@ -139,18 +139,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
       }else{
     	  scaffolding.setHideEvaluations(true);  
       }
-      
-      if(request.get("enableItemLevelEvalsInLinkedTools") == null || request.get("enableItemLevelEvalsInLinkedTools").toString() == "false"){
-    	  scaffolding.setEnableItemLevelEvalsInLinkedTools(false);
-      }else{
-    	  scaffolding.setEnableItemLevelEvalsInLinkedTools(true);  
-      }
-      
-      if(request.get("hideItemLevelEvals") == null || request.get("hideItemLevelEvals").toString() == "false"){
-    	  scaffolding.setHideItemLevelEvals(false);
-      }else{
-    	  scaffolding.setHideItemLevelEvals(true);  
-      }
 
       if (addFormAction != null) {
 
@@ -270,11 +258,8 @@ public class AddScaffoldingController extends BaseScaffoldingController
 		session.remove(AudienceSelectionHelper.CONTEXT);
 		session.remove(AudienceSelectionHelper.CONTEXT2);
 		
-        if(scaffolding != null){ 
-            session.put(AudienceSelectionHelper.CONTEXT,
-                    scaffolding.getTitle());
-        }	
-   }  
+		session.put(AudienceSelectionHelper.CONTEXT, scaffolding.getTitle());
+	}  
    
    
    protected Collection getEvaluationDevices(String siteId, Scaffolding scaffolding) {

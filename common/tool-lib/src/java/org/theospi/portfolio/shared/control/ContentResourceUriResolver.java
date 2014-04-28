@@ -34,7 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.resolver.tools.CatalogResolver;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -91,22 +90,8 @@ public class ContentResourceUriResolver implements URIResolver {
          } catch (SAXException e) {
         	 logger.error(e);
          }
-         if (entity != null) {
-            try {
-           	 resolver.getCatalog().parseCatalog(appUrl + "/osp-common-tool/dtd/catalog.xml");
-           	 XMLReader xread = XMLReaderFactory.createXMLReader();
-           	 xread.setEntityResolver(resolver);
-           	 ss.setXMLReader(xread);
-            } catch (MalformedURLException e) {
-           	 logger.error(e);
-            } catch (IOException e) {
-           	 logger.error(e);
-            } catch (SAXException e) {
-           	 logger.error(e);
-            }
-            
-            return ss;
-         }
+         
+         return ss;
       } catch (ServerOverloadException e) {
          logger.error("", e);
       }

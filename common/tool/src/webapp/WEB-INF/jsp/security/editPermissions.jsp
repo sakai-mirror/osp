@@ -10,7 +10,7 @@
 
 <h3><c:out value="${msgs.perm_page_title}"/></h3>
 <div class="instruction">
-   <c:out value="${message}" escapeXml="true" />
+   <c:out value="${message}" escapeXml="false" />
 </div>
 
 <form method="post">

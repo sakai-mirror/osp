@@ -254,7 +254,7 @@ public class MatrixLinkTool extends HelperToolBase
 		if (currentActivity == null) {
 			ToolSession toolSession = getSessionManager().getCurrentToolSession();
 			String activityRef = (String) toolSession.getAttribute(MatrixTaggingProvider.ACTIVITY_REF);
-			currentActivity = getTaggingManager().getActivity(activityRef, getMatrixTaggingProvider(), null);
+			currentActivity = getTaggingManager().getActivity(activityRef, getMatrixTaggingProvider());
 			toolSession.removeAttribute(MatrixTaggingProvider.ACTIVITY_REF);
 		}
 		return currentActivity;

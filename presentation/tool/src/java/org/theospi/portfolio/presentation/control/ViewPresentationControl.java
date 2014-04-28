@@ -89,7 +89,6 @@ public class ViewPresentationControl extends AbstractPresentationController impl
    private ArtifactFinderManager artifactFinderManager;
    private Hashtable presentationTemplateCache = new Hashtable();
    private URIResolver uriResolver;
-   private TransformerFactory transformerFactory;
    private static Cache cache = setupCache();
 
    public static final String XSL_SITE_ID = "sakaiSiteId";
@@ -332,7 +331,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
       if (xsl.getTechnicalMetadata().getLastModified().getTime() > wrapper.modified) {
          try {
-            TransformerFactory tf = getTransformerFactory();
+            TransformerFactory tf = TransformerFactory.newInstance();
             tf.setURIResolver(getUriResolver());
             wrapper.transformer = tf.newTransformer(new StreamSource(xsl.getInputStream()));
             wrapper.modified = xsl.getTechnicalMetadata().getLastModified()
@@ -407,17 +406,6 @@ public class ViewPresentationControl extends AbstractPresentationController impl
    public void setPresentationTemplateCache(Hashtable presentationTemplateCache) {
       this.presentationTemplateCache = presentationTemplateCache;
    }
-   
-   public TransformerFactory getTransformerFactory() {
-      if (transformerFactory == null) {
-         transformerFactory = TransformerFactory.newInstance();         
-      }
-      return transformerFactory;
-   }
-
-   public void setTransformerFactory(TransformerFactory transformerFactory) {
-      this.transformerFactory = transformerFactory;
-   }
 
    public URIResolver getUriResolver() {
       return uriResolver;
@@ -425,6 +413,5 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
    public void setUriResolver(URIResolver uriResolver) {
       this.uriResolver = uriResolver;
-      getTransformerFactory().setURIResolver(uriResolver);
    }
 }

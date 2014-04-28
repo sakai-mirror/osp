@@ -89,7 +89,7 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 		Map model = new HashMap();
 		model.put("scaffolding_published", scaffolding.isPublished());
 		
-		int linkedSitesNum = 0, totalLinksNum = 0, linkedCellsNum = 0;
+		int linkedSitesNum = 0, totalLinksNum = 0;
 		try {
 			List<String> uniqueSites = new ArrayList<String>();
 			Set<ScaffoldingCell> sCells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
@@ -97,9 +97,7 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 			for (Iterator iterator = sCells.iterator(); iterator.hasNext();) {
 				ScaffoldingCell sCell = (ScaffoldingCell) iterator.next();
 				List<Link> linksList = getLinkManager().getLinks(sCell.getWizardPageDefinition().getReference(), true);
-                if (linksList.size() > 0) 
-                    linkedCellsNum++;
-                for (Iterator iterator2 = linksList.iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = linksList.iterator(); iterator2.hasNext();) {
 					//for each link check to see if the site is a new site and increment counter
 					Link link = (Link) iterator2.next();								
 					if(!uniqueSites.contains(link.getActivityRef())){
@@ -122,7 +120,7 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 		
 		model.put("linkedSitesNum", linkedSitesNum);
 		model.put("totalLinksNum", totalLinksNum);
-        model.put("totalLinkedCells", linkedCellsNum);      		
+		
 		
 
 		String cancel = (String) request.get("cancel");

@@ -83,18 +83,6 @@ public interface ReviewManager {
      * @return List of Review
      */
     public List getReviewsByParentAndTypes(String parentId, int[] types, String siteId, String producer);
-    
-    /**
-     * Returns a list of reviews for the given criteria
-     * 
-     * @param itemRef
-     * @param type
-     * @param parentId
-     * @param siteId
-     * @param producer
-     * @return List of Review items
-     */
-    public List<Review> getReviewsByItemAndType(String itemRef, int type, String parentId, String siteId, String producer);
 
     /**
      * Retrieve all reviews for all cells in a user's matrix. This does not push the
