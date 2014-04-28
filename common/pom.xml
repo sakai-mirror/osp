@@ -23,7 +23,6 @@
     <module>component</module>
     <module>tool</module>
     <module>tool-lib</module>
-    <module>help</module>
   </modules>
   <build>
     <resources />
