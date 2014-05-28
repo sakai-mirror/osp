@@ -294,7 +294,7 @@ public class MatrixJsfTool extends JsfTool {
 
 		ToolSession toolSession = sessionManager.getCurrentToolSession();
 
-		if (toolSession.getAttribute(helperTool.getId() + Tool.HELPER_DONE_URL) == null) {
+		if (toolSession.getAttribute(helperTool.getId() + Tool.HELPER_DONE_URL) == null && !target.equals("/sakai.filepicker.helper")) {
 			toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
 					req.getContextPath() + req.getServletPath()
 							+ computeDefaultTarget());
